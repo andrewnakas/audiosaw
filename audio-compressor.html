@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Compressor — shrink MP3, WAV, M4A files in your browser | AudioSaw</title>
+<meta name="description" content="Free audio compressor. Drop a file, pick a bitrate, get a smaller file out. Runs in your browser — no upload. Great for email, web, podcasts.">
+<meta name="keywords" content="audio compressor, compress mp3, reduce audio file size, audio file size reducer, compress wav, shrink audio file, audio compressor online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-compressor">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio Compressor — shrink audio in your browser">
+<meta property="og:description" content="Make audio files smaller without uploading them anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-compressor">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Compressor","url":"https://audiosaw.com/audio-compressor","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How much can I shrink an audio file?","acceptedAnswer":{"@type":"Answer","text":"A 320 kbps MP3 dropped to 128 kbps is ~60% smaller. WAV to 192 kbps MP3 is typically 90%+ smaller. Downmixing stereo to mono cuts size roughly in half on top of that."}},
+  {"@type":"Question","name":"Will the audio quality drop?","acceptedAnswer":{"@type":"Answer","text":"Below 128 kbps, yes — noticeably for music, less for voice. 192 kbps is a sweet spot for most material. We let you pick so you can trade size for quality knowingly."}},
+  {"@type":"Question","name":"Does my file upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Compressor</span></h1>
+    <p>Shrink an audio file so it fits in an email, on a podcast host, or under an upload limit. Pick a bitrate, optionally downmix to mono. Local — your file never leaves your tab.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Drop several for batch.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="targetFormat">
+            <option value="mp3" selected>MP3 — best compression</option>
+            <option value="m4a">M4A / AAC — Apple-friendly</option>
+            <option value="ogg">OGG Vorbis — open</option>
+          </select>
+        </label>
+        <label>Bitrate (lower = smaller)
+          <select id="bitrate">
+            <option value="64">64 kbps — voice, very small</option>
+            <option value="96">96 kbps — voice / podcast</option>
+            <option value="128" selected>128 kbps — balanced</option>
+            <option value="160">160 kbps — better music</option>
+            <option value="192">192 kbps — high quality</option>
+          </select>
+        </label>
+        <label>Sample rate
+          <select id="sampleRate">
+            <option value="">keep original</option>
+            <option value="44100">44.1 kHz — CD quality</option>
+            <option value="32000">32 kHz — smaller</option>
+            <option value="22050">22.05 kHz — voice memo</option>
+            <option value="16000">16 kHz — speech</option>
+          </select>
+        </label>
+        <label>Channels
+          <select id="channels">
+            <option value="">keep original (stereo if present)</option>
+            <option value="1">Force mono (half the size)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Compress</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How much can you shrink it?</h2>
+    <p>It depends on what you started with. A 1-hour WAV recording is ~600 MB. The same hour at 128 kbps MP3 mono is ~28 MB — about a 95% reduction with no audible loss for voice. Music is more sensitive: 192 kbps stereo MP3 is usually indistinguishable from CD for casual listening, and 128 kbps stereo MP3 is fine for streaming over poor connections.</p>
+
+    <h3>Picking a bitrate</h3>
+    <ul>
+      <li><strong>64 kbps mono</strong> — speech, audiobooks, voicemail; tiny.</li>
+      <li><strong>96–128 kbps</strong> — podcasts, voice-heavy content.</li>
+      <li><strong>128–160 kbps</strong> — casual music listening, web embeds.</li>
+      <li><strong>192 kbps</strong> — music you actually care about, but not lossless.</li>
+      <li><strong>256–320 kbps</strong> — premium music; barely worth it over 192 for most ears.</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Will compressing an MP3 again make it worse?</summary><p>Slightly — every lossy re-encode loses some fidelity. If you have the original WAV, compress that instead. If all you have is the MP3, the difference at 128 kbps and above is usually inaudible on consumer speakers.</p></details>
+    <details><summary>Can I compress to WAV?</summary><p>WAV is uncompressed by definition — there's no bitrate to lower, only the sample rate and bit depth. To meaningfully shrink a WAV you have to encode to a compressed format like MP3 or OGG.</p></details>
+    <details><summary>Does this work offline?</summary><p>Once the page has loaded, yes. You can disconnect from the internet and the tool still works.</p></details>
+    <details><summary>What's the size limit?</summary><p>Around 500 MB per file on a typical laptop. Browser memory is the bottleneck.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out volume across files.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Strip dead air from a recording.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the file before compressing.</p></a>
+      <a class="card" href="/wav-to-mp3"><h3>WAV → MP3</h3><p>Drop a single-format converter.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/audio-compressor.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

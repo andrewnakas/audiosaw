@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Normalize Audio — make audio louder or even out volume | AudioSaw</title>
+<meta name="description" content="Normalize audio in your browser. Peak-normalize MP3, WAV, M4A so the loudest moment hits your target dB. No upload, no signup.">
+<meta name="keywords" content="normalize audio, normalize mp3, make audio louder online, audio volume normalizer, peak normalize, even out audio volume">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/normalize-audio">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Normalize Audio — peak-normalize in your browser">
+<meta property="og:description" content="Bring your audio up to a target level without uploading anything.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/normalize-audio">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Normalize Audio","url":"https://audiosaw.com/normalize-audio","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Normalize <span class="ital">Audio</span></h1>
+    <p>Bring an audio file up to a target peak level so it matches the loudness of everything else in your playlist or feed. Peak normalization, browser-only.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Drop several for batch.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Target peak (dBFS)
+          <select id="targetDb">
+            <option value="-0.1">-0.1 dB (effectively max)</option>
+            <option value="-1" selected>-1 dB (safe headroom)</option>
+            <option value="-3">-3 dB (conservative)</option>
+            <option value="-6">-6 dB (broadcast safe)</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Normalize</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What this does</h2>
+    <p>We scan every sample in your file to find the loudest peak, then multiply the whole signal by a gain factor so that peak sits at the target dBFS you chose. The relative dynamics stay intact — quiet parts stay proportionally quiet, loud parts stay proportionally loud — but the whole file gets shifted up (or sometimes down) to a known ceiling.</p>
+
+    <h3>When to use peak normalization</h3>
+    <ul>
+      <li><strong>A recorded interview is too quiet.</strong> Normalize to -1 dB to maximize loudness without clipping.</li>
+      <li><strong>You're stitching tracks together.</strong> Normalize each one to the same target so transitions don't blow out speakers.</li>
+      <li><strong>You're uploading to a service that requires headroom.</strong> -3 or -6 dB leaves room for the platform's processing.</li>
+    </ul>
+
+    <h3>What this doesn't do</h3>
+    <p>This is <em>peak</em> normalization, not loudness normalization (LUFS). A quiet song with one loud transient will only get raised by the amount that transient allows. For true perceived-loudness matching (Spotify/Apple Music style), you want LUFS normalization — that's a more involved algorithm we don't have a tab for yet.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Will normalizing distort my audio?</summary><p>Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean.</p></details>
+    <details><summary>Why is the change subtle on some files?</summary><p>If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings.</p></details>
+    <details><summary>What's the difference between this and "make audio louder"?</summary><p>Same thing, often. "Make louder" tools usually peak-normalize.</p></details>
+    <details><summary>Does my audio upload?</summary><p>No. Local processing in your browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink file size after normalizing.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Clean dead air before normalizing.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim then normalize a clip.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Merge after normalizing each clip.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/normalize-audio.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

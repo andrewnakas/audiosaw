@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silence Remover — trim silence from audio in your browser | AudioSaw</title>
+<meta name="description" content="Free silence remover. Automatically strip silence from the start and end of an audio file. Runs in your browser — no upload.">
+<meta name="keywords" content="silence remover, trim silence from audio, remove silence mp3, strip silence wav, audio silence trimmer, cut silence online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/silence-remover">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Silence Remover — trim leading and trailing silence">
+<meta property="og:description" content="Strip dead air from the start and end of an audio recording. Local-only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/silence-remover">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Silence Remover","url":"https://audiosaw.com/silence-remover","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Silence <span class="ital">Remover</span></h1>
+    <p>Drop a file. We find the actual audio and trim the dead air at the start and end automatically. Adjust the threshold if your recording is noisier than usual.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Drop several for batch.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Silence threshold
+          <select id="threshold">
+            <option value="-60">-60 dB (very quiet rooms)</option>
+            <option value="-50" selected>-50 dB (typical recording)</option>
+            <option value="-40">-40 dB (noisy room)</option>
+            <option value="-30">-30 dB (very noisy)</option>
+          </select>
+        </label>
+        <label>Padding to keep (seconds)
+          <select id="padding">
+            <option value="0">none — tight cut</option>
+            <option value="0.1" selected>0.1 s — natural</option>
+            <option value="0.25">0.25 s — relaxed</option>
+            <option value="0.5">0.5 s — gentle fade-in feel</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Remove silence</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>We scan the file from the start, looking for the first sample loud enough to cross the threshold you picked. Then we scan from the end backwards, looking for the last loud sample. Everything between is kept, plus a small padding so the audio doesn't start mid-syllable.</p>
+    <h3>Picking the threshold</h3>
+    <p>A quiet home studio recording has a noise floor around -55 to -65 dBFS. A phone recording in a normal room is closer to -45 dB. If the tool cuts too much, raise the threshold (less negative). If it leaves obvious silence in, lower it (more negative).</p>
+    <h3>What it doesn't do</h3>
+    <p>This trims <em>leading and trailing</em> silence. We don't yet remove silence <em>between</em> phrases (that's a different operation — destructive editing, harder to get right without artifacts). For now, use this to get a clean entry and exit, then layer with our cutter if you need surgical edits.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What format works best?</summary><p>Any common audio format. WAV is most precise; MP3 works fine.</p></details>
+    <details><summary>The tool cut off the first word — what now?</summary><p>Increase the threshold (closer to 0) or use more padding.</p></details>
+    <details><summary>The tool left silence at the start.</summary><p>Lower the threshold (more negative).</p></details>
+    <details><summary>Does my audio upload?</summary><p>No. Processing is in the browser tab only.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring the trimmed file up to target dB.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink after removing silence.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Manual surgical edits with a waveform.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch cleaned clips together.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/silence-remover.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

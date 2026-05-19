@@ -75,6 +75,15 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
     <div id="controls" style="display:none">
       <div class="controls">
+        <label>Output format
+          <select id="targetFormat">
+            <option value="mp3" selected>MP3 — universal</option>
+            <option value="wav">WAV — uncompressed</option>
+            <option value="m4a">M4A / AAC — Apple-friendly</option>
+            <option value="flac">FLAC — lossless, compressed</option>
+            <option value="ogg">OGG Vorbis — open, efficient</option>
+          </select>
+        </label>
         <label>Audio bitrate
           <select id="bitrate">
             <option value="128">128 kbps</option>
@@ -85,7 +94,7 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
         </label>
       </div>
       <div class="actions">
-        <button class="btn" id="convertBtn" disabled>Convert to Audio</button>
+        <button class="btn" id="convertBtn" disabled>Convert</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
     </div>
@@ -132,7 +141,7 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   </div>
 </footer>
 
-<script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.avi','.m4v'] };</script>
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.avi','.m4v'], targetFromSelect: 'targetFormat' };</script>
 <script src="/js/common.js"></script>
 <script src="/js/audio-core.js"></script>
 <script src="/js/tool-converter.js"></script>

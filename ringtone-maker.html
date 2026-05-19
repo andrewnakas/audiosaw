@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ringtone Maker — make iPhone .m4r and Android .mp3 ringtones | AudioSaw</title>
+<meta name="description" content="Free ringtone maker. Drop a song, trim a 30-second clip on the waveform, download as iPhone .m4r or Android .mp3. Runs in your browser — no upload.">
+<meta name="keywords" content="ringtone maker, mp3 ringtone, iphone ringtone, m4r ringtone, free ringtone maker, ringtone cutter, custom ringtone, android ringtone">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/ringtone-maker">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Ringtone Maker — trim a 30s clip, download .m4r or .mp3">
+<meta property="og:description" content="Drag handles on a waveform, get a ringtone. Local-only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/ringtone-maker">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Ringtone Maker","url":"https://audiosaw.com/ringtone-maker","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I install a custom ringtone on iPhone?","acceptedAnswer":{"@type":"Answer","text":"Download the .m4r, transfer it to your iPhone via Finder (Mac) or iTunes (Windows): open the device, find Tones, drag the .m4r in. The ringtone shows up under Settings → Sounds & Haptics → Ringtone."}},
+  {"@type":"Question","name":"How do I set a ringtone on Android?","acceptedAnswer":{"@type":"Answer","text":"Transfer the MP3 to your phone (USB, Drive, AirDrop equivalent). Open the Sound settings → Phone ringtone → Add ringtone, and pick the file."}},
+  {"@type":"Question","name":"Why a 30-second limit?","acceptedAnswer":{"@type":"Answer","text":"That's the iOS ringtone limit. Anything longer won't import. Android is more forgiving but 30 s is a sensible default."}},
+  {"@type":"Question","name":"Does my song upload?","acceptedAnswer":{"@type":"Answer","text":"No. We never see your file. The conversion runs in your browser tab."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Ringtone <span class="ital">Maker</span></h1>
+    <p>Drop a song, drag the green handles to pick the part you want, choose iPhone or Android. We trim to 30 seconds and encode in the right format. Pure browser — no upload, no signup.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop a song here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC, or audio from a video.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*">
+    </div>
+
+    <div id="editor" style="display:none">
+      <div id="waveformWrap" style="position:relative;margin:24px 0 6px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;overflow:hidden;height:140px">
+        <canvas id="waveform" style="display:block;width:100%;height:140px"></canvas>
+        <div id="rangeOverlay" style="position:absolute;top:0;bottom:0;background:rgba(194,65,12,0.12);border-left:2px solid var(--amber);border-right:2px solid var(--amber);pointer-events:none"></div>
+        <div id="handleStart" class="cut-handle" style="left:0%"></div>
+        <div id="handleEnd"   class="cut-handle" style="left:100%"></div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:0.84rem;color:var(--ink-soft);margin:6px 0 18px">
+        <span>start <strong id="startTime" style="color:var(--ink)">0:00.00</strong></span>
+        <span>end <strong id="endTime" style="color:var(--ink)">0:00.00</strong></span>
+        <span>length <strong id="rangeLen" style="color:var(--amber)">0:00.00</strong></span>
+        <span id="capWarn" style="color:var(--error);display:none">⚠ trimmed to 30 s for ringtone</span>
+        <button class="btn btn-small btn-secondary" id="playBtn" type="button">▶ play selection</button>
+      </div>
+      <div class="controls">
+        <label>Phone
+          <select id="phoneType">
+            <option value="ios" selected>iPhone — .m4r (AAC)</option>
+            <option value="android">Android — .mp3</option>
+          </select>
+        </label>
+        <label>Fade in
+          <select id="fadeIn">
+            <option value="0">none</option>
+            <option value="0.5" selected>0.5 s</option>
+            <option value="1">1 s</option>
+            <option value="2">2 s</option>
+          </select>
+        </label>
+        <label>Fade out
+          <select id="fadeOut">
+            <option value="0">none</option>
+            <option value="0.5" selected>0.5 s</option>
+            <option value="1">1 s</option>
+            <option value="2">2 s</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="cutBtn">Make ringtone</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How to install your ringtone</h2>
+    <h3>iPhone (.m4r)</h3>
+    <ol>
+      <li>Download the .m4r file we make.</li>
+      <li>Connect your iPhone to a Mac or PC.</li>
+      <li>On Mac: open Finder → click your iPhone → drag the .m4r into the device window. On Windows: open iTunes → click your device → drag into <em>Tones</em>.</li>
+      <li>On the phone: <em>Settings → Sounds &amp; Haptics → Ringtone</em>. Your new tone is at the top.</li>
+    </ol>
+    <h3>Android (.mp3)</h3>
+    <ol>
+      <li>Download the .mp3 file.</li>
+      <li>Transfer to your phone (USB, Google Drive, email-to-self — anything).</li>
+      <li><em>Settings → Sound → Phone ringtone → Add ringtone</em> → pick the file.</li>
+    </ol>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Why 30 seconds max?</summary><p>iOS ringtones must be under 30 seconds, or they won't import. Android allows longer but 30 s is a sensible ceiling.</p></details>
+    <details><summary>What's the difference between .m4r and .m4a?</summary><p>Identical contents — both are AAC in an MP4 container. The .m4r extension tells iOS to treat the file as a ringtone instead of music.</p></details>
+    <details><summary>Can I make a text tone or alert?</summary><p>Yes — same file. iOS lets you assign any .m4r as a text tone or alert sound after import.</p></details>
+    <details><summary>Does my song upload?</summary><p>No. Everything happens in the browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Same cutter without the 30 s cap.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch tones together for a mashup.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out volume before trimming.</p></a>
+      <a class="card" href="/mp3-to-m4a"><h3>MP3 → M4A</h3><p>Convert without trimming.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/ringtone-maker.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

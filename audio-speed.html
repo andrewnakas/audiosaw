@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Speed Changer — speed up or slow down audio | AudioSaw</title>
+<meta name="description" content="Change audio playback speed in your browser. Speed up a podcast, slow down a track, or pitch-shift for fun. MP3, WAV, M4A supported. No upload.">
+<meta name="keywords" content="audio speed changer, change audio speed, slow down audio, speed up audio, pitch shift, podcast speed, change mp3 speed online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-speed">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio Speed Changer — speed up or slow down audio">
+<meta property="og:description" content="Change playback speed with or without pitch shift. Local-only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-speed">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Speed Changer","url":"https://audiosaw.com/audio-speed","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Speed</span></h1>
+    <p>Speed up a podcast, slow down a song to transcribe it, or pitch a vocal up for a meme. Pick a speed, optionally keep the pitch the same. Browser-only, no upload.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC, video. Drop several for batch.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Speed
+          <select id="speed">
+            <option value="0.5">0.5× — half speed</option>
+            <option value="0.75">0.75× — slow</option>
+            <option value="0.9">0.9× — slightly slower</option>
+            <option value="1.1">1.1× — slightly faster</option>
+            <option value="1.25" selected>1.25× — quicker listen</option>
+            <option value="1.5">1.5× — podcast turbo</option>
+            <option value="1.75">1.75×</option>
+            <option value="2">2× — double speed</option>
+          </select>
+        </label>
+        <label>Mode
+          <select id="mode">
+            <option value="pitch-preserve" selected>Keep pitch (time-stretch)</option>
+            <option value="pitch-shift">Pitch + speed (tape effect)</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Change speed</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Pitch-preserved vs. pitch-shifted</h2>
+    <p><strong>Keep pitch</strong> uses time-stretching: speech and music sound natural just faster or slower, like a podcast player on 1.5×. The math is slightly heavier (we use FFmpeg's atempo filter), so the first run loads the codec.</p>
+    <p><strong>Pitch + speed</strong> just plays the samples faster or slower, like a tape sped up. Vocals go chipmunk at 2× and slow drawl at 0.5×. Useful for effects, transcription of pitched material, or matching a sample to a different key.</p>
+
+    <h3>Common use cases</h3>
+    <ul>
+      <li><strong>Speeding up podcasts/lectures:</strong> 1.25–1.5× with pitch preservation.</li>
+      <li><strong>Transcribing a fast talker:</strong> 0.75–0.9× with pitch preservation.</li>
+      <li><strong>Slowing a guitar solo to learn:</strong> 0.5–0.75× pitch <em>preserved</em> to keep the key.</li>
+      <li><strong>Chipmunk / demon voice effects:</strong> 1.5× or 0.5× with pitch <em>shifted</em>.</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What's the quality loss?</summary><p>Pitch-preserve mode introduces some "phasiness" at extreme speeds (below 0.5× or above 2×). Within ±50% the result is generally clean.</p></details>
+    <details><summary>Why does pitch-preserve take longer?</summary><p>It runs an STFT-based time-stretch algorithm. The first run also loads the codec (~3 MB).</p></details>
+    <details><summary>Does my audio upload?</summary><p>No. Everything happens in your browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-reverser"><h3>Audio Reverser</h3><p>Reverse the file backwards.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim before changing speed.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out volume after speed change.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink the output for sharing.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/audio-speed.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

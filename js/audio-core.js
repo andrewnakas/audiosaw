@@ -72,6 +72,27 @@
     });
   }
 
+  // Mix an AudioBuffer down to mono. Average all channels into one.
+  function mixToMono(audioBuffer) {
+    if (audioBuffer.numberOfChannels === 1) return audioBuffer;
+    var sr = audioBuffer.sampleRate;
+    var len = audioBuffer.length;
+    var ch = audioBuffer.numberOfChannels;
+    var Octx = global.OfflineAudioContext || global.webkitOfflineAudioContext;
+    var off = new Octx(1, len, sr);
+    var out = off.createBuffer(1, len, sr);
+    var d = out.getChannelData(0);
+    for (var c = 0; c < ch; c++) {
+      var src = audioBuffer.getChannelData(c);
+      for (var i = 0; i < len; i++) d[i] += src[i] / ch;
+    }
+    var bs = off.createBufferSource();
+    bs.buffer = out;
+    bs.connect(off.destination);
+    bs.start(0);
+    return off.startRendering();
+  }
+
   // Resample an AudioBuffer to a target sample rate using OfflineAudioContext.
   function resampleBuffer(audioBuffer, targetSampleRate) {
     if (!targetSampleRate || targetSampleRate === audioBuffer.sampleRate) {
@@ -228,6 +249,10 @@
     if (canFastPath) {
       try {
         var ab = await decodeToAudioBuffer(file, onProgress);
+        if (options.channels === 1 && ab.numberOfChannels > 1) {
+          if (onProgress) onProgress(45, 'Mixing to mono…');
+          ab = await mixToMono(ab);
+        }
         if (options.sampleRate && options.sampleRate !== ab.sampleRate) {
           if (onProgress) onProgress(50, 'Resampling…');
           ab = await resampleBuffer(ab, options.sampleRate);
@@ -355,6 +380,7 @@
   global.AudioSaw = {
     decodeToAudioBuffer: decodeToAudioBuffer,
     resampleBuffer: resampleBuffer,
+    mixToMono: mixToMono,
     audioBufferToWav: audioBufferToWav,
     audioBufferToMp3: audioBufferToMp3,
     convertViaFFmpeg: convertViaFFmpeg,

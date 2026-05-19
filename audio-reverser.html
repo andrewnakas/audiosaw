@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Reverser — play audio backwards in your browser | AudioSaw</title>
+<meta name="description" content="Reverse any audio file. Drop an MP3, WAV, or M4A and get it backwards. Browser-only, no upload, fast.">
+<meta name="keywords" content="audio reverser, reverse audio, play audio backwards, reverse mp3, backwards audio, reverse wav, audio reverser online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-reverser">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio Reverser — play your audio backwards">
+<meta property="og:description" content="Reverse any audio file in your browser. No upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-reverser">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Reverser","url":"https://audiosaw.com/audio-reverser","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Reverser</span></h1>
+    <p>Drop a file, get it back playing in reverse. For hidden-message hunts, drum sample design, or a quick laugh. Browser-only, instant on most files.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC, video. Drop several for batch.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Reverse</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Reversed cymbals and risers</strong> — classic build-up effect in electronic music and trailers.</li>
+      <li><strong>Hidden-message hunts</strong> — flipping a sample to see what's "in" it.</li>
+      <li><strong>Sample design</strong> — reversed snare into a snare hit is a familiar trope.</li>
+      <li><strong>Speech and lyric experiments</strong> — what does the chorus sound like backwards?</li>
+    </ul>
+    <h3>How it works</h3>
+    <p>We decode the file to raw samples, reverse each channel's array in place, then re-encode to the format you pick. No DSP, no quality loss — the output is bit-for-bit reversed (within encoding tolerances).</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Will the reverse sound clean?</summary><p>Yes, the samples are exactly mirrored. Any artifact is from the encoder, not the reversal.</p></details>
+    <details><summary>Can I reverse just part of a file?</summary><p>Cut it first with our <a href="/audio-cutter">audio cutter</a>, then reverse the clip.</p></details>
+    <details><summary>Does my audio upload?</summary><p>No. Everything happens in your browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-speed"><h3>Audio Speed</h3><p>Speed up, slow down, pitch-shift.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Reverse just a section.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch a reversed clip with the original.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring the reversed file to target dB.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/audio-reverser.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

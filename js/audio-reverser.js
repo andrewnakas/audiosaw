@@ -1,22 +1,15 @@
-// Shared script used by every focused converter landing page (mp4-to-mp3, wav-to-mp3, etc.).
-// The page tells us the target format via window.AS_TOOL = { target: 'mp3', accept: [...], inputExts: [...] }.
+// Audio reverser: reverse each channel's sample array, re-encode.
 (function () {
   'use strict';
-  var cfg = window.AS_TOOL || {};
-  var defaultTarget = (cfg.target || 'mp3').toLowerCase();
-  var accept = cfg.accept || null;
-  var targetSelect = cfg.targetFromSelect ? document.getElementById(cfg.targetFromSelect) : null;
-  function currentTarget() {
-    return targetSelect ? (targetSelect.value || defaultTarget).toLowerCase() : defaultTarget;
-  }
-
   var $ = CV.$;
+
   var dropzone = $('#dropzone');
   var fileInput = $('#fileInput');
   var fileList = $('#fileList');
   var controls = $('#controls');
   var convertBtn = $('#convertBtn');
   var resetBtn = $('#resetBtn');
+  var outFmt = $('#outFmt');
   var bitrateSel = $('#bitrate');
   var statusEl = $('#status');
   var progressWrap = $('#progressWrap');
@@ -30,7 +23,7 @@
     if (!picked || !picked.length) return;
     files = files.concat(picked);
     fileList.style.display = '';
-    if (controls) controls.style.display = '';
+    controls.style.display = '';
     convertBtn.disabled = false;
     CV.renderFileList(fileList, files, function (idx) {
       files.splice(idx, 1);
@@ -42,7 +35,7 @@
   function reset() {
     files = [];
     fileList.innerHTML = '';
-    if (controls) controls.style.display = 'none';
+    controls.style.display = 'none';
     convertBtn.disabled = true;
     CV.clearStatus(statusEl);
     progressWrap.style.display = 'none';
@@ -51,34 +44,61 @@
     if (adPost) adPost.classList.remove('visible');
   }
 
-  CV.bindDropzone(dropzone, fileInput, onFiles, accept);
-  if (resetBtn) resetBtn.addEventListener('click', reset);
+  function reverseBuffer(audioBuffer) {
+    var Octx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var sr = audioBuffer.sampleRate;
+    var len = audioBuffer.length;
+    var channels = audioBuffer.numberOfChannels;
+    var off = new Octx(channels, len, sr);
+    var out = off.createBuffer(channels, len, sr);
+    for (var c = 0; c < channels; c++) {
+      var src = audioBuffer.getChannelData(c);
+      var dst = out.getChannelData(c);
+      for (var i = 0; i < len; i++) dst[i] = src[len - 1 - i];
+    }
+    var bs = off.createBufferSource();
+    bs.buffer = out;
+    bs.connect(off.destination);
+    bs.start(0);
+    return off.startRendering();
+  }
+
+  CV.bindDropzone(dropzone, fileInput, onFiles);
+  resetBtn.addEventListener('click', reset);
 
   convertBtn.addEventListener('click', async function () {
     if (!files.length) return;
-    convertBtn.disabled = true;
-    if (resetBtn) resetBtn.disabled = true;
+    convertBtn.disabled = true; resetBtn.disabled = true;
     progressWrap.style.display = '';
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
 
-    var options = {
-      bitrate: bitrateSel ? (parseInt(bitrateSel.value, 10) || 192) : 192
-    };
-    var target = currentTarget();
+    var fmt = (outFmt.value || 'mp3').toLowerCase();
+    var bitrate = parseInt(bitrateSel.value, 10) || 192;
 
     var outputs = [];
     var failures = [];
+
     for (var i = 0; i < files.length; i++) {
       var f = files[i];
       var idx = i + 1;
       try {
-        var blob = await AudioSaw.convert(f, target, options, function (pct, msg) {
-          var overall = ((i + (pct / 100)) / files.length) * 100;
-          CV.setProgress(progressBar, overall);
-          if (msg) CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] ' + msg);
-        });
-        outputs.push({ name: AudioSaw.rename(f.name, target), blob: blob });
+        CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] Decoding…');
+        CV.setProgress(progressBar, ((i + 0.1) / files.length) * 100);
+        var ab = await AudioSaw.decodeToAudioBuffer(f);
+        CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] Reversing…');
+        var reversed = await reverseBuffer(ab);
+        CV.setProgress(progressBar, ((i + 0.5) / files.length) * 100);
+
+        var blob;
+        if (fmt === 'wav') {
+          blob = AudioSaw.audioBufferToWav(reversed);
+        } else {
+          blob = await AudioSaw.audioBufferToMp3(reversed, bitrate, function (pct) {
+            CV.setProgress(progressBar, ((i + 0.5 + (pct / 100) * 0.5) / files.length) * 100);
+          });
+        }
+        outputs.push({ name: AudioSaw.rename(f.name, fmt).replace(/\.([^.]+)$/, '-reversed.$1'), blob: blob });
       } catch (e) {
         failures.push({ name: f.name, error: e.message || String(e) });
       }
@@ -87,14 +107,13 @@
     try {
       if (outputs.length === 1 && !failures.length) {
         CV.downloadBlob(outputs[0].blob, outputs[0].name);
-        CV.setStatus(statusEl, 'success', 'Done — downloaded ' + outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — ' + outputs[0].name);
       } else if (outputs.length > 1) {
-        CV.setStatus(statusEl, 'info', 'Packaging ' + outputs.length + ' files…');
         var zip = await AudioSaw.zipBlobs(outputs);
-        CV.downloadBlob(zip, 'audiosaw-' + currentTarget() + '.zip');
+        CV.downloadBlob(zip, 'audiosaw-reversed.zip');
         CV.setStatus(statusEl, 'success', 'Done — ' + outputs.length + ' files zipped' + (failures.length ? ' (' + failures.length + ' failed)' : ''));
       } else {
-        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+        CV.setStatus(statusEl, 'error', 'Could not reverse. ' + (failures[0] ? failures[0].error : ''));
       }
       outputs.forEach(function (o) {
         var row = document.createElement('div');
@@ -113,7 +132,7 @@
       if (adPost && outputs.length) adPost.classList.add('visible');
     } finally {
       convertBtn.disabled = files.length === 0;
-      if (resetBtn) resetBtn.disabled = false;
+      resetBtn.disabled = false;
       CV.setProgress(progressBar, 100);
     }
   });
