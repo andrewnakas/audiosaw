@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MP4 to MP3 Converter — extract audio from MP4 in your browser | AudioSaw</title>
+<meta name="description" content="Convert MP4 video to MP3 audio for free, right in your browser. No upload, no signup, no daily limit. Drop the file, pick a bitrate, download the MP3. Works offline once loaded.">
+<meta name="keywords" content="mp4 to mp3, convert mp4 to mp3, extract audio from mp4, mp4 to mp3 online, mp4 to mp3 no upload, free mp4 to mp3, mp4 audio extractor">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/mp4-to-mp3.html">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="MP4 to MP3 Converter — works in your browser">
+<meta property="og:description" content="Extract audio from MP4 as MP3, locally. Files never leave your tab.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/pages/mp4-to-mp3.html">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MP4 to MP3 Converter",
+  "url": "https://audiosaw.com/pages/mp4-to-mp3.html",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Is this MP4 to MP3 converter really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No signup, no daily quota, no watermark. The site is funded by display ads."}},
+    {"@type":"Question","name":"Does my video upload anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. You can disconnect from the internet after the page loads and it still works."}},
+    {"@type":"Question","name":"Can I batch convert multiple MP4s at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple MP4 files and you'll get a zip of MP3s back."}},
+    {"@type":"Question","name":"What's the maximum file size?","acceptedAnswer":{"@type":"Answer","text":"Roughly 500 MB on a typical laptop, depending on available memory. Larger files may work but aren't guaranteed."}}
+  ]
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>MP4 to <span class="ital">MP3</span></h1>
+    <p>Drop an MP4 (or several). We pull the audio track and re-encode it as MP3 right here in your tab. No upload, no signup, no queue. The video never leaves your device.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your MP4 here</p>
+      <p>or click to pick. We accept MP4, MOV, WebM, MKV too.</p>
+      <input type="file" id="fileInput" accept="video/*,.mp4,.mov,.webm,.mkv" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps — voice / podcast</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps — high quality</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>Your browser already knows how to read an MP4 — it's the same code that plays video in a <code>&lt;video&gt;</code> tag. We load a slim WebAssembly build of FFmpeg the first time you use the tool, demux the audio track (usually AAC), and encode it to MP3 with the bitrate you pick. The whole pipeline runs inside your tab. The first conversion takes a few extra seconds while the codec loads (~3 MB); after that, conversions are fast and the codec stays cached.</p>
+
+    <h3>What gets extracted</h3>
+    <p>Whatever audio is in the MP4 — usually a single AAC stereo track. If the MP4 has multiple audio tracks, we take the first one. Subtitles, video frames, and metadata are dropped. The result is a clean MP3 at the bitrate you chose.</p>
+
+    <h3>What about MOV, WebM, and MKV?</h3>
+    <p>The same tool handles them. iPhone .mov files, screen recordings as .webm, and .mkv from desktop tools all work — just drop them in the same dropzone.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is this MP4 to MP3 converter free?</summary><p>Yes. No signup, no daily limit, no watermark.</p></details>
+    <details><summary>Does my MP4 get uploaded to a server?</summary><p>No. Conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
+    <details><summary>Can I convert multiple files at once?</summary><p>Yes. Drop several MP4s and you'll get them all back as a zip of MP3s.</p></details>
+    <details><summary>What's the maximum file size?</summary><p>Around 500 MB on a typical laptop. Some larger files work but past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>Why does the first conversion take a moment?</summary><p>We lazy-load the codec (about 3 MB) on first use. After that it's cached and conversions start instantly.</p></details>
+    <details><summary>Can I pick the MP3 bitrate?</summary><p>Yes — 128, 192, 256, or 320 kbps. We default to 192, which sounds great and keeps files small.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/pages/m4a-to-mp3.html"><h3>M4A → MP3</h3><p>For Voice Memos and Apple-recorded audio.</p></a>
+      <a class="card" href="/pages/mov-to-mp3.html"><h3>MOV → MP3</h3><p>QuickTime and iPhone .mov to MP3.</p></a>
+      <a class="card" href="/pages/extract-audio.html"><h3>Extract Audio</h3><p>Any video format → any audio format.</p></a>
+      <a class="card" href="/pages/audio-cutter.html"><h3>Audio Cutter</h3><p>Trim the extracted MP3 to just the part you want.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.m4v','.avi'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

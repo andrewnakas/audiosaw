@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AudioSaw — convert, cut and clean audio in your browser</title>
+<meta name="description" content="Free audio converter that runs in your browser. Convert MP3, WAV, M4A, FLAC, OGG, AAC, MP4 audio. Cut, join, normalize, and compress audio without uploading. Nothing leaves your device.">
+<meta name="keywords" content="audio converter, mp3 converter, m4a to mp3, wav to mp3, flac to mp3, mp4 to mp3, audio cutter online, audio joiner, no upload audio converter, browser audio converter, free audio tools">
+<meta name="robots" content="index,follow">
+<meta name="author" content="AudioSaw">
+<link rel="canonical" href="https://audiosaw.com/">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="AudioSaw — convert, cut and clean audio in your browser">
+<meta property="og:description" content="Drop an audio or video file. Convert it, cut it, join it, normalize it. Nothing uploads.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta property="og:site_name" content="AudioSaw">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AudioSaw — convert, cut and clean audio in your browser">
+<meta name="twitter:description" content="Drop an audio or video file. Convert, cut, join, normalize. Nothing uploads.">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AudioSaw",
+  "url": "https://audiosaw.com/",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any (Browser)",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "featureList": "Convert MP3 WAV M4A FLAC OGG AAC; extract audio from MP4 and MOV; cut, trim, join, normalize, compress audio; runs entirely in browser, files never uploaded"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},
+    {"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV and WebM. Both directions for the common pairs."}},
+    {"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},
+    {"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},
+    {"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}
+  ]
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date());
+gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <p class="eyebrow">free, runs in your browser, nothing uploads</p>
+    <h1>Convert an <span class="ital">audio</span> file. Without uploading it anywhere.</h1>
+    <p class="lead">Drop an MP3, WAV, M4A, FLAC, MP4 — whatever you have. We convert, cut, or clean it right here in the tab. It never touches a server. Your unreleased track stays yours.</p>
+    <div class="badges">
+      <span class="badge hot">no upload</span>
+      <span class="badge">mp3, wav, m4a, flac, ogg, aac</span>
+      <span class="badge">batch convert</span>
+      <span class="badge">cut · join · normalize</span>
+    </div>
+  </section>
+
+  <section class="tool-app" id="universalApp">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop an audio or video file</p>
+      <p>We'll auto-detect the format and let you pick what to do with it. Drop multiple files for batch conversion.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.wma,.mp4,.mov,.webm,.mkv" multiple>
+    </div>
+
+    <div id="universalControls" style="display:none">
+      <div class="file-list" id="fileList"></div>
+      <div class="controls">
+        <label>Convert to
+          <select id="targetFormat">
+            <option value="mp3" selected>MP3 — universal, smallest</option>
+            <option value="wav">WAV — uncompressed, lossless</option>
+            <option value="m4a">M4A / AAC — Apple-friendly</option>
+            <option value="flac">FLAC — lossless, smaller than WAV</option>
+            <option value="ogg">OGG Vorbis — open, efficient</option>
+          </select>
+        </label>
+        <label>Bitrate / quality
+          <select id="bitrate">
+            <option value="128">128 kbps — voice, podcasts</option>
+            <option value="192" selected>192 kbps — music, balanced</option>
+            <option value="256">256 kbps — high quality</option>
+            <option value="320">320 kbps — max</option>
+          </select>
+        </label>
+        <label>Sample rate
+          <select id="sampleRate">
+            <option value="">keep original</option>
+            <option value="44100">44.1 kHz — CD</option>
+            <option value="48000">48 kHz — video / streaming</option>
+            <option value="22050">22.05 kHz — voice memo</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn">Convert</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section>
+    <h2><span class="num">01.</span>Pick a focused tool</h2>
+    <div class="card-grid">
+      <a class="card" href="/pages/mp4-to-mp3.html">
+        <h3>MP4 → MP3</h3>
+        <p>Pull the audio out of a video. Phone recordings, lectures, podcasts you saved as MP4.</p>
+      </a>
+      <a class="card" href="/pages/m4a-to-mp3.html">
+        <h3>M4A → MP3</h3>
+        <p>iPhone Voice Memos and Apple-recorded clips into something every player handles.</p>
+      </a>
+      <a class="card" href="/pages/wav-to-mp3.html">
+        <h3>WAV → MP3</h3>
+        <p>Master bounces and DAW exports compressed for sharing, with bitrate you choose.</p>
+      </a>
+      <a class="card" href="/pages/mp3-to-wav.html">
+        <h3>MP3 → WAV</h3>
+        <p>Decompress back to uncompressed PCM for editing, sampling, or DAW import.</p>
+      </a>
+      <a class="card" href="/pages/flac-to-mp3.html">
+        <h3>FLAC → MP3</h3>
+        <p>Archive-quality FLAC down to portable MP3. Keep the original, generate a copy.</p>
+      </a>
+      <a class="card" href="/pages/mov-to-mp3.html">
+        <h3>MOV → MP3</h3>
+        <p>QuickTime and iPhone .mov files stripped to clean audio. Same tool, different muxer.</p>
+      </a>
+      <a class="card" href="/pages/audio-cutter.html">
+        <h3>Audio Cutter</h3>
+        <p>Trim the silence, grab a clip, set a ringtone. Visual waveform, drag the handles.</p>
+      </a>
+      <a class="card" href="/pages/audio-joiner.html">
+        <h3>Audio Joiner</h3>
+        <p>Stitch multiple clips into one file. Reorder by drag. Crossfade if you want.</p>
+      </a>
+      <a class="card" href="/pages/extract-audio.html">
+        <h3>Extract Audio</h3>
+        <p>Any video format in, audio out. MP4, MOV, WebM, MKV — pick your output codec.</p>
+      </a>
+      <a class="card" href="/pages/wav-to-flac.html">
+        <h3>WAV → FLAC</h3>
+        <p>Lossless compression for archiving recordings. Same audio, smaller files.</p>
+      </a>
+      <a class="card" href="/pages/mp3-to-m4a.html">
+        <h3>MP3 → M4A</h3>
+        <p>Apple-friendly AAC format for iTunes and iPhone workflows.</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02.</span>Why this site</h2>
+    <p style="color:var(--ink-soft);max-width:62ch">Most "online audio converter" sites want you to upload a file you wrote, or recorded, or paid for, to a server in someone else's country, wait in a queue, and then trust them to delete it. That's silly. Your browser can already decode and encode audio. We wrap Web Audio and a slim FFmpeg-WebAssembly build with a clean drop target, and that's the whole site.</p>
+
+    <div class="features">
+      <div><h3>Local</h3><p>Your audio stays in the tab. Open the page, kill your wifi, the tools still work. Try it.</p></div>
+      <div><h3>Nothing to install</h3><p>No download, no signup, no daily quota. You're already where you need to be.</p></div>
+      <div><h3>Real controls</h3><p>Bitrate, sample rate, channels, LUFS target — actual values you can pick, not a "Pro" wall.</p></div>
+      <div><h3>Batch is normal</h3><p>Drop 40 voice memos, get 40 MP3s back as a zip. Not a feature we ration.</p></div>
+    </div>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2><span class="num">03.</span>FAQ</h2>
+    <details><summary>Does my audio actually stay on my device?</summary><p>Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site.</p></details>
+    <details><summary>Why does my browser need a moment to "warm up" the first time?</summary><p>For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all.</p></details>
+    <details><summary>Which formats can I convert between?</summary><p>MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions.</p></details>
+    <details><summary>What about DRM-protected files like Apple Music or Spotify?</summary><p>Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version.</p></details>
+    <details><summary>How big can the file be?</summary><p>Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>Are you keeping any data?</summary><p>We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it.</p></details>
+    <details><summary>Why is this free?</summary><p>No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier.</p></details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/universal-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

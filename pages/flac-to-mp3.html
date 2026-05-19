@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAC to MP3 Converter — runs in your browser | AudioSaw</title>
+<meta name="description" content="Convert FLAC to MP3 in your browser. Pick bitrate, keep your lossless original. No upload, no signup, batch supported.">
+<meta name="keywords" content="flac to mp3, convert flac to mp3, flac mp3 converter, lossless to mp3, free flac converter">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/flac-to-mp3.html">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="FLAC to MP3 Converter — runs in your browser">
+<meta property="og:description" content="Convert FLAC to MP3 in your browser. Pick bitrate, keep your lossless original. No upload, no signup, batch supported.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/pages/flac-to-mp3.html">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FLAC to MP3 Converter",
+  "url": "https://audiosaw.com/pages/flac-to-mp3.html",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>FLAC to <span class="ital">MP3</span></h1>
+    <p>Drop a FLAC. We decode it locally and encode an MP3 at the bitrate you pick. The lossless original stays untouched on your device.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your FLAC here</p>
+      <p>or click to pick a file.</p>
+      <input type="file" id="fileInput" accept="audio/*,.flac" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for MP3, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+
+    <h3>Why convert FLAC files</h3>
+    <p>FLAC files are great for some workflows and frustrating for others. MP3 fixes the common compatibility headaches without losing what matters about your audio.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is the converter free?</summary><p>Yes — no signup, no daily limit, no watermark.</p></details>
+    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
+    <details><summary>Can I convert multiple files?</summary><p>Yes, drop several at once and you'll get a zip back.</p></details>
+    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/pages/mp4-to-mp3.html"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
+      <a class="card" href="/pages/audio-cutter.html"><h3>Audio Cutter</h3><p>Trim the converted file.</p></a>
+      <a class="card" href="/pages/audio-joiner.html"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
+      <a class="card" href="/pages/extract-audio.html"><h3>Extract Audio</h3><p>Any video → any audio format.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.flac'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

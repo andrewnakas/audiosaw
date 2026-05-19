@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Cutter — trim MP3, WAV, M4A in your browser | AudioSaw</title>
+<meta name="description" content="Free audio cutter. Drop a file, drag the start and end handles on the waveform, click cut. Exports MP3 or WAV. No upload — your audio stays on your device.">
+<meta name="keywords" content="audio cutter, mp3 cutter, audio trimmer online, cut mp3, trim audio, audio cutter no upload, ringtone cutter, audio editor browser">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/audio-cutter.html">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio Cutter — trim audio in your browser">
+<meta property="og:description" content="Drag handles on a waveform, cut out the part you want. Local-only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/pages/audio-cutter.html">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Cutter","url":"https://audiosaw.com/pages/audio-cutter.html","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Cutter</span></h1>
+    <p>Drop an audio file. Drag the green handles on the waveform to pick start and end. Click cut, get the clip. Pure browser, nothing uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC, or audio from a video file.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*">
+    </div>
+
+    <div id="editor" style="display:none">
+      <div id="waveformWrap" style="position:relative;margin:24px 0 6px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;overflow:hidden;height:140px">
+        <canvas id="waveform" style="display:block;width:100%;height:140px"></canvas>
+        <div id="rangeOverlay" style="position:absolute;top:0;bottom:0;background:rgba(194,65,12,0.12);border-left:2px solid var(--amber);border-right:2px solid var(--amber);pointer-events:none"></div>
+        <div id="handleStart" class="cut-handle" style="left:0%"></div>
+        <div id="handleEnd"   class="cut-handle" style="left:100%"></div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:0.84rem;color:var(--ink-soft);margin:6px 0 18px">
+        <span>start <strong id="startTime" style="color:var(--ink)">0:00.00</strong></span>
+        <span>end <strong id="endTime" style="color:var(--ink)">0:00.00</strong></span>
+        <span>length <strong id="rangeLen" style="color:var(--amber)">0:00.00</strong></span>
+        <button class="btn btn-small btn-secondary" id="playBtn" type="button">▶ play selection</button>
+      </div>
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="cutBtn">Cut and download</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop your audio file on the dropzone.</li>
+      <li>Drag the green start handle to where you want the clip to begin.</li>
+      <li>Drag the green end handle to where you want it to stop.</li>
+      <li>Hit <em>play selection</em> to preview.</li>
+      <li>Click <em>cut and download</em>. The clip downloads as MP3 or WAV.</li>
+    </ol>
+    <p>Need a ringtone? Set a length around 30 seconds and pick MP3 (Android compatible).</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Does my audio get uploaded?</summary><p>No. The cutter runs entirely in your browser tab.</p></details>
+    <details><summary>What formats can I cut?</summary><p>Anything your browser can decode — MP3, WAV, M4A, FLAC, OGG, AAC, and audio inside MP4/MOV/WebM video.</p></details>
+    <details><summary>Can I cut a very long file?</summary><p>Up to roughly 500 MB on a typical laptop, after which browser memory gets tight.</p></details>
+    <details><summary>Does it re-encode the whole file or just the slice?</summary><p>Just the slice. We decode the full file (which takes a moment), then encode only the selected range.</p></details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/audio-cutter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

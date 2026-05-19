@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy | AudioSaw</title>
+<meta name="description" content="AudioSaw's privacy policy. The audio files you convert stay in your browser tab. They don't upload anywhere.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/privacy.html">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/css/style.css">
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro"><h1>Privacy</h1><p>Last updated: 2026</p></section>
+  <section class="content-section">
+    <h2><span class="num">01.</span>The short version</h2>
+    <p>Your audio files stay on your computer. Every tool here runs in your browser tab — no upload, no server-side processing, nothing. If you don't believe me, load the page, switch to airplane mode, and try a file. Still works.</p>
+
+    <h2><span class="num">02.</span>What does get collected</h2>
+    <ul>
+      <li>Normal web-server logs. The host (Cloudflare Pages) records request data — IP, user-agent, which URL you hit — the same as basically every site. Used for outages and abuse, kept briefly.</li>
+      <li>Ad cookies if you opt in. Google AdSense sets cookies to serve relevant ads. Pick "essential only" in the consent banner and AdSense switches to non-personalized.</li>
+      <li>Google Analytics 4 — aggregated traffic counts (page views, country, browser). Only fires after you accept analytics cookies. No audio data, no personal identifiers.</li>
+      <li>One localStorage key, <code>fex_consent_v1</code>, which stores whether you accepted cookies. Stays on your device.</li>
+    </ul>
+
+    <h2><span class="num">03.</span>What does NOT get collected</h2>
+    <ul>
+      <li>The audio files you convert, cut, or join. We don't have them. They never leave your browser tab.</li>
+      <li>The names of files you process, the lengths, the bitrates — none of it.</li>
+      <li>Account info. There are no accounts to make.</li>
+    </ul>
+
+    <h2><span class="num">04.</span>Third parties</h2>
+    <ul>
+      <li>Google AdSense (display ads). <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
+      <li>Google Analytics 4 — aggregated, anonymized traffic counts. Only fires after consent. <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
+      <li>Cloudflare Pages (hosting and CDN).</li>
+      <li>jsDelivr / unpkg CDN — JavaScript libraries (lamejs, ffmpeg.wasm) load from these public CDNs on first use, then your browser caches them. The CDNs see your IP at load time; they don't see your audio.</li>
+    </ul>
+
+    <h2><span class="num">05.</span>Your options</h2>
+    <p>Clear cookies any time from your browser settings. Or block JavaScript — the tools won't function, but you can still read these pages.</p>
+
+    <h2><span class="num">06.</span>Questions</h2>
+    <p>See <a href="/pages/contact.html">contact</a>.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+<script src="/js/consent.js"></script>
+</body>
+</html>

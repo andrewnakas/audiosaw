@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Joiner — merge MP3, WAV, M4A in your browser | AudioSaw</title>
+<meta name="description" content="Free audio joiner. Drop multiple clips, drag to reorder, click join. Exports as MP3 or WAV. No upload — files stay on your device.">
+<meta name="keywords" content="audio joiner, merge mp3, combine audio files, mp3 merger, join audio online, audio combiner no upload, podcast joiner">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/audio-joiner.html">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio Joiner — merge audio in your browser">
+<meta property="og:description" content="Stitch multiple clips into one file. Drag to reorder. Local-only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/pages/audio-joiner.html">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Joiner","url":"https://audiosaw.com/pages/audio-joiner.html","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Joiner</span></h1>
+    <p>Drop clips. Drag to reorder. Optional crossfade between them. Get one combined file as MP3 or WAV. The audio never uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop clips here</p>
+      <p>Add MP3, WAV, M4A, FLAC, OGG, AAC. Drop more later to append.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <ol class="joiner-list" id="clipList"></ol>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+        <label>Crossfade (sec)
+          <select id="crossfade">
+            <option value="0" selected>none</option>
+            <option value="0.5">0.5</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="joinBtn">Join and download</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>We decode every clip into the same sample rate, then concatenate the PCM samples (with an optional linear crossfade at each boundary), and finally encode the result as MP3 or WAV. The whole thing runs in your tab.</p>
+    <p>Clips with different sample rates are resampled to the highest one in the set, so you don't get pitch shifts. Channel counts are normalized to stereo if any input is stereo.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Are my clips uploaded?</summary><p>No. The joiner runs entirely in your browser.</p></details>
+    <details><summary>How many clips can I join?</summary><p>Practically, around 20–30 clips of a few minutes each. The limit is browser memory, not the tool.</p></details>
+    <details><summary>Can I add fades between clips?</summary><p>Yes — pick a crossfade length in the controls.</p></details>
+    <details><summary>Mixed formats?</summary><p>Fine. MP3 + WAV + M4A in one join is supported.</p></details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/audio-joiner.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

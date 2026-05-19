@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | AudioSaw</title>
+<meta name="description" content="AudioSaw is a browser-based audio converter and editor. Here's what it is, how it works, and why it exists.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pages/about.html">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/css/style.css">
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
+      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
+      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
+      <a href="/pages/audio-cutter.html">cut</a>
+      <a href="/pages/audio-joiner.html">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro"><h1>About <span class="ital">AudioSaw</span></h1></section>
+  <section class="content-section">
+    <p>AudioSaw is a browser-based audio toolkit for musicians, podcasters, and anyone with a folder of voice memos. Convert formats, cut clips, join takes, normalize loudness — all without uploading your audio to anyone else's server.</p>
+
+    <h2><span class="num">01.</span>How it works</h2>
+    <p>The whole site is static. HTML, CSS, and JavaScript, no server doing anything. When you drop a file on the page, it goes into your tab's memory and gets handed to:</p>
+    <ul>
+      <li>The <strong>Web Audio API</strong>, which is what your browser already uses to play audio. It decodes MP3, WAV, M4A, FLAC, OGG, AAC, and the audio tracks of MP4, MOV, WebM — natively, no library needed.</li>
+      <li><a href="https://github.com/zhuker/lamejs" rel="noopener" target="_blank">lamejs</a>, a pure-JavaScript port of the LAME MP3 encoder. Used for MP3 output.</li>
+      <li><a href="https://ffmpegwasm.netlify.app/" rel="noopener" target="_blank">ffmpeg.wasm</a>, a slim WebAssembly build of FFmpeg. Lazy-loaded only when you need formats Web Audio can't write directly (M4A, AAC, FLAC, OGG, OPUS) or audio extracted from video.</li>
+    </ul>
+    <p>If you want to test the "nothing uploads" claim: load this page, turn off your wifi, then try any tool. They all keep working.</p>
+
+    <h2><span class="num">02.</span>Why bother</h2>
+    <p>Search "audio converter online" and you'll find a dozen sites that want you to upload the file, wait, then download the result. For an unreleased track or a private voice memo, that's a bad deal. AudioSaw exists because the browser can already do the work directly. Drop, convert, done.</p>
+    <p>The hosting bill is basically zero (it's static files on a CDN), so an ad slot or two covers it. There's no account, no upsell, no email field anywhere. No Pro tier. No file-size paywall. No daily quota.</p>
+
+    <h2><span class="num">03.</span>What it's built on</h2>
+    <ul>
+      <li>Web Audio API (browser-native)</li>
+      <li>lamejs — MIT</li>
+      <li>ffmpeg.wasm — LGPL (the WebAssembly build follows the upstream FFmpeg LGPL license)</li>
+    </ul>
+    <p>AudioSaw is not affiliated with the FFmpeg project. We just ship a build of their open-source library.</p>
+
+    <h2><span class="num">04.</span>What it won't do</h2>
+    <ul>
+      <li>Convert DRM-protected files (Apple Music .m4p, Spotify downloads). Those are encrypted; we can't decrypt them, and we wouldn't try.</li>
+      <li>Process files larger than your browser's memory budget — typically around 500 MB on a laptop, less on a phone.</li>
+      <li>Edit beyond what's exposed in the UI. For multitrack editing or VST plugins, use a DAW.</li>
+    </ul>
+
+    <p>If it saved you ten minutes, bookmark it. Tell the friend whose phone is full of voice memos.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+  </div>
+</footer>
+<script src="/js/consent.js"></script>
+</body>
+</html>

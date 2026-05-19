@@ -1,0 +1,26 @@
+# Cloudflare Pages redirects / rewrites
+# Docs: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Pretty URLs (rewrite, status 200 = serve without redirect)
+/mp4-to-mp3       /pages/mp4-to-mp3.html       200
+/m4a-to-mp3       /pages/m4a-to-mp3.html       200
+/wav-to-mp3       /pages/wav-to-mp3.html       200
+/mp3-to-wav       /pages/mp3-to-wav.html       200
+/flac-to-mp3      /pages/flac-to-mp3.html      200
+/mov-to-mp3       /pages/mov-to-mp3.html       200
+/ogg-to-mp3       /pages/ogg-to-mp3.html       200
+/aac-to-mp3       /pages/aac-to-mp3.html       200
+/wav-to-flac      /pages/wav-to-flac.html      200
+/mp3-to-m4a       /pages/mp3-to-m4a.html       200
+/extract-audio    /pages/extract-audio.html    200
+/audio-cutter     /pages/audio-cutter.html     200
+/audio-joiner     /pages/audio-joiner.html     200
+
+# Static
+/about            /pages/about.html            200
+/privacy          /pages/privacy.html          200
+/terms            /pages/terms.html            200
+/contact          /pages/contact.html          200
+
+# 404 fallback
+/*                /404.html                    404
