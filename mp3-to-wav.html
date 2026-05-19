@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MP3 to M4A Converter — runs in your browser | AudioSaw</title>
-<meta name="description" content="Convert MP3 to M4A / AAC in your browser. Apple-friendly format for iTunes, iPhone, and ringtone workflows. No upload.">
-<meta name="keywords" content="mp3 to m4a, convert mp3 to m4a, mp3 to aac, m4a converter, mp3 m4a online">
+<title>MP3 to WAV Converter — runs in your browser | AudioSaw</title>
+<meta name="description" content="Convert MP3 to WAV (uncompressed PCM) in your browser. Decode losslessly, optionally resample, no upload. For DAW import and audio editing.">
+<meta name="keywords" content="mp3 to wav, convert mp3 to wav, mp3 wav converter, mp3 to pcm, decode mp3, mp3 to wave online">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://audiosaw.com/pages/mp3-to-m4a.html">
+<link rel="canonical" href="https://audiosaw.com/mp3-to-wav">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="MP3 to M4A Converter — runs in your browser">
-<meta property="og:description" content="Convert MP3 to M4A / AAC in your browser. Apple-friendly format for iTunes, iPhone, and ringtone workflows. No upload.">
+<meta property="og:title" content="MP3 to WAV Converter — runs in your browser">
+<meta property="og:description" content="Convert MP3 to WAV (uncompressed PCM) in your browser. Decode losslessly, optionally resample, no upload. For DAW import and audio editing.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://audiosaw.com/pages/mp3-to-m4a.html">
+<meta property="og:url" content="https://audiosaw.com/mp3-to-wav">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/css/style.css">
@@ -20,8 +20,8 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "MP3 to M4A Converter",
-  "url": "https://audiosaw.com/pages/mp3-to-m4a.html",
+  "name": "MP3 to WAV Converter",
+  "url": "https://audiosaw.com/mp3-to-wav",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
@@ -45,19 +45,19 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   <div class="container">
     <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
     <nav>
-      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
-      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
-      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
-      <a href="/pages/audio-cutter.html">cut</a>
-      <a href="/pages/audio-joiner.html">join</a>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
     </nav>
   </div>
 </header>
 
 <main class="container">
   <section class="page-intro">
-    <h1>MP3 to <span class="ital">M4A</span></h1>
-    <p>Drop an MP3 and we'll re-encode it as M4A (AAC) — the format iTunes, iPhone, and ringtone tools expect.</p>
+    <h1>MP3 to <span class="ital">WAV</span></h1>
+    <p>Drop an MP3 — we decode it and write out a 16-bit PCM WAV file ready for your DAW or audio editor. No upload.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -75,7 +75,7 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
     <div id="controls" style="display:none">
       <div class="controls">
-        <label>M4A bitrate
+        <label>WAV bitrate
           <select id="bitrate">
             <option value="128">128 kbps</option>
             <option value="192" selected>192 kbps — balanced</option>
@@ -85,7 +85,7 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
         </label>
       </div>
       <div class="actions">
-        <button class="btn" id="convertBtn" disabled>Convert to M4A</button>
+        <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
     </div>
@@ -98,10 +98,10 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
   <section class="content-section">
     <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for M4A, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for WAV, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
 
     <h3>Why convert MP3 files</h3>
-    <p>MP3 files are great for some workflows and frustrating for others. M4A fixes the common compatibility headaches without losing what matters about your audio.</p>
+    <p>MP3 files are great for some workflows and frustrating for others. WAV fixes the common compatibility headaches without losing what matters about your audio.</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
@@ -117,10 +117,10 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   <section>
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
-      <a class="card" href="/pages/mp4-to-mp3.html"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
-      <a class="card" href="/pages/audio-cutter.html"><h3>Audio Cutter</h3><p>Trim the converted file.</p></a>
-      <a class="card" href="/pages/audio-joiner.html"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
-      <a class="card" href="/pages/extract-audio.html"><h3>Extract Audio</h3><p>Any video → any audio format.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the converted file.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract Audio</h3><p>Any video → any audio format.</p></a>
     </div>
   </section>
 </main>
@@ -128,11 +128,11 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 <footer class="site-footer">
   <div class="container">
     <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
-    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
   </div>
 </footer>
 
-<script>window.AS_TOOL = { target: 'm4a', accept: ['.mp3'] };</script>
+<script>window.AS_TOOL = { target: 'wav', accept: ['.mp3'] };</script>
 <script src="/js/common.js"></script>
 <script src="/js/audio-core.js"></script>
 <script src="/js/tool-converter.js"></script>

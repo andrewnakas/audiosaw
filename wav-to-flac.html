@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AAC to MP3 Converter — runs in your browser | AudioSaw</title>
-<meta name="description" content="Convert AAC audio (including .m4a and streaming rips) to MP3. Free, in-browser, no upload.">
-<meta name="keywords" content="aac to mp3, convert aac to mp3, aac mp3 converter, m4a aac to mp3">
+<title>WAV to FLAC Converter — runs in your browser | AudioSaw</title>
+<meta name="description" content="Convert WAV to lossless FLAC in your browser. Smaller file size, identical audio. Great for archiving recordings.">
+<meta name="keywords" content="wav to flac, convert wav to flac, lossless flac, wav flac converter, free flac maker">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://audiosaw.com/pages/aac-to-mp3.html">
+<link rel="canonical" href="https://audiosaw.com/wav-to-flac">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="AAC to MP3 Converter — runs in your browser">
-<meta property="og:description" content="Convert AAC audio (including .m4a and streaming rips) to MP3. Free, in-browser, no upload.">
+<meta property="og:title" content="WAV to FLAC Converter — runs in your browser">
+<meta property="og:description" content="Convert WAV to lossless FLAC in your browser. Smaller file size, identical audio. Great for archiving recordings.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://audiosaw.com/pages/aac-to-mp3.html">
+<meta property="og:url" content="https://audiosaw.com/wav-to-flac">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/css/style.css">
@@ -20,8 +20,8 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "AAC to MP3 Converter",
-  "url": "https://audiosaw.com/pages/aac-to-mp3.html",
+  "name": "WAV to FLAC Converter",
+  "url": "https://audiosaw.com/wav-to-flac",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
@@ -45,19 +45,19 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   <div class="container">
     <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
     <nav>
-      <a href="/pages/mp4-to-mp3.html">mp4 → mp3</a>
-      <a href="/pages/m4a-to-mp3.html">m4a → mp3</a>
-      <a href="/pages/wav-to-mp3.html">wav → mp3</a>
-      <a href="/pages/audio-cutter.html">cut</a>
-      <a href="/pages/audio-joiner.html">join</a>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
     </nav>
   </div>
 </header>
 
 <main class="container">
   <section class="page-intro">
-    <h1>AAC to <span class="ital">MP3</span></h1>
-    <p>Drop an AAC, M4A, or AAC-in-MP4 audio file. We re-encode to MP3 locally. Your audio never uploads.</p>
+    <h1>WAV to <span class="ital">FLAC</span></h1>
+    <p>Drop a WAV (or AIFF). We encode it as lossless FLAC — same audio, smaller files. Perfect for archives of your recordings.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -66,16 +66,16 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
       <span class="icon">＋</span>
-      <p class="big">drop your AAC here</p>
+      <p class="big">drop your WAV here</p>
       <p>or click to pick a file.</p>
-      <input type="file" id="fileInput" accept="audio/*,.aac,.m4a,.mp4" multiple>
+      <input type="file" id="fileInput" accept="audio/*,.wav,.wave,.aif,.aiff" multiple>
     </div>
 
     <div class="file-list" id="fileList"></div>
 
     <div id="controls" style="display:none">
       <div class="controls">
-        <label>MP3 bitrate
+        <label>FLAC bitrate
           <select id="bitrate">
             <option value="128">128 kbps</option>
             <option value="192" selected>192 kbps — balanced</option>
@@ -85,7 +85,7 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
         </label>
       </div>
       <div class="actions">
-        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn" id="convertBtn" disabled>Convert to FLAC</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
     </div>
@@ -98,10 +98,10 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
   <section class="content-section">
     <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for MP3, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for FLAC, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
 
-    <h3>Why convert AAC files</h3>
-    <p>AAC files are great for some workflows and frustrating for others. MP3 fixes the common compatibility headaches without losing what matters about your audio.</p>
+    <h3>Why convert WAV files</h3>
+    <p>WAV files are great for some workflows and frustrating for others. FLAC fixes the common compatibility headaches without losing what matters about your audio.</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
@@ -117,10 +117,10 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   <section>
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
-      <a class="card" href="/pages/mp4-to-mp3.html"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
-      <a class="card" href="/pages/audio-cutter.html"><h3>Audio Cutter</h3><p>Trim the converted file.</p></a>
-      <a class="card" href="/pages/audio-joiner.html"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
-      <a class="card" href="/pages/extract-audio.html"><h3>Extract Audio</h3><p>Any video → any audio format.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the converted file.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract Audio</h3><p>Any video → any audio format.</p></a>
     </div>
   </section>
 </main>
@@ -128,11 +128,11 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 <footer class="site-footer">
   <div class="container">
     <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
-    <nav><a href="/pages/about.html">about</a> &middot; <a href="/pages/privacy.html">privacy</a> &middot; <a href="/pages/terms.html">terms</a> &middot; <a href="/pages/contact.html">contact</a></nav>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
   </div>
 </footer>
 
-<script>window.AS_TOOL = { target: 'mp3', accept: ['.aac','.m4a','.mp4'] };</script>
+<script>window.AS_TOOL = { target: 'flac', accept: ['.wav','.wave','.aif','.aiff'] };</script>
 <script src="/js/common.js"></script>
 <script src="/js/audio-core.js"></script>
 <script src="/js/tool-converter.js"></script>
