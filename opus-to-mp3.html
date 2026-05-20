@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Voice Note to MP3 — free OPUS to MP3 converter, no upload</title>
+<meta name="description" content="Convert WhatsApp voice notes (.opus) to MP3 in your browser. Works for any Opus file — Discord clips, Signal voice messages, Telegram audio. Batch a whole folder, no signup, nothing uploads.">
+<meta name="keywords" content="opus to mp3, whatsapp voice note to mp3, convert whatsapp audio to mp3, opus to mp3 android, opus to mp3 iphone, signal voice note converter, discord opus to mp3, telegram voice note mp3, convert .opus file free, batch opus to mp3">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/opus-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="WhatsApp Voice Note (.opus) to MP3 — free, no upload">
+<meta property="og:description" content="Convert WhatsApp voice notes and any Opus file to MP3 in your browser. Batch supported, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/opus-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WhatsApp Voice Note to MP3 Converter",
+  "url": "https://audiosaw.com/opus-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I convert a WhatsApp voice note to MP3?","acceptedAnswer":{"@type":"Answer","text":"Save the voice note out of WhatsApp (long-press the message, choose Share, save the .opus file to your phone or computer). Then drop the .opus into this page and download the MP3."}},
+  {"@type":"Question","name":"Where are WhatsApp voice notes stored on Android?","acceptedAnswer":{"@type":"Answer","text":"On Android 10 and earlier they live in Internal Storage / WhatsApp / Media / WhatsApp Voice Notes. On Android 11 and newer the path is Android / media / com.whatsapp / WhatsApp / Media / WhatsApp Voice Notes."}},
+  {"@type":"Question","name":"Why does WhatsApp use OPUS and not MP3?","acceptedAnswer":{"@type":"Answer","text":"OPUS is more efficient than MP3 at very low bitrates — better quality for tiny files, which matters when sending voice messages over mobile data. The trade-off is that some music players, older Android devices, and email clients can't open .opus files directly."}},
+  {"@type":"Question","name":"Can I batch convert a folder of WhatsApp voice notes?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select all the .opus files in the file picker, and you get a zip of MP3s back with original filenames preserved."}},
+  {"@type":"Question","name":"Does the file get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. You can disconnect from the internet and the tool still works."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>WhatsApp <span class="ital">voice note</span> to MP3. Or any .opus file.</h1>
+    <p>Drop a .opus file — a WhatsApp voice note, a Signal voice message, a Telegram clip, a Discord recording. We re-encode it to MP3 right here in your browser. Batch a whole folder of WhatsApp voice notes and get a zip of MP3s back. Nothing uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your .opus file here</p>
+      <p>or click to pick. Also accepts .ogg with Opus inside.</p>
+      <input type="file" id="fileInput" accept="audio/*,.opus,.ogg,.oga" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="96">96 kbps — voice, tiny</option>
+            <option value="128" selected>128 kbps — voice / balanced</option>
+            <option value="192">192 kbps — high quality</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why WhatsApp voice notes are .opus, not .mp3</h2>
+    <p>WhatsApp uses the Opus codec because at the bitrates used for voice messages (12–32 kbps), Opus sounds dramatically better than MP3. That's great for tight mobile data, painful when you want to play the file in iTunes, attach it to a slide deck, or send it to an older device that's never heard of Opus. Re-encoding to MP3 gets you a file every player handles, at a price you'll never hear (the original was already lossy).</p>
+
+    <h2>How to save a WhatsApp voice note before converting</h2>
+    <h3>On Android</h3>
+    <ol>
+      <li>Long-press the voice message, tap the share icon, choose your file manager or Files / Drive.</li>
+      <li>Or pull it straight from disk:
+        <ul>
+          <li><strong>Android 10 and earlier:</strong> <code>Internal Storage / WhatsApp / Media / WhatsApp Voice Notes /</code></li>
+          <li><strong>Android 11+:</strong> <code>Android / media / com.whatsapp / WhatsApp / Media / WhatsApp Voice Notes /</code></li>
+        </ul>
+      </li>
+      <li>Drop the .opus file onto this page in Chrome.</li>
+    </ol>
+    <h3>On iPhone</h3>
+    <ol>
+      <li>Long-press the voice message in WhatsApp, tap <em>Share</em>, then <em>Save to Files</em>.</li>
+      <li>Open this page in Safari and drop the file from Files.</li>
+    </ol>
+    <h3>On desktop (WhatsApp Web)</h3>
+    <ol>
+      <li>Open the chat in your browser, click the three dots on the voice message, choose <em>Download</em>.</li>
+      <li>Drop the downloaded file onto this page.</li>
+    </ol>
+
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Archiving WhatsApp voice notes from a parent or grandparent</strong> — convert to MP3 so they play in any music app, on any device, decades from now.</li>
+      <li><strong>Sending a voice note to someone not on WhatsApp</strong> — email or iMessage the MP3 instead.</li>
+      <li><strong>Importing a voice note into a podcast edit</strong> — many DAWs don't accept Opus directly.</li>
+      <li><strong>Uploading to a transcription tool</strong> — Otter, Notta, and Whisper handle Opus, but MP3 is the safer default and reduces ingestion errors.</li>
+      <li><strong>Signal, Telegram, Discord voice messages</strong> — all use Opus and convert the same way here.</li>
+      <li><strong>Game voice chat recordings</strong> — Discord, Mumble, and TeamSpeak export Opus.</li>
+    </ul>
+
+    <h2>How it works</h2>
+    <p>Your browser decodes Opus natively (it's the codec WebRTC uses for voice calls). We hand the decoded samples to a JavaScript MP3 encoder running in your tab. No upload, no codec install. The whole pipeline runs in your browser.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>How do I convert a WhatsApp voice note to MP3 for free?</summary><p>Save the voice note out of WhatsApp (long-press, share, save to Files), then drop the .opus into this page and download the MP3. No signup, no app install, no upload.</p></details>
+    <details><summary>Where are WhatsApp voice notes stored on Android?</summary><p>On Android 10 and earlier: <code>Internal Storage / WhatsApp / Media / WhatsApp Voice Notes</code>. On Android 11+: <code>Android / media / com.whatsapp / WhatsApp / Media / WhatsApp Voice Notes</code>. Use any file manager to find them.</p></details>
+    <details><summary>Why does WhatsApp use OPUS instead of MP3?</summary><p>Opus is significantly more efficient than MP3 at low bitrates, which matters for voice messages sent over mobile data. The trade-off is compatibility — some older players and devices can't open .opus files.</p></details>
+    <details><summary>Can I convert multiple voice notes at once?</summary><p>Yes. Select all the .opus files in the file picker, or drag a folder onto the drop target. You'll get a zip of MP3s back, original filenames preserved.</p></details>
+    <details><summary>What bitrate should I pick?</summary><p>For voice notes, 96 or 128 kbps is plenty. Going higher just makes the file larger without adding quality the source can give you — the original Opus was 16–32 kbps.</p></details>
+    <details><summary>Will this work for Signal, Telegram, or Discord voice messages?</summary><p>Yes. They all use the Opus codec — same .opus file format, same conversion.</p></details>
+    <details><summary>Does my file upload anywhere?</summary><p>No. The conversion runs in your browser tab. Open this page, turn off your wifi, and it still works.</p></details>
+    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. WhatsApp voice notes are tiny so this is never a real concern.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/m4a-to-mp3"><h3>Voice Memo → MP3</h3><p>iPhone .m4a voice memos to MP3.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink the MP3 for email or Discord.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch a series of voice notes into one MP3.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Strip dead air from long voice notes.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.opus','.ogg','.oga'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

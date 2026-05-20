@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Silence Remover — trim silence from audio in your browser | AudioSaw</title>
-<meta name="description" content="Free silence remover. Automatically strip silence from the start and end of an audio file. Runs in your browser — no upload.">
-<meta name="keywords" content="silence remover, trim silence from audio, remove silence mp3, strip silence wav, audio silence trimmer, cut silence online">
+<title>Remove Dead Air from a Podcast or Voice Memo — free silence trimmer, no upload</title>
+<meta name="description" content="Auto-trim silence from the start and end of a podcast, voice memo, sermon, lecture or voiceover. Drop a file, get a tighter version back. Free, browser-only, no signup, no upload.">
+<meta name="keywords" content="remove dead air from podcast, auto trim silence from voice memo, silence remover online free, podcast intro outro trim, strip silence from recording, voice memo silence trimmer, remove silence mp3 wav, free silence cutter no upload">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/silence-remover">
 <link rel="icon" href="/favicon.ico">
@@ -17,7 +17,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/css/style.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Silence Remover","url":"https://audiosaw.com/silence-remover","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Podcast Silence Remover","url":"https://audiosaw.com/silence-remover","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I remove dead air from a podcast for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the WAV or MP3 here, leave threshold at -50 dB and padding at 0.1 seconds for typical home-studio recordings, and download the trimmed file. No signup, no upload, no daily quota."}},
+  {"@type":"Question","name":"Can I auto-trim a voice memo before sending it for transcription?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the .m4a, pick a threshold matching your room, and get back a tighter file. Transcription services like Otter and Notta charge by audio length, so trimming dead air saves money."}},
+  {"@type":"Question","name":"Will this remove silence between sentences?","acceptedAnswer":{"@type":"Answer","text":"No, only leading and trailing silence. Cutting pauses between phrases requires destructive editing to avoid clicks and artifacts. For surgical edits, use the Audio Cutter."}},
+  {"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Processing runs in the browser tab. You can disconnect from the internet and the tool still works."}}
+]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -48,8 +56,8 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
 <main class="container">
   <section class="page-intro">
-    <h1>Silence <span class="ital">Remover</span></h1>
-    <p>Drop a file. We find the actual audio and trim the dead air at the start and end automatically. Adjust the threshold if your recording is noisier than usual.</p>
+    <h1>Remove <span class="ital">dead air</span> from a podcast, voice memo, or voiceover.</h1>
+    <p>Drop a recording — podcast cut, sermon, lecture, voice memo, voiceover take. We find the actual audio and trim the silence at the start and end automatically. Threshold and padding are tunable for noisier rooms or tighter cuts. Batch a whole episode folder. Browser-only, no upload.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -121,12 +129,27 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
   <div class="ad-slot ad-slot-mid"></div>
 
+  <section class="content-section">
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Podcast editing</strong> — clip the silence before "Welcome to" and after the final outro tag.</li>
+      <li><strong>Voiceover takes</strong> — trim the dead space before and after the read so you can drop it straight into the timeline.</li>
+      <li><strong>Sermon / lecture / class recording</strong> — strip the 90 seconds of room tone before someone starts speaking.</li>
+      <li><strong>Voice memo cleanup</strong> — iPhone Voice Memos record from the moment you tap; this trims the fumble.</li>
+      <li><strong>Audiobook chapters</strong> — make every chapter start instantly.</li>
+      <li><strong>Auto-trim before transcription</strong> — Otter and Notta charge by audio length. Trimming dead air is free minutes.</li>
+    </ul>
+  </section>
+
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>What format works best?</summary><p>Any common audio format. WAV is most precise; MP3 works fine.</p></details>
-    <details><summary>The tool cut off the first word — what now?</summary><p>Increase the threshold (closer to 0) or use more padding.</p></details>
-    <details><summary>The tool left silence at the start.</summary><p>Lower the threshold (more negative).</p></details>
-    <details><summary>Does my audio upload?</summary><p>No. Processing is in the browser tab only.</p></details>
+    <details><summary>How do I remove dead air from a podcast for free?</summary><p>Drop the WAV or MP3, leave threshold at -50 dB and padding at 0.1 s for typical home-studio recordings, and download the trimmed file. No signup, no upload, no daily quota.</p></details>
+    <details><summary>Can I auto-trim a long voice memo before sending it for transcription?</summary><p>Yes. Drop the .m4a (it works, even though we recommend converting to MP3 first), pick a threshold matching your room (-50 dB is a safe default), and get back a tighter file that costs less to transcribe on Otter / Notta / Whisper.</p></details>
+    <details><summary>Will this remove silence between sentences?</summary><p>No — this trims <em>leading and trailing</em> silence only. Cutting pauses between phrases is destructive editing that needs a different approach to avoid clicks and artifacts. For surgical edits, use our <a href="/audio-cutter">Audio Cutter</a>.</p></details>
+    <details><summary>The tool cut off the first word — what now?</summary><p>Raise the threshold (closer to 0, like -40 dB) or increase the padding to 0.25 s.</p></details>
+    <details><summary>The tool left silence at the start.</summary><p>Lower the threshold (more negative — try -55 or -60 dB). Your noise floor is probably very low.</p></details>
+    <details><summary>What format works best?</summary><p>Any common audio format. WAV gives the cleanest detection; MP3 works fine.</p></details>
+    <details><summary>Does my audio upload?</summary><p>No. Processing is in the browser tab only. Disconnect from wifi and the tool still works.</p></details>
   </section>
 
   <section>

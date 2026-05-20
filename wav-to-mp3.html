@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WAV to MP3 Converter — runs in your browser | AudioSaw</title>
-<meta name="description" content="Convert WAV to MP3 free in your browser. Pick bitrate, batch process, no uploads. Great for DAW exports and master bounces you need to share.">
-<meta name="keywords" content="wav to mp3, convert wav to mp3, wav mp3 converter, wave to mp3, free wav converter, bounce to mp3, daw export to mp3">
+<title>WAV to MP3 320kbps — free DAW bounce converter for Ableton, Logic, Reaper, FL Studio</title>
+<meta name="description" content="Convert WAV master bounces to 320 kbps MP3 for SoundCloud, DistroKid, CD Baby, Bandcamp. Works for Ableton, Logic Pro, Reaper, FL Studio, Pro Tools, Audacity exports. Batch, no upload, no signup.">
+<meta name="keywords" content="wav to mp3, wav to mp3 320kbps, convert wav to mp3 free, wav to mp3 for soundcloud, ableton wav to mp3, logic pro bounce to mp3, reaper render to mp3, fl studio export mp3, master bounce wav to mp3, daw export mp3 high quality, batch wav to mp3">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/wav-to-mp3">
 <link rel="icon" href="/favicon.ico">
@@ -20,12 +20,22 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "WAV to MP3 Converter",
+  "name": "WAV to MP3 320kbps Converter",
   "url": "https://audiosaw.com/wav-to-mp3",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
 }
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I export a 320 kbps MP3 from Reaper, FL Studio, or older Logic Pro?","acceptedAnswer":{"@type":"Answer","text":"Render or bounce to WAV first, then drop the WAV into this tool and pick 320 kbps. None of those DAWs natively export 320 kbps MP3 without third-party plugins or paid versions."}},
+  {"@type":"Question","name":"Is 320 kbps MP3 good enough for SoundCloud or Bandcamp?","acceptedAnswer":{"@type":"Answer","text":"For SoundCloud and Bandcamp, yes — both accept 320 kbps MP3 directly and re-encode it for streaming. For paid distribution to Spotify or Apple Music via DistroKid or CD Baby, those services prefer lossless WAV or FLAC for the master."}},
+  {"@type":"Question","name":"Is 320 kbps MP3 the same as lossless?","acceptedAnswer":{"@type":"Answer","text":"No. MP3 is a lossy format at any bitrate. 320 kbps is the highest fixed-bitrate MP3 and is inaudible from lossless to most listeners on most gear, but it is not bit-perfect."}},
+  {"@type":"Question","name":"Can I convert AIFF to MP3 here too?","acceptedAnswer":{"@type":"Answer","text":"Yes. AIFF works the same way — drop the file in, pick the bitrate, download the MP3."}},
+  {"@type":"Question","name":"Does my master bounce get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The encode runs in your browser tab. You can disconnect from the internet and it still works."}},
+  {"@type":"Question","name":"Can I batch convert a whole album of WAVs?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop all the WAVs at once and you get a zip of MP3s back, with original filenames preserved."}}
+]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -56,8 +66,8 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
 <main class="container">
   <section class="page-intro">
-    <h1>WAV to <span class="ital">MP3</span></h1>
-    <p>Drop a WAV (or several). We compress it to MP3 with the bitrate you choose — fast, lossless decode, clean encode. Your bounce never gets uploaded.</p>
+    <h1>WAV to <span class="ital">MP3</span> — 320 kbps for the bounce that's leaving your DAW.</h1>
+    <p>Drop a WAV master from Ableton, Logic, Reaper, FL Studio, Pro Tools or Audacity. We compress to MP3 at the bitrate you pick — clean LAME encode, full 44.1/48 kHz support, batch a whole album at once. Your unreleased mix never leaves your browser.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -78,9 +88,9 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
         <label>MP3 bitrate
           <select id="bitrate">
             <option value="128">128 kbps</option>
-            <option value="192" selected>192 kbps — balanced</option>
+            <option value="192">192 kbps — balanced</option>
             <option value="256">256 kbps</option>
-            <option value="320">320 kbps — maximum</option>
+            <option value="320" selected>320 kbps — DAW bounce default</option>
           </select>
         </label>
       </div>
@@ -97,21 +107,39 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for MP3, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Converting an Ableton, Logic, or Reaper WAV bounce to MP3 320 kbps</strong> — Ableton Live 10+ exports MP3 directly, but Live 9, Reaper, and older Logic versions don't. Bounce to WAV, drop it here.</li>
+      <li><strong>SoundCloud / DistroKid / CD Baby / Bandcamp upload</strong> — most accept WAV but punish you on file size and upload time. 320 kbps MP3 sounds identical for streaming and uploads in seconds.</li>
+      <li><strong>Demo to a label, A&amp;R, or collaborator</strong> — the WAV master stays on your drive, the MP3 goes in the email.</li>
+      <li><strong>Sharing a podcast WAV bounce</strong> — most hosting platforms re-encode anyway, so saving them the WAV upload time costs you nothing.</li>
+      <li><strong>Batch an album</strong> — drop the whole folder of stems or final masters, get a zip of MP3s back. Original filenames preserved.</li>
+      <li><strong>Convert AIFF too</strong> — Logic Pro's older AIFF bounces work the same way.</li>
+    </ul>
 
-    <h3>Why convert WAV files</h3>
-    <p>WAV files are great for some workflows and frustrating for others. MP3 fixes the common compatibility headaches without losing what matters about your audio.</p>
+    <h2>Which bitrate? Quick answer</h2>
+    <ul>
+      <li><strong>320 kbps</strong> — for anything you're calling a "final" MP3. Streaming services, distribution, demos, the version you put in your portfolio.</li>
+      <li><strong>256 kbps</strong> — old iTunes default. Indistinguishable from 320 to almost everyone.</li>
+      <li><strong>192 kbps</strong> — good casual listening, ~40% smaller files. Reasonable for a working reference mix you send to bandmates.</li>
+      <li><strong>128 kbps</strong> — only for voice, podcast roughcuts, or attachments where size matters more than fidelity.</li>
+    </ul>
+
+    <h2>How it works</h2>
+    <p>Your browser decodes WAV/AIFF natively. We pipe the raw PCM samples into a JavaScript port of LAME (the reference open-source MP3 encoder) running in your tab. No upload, no codec install. Sample rate is preserved (44.1 or 48 kHz typical for music; we don't resample unless you ask).</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is the converter free?</summary><p>Yes — no signup, no daily limit, no watermark.</p></details>
-    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
-    <details><summary>Can I convert multiple files?</summary><p>Yes, drop several at once and you'll get a zip back.</p></details>
-    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>How do I export a 320 kbps MP3 from Reaper / FL Studio / older Logic?</summary><p>Render or bounce to WAV first, then drop that WAV here and pick 320 kbps. None of those DAWs natively export 320 kbps MP3 without third-party plugins or paid versions.</p></details>
+    <details><summary>Is 320 kbps MP3 good enough for SoundCloud / Spotify / DistroKid?</summary><p>For SoundCloud, yes — they re-encode anyway, and they accept 320 kbps MP3 directly. For Spotify and Apple Music via DistroKid or CD Baby, the distributors actually want lossless (WAV or FLAC) for the final master. Use MP3 for everything that isn't a paid distribution upload.</p></details>
+    <details><summary>Is 320 kbps the same as lossless?</summary><p>No. MP3 is a lossy format at any bitrate. 320 kbps is the highest fixed-bitrate MP3 and the difference vs. lossless is inaudible to most listeners on most gear, but it isn't bit-perfect. For archival or remastering, keep the WAV.</p></details>
+    <details><summary>Can I convert AIFF too?</summary><p>Yes. Same tool, same workflow — Logic Pro's classic AIFF bounces work identically to WAV.</p></details>
+    <details><summary>Does my master bounce get uploaded?</summary><p>No. The encode runs in your browser tab. You can disconnect from the internet and it still works. Your unreleased mix stays on your drive.</p></details>
+    <details><summary>Can I batch a whole album?</summary><p>Yes. Drop all the WAVs at once and you'll get a zip of MP3s back with original filenames preserved.</p></details>
+    <details><summary>How big can the WAV be?</summary><p>Around 500 MB per file on a typical laptop. A 12-track album of 5-minute stereo WAVs at 44.1 kHz is well within budget.</p></details>
   </section>
 
   <section>

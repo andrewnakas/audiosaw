@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ringtone Maker — make iPhone .m4r and Android .mp3 ringtones | AudioSaw</title>
-<meta name="description" content="Free ringtone maker. Drop a song, trim a 30-second clip on the waveform, download as iPhone .m4r or Android .mp3. Runs in your browser — no upload.">
-<meta name="keywords" content="ringtone maker, mp3 ringtone, iphone ringtone, m4r ringtone, free ringtone maker, ringtone cutter, custom ringtone, android ringtone">
+<title>Free Ringtone Maker — make a 30-second iPhone (.m4r) or Android (.mp3) ringtone from any song</title>
+<meta name="description" content="Free ringtone maker. Turn any MP3, M4A, WAV or song clip into a 30-second iPhone .m4r or Android .mp3 ringtone — no iTunes, no GarageBand, no upload. Runs in your browser.">
+<meta name="keywords" content="ringtone maker, make iphone ringtone from mp3, free m4r ringtone maker, 30 second ringtone from song, custom ringtone without itunes, ringtone maker without garageband, mp3 to m4r online, android ringtone from mp3, text tone iphone, free ringtone cutter">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/ringtone-maker">
 <link rel="icon" href="/favicon.ico">
@@ -21,10 +21,14 @@
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I make an iPhone ringtone without iTunes?","acceptedAnswer":{"@type":"Answer","text":"Use this page to make the .m4r file, then on Mac open Finder, click your iPhone, drag the .m4r into the device window. iTunes is only required on Windows, and even then only as a transfer step. The ringtone itself is made entirely in your browser."}},
+  {"@type":"Question","name":"How do I make a ringtone from an iPhone voice memo?","acceptedAnswer":{"@type":"Answer","text":"Drop the .m4a voice memo file, drag the handles to pick the part you want (up to 30 seconds), pick iPhone, and download the .m4r."}},
+  {"@type":"Question","name":"Why is the iPhone ringtone limit 30 seconds?","acceptedAnswer":{"@type":"Answer","text":"iOS will not import a ringtone file longer than 30 seconds. Android allows longer files but 30 seconds is a sensible ceiling. If you select more than 30 seconds, we trim to 30 automatically and show a warning."}},
   {"@type":"Question","name":"How do I install a custom ringtone on iPhone?","acceptedAnswer":{"@type":"Answer","text":"Download the .m4r, transfer it to your iPhone via Finder (Mac) or iTunes (Windows): open the device, find Tones, drag the .m4r in. The ringtone shows up under Settings → Sounds & Haptics → Ringtone."}},
-  {"@type":"Question","name":"How do I set a ringtone on Android?","acceptedAnswer":{"@type":"Answer","text":"Transfer the MP3 to your phone (USB, Drive, AirDrop equivalent). Open the Sound settings → Phone ringtone → Add ringtone, and pick the file."}},
-  {"@type":"Question","name":"Why a 30-second limit?","acceptedAnswer":{"@type":"Answer","text":"That's the iOS ringtone limit. Anything longer won't import. Android is more forgiving but 30 s is a sensible default."}},
-  {"@type":"Question","name":"Does my song upload?","acceptedAnswer":{"@type":"Answer","text":"No. We never see your file. The conversion runs in your browser tab."}}
+  {"@type":"Question","name":"How do I set a ringtone on Android?","acceptedAnswer":{"@type":"Answer","text":"Transfer the MP3 to your phone (USB, Drive, email-to-self). Open the Sound settings, choose Phone ringtone, tap Add ringtone, and pick the file."}},
+  {"@type":"Question","name":"What is the difference between .m4r and .m4a?","acceptedAnswer":{"@type":"Answer","text":"They have identical contents — both are AAC inside an MP4 container. The .m4r extension is what tells iOS to treat the file as a ringtone rather than as music."}},
+  {"@type":"Question","name":"Can I make a text tone, alert, or alarm sound for iPhone?","acceptedAnswer":{"@type":"Answer","text":"Yes. The same .m4r file works. After import, Settings → Sounds & Haptics lets you assign it as a text tone, alarm, calendar alert, or any system sound."}},
+  {"@type":"Question","name":"Does my song upload?","acceptedAnswer":{"@type":"Answer","text":"No. The tool runs entirely in your browser tab. The file never touches a server."}}
 ]}
 </script>
 <script>
@@ -56,8 +60,8 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
 <main class="container">
   <section class="page-intro">
-    <h1>Ringtone <span class="ital">Maker</span></h1>
-    <p>Drop a song, drag the green handles to pick the part you want, choose iPhone or Android. We trim to 30 seconds and encode in the right format. Pure browser — no upload, no signup.</p>
+    <h1>Make a <span class="ital">30-second ringtone</span> from any song. No iTunes, no GarageBand.</h1>
+    <p>Drop an MP3, M4A, WAV or song clip. Drag the amber handles to grab the 30-second part you want. Pick iPhone (.m4r) or Android (.mp3). We encode it locally — your song never leaves your browser. No signup, no watermark, no 30-second-per-day cap.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -139,12 +143,26 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
   <div class="ad-slot ad-slot-mid"></div>
 
+  <section class="content-section">
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Custom iPhone ringtone without iTunes or GarageBand</strong> — most guides walk you through 14 steps in two apps. This is one drop, one drag, one download.</li>
+      <li><strong>Make a ringtone from your own MP3</strong> — drop the song file you already have. We don't ask where it came from.</li>
+      <li><strong>Turn a voice memo into a text tone</strong> — drop an M4A from your iPhone Voice Memos, trim to a couple of seconds, export as .m4r, set as text tone in Settings.</li>
+      <li><strong>Make an Android ringtone from any song</strong> — same flow, pick Android, get a standard .mp3 you can drop into your Ringtones folder.</li>
+      <li><strong>30-second clip for a notification or alarm</strong> — same file works as an iOS alert sound, alarm tone, or text tone after import.</li>
+    </ul>
+  </section>
+
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Why 30 seconds max?</summary><p>iOS ringtones must be under 30 seconds, or they won't import. Android allows longer but 30 s is a sensible ceiling.</p></details>
-    <details><summary>What's the difference between .m4r and .m4a?</summary><p>Identical contents — both are AAC in an MP4 container. The .m4r extension tells iOS to treat the file as a ringtone instead of music.</p></details>
-    <details><summary>Can I make a text tone or alert?</summary><p>Yes — same file. iOS lets you assign any .m4r as a text tone or alert sound after import.</p></details>
-    <details><summary>Does my song upload?</summary><p>No. Everything happens in the browser tab.</p></details>
+    <details><summary>How do I make an iPhone ringtone without iTunes?</summary><p>Use this page to make the .m4r, then on a Mac open Finder → click your iPhone → drag the .m4r into the device window. iTunes is only required on Windows, and even then only as a transfer step — the ringtone itself is made here, in your browser.</p></details>
+    <details><summary>Can I make a ringtone from an iPhone voice memo?</summary><p>Yes. Voice memos are .m4a — drop one in, trim, export. Great for turning a kid's giggle or your dog's bark into a text tone.</p></details>
+    <details><summary>Why is the limit 30 seconds?</summary><p>iOS rejects ringtone files longer than 30 seconds at import. Android allows longer ringtones, but 30 s is the polite ceiling. If you select more, we'll trim to 30 s automatically and show a warning.</p></details>
+    <details><summary>What's the difference between .m4r and .m4a?</summary><p>Identical contents — both are AAC inside an MP4 container. The .m4r extension is what tells iOS "this is a ringtone," so it shows up under Sounds &amp; Haptics instead of in Music.</p></details>
+    <details><summary>Can I make a text tone, alert, or alarm?</summary><p>Yes — same file. After importing the .m4r to your iPhone, Settings → Sounds &amp; Haptics lets you assign it as a text tone, alarm, calendar alert, or any other system sound.</p></details>
+    <details><summary>Will this work on an iPhone-only workflow (no computer)?</summary><p>Apple doesn't let you install ringtone files directly from Safari — you need a computer for the transfer step. The .m4r itself is made here, on your phone or laptop, and you airdrop it across.</p></details>
+    <details><summary>Does my song upload?</summary><p>No. Everything happens in the browser tab. Open this page, turn off your wifi, and the tool still works. That's the test.</p></details>
   </section>
 
   <section>

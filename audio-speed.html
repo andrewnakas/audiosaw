@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Speed Changer — speed up or slow down audio | AudioSaw</title>
-<meta name="description" content="Change audio playback speed in your browser. Speed up a podcast, slow down a track, or pitch-shift for fun. MP3, WAV, M4A supported. No upload.">
-<meta name="keywords" content="audio speed changer, change audio speed, slow down audio, speed up audio, pitch shift, podcast speed, change mp3 speed online">
+<title>Slow Down a Song Without Changing Pitch — free music tempo changer for guitar, piano, bass</title>
+<meta name="description" content="Slow down music to learn a guitar solo, transcribe a piano part, or practice a bass line — pitch stays in key. Speed up podcasts and lectures the same way. MP3, WAV, M4A. No upload.">
+<meta name="keywords" content="slow down song without changing pitch, slow down music to learn guitar, music tempo changer free, transcribe music slow down, audio speed changer, slow down audio online, speed up podcast 1.5x, change mp3 speed pitch preserved, slow down piano music, slow down bass line">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/audio-speed">
 <link rel="icon" href="/favicon.ico">
@@ -17,7 +17,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/css/style.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Speed Changer","url":"https://audiosaw.com/audio-speed","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Speed Changer (Pitch-Preserved)","url":"https://audiosaw.com/audio-speed","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I slow down a song without changing the pitch?","acceptedAnswer":{"@type":"Answer","text":"Drop the song, pick a speed below 1x (0.75x for transcribing, 0.5x for note-by-note dissection), and leave the mode on 'Keep pitch (time-stretch).' The result plays slower but stays in the original key."}},
+  {"@type":"Question","name":"What is the best speed for learning a guitar solo?","acceptedAnswer":{"@type":"Answer","text":"Start at 0.5x to map the notes, move to 0.75x to drill, then 0.9x to play along. Keep pitch preserved so the song stays in your guitar's tuning."}},
+  {"@type":"Question","name":"Will slowing down a song ruin the audio?","acceptedAnswer":{"@type":"Answer","text":"Mild slowdowns (0.6 to 1x) are nearly transparent. Below 0.5x you start hearing time-stretch artifacts on cymbals and reverbs, though guitar and piano stay usable down to 0.3x."}},
+  {"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything happens in your browser tab."}}
+]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -48,8 +56,8 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
 <main class="container">
   <section class="page-intro">
-    <h1>Audio <span class="ital">Speed</span></h1>
-    <p>Speed up a podcast, slow down a song to transcribe it, or pitch a vocal up for a meme. Pick a speed, optionally keep the pitch the same. Browser-only, no upload.</p>
+    <h1>Slow down a <span class="ital">song</span> without changing the pitch. Or speed up a podcast.</h1>
+    <p>Slow down a guitar solo to learn it. Drop a piano piece to half speed and transcribe it by ear. Speed up a 2-hour lecture to 90 minutes. Pitch stays in key (time-stretch) or rides with the speed (tape effect) — your call. Browser-only, never uploads.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -119,10 +127,14 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
     <h3>Common use cases</h3>
     <ul>
-      <li><strong>Speeding up podcasts/lectures:</strong> 1.25–1.5× with pitch preservation.</li>
-      <li><strong>Transcribing a fast talker:</strong> 0.75–0.9× with pitch preservation.</li>
-      <li><strong>Slowing a guitar solo to learn:</strong> 0.5–0.75× pitch <em>preserved</em> to keep the key.</li>
-      <li><strong>Chipmunk / demon voice effects:</strong> 1.5× or 0.5× with pitch <em>shifted</em>.</li>
+      <li><strong>Learning a guitar solo:</strong> 0.5–0.75× with pitch preserved. The key stays the same so you can play along.</li>
+      <li><strong>Transcribing a piano or bass part by ear:</strong> 0.5× pitch preserved reveals notes you can't hear at full tempo.</li>
+      <li><strong>Drum fill breakdown:</strong> 0.6× pitch preserved to map the kick / snare / ghost notes.</li>
+      <li><strong>Slowing down a fast talker for transcription:</strong> 0.75–0.9× pitch preserved.</li>
+      <li><strong>Speeding up podcasts and lectures:</strong> 1.25–1.5× pitch preserved — the standard "podcast player" effect.</li>
+      <li><strong>Speech-language pathology / pronunciation practice:</strong> 0.7–0.85× pitch preserved.</li>
+      <li><strong>Chipmunk / demon voice effects:</strong> 1.5× or 0.5× with pitch <em>shifted</em> (tape effect).</li>
+      <li><strong>Matching a sample to a different key:</strong> pitch-shifted mode at the speed ratio of the semitone change.</li>
     </ul>
   </section>
 
@@ -130,8 +142,11 @@ gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>What's the quality loss?</summary><p>Pitch-preserve mode introduces some "phasiness" at extreme speeds (below 0.5× or above 2×). Within ±50% the result is generally clean.</p></details>
-    <details><summary>Why does pitch-preserve take longer?</summary><p>It runs an STFT-based time-stretch algorithm. The first run also loads the codec (~3 MB).</p></details>
+    <details><summary>How do I slow down a song without changing the pitch?</summary><p>Drop the song, pick a speed below 1× (try 0.75× for transcribing, 0.5× for note-by-note dissection), and leave the mode on "Keep pitch (time-stretch)." The result plays slower but in the original key.</p></details>
+    <details><summary>Best speed for learning a guitar solo?</summary><p>Start at 0.5× to map the notes, then bump up to 0.75× to drill, then 0.9× to play along. Always keep pitch on — your guitar isn't going to retune for each pass.</p></details>
+    <details><summary>Will slowing down a song ruin the sound?</summary><p>Mild slowdowns (0.6–1×) are nearly transparent. Below 0.5× you start hearing the time-stretch artifact ("phasiness") on cymbals and reverbs. For pure-note instruments like guitar and piano it stays usable down to 0.3×.</p></details>
+    <details><summary>What's the quality loss?</summary><p>Pitch-preserve mode introduces some phasiness at extreme speeds (below 0.5× or above 2×). Within ±50% the result is generally clean.</p></details>
+    <details><summary>Why does pitch-preserve take longer than tape mode?</summary><p>It runs an STFT-based time-stretch algorithm. The first run also loads the codec (~3 MB).</p></details>
     <details><summary>Does my audio upload?</summary><p>No. Everything happens in your browser tab.</p></details>
   </section>
 
