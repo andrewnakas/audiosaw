@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prepare audio for transcription — Otter, Notta, Rev, Trint, Descript (free, no upload)</title>
+<meta name="description" content="Convert any audio into the format your transcription service actually wants. Otter wants MP3/M4A under 4 hours. Rev caps WAV at 2 GB. Notta works best with mono 16-bit WAV. Drop your file, pick the service, get a transcription-ready copy. Nothing uploads through us.">
+<meta name="keywords" content="prepare audio for transcription, audio for otter, audio for rev, audio for trint, audio for descript, audio for notta, transcription ready mp3, convert audio for transcription, transcription file format, mp3 for transcription">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-to-text-prep">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Prep audio for transcription — Otter, Notta, Rev, Trint, Descript">
+<meta property="og:description" content="Pick your transcription service. Drop your file. Get back the format it wants.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-to-text-prep">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio for Transcription Converter",
+  "url": "https://audiosaw.com/audio-to-text-prep",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What audio format does Otter.ai accept?","acceptedAnswer":{"@type":"Answer","text":"Otter accepts MP3, M4A, AAC, WMA, WAV, AIFF, OGG, OPUS, and most video formats. The cap is 4 hours per file on paid plans, 30 minutes on free. For best results, upload a clean MP3 at 96-128 kbps mono — fast to upload, easy on quota."}},
+  {"@type":"Question","name":"What format does Rev want?","acceptedAnswer":{"@type":"Answer","text":"Rev accepts MP3, MP4, WAV, M4A, MOV, AAC, and more. The hard limit is 2 GB per file. For their human-transcription product, audio quality matters more than format — clean MP3 at 128 kbps mono is the sweet spot."}},
+  {"@type":"Question","name":"What format does Notta want?","acceptedAnswer":{"@type":"Answer","text":"Notta accepts MP3, M4A, AAC, WAV, AIFF, MOV, MP4, WMA, AVI. Free plan caps at 5 minutes per recording; paid raises that significantly. Mono 16 kHz MP3 is plenty for transcription accuracy and uploads fast."}},
+  {"@type":"Question","name":"What about Descript?","acceptedAnswer":{"@type":"Answer","text":"Descript accepts MP3, WAV, M4A, AAC, AIFF, FLAC, MP4, MOV. It re-encodes everything internally for its editor anyway, so the format mostly affects upload time. Stereo is fine if you have it — Descript uses it for speaker channel separation in some cases."}},
+  {"@type":"Question","name":"Should I send WAV or MP3 to the transcription service?","acceptedAnswer":{"@type":"Answer","text":"MP3 in almost every case. Transcription engines downsample everything to 16 kHz mono internally before running ASR, so the extra fidelity of a WAV is wasted bandwidth and storage. The exceptions: forensic transcription, legal record-keeping, and any service explicitly asking for WAV."}},
+  {"@type":"Question","name":"Does my audio file upload through your site?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser. You then upload the converted file directly to Otter, Rev, Notta, or whoever — never through us."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Prep audio for <span class="ital">transcription</span>. The format the service actually wants.</h1>
+    <p>Otter, Notta, Rev, Trint, Descript — they all accept "audio," but each has a sweet spot. Sending a 600 MB stereo WAV when the engine downsamples to 16 kHz mono internally is just slow uploads and wasted quota. Pick your service below, drop your file, get back a file optimized for that service's pipeline.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your recording</p>
+      <p>MP3, WAV, M4A, MP4, MOV, OPUS — anything. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Transcription service
+          <select id="service">
+            <option value="otter" selected>Otter.ai → MP3 96 kbps mono</option>
+            <option value="notta">Notta → MP3 96 kbps mono</option>
+            <option value="rev">Rev → MP3 128 kbps mono</option>
+            <option value="trint">Trint → MP3 128 kbps mono</option>
+            <option value="descript">Descript → MP3 128 kbps stereo</option>
+            <option value="whisper">OpenAI Whisper API → MP3 64 kbps mono</option>
+            <option value="googlestt">Google Speech-to-Text → WAV 16 kHz mono</option>
+            <option value="aws">AWS Transcribe → MP3 96 kbps mono</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Prepare for transcription</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">All presets downsample to mono unless the service uses stereo for speaker separation. We keep enough quality for accurate ASR, nothing more.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What each service wants, in plain English</h2>
+    <ul>
+      <li><strong>Otter.ai</strong> — MP3, M4A, WAV, plus most video. 4-hour cap (paid), 30 min free. Use 96 kbps mono MP3 to upload fast and stay within file-size budgets.</li>
+      <li><strong>Notta</strong> — Same accepted formats. Free plan: 5 min per recording, 120 min/month. Paid: 90 min per recording. MP3 mono works fine.</li>
+      <li><strong>Rev</strong> — Human transcription accepts up to 2 GB. AI version is more permissive. Send MP3 128 kbps to balance quality (for human transcribers) and upload speed.</li>
+      <li><strong>Trint</strong> — MP3/WAV/M4A/MP4. Used heavily in newsrooms. 128 kbps MP3 mono is the standard.</li>
+      <li><strong>Descript</strong> — Re-encodes everything anyway, so format matters less. Keep stereo if you have multiple speakers panned for clean speaker-detection.</li>
+      <li><strong>OpenAI Whisper API</strong> — 25 MB per file cap. Engine downsamples to 16 kHz mono internally, so a small MP3 (64 kbps mono) gives the same accuracy as a giant WAV. Use the 64 kbps preset to fit ~50+ min under the cap.</li>
+      <li><strong>Google Speech-to-Text</strong> — Wants 16-bit PCM WAV at 16 kHz mono for best accuracy. We have a dedicated <a href="/audio-for-whisper">Whisper / Google STT preset page</a>.</li>
+      <li><strong>AWS Transcribe</strong> — MP3, MP4, WAV, FLAC, OGG, AMR, WEBM. 2 GB cap. 96 kbps mono MP3 is fine.</li>
+    </ul>
+
+    <h2>Why mono almost always</h2>
+    <p>ASR (automatic speech recognition) engines run on mono. They sum stereo channels internally before processing. Sending stereo costs you 2× upload time and 2× file size for zero accuracy improvement — and sometimes hurts accuracy if the channels are noisy or out of phase.</p>
+    <p>The one exception: services that do <strong>speaker diarization from stereo</strong> (separating "speaker 1 in left channel" from "speaker 2 in right channel"). If you recorded an interview with two mics panned hard L/R into one file, keep the stereo. Otherwise, mono.</p>
+
+    <h2>Why this isn't just "shrink to MP3"</h2>
+    <p>Transcription accuracy is mostly about <strong>signal-to-noise ratio</strong>, not bit depth. Past about 64 kbps mono MP3, ASR engines hit a quality plateau — more bits don't improve word accuracy. So this tool aims for the smallest file that doesn't sacrifice transcription quality, which is a different optimization than "best-sounding compressed audio."</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Won't a higher-quality file mean a better transcription?</summary><p>Up to a point. Past 64 kbps mono, you stop hearing improvements in word accuracy. The engine is the limiting factor, not the audio. So send a small file and save your upload time and storage quota.</p></details>
+    <details><summary>What about Zoom recordings — those come as M4A.</summary><p>M4A is fine to send directly, but Zoom's default M4A is stereo with both speakers in both channels. Force mono here to halve the file size with no transcription quality loss.</p></details>
+    <details><summary>Does my audio actually upload through your site?</summary><p>No. We convert it in your browser, you download the result, then you upload to Otter / Rev / wherever yourself. We never see the audio.</p></details>
+    <details><summary>How do I prep audio for OpenAI's Whisper API specifically?</summary><p>The Whisper preset here gets you under the 25 MB cap. For the local <code>whisper.cpp</code> binary or models that want 16 kHz mono PCM WAV exactly, use our <a href="/audio-for-whisper">Whisper preset page</a>.</p></details>
+    <details><summary>Can it batch multiple files for the same service?</summary><p>Yes. Drop multiple recordings, pick the service, get a zip of all the prepped files.</p></details>
+    <details><summary>What if my source is a video file?</summary><p>We extract the audio first, then encode in the service's preferred format. Drop the MP4 or MOV directly.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-for-whisper"><h3>Audio for Whisper</h3><p>Exact 16 kHz mono PCM WAV for whisper.cpp and the Whisper API.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Trim dead air before transcription — faster, cheaper, more accurate.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out volume so quiet speakers transcribe as well as loud ones.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract Audio</h3><p>Pull audio out of a Zoom / Loom / Meet video first.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var serviceSel = $('#service');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  var PRESETS = {
+    otter:    { target: 'mp3', bitrate: 96,  channels: 1 },
+    notta:    { target: 'mp3', bitrate: 96,  channels: 1 },
+    rev:      { target: 'mp3', bitrate: 128, channels: 1 },
+    trint:    { target: 'mp3', bitrate: 128, channels: 1 },
+    descript: { target: 'mp3', bitrate: 128 },
+    whisper:  { target: 'mp3', bitrate: 64,  channels: 1 },
+    googlestt:{ target: 'wav', sampleRate: 16000, channels: 1 },
+    aws:      { target: 'mp3', bitrate: 96,  channels: 1 }
+  };
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){ files = files.concat(picked); render(); }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var preset = PRESETS[serviceSel.value] || PRESETS.otter;
+    var options = {};
+    if (preset.bitrate) options.bitrate = preset.bitrate;
+    if (preset.sampleRate) options.sampleRate = preset.sampleRate;
+    if (preset.channels) options.channels = preset.channels;
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++){
+      var f = files[i]; var idx = i + 1;
+      try {
+        var blob = await AudioSaw.convert(f, preset.target, options, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, preset.target), blob: blob });
+      } catch(e){
+        failures.push({name:f.name, error: e.message || String(e)});
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length){
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — ready for '+serviceSel.options[serviceSel.selectedIndex].text);
+      } else if (outputs.length > 1){
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-transcription-'+serviceSel.value+'.zip');
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs.length+' files zipped'+(failures.length?' ('+failures.length+' failed)':''));
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className='file-item';
+        var label = document.createElement('span');
+        var n = document.createElement('span'); n.className='name'; n.textContent=o.name;
+        var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(o.blob.size);
+        label.appendChild(n); label.appendChild(s); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

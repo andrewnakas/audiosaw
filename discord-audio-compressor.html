@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discord Audio Compressor — shrink audio under 10 MB / 25 MB / 50 MB (free)</title>
+<meta name="description" content="Compress audio for Discord uploads — under 10 MB (free), 25 MB (Nitro Basic), 50 MB (Nitro Basic boost), or 500 MB (Nitro). Voice clips, song snippets, samples. Pick your tier, drop a file, download a Discord-ready MP3. No upload.">
+<meta name="keywords" content="discord audio compressor, compress audio for discord, discord 10mb audio, discord 25mb upload, discord nitro audio limit, audio under 10 mb for discord, discord file too big, discord voice clip mp3, compress mp3 for discord free">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/discord-audio-compressor">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Discord Audio Compressor — fit under Discord's upload limit">
+<meta property="og:description" content="Pick your Discord tier (10 / 25 / 50 / 500 MB). Drop audio. Get a file that fits. No upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/discord-audio-compressor">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Discord Audio Compressor",
+  "url": "https://audiosaw.com/discord-audio-compressor",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What is Discord's audio upload limit?","acceptedAnswer":{"@type":"Answer","text":"Free Discord caps regular uploads at 10 MB. Nitro Basic raises it to 50 MB. Full Nitro goes to 500 MB. Server boosts can also raise the per-server file limit. Pick the tier you actually have — that's the size the compressed file targets."}},
+  {"@type":"Question","name":"How do I compress an audio file under 10 MB for Discord free?","acceptedAnswer":{"@type":"Answer","text":"Pick the '10 MB — Discord free' preset, drop your file, and we'll encode at a bitrate that lands the output under 10 MB. For a 5-minute clip that's around 256 kbps stereo; for a 30-minute recording that drops to ~44 kbps mono. If the file is too long to fit even at low bitrate, trim it first with our audio cutter."}},
+  {"@type":"Question","name":"Why is my MP3 still too big after compressing?","acceptedAnswer":{"@type":"Answer","text":"Almost always because the audio is longer than your size budget allows. 10 MB at the lowest reasonable voice bitrate (32 kbps mono) is about 40 minutes. Anything longer needs to be trimmed first — use our audio cutter to grab the part you actually want to send."}},
+  {"@type":"Question","name":"Can I just upload a WAV?","acceptedAnswer":{"@type":"Answer","text":"Technically yes, but WAVs are huge — about 10 MB per minute. A 2-minute WAV blows past Discord free's 10 MB limit. MP3 at 128 kbps holds the same 2 minutes in roughly 2 MB."}},
+  {"@type":"Question","name":"Will the compressed file still sound okay?","acceptedAnswer":{"@type":"Answer","text":"For voice clips, yes — under 10 MB you can fit several minutes at 96 kbps mono with no audible loss. For music, longer clips at lower bitrates will sound thinner, but Discord playback is rarely critical listening. For high-quality music shares, use Nitro and target 50 MB instead."}},
+  {"@type":"Question","name":"Does my file actually upload anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The compression runs in your browser tab. Your file goes to Discord, not through us."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Compress audio for <span class="ital">Discord</span>. Fits the upload limit, every time.</h1>
+    <p>Discord rejects your file because it's over the cap. Drop it here, pick your Discord tier (10 MB free, 25 / 50 MB Nitro Basic, 500 MB Nitro), and we'll encode an MP3 that fits with room to spare. Nothing uploads through us — your file goes straight from your browser to Discord.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your audio or video file</p>
+      <p>MP3, WAV, M4A, MP4, MOV, OPUS — anything. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Discord tier (target size)
+          <select id="discordTier">
+            <option value="10" selected>10 MB — Discord free</option>
+            <option value="25">25 MB — Nitro Basic (DM / non-boosted server)</option>
+            <option value="50">50 MB — Nitro Basic on a boosted server</option>
+            <option value="500">500 MB — full Nitro</option>
+          </select>
+        </label>
+        <label>Channels
+          <select id="channels">
+            <option value="" selected>keep original (stereo if music)</option>
+            <option value="1">force mono (fits ~2× more audio)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Compress for Discord</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p id="estimateLine" style="color:var(--ink-soft);font-size:.92rem;margin-top:8px"></p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Discord's upload limits, current as of 2026</h2>
+    <ul>
+      <li><strong>Free Discord</strong> — 10 MB per file. This is what most users hit. Server boosts no longer raise it on the free tier.</li>
+      <li><strong>Nitro Basic</strong> — 50 MB per file (in DMs and on boosted servers). 25 MB on non-boosted servers historically; check the upload error for the exact number Discord cites.</li>
+      <li><strong>Nitro (full)</strong> — 500 MB per file. Almost no audio file hits this.</li>
+    </ul>
+    <p>The compressor here picks a bitrate that fits your file under the target with a small safety margin (about 5%). If your source is longer than the limit allows even at the lowest reasonable bitrate, we'll tell you and suggest trimming first.</p>
+
+    <h2>What gets sent to Discord at each tier</h2>
+    <ul>
+      <li><strong>10 MB free, voice clip (mono)</strong>: ~20 min at 64 kbps, ~30 min at 44 kbps, ~40 min at 32 kbps.</li>
+      <li><strong>10 MB free, music (stereo)</strong>: ~5 min at 256 kbps, ~6 min at 192 kbps, ~10 min at 128 kbps.</li>
+      <li><strong>50 MB Nitro Basic, music (stereo)</strong>: ~25 min at 256 kbps, ~50 min at 128 kbps.</li>
+      <li><strong>500 MB Nitro</strong>: ~4 hours of CD-quality MP3 or ~80 min of WAV.</li>
+    </ul>
+
+    <h2>If it still won't fit</h2>
+    <p>The compressor can only do so much. If you're trying to send a 90-minute lecture as a single 10 MB file, even 16 kbps mono won't help — quality would be unusable. Better options:</p>
+    <ol>
+      <li><a href="/audio-cutter">Trim it</a> to the part you actually want to share.</li>
+      <li>Send the part in pieces (Discord lets you chain multiple smaller files).</li>
+      <li>Upload it elsewhere (Catbox, file.io, your own Drive) and paste the link.</li>
+      <li>Upgrade to Nitro Basic for a single $3-ish/month if you do this often.</li>
+    </ol>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Why does Discord say "Your files are too powerful"?</summary><p>That's their cute way of saying you hit the upload cap. Compress here and re-upload.</p></details>
+    <details><summary>Can I send a WAV to Discord?</summary><p>You can, but WAV is uncompressed — ~10 MB per minute stereo. Any clip over 1 minute exceeds Discord free's 10 MB. Convert to MP3 first, even on Nitro it's a courtesy to other people downloading the file.</p></details>
+    <details><summary>How do I send a long voice memo from my phone?</summary><p>If it's from an iPhone Voice Memos app, it's already a .m4a (AAC, compressed). Drop it here, pick your Discord tier, and we'll re-encode at a fitting bitrate. For very long memos, trim first.</p></details>
+    <details><summary>What about video — can this strip the video and just send audio?</summary><p>Yes. Drop the MP4 or MOV, we'll extract the audio and compress it as MP3. The video track is discarded.</p></details>
+    <details><summary>Does it work for Discord voice messages I downloaded?</summary><p>Yes. Discord voice messages are OGG (Opus). Drop the .ogg file, get MP3 back. Useful if you want to archive or share a voice message outside Discord.</p></details>
+    <details><summary>Does my file get uploaded to your servers?</summary><p>No. The compression is in-browser. Your file goes to Discord directly, not through us.</p></details>
+    <details><summary>Can I keep the original quality?</summary><p>Only if it already fits. The whole point is to shrink it. If you want max quality and have Nitro, pick the 500 MB tier — we'll barely compress at all.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Full bitrate / sample rate controls if you want them.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim first if the clip is too long to fit even compressed.</p></a>
+      <a class="card" href="/opus-to-mp3"><h3>OPUS → MP3</h3><p>Convert downloaded Discord voice messages to MP3.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract Audio</h3><p>Pull audio out of a video before sending.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var tierSel = $('#discordTier'), channelsSel = $('#channels');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost'), estimateLine = $('#estimateLine');
+  var files = [];
+
+  function bitrateForTarget(durationSec, targetMB, channels){
+    var targetBits = targetMB * 1024 * 1024 * 8 * 0.93;
+    var kbps = Math.floor(targetBits / durationSec / 1000);
+    if (channels === 1) kbps = Math.min(kbps, 128);
+    else kbps = Math.min(kbps, 320);
+    if (kbps < 16) return 0;
+    var steps = [16,24,32,40,48,56,64,80,96,112,128,160,192,224,256,320];
+    for (var i = steps.length - 1; i >= 0; i--) if (steps[i] <= kbps) return steps[i];
+    return 16;
+  }
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){
+    files = files.concat(picked); render();
+  }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var targetMB = parseInt(tierSel.value, 10);
+    var channels = channelsSel.value === '1' ? 1 : undefined;
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++){
+      var f = files[i]; var idx = i + 1;
+      try {
+        var buf = await f.arrayBuffer();
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var decoded = await ctx.decodeAudioData(buf.slice(0));
+        var duration = decoded.duration;
+        try { ctx.close(); } catch(e){}
+        var kbps = bitrateForTarget(duration, targetMB, channels);
+        if (!kbps){
+          failures.push({name:f.name, error:'Even at the lowest bitrate this file is longer than '+targetMB+' MB allows. Trim it first.'});
+          continue;
+        }
+        CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] encoding at '+kbps+' kbps to fit '+targetMB+' MB…');
+        var blob = await AudioSaw.convert(f, 'mp3', { bitrate: kbps, channels: channels }, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, 'mp3'), blob: blob, kbps: kbps });
+      } catch(e){
+        failures.push({name:f.name, error: e.message || String(e)});
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length){
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs[0].name+' ('+CV.fmtBytes(outputs[0].blob.size)+' at '+outputs[0].kbps+' kbps)');
+      } else if (outputs.length > 1){
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-discord-'+targetMB+'mb.zip');
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs.length+' files zipped'+(failures.length?' ('+failures.length+' failed)':''));
+      } else {
+        CV.setStatus(statusEl, 'error', failures[0] ? failures[0].error : 'Could not compress.');
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className='file-item';
+        var label = document.createElement('span');
+        var n = document.createElement('span'); n.className='name'; n.textContent=o.name;
+        var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(o.blob.size)+' · '+o.kbps+' kbps';
+        label.appendChild(n); label.appendChild(s); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

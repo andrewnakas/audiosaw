@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert to WAV 44.1 kHz 16-bit — CD-spec WAV for Splice, sample packs, masters (free)</title>
+<meta name="description" content="Lock the output to 44.1 kHz, 16-bit, stereo PCM WAV — the CD-standard format that Splice, Spotify, sample-pack distributors, and most mastering deliverables require. Drop any audio, get a spec-correct WAV. No upload.">
+<meta name="keywords" content="wav 44100 16 bit, convert to cd quality wav, splice sample wav format, sample pack wav spec, mastering deliverable wav, wav 44.1 khz 16 bit converter, redbook audio wav, 44100 hz 16 bit stereo wav free">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/wav-44100-16bit">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="WAV 44.1 kHz 16-bit converter — CD-spec, Splice-ready WAV">
+<meta property="og:description" content="Lock output to the CD-standard WAV format. For Splice uploads, sample packs, mastering deliverables.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/wav-44100-16bit">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WAV 44.1 kHz 16-bit Converter",
+  "url": "https://audiosaw.com/wav-44100-16bit",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What does 44.1 kHz / 16-bit WAV mean?","acceptedAnswer":{"@type":"Answer","text":"44.1 kHz is the sample rate (samples per second), 16-bit is the bit depth (precision per sample). Together that's the Red Book audio CD spec — the standard for finished music since the early '80s. It's lossless, uncompressed PCM, ~10 MB per stereo minute."}},
+  {"@type":"Question","name":"Why does Splice want this exact format?","acceptedAnswer":{"@type":"Answer","text":"Splice samples are designed to drop into any DAW at any project sample rate without resampling artifacts. 44.1 kHz 16-bit is the lowest-common-denominator that every DAW and sampler handles natively. They'll accept higher rates but recommend converting before upload."}},
+  {"@type":"Question","name":"Will downsampling from 48 kHz to 44.1 kHz hurt quality?","acceptedAnswer":{"@type":"Answer","text":"Done correctly (with a proper low-pass anti-aliasing filter, which we apply), no audible difference for the vast majority of music. The Web Audio API uses a high-quality resampler internally. The math is below human hearing for the frequencies that get cut."}},
+  {"@type":"Question","name":"What about 24-bit vs 16-bit?","acceptedAnswer":{"@type":"Answer","text":"24-bit has more dynamic range, useful during mixing/mastering when you're applying processing. For the final deliverable that ships to listeners, 16-bit is the standard. If you've already mastered, deliver 16-bit. If you're sending stems for someone else to mix, deliver 24-bit."}},
+  {"@type":"Question","name":"What file types can I convert?","acceptedAnswer":{"@type":"Answer","text":"Any audio your browser can decode: MP3, M4A, FLAC, OGG, OPUS, AIFF, AAC, plus video formats like MP4 and MOV (we extract the audio). The output is always a 44.1 kHz 16-bit stereo PCM WAV."}},
+  {"@type":"Question","name":"Does it upload my file?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>WAV at <span class="ital">44.1 kHz, 16-bit</span>. The CD spec, locked in.</h1>
+    <p>Splice wants it. Sample-pack distributors want it. The mastering engineer who's about to print a CD master wants it. It's the same spec everyone has agreed on since 1982 and it works everywhere. Drop any audio file here, get back a 44.1 kHz / 16-bit / stereo PCM WAV. No menus, no second-guessing.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop any audio file</p>
+      <p>MP3, M4A, FLAC, OGG, AIFF, any other WAV at any rate. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to 44.1 / 16-bit WAV</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output: 44.1 kHz, 16-bit signed PCM, stereo (mono if source is mono). No dithering applied — drop a 24-bit source through a mastering tool first if you need dithering for critical work.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Who needs this exact format</h2>
+    <ul>
+      <li><strong>Splice sample-pack uploads</strong> — Splice's spec says 44.1 kHz, 16-bit or 24-bit WAV. 16-bit is plenty for a one-shot or loop.</li>
+      <li><strong>Sample-pack producers selling on Loopcloud, Sample Magic, Splice</strong> — same spec across the board.</li>
+      <li><strong>CD masters</strong> — Red Book is 44.1 kHz / 16-bit by definition. If you're pressing physical CDs, this is the deliverable.</li>
+      <li><strong>Spotify, Apple Music intake</strong> — Both accept 44.1 / 16 as a minimum, prefer 44.1 / 24 if you have it. For the basic submission tier, 16-bit is accepted.</li>
+      <li><strong>Bandcamp lossless tier</strong> — 44.1 / 16 is the floor. Bandcamp will accept and prefer 24-bit, but 16-bit is fine.</li>
+      <li><strong>Audio for video at 44.1 kHz</strong> — Some indie film projects lock to 44.1 instead of the 48 kHz video standard. Match the post house's spec.</li>
+      <li><strong>Mastering engineer asks for "a CD-spec WAV"</strong> — that's this.</li>
+    </ul>
+
+    <h2>What we do under the hood</h2>
+    <ol>
+      <li>Decode your source file using the browser's audio engine (handles all common formats).</li>
+      <li>If the source is not 44.1 kHz, resample it through an OfflineAudioContext at 44.1 kHz — this includes a proper anti-aliasing filter.</li>
+      <li>Quantize from float32 to 16-bit signed integer with simple truncation (no dither). For critical mastering, do dithering in your DAW before exporting.</li>
+      <li>Wrap in a standard 44-byte RIFF/WAVE header with PCM format code.</li>
+      <li>You get a file that opens identically in Pro Tools, Logic, Ableton, Reaper, FL Studio, Audacity, foobar2000, every CD authoring tool — anywhere.</li>
+    </ol>
+
+    <h2>Why not 48 kHz / 24-bit?</h2>
+    <p>48 kHz / 24-bit is the video / broadcast / streaming-master standard. 44.1 / 16 is the music / consumer / CD standard. They coexist because different industries standardized in different decades. Match the spec your destination asks for — that's the only thing that matters.</p>
+    <p>If you need 48 kHz output instead, drop the file in our <a href="/wav-for-sp404">sampler WAV preset page</a> (48 kHz is the SP-404 MK2 preset) or use the <a href="/">main converter</a> with sample rate set to 48000.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is this lossless?</summary><p>The WAV itself is lossless PCM. If your source was lossy (MP3, M4A, OGG), the resulting WAV is a lossless container holding lossy audio — useful for tools that require WAV input, not actually higher quality than the source. If your source was lossless (FLAC, AIFF, another WAV), the conversion is lossless end-to-end aside from the 16-bit quantization.</p></details>
+    <details><summary>Why does the WAV header say 44 bytes?</summary><p>That's the standard RIFF/WAVE header for plain PCM. Some software adds extra "fact" or "bext" chunks; we keep it minimal so every tool reads it without complaint.</p></details>
+    <details><summary>Should I dither the 16-bit conversion?</summary><p>For critical mastering work, yes — your DAW or a mastering plugin can apply TPDF or noise-shaped dither before export. For most uploads (Splice samples, Bandcamp, web), the truncation we do is inaudible. Source noise floor is almost always well above the 16-bit quantization noise floor anyway.</p></details>
+    <details><summary>What if my source is mono?</summary><p>We preserve mono channel count. The WAV will be 44.1 / 16 / mono. If you specifically need a stereo WAV with duplicated mono channels, drop us a note — we can add that as a separate option.</p></details>
+    <details><summary>Will it work for a 4-hour live recording?</summary><p>That'd be ~2.4 GB of WAV at the end. Browsers can handle it on a 16 GB+ machine, but it's slow. For very long recordings, split into segments first with our <a href="/audio-cutter">cutter</a>.</p></details>
+    <details><summary>Does my audio get uploaded?</summary><p>No. Everything runs in your browser. Unreleased masters stay yours.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/wav-for-sp404"><h3>WAV for SP-404 / MPC</h3><p>48 kHz / 44.1 kHz sampler-spec WAV.</p></a>
+      <a class="card" href="/mp3-to-wav"><h3>MP3 → WAV</h3><p>General-purpose WAV converter.</p></a>
+      <a class="card" href="/wav-to-flac"><h3>WAV → FLAC</h3><p>Same audio, smaller file, still lossless.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Peak or LUFS-normalize before printing the final WAV.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+window.AS_TOOL = { target: 'wav', accept: ['.mp3','.wav','.m4a','.aac','.flac','.ogg','.opus','.aif','.aiff','.aifc','.mp4','.mov','.webm','.mkv'], lockedSampleRate: 44100 };
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

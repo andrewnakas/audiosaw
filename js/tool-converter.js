@@ -63,8 +63,10 @@
     resultList.innerHTML = '';
 
     var options = {
-      bitrate: bitrateSel ? (parseInt(bitrateSel.value, 10) || 192) : 192
+      bitrate: cfg.lockedBitrate || (bitrateSel ? (parseInt(bitrateSel.value, 10) || 192) : 192)
     };
+    if (cfg.lockedSampleRate) options.sampleRate = cfg.lockedSampleRate;
+    if (cfg.lockedChannels) options.channels = cfg.lockedChannels;
     var target = currentTarget();
 
     var outputs = [];

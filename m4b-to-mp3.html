@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M4B to MP3 — convert audiobook files in your browser (free, no upload)</title>
+<meta name="description" content="Convert DRM-free M4B audiobook files to MP3 in your browser. Works for Librivox, owned Apple Books exports, podcast-style audiobook bundles. Batch supported. Nothing uploads.">
+<meta name="keywords" content="m4b to mp3, convert audiobook to mp3, m4b converter, librivox to mp3, apple books m4b to mp3, audiobook mp3 converter free, m4b to mp3 no upload, audiobook for car stereo, m4b for android, free m4b converter online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/m4b-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="M4B to MP3 — convert audiobook files in your browser">
+<meta property="og:description" content="Drop a DRM-free .m4b audiobook, get an MP3 back. Runs in your tab, never uploads.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/m4b-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "M4B to MP3 Audiobook Converter",
+  "url": "https://audiosaw.com/m4b-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What is an M4B file?","acceptedAnswer":{"@type":"Answer","text":"M4B is an audiobook container — AAC audio inside an MP4 box, with optional chapter markers and bookmark support. It's the format Apple Books, Audible (DRM-protected), and Librivox use. Renaming an .m4b to .m4a usually works but loses chapter data."}},
+  {"@type":"Question","name":"Will this convert DRM-protected Audible files?","acceptedAnswer":{"@type":"Answer","text":"No. Audible's .aax and DRM-locked .m4b files are encrypted. This tool only handles DRM-free M4B — Librivox, Apple Books exports of public-domain titles, audiobooks you own and exported yourself, indie author releases."}},
+  {"@type":"Question","name":"Why convert M4B to MP3?","acceptedAnswer":{"@type":"Answer","text":"Older car stereos, basic MP3 players, and some Android apps don't recognize .m4b. MP3 is the universal fallback that plays everywhere. You also get a file you can split into chapters with our cutter or upload to a podcast player as individual episodes."}},
+  {"@type":"Question","name":"Does it preserve chapter markers?","acceptedAnswer":{"@type":"Answer","text":"MP3 chapter markers (CTOC/CHAP frames) aren't widely supported. For per-chapter MP3 files, drop the M4B here, get the MP3, then use our audio cutter to split at chapter timestamps. Most M4Bs have chapter info in the file metadata."}},
+  {"@type":"Question","name":"What about file size for a long audiobook?","acceptedAnswer":{"@type":"Answer","text":"A 10-hour M4B at 64 kbps is about 290 MB. The MP3 at 128 kbps will be roughly 580 MB. Browser memory tops out around 1 GB, so very long books may need to be split first. For most audiobooks under 12 hours, it works fine."}},
+  {"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser. Disconnect your wifi and try it — still works."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>M4B to <span class="ital">MP3</span>. For car stereos, old MP3 players, and Android.</h1>
+    <p>Audiobooks ship as .m4b — AAC audio in an MP4 wrapper with chapter markers. Great inside Apple Books. Useless in a 2012 Honda's CD-stick port. Drop your DRM-free M4B here, get an MP3, plays everywhere. No iTunes, no Audacity, no upload.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your M4B audiobook</p>
+      <p>Librivox, Apple Books (DRM-free), indie author files. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,.m4b,.m4a,.aac,.mp4" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="64">64 kbps — small, voice (long audiobooks)</option>
+            <option value="96">96 kbps — clean voice</option>
+            <option value="128" selected>128 kbps — balanced</option>
+            <option value="192">192 kbps — high quality voice</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What this works on (and what it doesn't)</h2>
+    <p><strong>Works:</strong></p>
+    <ul>
+      <li>Librivox audiobook downloads (public domain, always DRM-free)</li>
+      <li>Apple Books / iBooks free public domain titles</li>
+      <li>Indie author M4B releases sold directly</li>
+      <li>Audiobooks you ripped from your own CDs and encoded as M4B</li>
+      <li>Podcast bundles distributed as a single M4B with chapters</li>
+    </ul>
+    <p><strong>Doesn't work:</strong></p>
+    <ul>
+      <li>Audible files (.aax, encrypted .m4b) — these have DRM and we don't break DRM</li>
+      <li>Apple Books titles you bought that are still DRM-locked</li>
+      <li>Anything with FairPlay encryption</li>
+    </ul>
+    <p>If the file opens in VLC or QuickTime without entering a password, it's DRM-free and we can convert it.</p>
+
+    <h2>Why split chapters separately</h2>
+    <p>M4B chapter markers translate poorly to MP3. Players ignore them. The reliable workflow:</p>
+    <ol>
+      <li>Convert M4B → MP3 here (single big file).</li>
+      <li>Note the chapter timestamps (visible in iTunes/Apple Books or in any M4B reader).</li>
+      <li>Use <a href="/audio-cutter">our audio cutter</a> to slice at those timestamps.</li>
+      <li>You now have <em>Chapter 01.mp3</em>, <em>Chapter 02.mp3</em>, etc. — playable on anything.</li>
+    </ol>
+    <p>This also makes it easy to load into a podcast player like Pocket Casts or AntennaPod as a custom feed.</p>
+
+    <h2>Bitrate guidance for spoken word</h2>
+    <ul>
+      <li><strong>64 kbps</strong> — fine for voice, half the size of 128. Use for 20+ hour books where storage matters.</li>
+      <li><strong>96 kbps</strong> — sweet spot for narration. Clean S sounds, no warble.</li>
+      <li><strong>128 kbps</strong> — default. Indistinguishable from source for voice.</li>
+      <li><strong>192+ kbps</strong> — overkill for audiobooks. Save it for music.</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What's an M4B file?</summary><p>It's an MP4 container holding AAC audio plus audiobook metadata (chapters, bookmark position, cover art). Same codec as M4A — just a different file extension that signals "this is a book, remember my place."</p></details>
+    <details><summary>Will this work for Audible books?</summary><p>No. Audible uses .aax with DRM, and even .m4b downloads from Audible are encrypted with your account key. You'd need Audible's own apps or a separate tool that handles their authorization. This tool only converts unencrypted M4B.</p></details>
+    <details><summary>Why does my car stereo see "no files" when I copy an M4B?</summary><p>Older head units only scan for .mp3 (sometimes .wma). They literally ignore .m4b files even though the audio inside is fine. Converting to MP3 fixes it.</p></details>
+    <details><summary>Will I lose chapter markers?</summary><p>The MP3 won't have native chapter markers your player recognizes. The audio is fine. If you need chapters as separate files, convert to one MP3, then split using our <a href="/audio-cutter">audio cutter</a>.</p></details>
+    <details><summary>Is the conversion lossy?</summary><p>Both M4B (AAC) and MP3 are lossy, so this is a re-encode. At 128+ kbps for spoken word, the loss is inaudible. For music inside an M4B (rare), pick 192 kbps to be safe.</p></details>
+    <details><summary>How long will a 12-hour audiobook take?</summary><p>Roughly 4–8 minutes on a modern laptop. We're decoding the AAC and re-encoding as MP3 — both fast in WebAssembly, but it's still 12 hours of audio.</p></details>
+    <details><summary>Does anything leave my computer?</summary><p>No. Conversion happens in your browser tab. Try airplane mode.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Split a converted audiobook MP3 at chapter timestamps.</p></a>
+      <a class="card" href="/m4a-to-mp3"><h3>M4A → MP3</h3><p>Same conversion, for voice memos and music files.</p></a>
+      <a class="card" href="/audio-speed"><h3>Audio Speed</h3><p>Listen to audiobooks at 1.5× or 2× without chipmunk pitch.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink an already-MP3 audiobook further to fit a phone or USB stick.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.m4b','.m4a','.aac','.mp4'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>
