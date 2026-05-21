@@ -213,6 +213,7 @@
     if (outExt === 'm4a' || outExt === 'aac') args.push('-c:a', 'aac');
     if (outExt === 'flac') args.push('-c:a', 'flac');
     if (outExt === 'ogg') args.push('-c:a', 'libvorbis');
+    if (outExt === 'aif' || outExt === 'aiff') args.push('-c:a', 'pcm_s16be');
     if (options.startSec != null) args.push('-ss', String(options.startSec));
     if (options.durationSec != null) args.push('-t', String(options.durationSec));
     args.push('-vn');
@@ -231,7 +232,8 @@
     try { await ffmpeg.deleteFile(inName); await ffmpeg.deleteFile(outName); } catch (e) {}
     var mime = ({
       mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', aac: 'audio/aac',
-      flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/opus'
+      flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/opus',
+      aif: 'audio/aiff', aiff: 'audio/aiff'
     })[outExt] || 'application/octet-stream';
     return new Blob([data.buffer], { type: mime });
   }

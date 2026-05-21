@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MP3 to AIFF — convert MP3 to AIFF for Logic Pro / GarageBand (free, no upload)</title>
+<meta name="description" content="Convert MP3 to AIFF (Apple's lossless container) for Logic Pro and GarageBand drag-and-drop. 44.1 kHz / 16-bit standard. Apple Loops-friendly. Browser-only, no upload.">
+<meta name="keywords" content="mp3 to aiff, convert mp3 to aiff free, mp3 to aif converter, aiff for logic pro, aiff for garageband, mp3 to apple loops, aiff no upload, mp3 to aiff online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/mp3-to-aiff">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="MP3 to AIFF — Apple-native audio for Logic and GarageBand">
+<meta property="og:description" content="MP3 to .aiff in your browser. For Logic Pro, GarageBand, Apple Loops workflows. No upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/mp3-to-aiff">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MP3 to AIFF Converter",
+  "url": "https://audiosaw.com/mp3-to-aiff",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What's AIFF and why convert MP3 to it?","acceptedAnswer":{"@type":"Answer","text":"AIFF (Audio Interchange File Format) is Apple's native uncompressed audio container, similar to WAV but with big-endian byte order. It's the default format Logic Pro, GarageBand, and Final Cut Pro work with internally. Some old Apple workflows and Apple Loops libraries expect AIFF specifically. WAV works just as well in modern Logic, but AIFF is sometimes the more native choice."}},
+  {"@type":"Question","name":"Will the AIFF be higher quality than the MP3?","acceptedAnswer":{"@type":"Answer","text":"No. MP3 is lossy compression — the data thrown away during MP3 encoding is gone permanently. Converting to AIFF makes the file uncompressed (larger), but the audio quality is identical to the source MP3. AIFF is useful for the format compatibility, not for restoring quality."}},
+  {"@type":"Question","name":"What's the difference between AIFF and WAV?","acceptedAnswer":{"@type":"Answer","text":"Both are uncompressed PCM audio containers, both lossless, both about the same file size. WAV uses little-endian byte order (Intel/Windows native), AIFF uses big-endian (older Mac native). For all practical purposes in 2026, they're interchangeable — both open in Pro Tools, Logic, Reaper, Ableton, etc."}},
+  {"@type":"Question","name":"Should I use this or convert to WAV?","acceptedAnswer":{"@type":"Answer","text":"If you're working in Logic Pro or GarageBand and want native-feeling files, AIFF. If your project mixes Mac and PC contributors, WAV. They're functionally identical otherwise."}},
+  {"@type":"Question","name":"Can it batch a folder?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple MP3s, get a zip of AIFF files back. Useful for converting a whole album for Apple Music's GarageBand import."}},
+  {"@type":"Question","name":"Does it upload?","acceptedAnswer":{"@type":"Answer","text":"No. Conversion runs in your browser tab."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>MP3 to <span class="ital">AIFF</span>. Apple-native for Logic, GarageBand, Final Cut.</h1>
+    <p>AIFF is what Logic and GarageBand prefer when you drag music in from outside a project. WAV works too, but AIFF is the older native format and some Apple Loops / Final Cut workflows behave better with it. Drop your MP3, get a 16-bit AIFF back. Same audio, different container.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your MP3 file</p>
+      <p>WAV, M4A, FLAC, OGG also welcome. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to AIFF</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output: 16-bit PCM AIFF, original sample rate and channels preserved.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>When you need AIFF instead of WAV</h2>
+    <ul>
+      <li><strong>Logic Pro</strong> — accepts both, prefers AIFF for in-project bouncing and Apple Loops. WAV works fine for drag-imports.</li>
+      <li><strong>GarageBand</strong> — same as Logic. AIFF is the native bounce format.</li>
+      <li><strong>Final Cut Pro</strong> — handles both, but FCP-generated audio assets are AIFF.</li>
+      <li><strong>Apple Loops authoring</strong> — Apple Loops Utility expects AIFF input for tagging metadata.</li>
+      <li><strong>Older Mac DAW projects</strong> — anything pre-Logic-9 era is more comfortable with AIFF.</li>
+    </ul>
+
+    <h2>What AIFF gives you that MP3 doesn't</h2>
+    <ul>
+      <li>Lossless containment — no further generational loss if you edit and re-bounce.</li>
+      <li>Sample-accurate editing — MP3 has frame boundaries that complicate exact cuts.</li>
+      <li>Better DAW timeline behavior — uncompressed audio doesn't need decode-on-play.</li>
+      <li>Compatibility with Apple's loop/region time-stretching engines.</li>
+    </ul>
+    <p>What it doesn't give you: better audio quality than the source MP3. Lossy compression is one-way.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>How much bigger will the AIFF be?</summary><p>Roughly 10× the MP3 size — same scale as WAV. A 5 MB MP3 becomes a ~50 MB AIFF.</p></details>
+    <details><summary>Why is AIFF bigger if it doesn't sound better?</summary><p>It's uncompressed. MP3 throws away audio data to be small. Converting to AIFF just unpacks the (now-permanently-degraded) audio into an uncompressed container.</p></details>
+    <details><summary>What about 24-bit AIFF?</summary><p>We output 16-bit, which is the standard for music delivery. 24-bit is useful during mixing but unnecessary for finished tracks. For 24-bit specifically, contact us — we'll add the option.</p></details>
+    <details><summary>Can I convert AIFF back to MP3?</summary><p>Yes — use our universal converter or <a href="/wav-to-mp3">WAV → MP3</a> page (it accepts AIFF too).</p></details>
+    <details><summary>Will GarageBand on iPad / iOS read this AIFF?</summary><p>Yes. iOS GarageBand reads AIFF from Files. Drag it from the Files app into the Tracks view.</p></details>
+    <details><summary>Does it upload?</summary><p>No. Conversion runs in your browser.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/aiff-to-mp3"><h3>AIFF → MP3</h3><p>The reverse direction — Logic / GarageBand bounce to portable MP3.</p></a>
+      <a class="card" href="/mp3-to-wav"><h3>MP3 → WAV</h3><p>WAV equivalent, cross-platform friendly.</p></a>
+      <a class="card" href="/garageband-audio"><h3>Audio for GarageBand</h3><p>Prep audio for GarageBand import quirks.</p></a>
+      <a class="card" href="/logic-pro-audio"><h3>Audio for Logic Pro</h3><p>Logic-friendly audio prep.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'aiff', accept: ['.mp3','.wav','.m4a','.aac','.flac','.ogg','.opus'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>
