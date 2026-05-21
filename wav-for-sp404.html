@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert WAV for SP-404 MK2 / MPC / Hardware Samplers — 16-bit, exact sample rate</title>
+<meta name="description" content="Prep audio samples for the Roland SP-404 MK2 (48 kHz / 16-bit), Akai MPC (44.1 kHz / 16-bit), Splice uploads, and other hardware samplers. Drop any audio, pick a sampler preset, get a spec-compliant WAV. No upload.">
+<meta name="keywords" content="wav for sp404, convert wav for sp404 mk2, sample for mpc converter, akai mpc wav format, 16 bit 48 khz wav converter, 16 bit 44.1 khz wav converter, sample for hardware sampler, splice wav format, sp404 mk2 sample format, hardware sampler audio prep">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/wav-for-sp404">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="WAV for SP-404 MK2 / MPC / Samplers — free, no upload">
+<meta property="og:description" content="One drop, one click, spec-compliant WAV for your hardware sampler.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/wav-for-sp404">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WAV for SP-404 / MPC Sampler Converter",
+  "url": "https://audiosaw.com/wav-for-sp404",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What WAV format does the SP-404 MK2 require?","acceptedAnswer":{"@type":"Answer","text":"The Roland SP-404 MK2 reads 16-bit or 24-bit PCM WAV at 48 kHz. Files that don't match these specs either fail silently or import with audible artifacts. The MK1 uses 44.1 kHz instead."}},
+  {"@type":"Question","name":"What WAV format does the Akai MPC need?","acceptedAnswer":{"@type":"Answer","text":"Modern Akai MPCs (MPC Live II, MPC One, MPC X) read 16-bit or 24-bit WAV at 44.1 kHz. They also accept 48 kHz but the project sample rate defaults to 44.1, so matching is cleaner. Stereo and mono both work."}},
+  {"@type":"Question","name":"Why does Splice reject my WAV?","acceptedAnswer":{"@type":"Answer","text":"Splice rejects WAVs with non-standard headers, floating-point PCM, exotic sample rates, or extreme bit depths. The safe target is 16-bit PCM at 44.1 or 48 kHz."}},
+  {"@type":"Question","name":"Do I need to convert stereo samples to mono for a sampler?","acceptedAnswer":{"@type":"Answer","text":"Not required on modern samplers — SP-404 MK2 and MPC both handle stereo. But mono samples use half the memory and CPU, which matters when you're filling 16 pads with stereo loops. For one-shots, mono is usually the right call."}},
+  {"@type":"Question","name":"Does my sample get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. Useful when prepping unreleased samples or copyright-sensitive material."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Convert audio for the <span class="ital">SP-404 MK2</span>, MPC, and other hardware samplers.</h1>
+    <p>Drop a sample — MP3, M4A, FLAC, AIFF, an SD-card recording, a chop from a record. Pick your sampler preset. We output spec-compliant 16-bit PCM WAV at exactly the sample rate your hardware wants. No more silent failures, no more "format not supported" on the device screen.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your sample here</p>
+      <p>any common audio format, or a video file. Batch a folder.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Target sampler
+          <select id="preset">
+            <option value="48000" selected>SP-404 MK2 — 48 kHz, 16-bit</option>
+            <option value="44100">SP-404 MK1 / Akai MPC / Splice — 44.1 kHz, 16-bit</option>
+            <option value="48000">Roland TR-8S / SPD-SX / generic 48 kHz</option>
+            <option value="22050">SP-1200 / vintage 12-bit feel — 22.05 kHz</option>
+          </select>
+        </label>
+        <label>Channels
+          <select id="channels">
+            <option value="">keep original (stereo if present)</option>
+            <option value="1">force mono (smaller, recommended for one-shots)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert for sampler</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:0.84rem;margin:8px 0 0">Output: 16-bit PCM WAV at the chosen sample rate. Drop into your SD card's sample folder and rescan.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Sampler spec cheat sheet</h2>
+    <ul>
+      <li><strong>Roland SP-404 MK2</strong> — 16-bit or 24-bit PCM WAV, 48 kHz. The MK2 will play 44.1 kHz files but they're resampled on import; native 48 kHz avoids any quality hit.</li>
+      <li><strong>Roland SP-404 MK1 / SX / A</strong> — 16-bit PCM WAV, 44.1 kHz. 48 kHz files won't load.</li>
+      <li><strong>Akai MPC Live II / One / X / Key</strong> — 16-bit or 24-bit WAV, 44.1 kHz (project default). 48 kHz also accepted.</li>
+      <li><strong>Akai MPC 2000 / 2500 / 4000 (vintage)</strong> — 16-bit WAV, 44.1 kHz, mono strongly preferred.</li>
+      <li><strong>Splice upload spec</strong> — 16-bit or 24-bit PCM WAV, 44.1 or 48 kHz. No floating-point PCM, no exotic headers.</li>
+      <li><strong>Roland TR-8S / SPD-SX</strong> — 16-bit WAV at 48 kHz.</li>
+      <li><strong>SP-1200 vintage feel</strong> — 22.05 kHz / 12-bit was the original spec. Modern emulators accept 16-bit / 22.05 kHz; the lower rate gives the crunchy character.</li>
+    </ul>
+
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Loading a song chop into the SP-404 MK2</strong> — the MK2 silently rejects WAVs that don't match its spec; this fixes them.</li>
+      <li><strong>Uploading samples to Splice</strong> — Splice rejects floating-point PCM and unusual headers. This outputs a vanilla 16-bit PCM WAV every time.</li>
+      <li><strong>MPC sample import from MP3 or FLAC</strong> — MPCs only read WAV. Drop the MP3, get the WAV.</li>
+      <li><strong>Vintage MPC 2000XL flow</strong> — 44.1 kHz mono 16-bit is the safe lowest-common-denominator.</li>
+      <li><strong>Field recordings from a Zoom / Tascam recorder</strong> — many recorders capture 24-bit 96 kHz. Most samplers don't want that — drop here, convert to whatever your hardware reads.</li>
+      <li><strong>Batch a sample pack</strong> — drop the whole folder, get a zip of spec-compliant WAVs back.</li>
+    </ul>
+
+    <h2>The silent-failure problem</h2>
+    <p>Modern samplers (especially the SP-404 MK2) often <em>appear</em> to load a sample that's slightly off-spec, but it plays at the wrong speed, with audible artifacts, or it shows up but produces silence. The error message — if there is one — is usually "format not supported" with no hint about what's wrong. The common culprits: 32-bit float WAVs (the SP-404 doesn't support them), 96 kHz files (silently resampled, badly), files with non-standard RIFF headers from older converters. This tool re-encodes to a clean 16-bit PCM stream with a standards-compliant header, which is what every sampler expects.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What format does the SP-404 MK2 actually need?</summary><p>16-bit or 24-bit PCM WAV at 48 kHz. The MK2 accepts 44.1 kHz but resamples internally. For best fidelity, feed it 48 kHz directly. Stereo and mono both work; mono uses half the sample memory.</p></details>
+    <details><summary>What format for the original SP-404 / SX?</summary><p>16-bit PCM WAV at 44.1 kHz. The MK1 and SX won't load 48 kHz files at all.</p></details>
+    <details><summary>What about the Akai MPC?</summary><p>16-bit or 24-bit WAV at 44.1 kHz (project default). 48 kHz also accepted, but matching the project rate avoids mismatch warnings.</p></details>
+    <details><summary>Why does Splice reject my WAV?</summary><p>Common causes: 32-bit floating-point PCM (Splice wants integer), exotic sample rates (stick to 44.1 or 48), non-standard RIFF headers from old DAWs. This tool always outputs a clean 16-bit integer PCM WAV that Splice accepts.</p></details>
+    <details><summary>Should I convert to mono?</summary><p>For one-shot drum samples, percussion, vocal chops — usually yes. Mono uses half the sample memory on the device. For pad sounds, atmospheric loops, anything where stereo width matters — keep stereo.</p></details>
+    <details><summary>Will this work for the OP-1 / Digitakt / other samplers?</summary><p>Yes. They all read standard 16-bit PCM WAV. Pick the sample rate matching your device (OP-1 = 44.1 kHz, Digitakt = 48 kHz, Octatrack = 44.1 kHz).</p></details>
+    <details><summary>Does my sample upload?</summary><p>No. The conversion runs in your browser tab. Useful for unreleased samples, copyright-sensitive material, or anything you'd rather not put through a third party's server.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Chop a sample to length before converting.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out sample volumes across a kit.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Trim leading/trailing silence so pads trigger tight.</p></a>
+      <a class="card" href="/stereo-to-mono"><h3>Stereo to Mono</h3><p>Mono mixdown for one-shots and percussion.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = CV.$;
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var presetSel = $('#preset'), channelsSel = $('#channels');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  function onFiles(picked){
+    if (!picked || !picked.length) return;
+    files = files.concat(picked);
+    fileList.style.display = '';
+    controls.style.display = '';
+    convertBtn.disabled = false;
+    CV.renderFileList(fileList, files, function(idx){
+      files.splice(idx, 1);
+      if (!files.length) reset();
+      else CV.renderFileList(fileList, files, arguments.callee);
+    });
+  }
+  function reset(){
+    files = [];
+    fileList.innerHTML = '';
+    controls.style.display = 'none';
+    convertBtn.disabled = true;
+    CV.clearStatus(statusEl);
+    progressWrap.style.display = 'none';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+    if (adPost) adPost.classList.remove('visible');
+  }
+
+  CV.bindDropzone(dropzone, fileInput, onFiles);
+  resetBtn.addEventListener('click', reset);
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display = '';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+
+    var options = { sampleRate: parseInt(presetSel.value, 10) || 48000 };
+    if (channelsSel.value === '1') options.channels = 1;
+
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i], idx = i + 1;
+      try {
+        var blob = await AudioSaw.convert(f, 'wav', options, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, 'wav'), blob: blob });
+      } catch (e) {
+        failures.push({ name: f.name, error: e.message || String(e) });
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length) {
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — 16-bit PCM WAV at ' + (options.sampleRate/1000) + ' kHz');
+      } else if (outputs.length > 1) {
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-sampler.zip');
+        CV.setStatus(statusEl, 'success', outputs.length+' sampler WAVs zipped');
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className = 'file-item';
+        var label = document.createElement('span');
+        var name = document.createElement('span'); name.className = 'name'; name.textContent = o.name;
+        var size = document.createElement('span'); size.className = 'size'; size.textContent = CV.fmtBytes(o.blob.size);
+        label.appendChild(name); label.appendChild(size); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className = 'btn btn-small'; btn.textContent = 'download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = files.length === 0;
+      resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+</body>
+</html>

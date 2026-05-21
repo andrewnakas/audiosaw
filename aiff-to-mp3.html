@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIFF to MP3 — free Logic Pro / GarageBand bounce converter, no upload</title>
+<meta name="description" content="Convert .aiff and .aif files to MP3 in your browser. Handles Logic Pro and GarageBand AIFF bounces, decades-old Mac audio files, and CD-ripped AIFFs. Batch supported, no signup, nothing uploads.">
+<meta name="keywords" content="aiff to mp3, aif to mp3, convert aiff to mp3 mac, logic pro aiff to mp3, garageband bounce to mp3, old mac aif file convert, aiff to mp3 free online, aif to mp3 windows, batch aiff to mp3">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/aiff-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="AIFF to MP3 — free, no upload">
+<meta property="og:description" content="Convert Logic / GarageBand AIFF bounces (and old Mac .aif files) to MP3 in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/aiff-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AIFF to MP3 Converter",
+  "url": "https://audiosaw.com/aiff-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I convert AIFF to MP3 on Mac without iTunes?","acceptedAnswer":{"@type":"Answer","text":"Drop the .aiff or .aif file onto this page in any browser, pick a bitrate, and download the MP3. No iTunes, no Music app, no command line."}},
+  {"@type":"Question","name":"Why does Logic Pro bounce to AIFF instead of MP3?","acceptedAnswer":{"@type":"Answer","text":"AIFF is Apple's lossless uncompressed format and Logic's historical default. It's identical in audio quality to WAV but more common on Mac. Logic Pro can export MP3 directly, but older versions and many template bounces default to AIFF."}},
+  {"@type":"Question","name":"What's the difference between .aif and .aiff?","acceptedAnswer":{"@type":"Answer","text":"None. They're the same format — .aif is the 8.3-style three-letter extension used on older Macs and Windows, .aiff is the modern four-letter version. Both decode identically."}},
+  {"@type":"Question","name":"Will the AIFF play on Windows?","acceptedAnswer":{"@type":"Answer","text":"Sometimes. Windows Media Player supports AIFF inconsistently and Windows can't natively preview them in Explorer. Converting to MP3 fixes the compatibility headache once and for all."}},
+  {"@type":"Question","name":"Can I batch convert a folder of AIFF files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop all the files at once or select a folder, and you get a zip of MP3s back with original filenames preserved."}},
+  {"@type":"Question","name":"Does my file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. You can disconnect from the internet and the tool still works."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>AIFF to <span class="ital">MP3</span> — Logic Pro bounces, GarageBand exports, old Mac files.</h1>
+    <p>Drop an .aiff or .aif file. We compress it to MP3 at the bitrate you pick, right here in your browser. Logic Pro and GarageBand bounce defaults, decades-old Mac audio, CD-ripped AIFFs — all handled. Batch a whole folder and get a zip back.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your AIFF here</p>
+      <p>or click to pick. .aif and .aiff both supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,.aif,.aiff,.aifc" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192">192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320" selected>320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Compressing a Logic Pro AIFF bounce for email or web</strong> — Logic Pro can export MP3 directly but most session templates bounce to AIFF first. Skip the extra Logic step.</li>
+      <li><strong>GarageBand share-to-disk file you need as MP3</strong> — GarageBand's "Share → Export Song to Disk" defaults to AIFF for highest quality.</li>
+      <li><strong>Old Mac .aif files that won't play on Windows</strong> — decades-old recordings, family voicemails ripped off a hard drive, CD-ripped audio from iTunes 1.0.</li>
+      <li><strong>Sending an uncompressed master to someone on Spotify</strong> — they can't import AIFF; MP3 at 320 plays anywhere.</li>
+      <li><strong>Demo to a label or A&amp;R</strong> — your AIFF master stays on disk, the MP3 goes in the email.</li>
+      <li><strong>Archive a folder of old AIFFs to MP3</strong> — drop the whole folder, get a zip of MP3s back, originals untouched.</li>
+    </ul>
+
+    <h2>Why your Mac saved this as AIFF</h2>
+    <p>AIFF (Audio Interchange File Format) is Apple's uncompressed lossless format — bit-for-bit identical to WAV, just with a different container. Logic Pro, GarageBand, and the classic iTunes "Import Settings" all default to AIFF on Mac because it preserves every sample. The trade-off: file sizes are huge (10 MB per minute, stereo, 44.1 kHz) and many non-Mac players don't open it. Converting to MP3 trades imperceptible fidelity for ~10× smaller files that play anywhere.</p>
+
+    <h2>.aif vs .aiff — what's the difference?</h2>
+    <p>None. They're the same format. The three-letter .aif extension dates to the 8.3 filename era and is still used by older Mac apps and Windows-friendly exports. The four-letter .aiff is the modern version. Same bytes inside, same decoder. This tool accepts both, plus .aifc (compressed AIFF, rare).</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>How do I convert AIFF to MP3 on Mac without iTunes?</summary><p>Drop the .aiff or .aif onto this page in any browser, pick a bitrate, and download the MP3. No iTunes, no Music app, no command line, no install.</p></details>
+    <details><summary>How do I convert AIFF to MP3 on Windows?</summary><p>Same as on Mac. Drop the file into this page in Chrome, Edge, or Firefox. Windows Media Player's AIFF support is spotty, so converting to MP3 once and storing the MP3 saves trouble later.</p></details>
+    <details><summary>Why does Logic Pro bounce to AIFF instead of MP3?</summary><p>AIFF is Apple's historical default for uncompressed audio. Logic Pro can export MP3 directly, but most session templates bounce to AIFF first. If you want MP3 straight out of Logic, set the bounce dialog's File Format to MP3 — but for an existing AIFF, just drop it here.</p></details>
+    <details><summary>Is there any quality loss going from AIFF to MP3 at 320 kbps?</summary><p>Mathematically yes — MP3 is lossy at any bitrate. Practically no — 320 kbps MP3 is indistinguishable from the AIFF source for almost all listeners on almost all gear. For archival, keep the AIFF.</p></details>
+    <details><summary>Will old Mac .aif files from the 1990s still work?</summary><p>Yes. AIFF hasn't changed materially in 30+ years. Whether it's a 22 kHz mono recording from a Performa or a 44.1 kHz stereo bounce from modern Logic, this tool reads it.</p></details>
+    <details><summary>Can I batch convert a whole folder?</summary><p>Yes. Select all the .aif/.aiff files in the file picker, or drag the folder onto the drop target. You'll get a zip of MP3s back with original filenames preserved.</p></details>
+    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser tab. You can disconnect from the internet and the tool still works.</p></details>
+    <details><summary>How big can the AIFF be?</summary><p>Around 500 MB per file on a typical laptop. A 1-hour stereo AIFF at 44.1 kHz is about 600 MB — that's near the ceiling. Cut it first with our <a href="/audio-cutter">Audio Cutter</a> if it's bigger.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/wav-to-mp3"><h3>WAV → MP3 (320)</h3><p>Same workflow for WAV bounces.</p></a>
+      <a class="card" href="/m4a-to-mp3"><h3>iPhone Voice Memo → MP3</h3><p>M4A voice memos to MP3.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Shrink the MP3 for email or Discord.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim a long AIFF before converting.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.aif','.aiff','.aifc'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

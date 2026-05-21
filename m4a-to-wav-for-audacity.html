@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M4A to WAV for Audacity — fix "Advanced Audio Coding file" import error (free)</title>
+<meta name="description" content="Audacity won't open your M4A file? Convert .m4a (iPhone voice memos, AAC audio) to WAV here in your browser, then drag the WAV into Audacity. No FFmpeg install, no admin password, no upload.">
+<meta name="keywords" content="m4a to wav for audacity, audacity won't open m4a, audacity advanced audio coding file error, convert m4a to wav free, import m4a into audacity, audacity ffmpeg alternative, iphone voice memo into audacity, m4a audacity fix, m4a to wav online no upload">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/m4a-to-wav-for-audacity">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="M4A to WAV for Audacity — skip the FFmpeg install">
+<meta property="og:description" content="Convert M4A to WAV in your browser so Audacity opens it without the FFmpeg add-on.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/m4a-to-wav-for-audacity">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "M4A to WAV for Audacity Converter",
+  "url": "https://audiosaw.com/m4a-to-wav-for-audacity",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Why won't Audacity open my M4A file?","acceptedAnswer":{"@type":"Answer","text":"Audacity ships without the FFmpeg library, which is required to import M4A (AAC) audio. When you try to open one, Audacity shows an error like 'is an Advanced Audio Coding file' or 'Audacity did not recognize the type of the file.' The fix is either to install the FFmpeg add-on, or to convert the M4A to WAV first — which works without any install."}},
+  {"@type":"Question","name":"How do I convert M4A to WAV for Audacity without installing FFmpeg?","acceptedAnswer":{"@type":"Answer","text":"Drop the .m4a file onto this page, click Convert to WAV, then drag the downloaded WAV into Audacity. The conversion runs in your browser — no FFmpeg, no admin password, no upload."}},
+  {"@type":"Question","name":"Will the WAV be lossless?","acceptedAnswer":{"@type":"Answer","text":"The WAV itself is uncompressed lossless PCM. The original M4A was already lossy (AAC), so the WAV won't sound better than the M4A — but it won't sound worse either, and it's the format Audacity needs."}},
+  {"@type":"Question","name":"Why is the WAV file so much bigger than the M4A?","acceptedAnswer":{"@type":"Answer","text":"WAV is uncompressed — about 10 MB per minute for stereo 44.1 kHz audio. M4A typically compresses 10-20x smaller. This is expected and normal."}},
+  {"@type":"Question","name":"Does it work for iPhone voice memos?","acceptedAnswer":{"@type":"Answer","text":"Yes. iPhone Voice Memos are .m4a files. Save the voice memo to Files or email it to yourself, drop it here, get a WAV, drag into Audacity."}},
+  {"@type":"Question","name":"Does my file get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. The file never touches a server."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>M4A to <span class="ital">WAV</span> for Audacity. Skip the FFmpeg install.</h1>
+    <p>Audacity hits you with "is an Advanced Audio Coding file" because it ships without the FFmpeg library. The fix everyone recommends: install FFmpeg, set the search path, restart Audacity. The faster fix: drop your .m4a here, get a WAV back, drag it into Audacity. No admin password, no install, no upload.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your M4A here</p>
+      <p>iPhone voice memos, AAC files, .m4a from anywhere. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,.m4a,.aac,.m4r,.mp4" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>The Audacity M4A error, explained</h2>
+    <p>Audacity is open-source and the M4A/AAC codec is patent-encumbered. To stay clean of licensing, Audacity ships without AAC support and asks you to install the FFmpeg library separately. When you try to import an .m4a, you see one of these errors:</p>
+    <ul>
+      <li>"<em>filename</em> is an Advanced Audio Coding file."</li>
+      <li>"Audacity did not recognize the type of the file '<em>filename</em>.m4a'. Try installing FFmpeg."</li>
+      <li>"To import this file, please install the optional FFmpeg library."</li>
+    </ul>
+    <p>The official fix is to download FFmpeg from the Audacity FAQ, install it, point Audacity at the library in Preferences → Libraries. That's three steps that often fail (wrong build, blocked installer, library not found after install). Converting the M4A to WAV first is one step that always works.</p>
+
+    <h2>Step-by-step</h2>
+    <ol>
+      <li>Drop your .m4a file in the box above.</li>
+      <li>Click <em>Convert to WAV</em>. (We default to lossless 16-bit PCM, same sample rate as the source.)</li>
+      <li>Download the .wav.</li>
+      <li>In Audacity: <em>File → Import → Audio</em> (or drag the WAV onto the track view). It opens instantly.</li>
+    </ol>
+
+    <h2>This also fixes</h2>
+    <ul>
+      <li><strong>iPhone Voice Memos in Audacity</strong> — voice memos are .m4a. Same error, same fix.</li>
+      <li><strong>AAC files from a podcast or audiobook</strong> — .aac extension behaves identically.</li>
+      <li><strong>Ringtones (.m4r) you want to edit</strong> — same AAC inside, .m4r extension. Convert to WAV, edit, re-export.</li>
+      <li><strong>Audio from an MP4 video</strong> — drop the .mp4 here, we'll extract and convert to WAV in one step. (For multi-format video, use our <a href="/extract-audio">extract audio</a> tool.)</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Why won't Audacity open my M4A file?</summary><p>Audacity ships without FFmpeg (the library that decodes AAC audio inside M4A). Without it, Audacity literally can't read the file format. The error message is usually "is an Advanced Audio Coding file" or "did not recognize the type of the file."</p></details>
+    <details><summary>How do I convert M4A to WAV for Audacity without installing FFmpeg?</summary><p>Drop the .m4a here, click Convert to WAV, drag the downloaded WAV into Audacity. The whole conversion runs in your browser — no FFmpeg, no admin password, no install.</p></details>
+    <details><summary>Will the WAV be lossless?</summary><p>The WAV file format itself is lossless uncompressed PCM. The original M4A was already lossy AAC, so the WAV won't sound better than the M4A — but Audacity can edit it, which is the whole point.</p></details>
+    <details><summary>Why is the WAV file 10x bigger than the M4A?</summary><p>WAV is uncompressed (about 10 MB per minute, stereo, 44.1 kHz). AAC inside M4A is compressed roughly 10–20x smaller. This is expected. You can delete the WAV once you've imported it into Audacity.</p></details>
+    <details><summary>Will this work for iPhone voice memos?</summary><p>Yes. iPhone Voice Memos are .m4a. Save the voice memo to Files (Share → Save to Files) or email it to yourself, drop it onto this page, get a WAV, drag into Audacity.</p></details>
+    <details><summary>What about .m4r ringtones and .aac files?</summary><p>Both are AAC audio in slightly different containers. This tool reads them too.</p></details>
+    <details><summary>Should I just install FFmpeg in Audacity?</summary><p>If you do this constantly, yes — the Audacity FAQ has install steps. If you do it once or twice, converting in your browser here is faster and avoids touching system libraries.</p></details>
+    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser tab. You can disconnect from the internet and the tool still works.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/m4a-to-mp3"><h3>iPhone Voice Memo → MP3</h3><p>M4A to MP3 if you don't need Audacity-editable.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim audio without opening Audacity at all.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Auto-trim dead air, no DAW needed.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch clips together in the browser.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'wav', accept: ['.m4a','.aac','.m4r','.mp4'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

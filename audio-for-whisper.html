@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert Audio for Whisper — 16 kHz mono WAV in your browser (free, no upload)</title>
+<meta name="description" content="Prep any audio file for OpenAI Whisper, whisper.cpp, or faster-whisper. Drop MP3, M4A, MP4, OGG, FLAC, WAV — get a 16 kHz mono WAV out, exactly what the model expects. No FFmpeg, no Python, no upload.">
+<meta name="keywords" content="convert audio for whisper, 16khz mono wav converter, whisper audio format, prep audio for openai whisper, whisper.cpp wav format, convert mp3 to 16khz mono wav, whisper input format, faster-whisper audio prep, whisper api audio">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-for-whisper">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Convert Audio for Whisper — 16 kHz mono WAV in your browser">
+<meta property="og:description" content="One drop, one click. Any audio → 16 kHz mono WAV, exactly what Whisper wants.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-for-whisper">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio for Whisper Converter",
+  "url": "https://audiosaw.com/audio-for-whisper",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What audio format does Whisper expect?","acceptedAnswer":{"@type":"Answer","text":"OpenAI Whisper, whisper.cpp, and faster-whisper all internally resample audio to 16 kHz mono before inference. The model accepts other formats and rates, but pre-converting to 16 kHz mono WAV gives the smallest input and skips the resampling step at runtime — useful for batch jobs and the whisper.cpp CLI which requires this format."}},
+  {"@type":"Question","name":"Why convert to mono?","acceptedAnswer":{"@type":"Answer","text":"Whisper is a speech model and doesn't use stereo information. Converting stereo to mono cuts file size in half and avoids ambiguous decoding behavior on the C++ implementations."}},
+  {"@type":"Question","name":"Why 16 kHz instead of 44.1 or 48 kHz?","acceptedAnswer":{"@type":"Answer","text":"Whisper was trained on 16 kHz audio. Higher sample rates are downsampled to 16 kHz internally, so feeding 44.1 or 48 kHz audio is wasted bandwidth (and CPU during resampling)."}},
+  {"@type":"Question","name":"Will the WAV work with whisper.cpp?","acceptedAnswer":{"@type":"Answer","text":"Yes. The whisper.cpp CLI requires 16-bit PCM WAV at 16 kHz, exactly what this tool outputs. Just run: ./main -f your-file.wav"}},
+  {"@type":"Question","name":"Will the WAV work with the OpenAI Whisper API?","acceptedAnswer":{"@type":"Answer","text":"Yes. The API accepts many formats, but 16 kHz mono WAV uploads faster and is the canonical input. The 25 MB API file-size limit covers about 4 hours of 16 kHz mono WAV."}},
+  {"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. Useful for sensitive recordings (interviews, medical, legal) where you don't want them touching a converter's servers before they touch the model."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Convert audio for <span class="ital">Whisper</span>. 16 kHz mono WAV, one click.</h1>
+    <p>Drop any audio or video file — MP3, M4A, MP4, OGG, FLAC, WAV. We output exactly what OpenAI Whisper, whisper.cpp, and faster-whisper want internally: 16-bit PCM WAV at 16 kHz, mono. No FFmpeg command to memorize, no Python script, no upload. The file never leaves your browser.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your audio or video here</p>
+      <p>Any common format. Output is always 16 kHz mono WAV — no options to pick.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert for Whisper</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:0.84rem;margin:8px 0 0">Output: 16-bit PCM WAV · 16,000 Hz · mono · same length as source.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why this format, exactly</h2>
+    <p>OpenAI's Whisper model was trained on 16 kHz mono audio. Every implementation — the official Python package, whisper.cpp, faster-whisper, MLX-Whisper — converts its input to 16 kHz mono internally before the first transformer layer. You can feed it 48 kHz stereo MP3 and it'll work, but the runtime spends extra cycles resampling and downmixing. For batch jobs, sensitive recordings, or the whisper.cpp CLI (which strictly requires 16-bit PCM WAV at 16 kHz), pre-converting is the clean answer.</p>
+
+    <h2>Whisper input format spec</h2>
+    <ul>
+      <li><strong>Sample rate:</strong> 16,000 Hz</li>
+      <li><strong>Channels:</strong> 1 (mono)</li>
+      <li><strong>Bit depth:</strong> 16-bit signed PCM</li>
+      <li><strong>Container:</strong> WAV (RIFF)</li>
+      <li><strong>File size:</strong> ~1.9 MB per minute. The OpenAI Whisper API's 25 MB upload limit fits ~13 minutes of audio per request at this format. For longer files, chunk first with our <a href="/audio-cutter">Audio Cutter</a>.</li>
+    </ul>
+
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>whisper.cpp CLI</strong> — the most common error new users hit is "WAV file must be 16-bit PCM at 16 kHz." This page fixes that in one drop.</li>
+      <li><strong>OpenAI Whisper API uploads</strong> — staying under the 25 MB request limit by switching from MP3 stereo to 16 kHz mono WAV (smaller after a certain length, and skips server-side resampling).</li>
+      <li><strong>faster-whisper batches</strong> — pre-converting a directory of recordings cuts per-file overhead.</li>
+      <li><strong>Local privacy-first transcription</strong> — interviews, medical, legal, journalism. Convert in browser, run Whisper locally, audio never touches a remote server.</li>
+      <li><strong>iPhone voice memos → Whisper</strong> — .m4a in, 16 kHz mono WAV out, ready for transcription.</li>
+      <li><strong>YouTube/podcast clips → Whisper</strong> — drop the MP3 or video file, get the Whisper-ready WAV.</li>
+    </ul>
+
+    <h2>Command examples</h2>
+    <p>Once you've downloaded the WAV:</p>
+    <pre style="background:var(--paper-2);padding:14px;border:1px solid var(--rule);border-radius:3px;overflow-x:auto;font-family:var(--mono);font-size:0.84rem"># whisper.cpp
+./main -m models/ggml-base.en.bin -f your-file.wav
+
+# OpenAI Python package
+whisper your-file.wav --model base.en
+
+# faster-whisper (Python)
+from faster_whisper import WhisperModel
+WhisperModel("base.en").transcribe("your-file.wav")</pre>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What audio format does Whisper expect?</summary><p>16 kHz mono 16-bit PCM WAV. Higher rates and stereo are resampled and downmixed internally, so pre-converting saves runtime cycles and (for whisper.cpp) avoids hard format errors.</p></details>
+    <details><summary>Why convert to mono?</summary><p>Whisper is a speech model — it doesn't use stereo information. Mono cuts the file size in half and avoids decoding ambiguity in the C++ implementations.</p></details>
+    <details><summary>Why 16 kHz?</summary><p>Whisper was trained on 16 kHz audio. Anything higher gets downsampled. Lower would lose information the model expects.</p></details>
+    <details><summary>Will this work with whisper.cpp?</summary><p>Yes. whisper.cpp's CLI requires 16-bit PCM WAV at 16 kHz, which is exactly the output here. Run <code>./main -f your-file.wav</code> and it'll work.</p></details>
+    <details><summary>Will this work with the OpenAI Whisper API?</summary><p>Yes. The API accepts MP3, M4A, WAV, and several others, but 16 kHz mono WAV uploads faster and is the canonical input. The 25 MB request limit covers about 4 hours of audio at this format.</p></details>
+    <details><summary>What about ElevenLabs, Deepgram, AssemblyAI?</summary><p>All accept this format too. Their docs may suggest other formats — most accept 16 kHz mono WAV as a safe lowest-common-denominator. Check each provider for any service-specific limits.</p></details>
+    <details><summary>How big a file can I process here?</summary><p>Around 500 MB input on a typical laptop — that's many hours of voice. For longer files, chunk with our <a href="/audio-cutter">Audio Cutter</a> first.</p></details>
+    <details><summary>Does my audio get uploaded?</summary><p>No. The conversion runs entirely in your browser tab. Useful for interviews, medical, legal, or journalism recordings you don't want touching a third-party converter before they hit your model.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Chunk a long recording into &lt;25 MB pieces for the Whisper API.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Trim dead air — Whisper charges by audio length, this saves money.</p></a>
+      <a class="card" href="/stereo-to-mono"><h3>Stereo to Mono</h3><p>Just the mono step, output any format.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring quiet recordings up before transcription.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = CV.$;
+  var dropzone = $('#dropzone');
+  var fileInput = $('#fileInput');
+  var fileList = $('#fileList');
+  var controls = $('#controls');
+  var convertBtn = $('#convertBtn');
+  var resetBtn = $('#resetBtn');
+  var statusEl = $('#status');
+  var progressWrap = $('#progressWrap');
+  var progressBar = $('#progressBar');
+  var resultList = $('#resultList');
+  var adPost = $('#adSlotPost');
+  var files = [];
+
+  function onFiles(picked) {
+    if (!picked || !picked.length) return;
+    files = files.concat(picked);
+    fileList.style.display = '';
+    controls.style.display = '';
+    convertBtn.disabled = false;
+    CV.renderFileList(fileList, files, function(idx){
+      files.splice(idx, 1);
+      if (!files.length) reset();
+      else CV.renderFileList(fileList, files, arguments.callee);
+    });
+  }
+  function reset() {
+    files = [];
+    fileList.innerHTML = '';
+    controls.style.display = 'none';
+    convertBtn.disabled = true;
+    CV.clearStatus(statusEl);
+    progressWrap.style.display = 'none';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+    if (adPost) adPost.classList.remove('visible');
+  }
+
+  CV.bindDropzone(dropzone, fileInput, onFiles);
+  resetBtn.addEventListener('click', reset);
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display = '';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+
+    var options = { sampleRate: 16000, channels: 1 };
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i], idx = i + 1;
+      try {
+        var blob = await AudioSaw.convert(f, 'wav', options, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, 'wav'), blob: blob });
+      } catch (e) {
+        failures.push({ name: f.name, error: e.message || String(e) });
+      }
+    }
+
+    try {
+      if (outputs.length === 1 && !failures.length) {
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — 16 kHz mono WAV, ready for Whisper');
+      } else if (outputs.length > 1) {
+        CV.setStatus(statusEl, 'info', 'Packaging '+outputs.length+' files…');
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-whisper.zip');
+        CV.setStatus(statusEl, 'success', outputs.length+' WAV files zipped' + (failures.length ? ' ('+failures.length+' failed)' : ''));
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className = 'file-item';
+        var label = document.createElement('span');
+        var name = document.createElement('span'); name.className = 'name'; name.textContent = o.name;
+        var size = document.createElement('span'); size.className = 'size'; size.textContent = CV.fmtBytes(o.blob.size);
+        label.appendChild(name); label.appendChild(size); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className = 'btn btn-small'; btn.textContent = 'download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = files.length === 0;
+      resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+</body>
+</html>

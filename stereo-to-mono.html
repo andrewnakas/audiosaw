@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereo to Mono Converter — fix one-sided podcast recordings, halve MP3 size</title>
+<meta name="description" content="Mix stereo audio down to mono in your browser. Fix one-side-only Zoom/Skype call recordings, cut MP3 size in half for voice, prep audio for hearing-aid accessibility. MP3, WAV, M4A in — mono MP3 or WAV out. No upload.">
+<meta name="keywords" content="stereo to mono converter, convert stereo to mono mp3, stereo to mono online free, mix down to mono, podcast stereo to mono, one sided audio recording fix, mono audio for hearing aid, zoom recording mono fix, phone call mono converter">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/stereo-to-mono">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Stereo to Mono Converter — free, no upload">
+<meta property="og:description" content="Mix stereo audio to mono in your browser. Fix one-sided recordings or halve voice file size.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/stereo-to-mono">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Stereo to Mono Converter",
+  "url": "https://audiosaw.com/stereo-to-mono",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Why is my Zoom or Skype recording one-sided?","acceptedAnswer":{"@type":"Answer","text":"Many call apps record your microphone to the left channel and the other person's audio to the right (or vice versa). If you play it back, one person sounds like they're inside your head and the other across the room. Mixing down to mono averages both channels so everyone is at the same level."}},
+  {"@type":"Question","name":"How much smaller is mono than stereo?","acceptedAnswer":{"@type":"Answer","text":"Roughly half. A 10 MB stereo MP3 becomes about 5 MB in mono at the same bitrate. For voice content this is essentially free file-size savings — voice carries no useful stereo information."}},
+  {"@type":"Question","name":"Should I convert music to mono?","acceptedAnswer":{"@type":"Answer","text":"Usually not. Music uses stereo for instrument placement and depth. Mono is appropriate for voice (podcasts, voice memos, calls), single-source mic recordings, hearing-aid accessibility, and some legacy hardware (old samplers, mono PA systems, vintage radio playback)."}},
+  {"@type":"Question","name":"Does converting to mono lose audio quality?","acceptedAnswer":{"@type":"Answer","text":"For voice and single-source content, no — there was no useful stereo information to begin with. For music it removes the stereo image but each channel's frequency content is preserved (the two are averaged sample-by-sample)."}},
+  {"@type":"Question","name":"Does my file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab. The file never touches a server."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Stereo to <span class="ital">mono</span>. Fix one-sided calls, halve voice file size.</h1>
+    <p>Drop a stereo file — a Zoom recording where you're only on one side, a podcast you want to make smaller, a single-source mic recording that wastes the second channel. We average the channels into proper mono. Output MP3 or WAV. Browser-only, no upload.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop audio here</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC, or a video file.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3 — compressed, smaller</option>
+            <option value="wav">WAV — lossless 16-bit PCM</option>
+          </select>
+        </label>
+        <label>MP3 bitrate (mono)
+          <select id="bitrate">
+            <option value="64">64 kbps — voice, tiny</option>
+            <option value="96">96 kbps — voice, balanced</option>
+            <option value="128" selected>128 kbps — high-quality voice</option>
+            <option value="192">192 kbps — music</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to mono</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What this is good for</h2>
+    <ul>
+      <li><strong>Fix a one-sided Zoom / Skype / Teams call recording</strong> — many call apps record each participant to a separate channel. Playback sounds bizarre. Mono averages them so everyone's at the same level.</li>
+      <li><strong>Cut podcast file size in half</strong> — single-host voice podcasts have no useful stereo content. Stereo MP3 at 128 kbps → mono MP3 at 128 kbps = same audio quality, half the file size, half the bandwidth cost.</li>
+      <li><strong>Phone call recordings</strong> — Pixel / Samsung call recorders often record stereo with phone audio on one channel and mic on the other. Mono makes it normal.</li>
+      <li><strong>Hearing aid accessibility</strong> — some hearing aids and assistive listening devices work better with mono content.</li>
+      <li><strong>Voice memo cleanup</strong> — some iPhone Voice Memos record stereo even though only one mic is active. Half the file size for the same content.</li>
+      <li><strong>Hardware samplers (SP-404, MPC, vintage)</strong> — many older samplers prefer mono samples. See our <a href="/wav-for-sp404">SP-404 WAV converter</a> for full sampler prep.</li>
+      <li><strong>Whisper / transcription prep</strong> — speech models ignore stereo. Mono is the canonical input. See <a href="/audio-for-whisper">Audio for Whisper</a>.</li>
+    </ul>
+
+    <h2>How mono mixdown works (the boring math)</h2>
+    <p>For each sample position in the file, we take the left channel value, add the right channel value, divide by 2, write that to the output. That's it. Levels stay where they were (no clipping from doubling), and any content that was identical in both channels stays identical. Content that was hard-panned left or right gets reduced by 6 dB but doesn't disappear. Anti-phase content (rare in real recordings) does cancel out — but if you had truly anti-phase audio, you had bigger problems.</p>
+
+    <h2>When NOT to convert to mono</h2>
+    <ul>
+      <li><strong>Music you care about</strong> — stereo is how mixes communicate space and instrument placement.</li>
+      <li><strong>Binaural recordings</strong> — the whole point is the stereo image. Mono destroys it.</li>
+      <li><strong>Field recordings with positional intent</strong> — birdsong recordings, urban soundscapes, anything where "where did that sound come from" matters.</li>
+      <li><strong>Anything heading to Spotify or Apple Music</strong> — they accept mono, but mainstream music distribution expects stereo.</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Why is my Zoom or Skype call recording one-sided?</summary><p>Call apps often record each participant's audio to a separate channel — your mic to the left, theirs to the right. Played back, one person is in your left ear and the other in your right. Mixing to mono averages the two so everyone's at a normal level.</p></details>
+    <details><summary>How much smaller does mono make my file?</summary><p>Roughly half at the same bitrate. A 10 MB stereo MP3 at 128 kbps becomes about 5 MB in mono at 128 kbps. For voice this is essentially free savings.</p></details>
+    <details><summary>Should I convert music to mono?</summary><p>Usually not. Music uses stereo for spatial imaging and instrument separation. Mono is for voice, single-source recordings, accessibility, and legacy hardware.</p></details>
+    <details><summary>Does converting to mono lose audio quality?</summary><p>For voice and single-source content, no — there was no useful stereo to begin with. For music, the stereo image is collapsed but the frequency content is preserved (channels are averaged sample-by-sample).</p></details>
+    <details><summary>What if I only want one channel, not both averaged?</summary><p>Most "one-sided recording" use cases work better with averaging than with picking a single channel — the silent side contributes nothing, so averaging just halves the level uniformly. If you specifically need to isolate one channel, use a DAW like Audacity (see our <a href="/m4a-to-wav-for-audacity">M4A → WAV for Audacity</a> page if your file is M4A).</p></details>
+    <details><summary>Does my file upload?</summary><p>No. The conversion runs entirely in your browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-compressor"><h3>Audio Compressor</h3><p>Mono is one input; also lets you pick bitrate, sample rate, format.</p></a>
+      <a class="card" href="/audio-for-whisper"><h3>Audio for Whisper</h3><p>16 kHz mono WAV — Whisper's canonical input.</p></a>
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Trim dead air from a podcast or call.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring quiet calls and voice memos up to level.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = CV.$;
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var outFmtSel = $('#outFmt'), bitrateSel = $('#bitrate');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  function onFiles(picked){
+    if (!picked || !picked.length) return;
+    files = files.concat(picked);
+    fileList.style.display = '';
+    controls.style.display = '';
+    convertBtn.disabled = false;
+    CV.renderFileList(fileList, files, function(idx){
+      files.splice(idx, 1);
+      if (!files.length) reset();
+      else CV.renderFileList(fileList, files, arguments.callee);
+    });
+  }
+  function reset(){
+    files = [];
+    fileList.innerHTML = '';
+    controls.style.display = 'none';
+    convertBtn.disabled = true;
+    CV.clearStatus(statusEl);
+    progressWrap.style.display = 'none';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+    if (adPost) adPost.classList.remove('visible');
+  }
+
+  CV.bindDropzone(dropzone, fileInput, onFiles);
+  resetBtn.addEventListener('click', reset);
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display = '';
+    CV.setProgress(progressBar, 0);
+    resultList.innerHTML = '';
+
+    var target = outFmtSel.value;
+    var options = { channels: 1, bitrate: parseInt(bitrateSel.value, 10) || 128 };
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i], idx = i + 1;
+      try {
+        var blob = await AudioSaw.convert(f, target, options, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, target), blob: blob });
+      } catch (e) {
+        failures.push({ name: f.name, error: e.message || String(e) });
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length) {
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — mixed to mono');
+      } else if (outputs.length > 1) {
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-mono.zip');
+        CV.setStatus(statusEl, 'success', outputs.length+' mono files zipped');
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className = 'file-item';
+        var label = document.createElement('span');
+        var name = document.createElement('span'); name.className = 'name'; name.textContent = o.name;
+        var size = document.createElement('span'); size.className = 'size'; size.textContent = CV.fmtBytes(o.blob.size);
+        label.appendChild(name); label.appendChild(size); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className = 'btn btn-small'; btn.textContent = 'download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = files.length === 0;
+      resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+</body>
+</html>
