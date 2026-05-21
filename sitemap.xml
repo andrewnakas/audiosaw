@@ -33,6 +33,11 @@
   <url><loc>https://audiosaw.com/discord-audio-compressor</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://audiosaw.com/audio-to-text-prep</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://audiosaw.com/wav-44100-16bit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://audiosaw.com/fade-in-fade-out</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://audiosaw.com/amplify-audio</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://audiosaw.com/wav-to-mp3-128kbps</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://audiosaw.com/davinci-resolve-audio</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://audiosaw.com/capcut-audio</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
 
   <url><loc>https://audiosaw.com/about</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://audiosaw.com/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>

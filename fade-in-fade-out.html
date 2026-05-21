@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add fade in / fade out to audio — in the browser, no Audacity needed (free)</title>
+<meta name="description" content="Add a smooth fade-in at the start and fade-out at the end of any audio file. Set the duration in seconds, drop the file, download the faded version. No Audacity, no DAW, no upload.">
+<meta name="keywords" content="audio fade in fade out, add fade to mp3, fade out mp3 online, audio fade online free, fade in audio, fade out audio, no audacity fade, browser audio fader, mp3 fade in fade out tool">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/fade-in-fade-out">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Add fade in / fade out to any audio file — in your browser">
+<meta property="og:description" content="Drop a file. Set fade-in and fade-out seconds. Download the smoothed version. No Audacity needed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/fade-in-fade-out">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Fade In/Out Tool",
+  "url": "https://audiosaw.com/fade-in-fade-out",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I add a fade in or fade out to an MP3?","acceptedAnswer":{"@type":"Answer","text":"Drop the MP3 here, set the fade-in seconds (how long the fade-up at the start takes) and the fade-out seconds (the fade-down at the end). Pick MP3 or WAV output, click Apply. Download. Done — no Audacity, no GarageBand."}},
+  {"@type":"Question","name":"What's a good fade-out length?","acceptedAnswer":{"@type":"Answer","text":"Music tracks usually fade out over 3-8 seconds. Podcasts often use 1-3 seconds. Ringtones use a quick fade-in of 0.5-1 second to avoid a hard pop. Voicemails / voice memos rarely need fades at all. Try 5 seconds and listen — adjust from there."}},
+  {"@type":"Question","name":"Does the fade lose audio quality?","acceptedAnswer":{"@type":"Answer","text":"The fade math is lossless — we multiply the samples by a smooth ramp. Quality loss only comes from re-encoding to MP3 afterward (lossy). If you output WAV, end-to-end lossless. If you re-encode to MP3 at 192+ kbps, the loss is inaudible."}},
+  {"@type":"Question","name":"What fade curve does it use?","acceptedAnswer":{"@type":"Answer","text":"Equal-power (cosine) curve. It sounds natural across the fade region — neither too steep at the start nor too gentle at the end. Linear fades sound rushed at the loud end and abrupt at the quiet end; cosine is the music-industry default."}},
+  {"@type":"Question","name":"Can I do just a fade-in (no fade-out) or vice versa?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set whichever side to 0 seconds and only the other side applies."}},
+  {"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. The fade is applied in your browser tab. Disconnect wifi and the tool still works after the page loads."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Add a <span class="ital">fade in</span> and <span class="ital">fade out</span>. Without opening Audacity.</h1>
+    <p>Set the seconds, drop the file, download the smoothed version. Equal-power cosine curve, the kind every DAW uses by default. Works on MP3, WAV, M4A, anything your browser can decode.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your audio file</p>
+      <p>MP3, WAV, M4A, FLAC, OGG. One file at a time (settings are per-file).</p>
+      <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Fade in (seconds)
+          <input type="number" id="fadeIn" value="2" min="0" max="60" step="0.1">
+        </label>
+        <label>Fade out (seconds)
+          <input type="number" id="fadeOut" value="5" min="0" max="60" step="0.1">
+        </label>
+        <label>Output format
+          <select id="targetFormat">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV (lossless)</option>
+          </select>
+        </label>
+        <label id="bitrateLabel">MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Apply fades</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Common fade lengths</h2>
+    <ul>
+      <li><strong>Song fade-out</strong> — 4 to 8 seconds. Long enough to feel intentional, short enough not to bore. Radio edits often go 3-5.</li>
+      <li><strong>Podcast intro fade-in / outro fade-out</strong> — 1 to 3 seconds each. Just enough to avoid a hard cut.</li>
+      <li><strong>Ringtone fade-in</strong> — 0.3 to 1 second. So the ringtone doesn't startle you on first ring, but still triggers before the call goes to voicemail.</li>
+      <li><strong>Voice memo cleanup</strong> — 0.2 to 0.5 seconds. Removes the click of starting/stopping the recorder.</li>
+      <li><strong>Looping music bed</strong> — short crossfades (~0.1 s) at both ends. Usually you want fades very short or zero to keep the loop seamless.</li>
+      <li><strong>Audiobook chapter</strong> — 1 to 2 seconds. Polished but not dramatic.</li>
+    </ul>
+
+    <h2>What an "equal-power cosine" fade actually is</h2>
+    <p>A linear fade scales the volume by a straight line from 0 to 1. Sounds rushed at the start and sluggish at the end because perceived loudness isn't linear with amplitude.</p>
+    <p>An equal-power fade follows a cosine curve (cos² to be precise) that keeps perceived loudness even across the fade region. It's the default in Pro Tools, Logic, Reaper, Ableton — basically every DAW. We use it here so the result sounds like a professional fade, not a calculator's idea of one.</p>
+
+    <h2>When to use fades vs hard cuts</h2>
+    <p>Hard cut: sample chops, drum hits, anywhere you want energy. Fade: anywhere the abrupt cut creates a click, pop, or jarring silence. If your audio has any room tone or DC offset, you almost always want at least a tiny fade (50-100 ms) at both ends to avoid an audible click.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Will the file stay the same length?</summary><p>Yes. Fades modify the volume of existing audio — they don't trim or extend the file. The total duration is unchanged.</p></details>
+    <details><summary>How do I just add a fade-out without a fade-in?</summary><p>Set the fade-in to 0. Only the fade-out applies.</p></details>
+    <details><summary>What if my fade-in plus fade-out is longer than the file?</summary><p>We'll cap them at half the file duration each, so they never overlap into a weird mid-file dip. We'll also warn you in the status text.</p></details>
+    <details><summary>Why is the output an MP3 by default?</summary><p>Most people start with MP3 and want MP3 back. Pick WAV if you need lossless (handing it off to a DAW, or applying more processing later).</p></details>
+    <details><summary>Can I do a fade in the middle of the file?</summary><p>Not on this tool — that's a more general edit. Use our <a href="/audio-cutter">audio cutter</a> to split, then re-join with crossfade in our <a href="/audio-joiner">audio joiner</a>.</p></details>
+    <details><summary>Does my audio get uploaded?</summary><p>No. The fade math and re-encoding happen in your browser tab.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the ends first, then fade. Combo move.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch clips with crossfade between them.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Set the overall level after fading.</p></a>
+      <a class="card" href="/ringtone-maker"><h3>Ringtone Maker</h3><p>30-sec clip with built-in fade for iPhone/Android.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var fadeInEl = $('#fadeIn'), fadeOutEl = $('#fadeOut');
+  var targetSel = $('#targetFormat'), bitrateSel = $('#bitrate'), bitrateLabel = $('#bitrateLabel');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  targetSel.addEventListener('change', function(){
+    bitrateLabel.style.display = targetSel.value === 'mp3' ? '' : 'none';
+  });
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){
+    files = picked.slice(0, 1); render();
+  }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  function applyFades(ab, fadeInSec, fadeOutSec){
+    var sr = ab.sampleRate;
+    var len = ab.length;
+    var fiSamples = Math.min(Math.floor(fadeInSec * sr), Math.floor(len/2));
+    var foSamples = Math.min(Math.floor(fadeOutSec * sr), Math.floor(len/2));
+    for (var ch = 0; ch < ab.numberOfChannels; ch++){
+      var data = ab.getChannelData(ch);
+      for (var i = 0; i < fiSamples; i++){
+        var t = i / fiSamples;
+        var g = Math.sin(t * Math.PI / 2);
+        g = g * g;
+        data[i] *= g;
+      }
+      for (var j = 0; j < foSamples; j++){
+        var k = len - 1 - j;
+        var t2 = j / foSamples;
+        var g2 = Math.sin(t2 * Math.PI / 2);
+        g2 = g2 * g2;
+        data[k] *= g2;
+      }
+    }
+    return ab;
+  }
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var fadeIn = parseFloat(fadeInEl.value) || 0;
+    var fadeOut = parseFloat(fadeOutEl.value) || 0;
+    var target = targetSel.value;
+    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    try {
+      var f = files[0];
+      CV.setStatus(statusEl, 'info', 'Decoding…');
+      var ab = await AudioSaw.decodeToAudioBuffer(f, function(pct){ CV.setProgress(progressBar, pct * 0.4); });
+      var totalSec = ab.length / ab.sampleRate;
+      if (fadeIn + fadeOut > totalSec){
+        CV.setStatus(statusEl, 'info', 'Fades capped — combined longer than file length.');
+      }
+      applyFades(ab, fadeIn, fadeOut);
+      CV.setProgress(progressBar, 60);
+      var blob;
+      if (target === 'wav'){
+        CV.setStatus(statusEl, 'info', 'Writing WAV…');
+        blob = AudioSaw.audioBufferToWav(ab);
+      } else {
+        CV.setStatus(statusEl, 'info', 'Encoding MP3…');
+        blob = await AudioSaw.audioBufferToMp3(ab, bitrate, function(pct){
+          CV.setProgress(progressBar, 60 + pct * 0.4);
+        });
+      }
+      var outName = AudioSaw.rename(f.name, target);
+      var base = outName.replace(/\.[^.]+$/, '');
+      var finalName = base + '-faded.' + target;
+      CV.downloadBlob(blob, finalName);
+      CV.setStatus(statusEl, 'success', 'Done — '+finalName+' ('+CV.fmtBytes(blob.size)+')');
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=finalName;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(blob.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download again';
+      btn.onclick = function(){ CV.downloadBlob(blob, finalName); };
+      row.appendChild(btn); resultList.appendChild(row);
+      if (adPost) adPost.classList.add('visible');
+    } catch(e){
+      CV.setStatus(statusEl, 'error', e.message || String(e));
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

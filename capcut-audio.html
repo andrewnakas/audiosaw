@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio for CapCut — convert audio so CapCut imports it cleanly (free, no upload)</title>
+<meta name="description" content="CapCut won't import your audio? Or it goes silent on import? Convert it to 44.1 kHz stereo MP3 here — the format CapCut handles best on mobile and desktop. WAV option for desktop projects. No upload, no watermark.">
+<meta name="keywords" content="audio for capcut, capcut audio not working, capcut cant import mp3, capcut audio silent, audio for capcut mobile, capcut desktop audio import, mp3 for capcut, convert audio for capcut free, capcut audio format">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/capcut-audio">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Audio for CapCut — the format it handles without complaint">
+<meta property="og:description" content="Convert audio to 44.1 kHz stereo MP3 (mobile) or WAV (desktop). CapCut-ready, no upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/capcut-audio">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio for CapCut Converter",
+  "url": "https://audiosaw.com/capcut-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Why won't CapCut import my audio file?","acceptedAnswer":{"@type":"Answer","text":"CapCut mobile is finicky about audio. WMA, OPUS, and some M4A variants don't import or import silently. CapCut desktop is broader but still chokes on FLAC at non-standard sample rates and some AAC profiles. Convert to a plain 44.1 kHz stereo MP3 (mobile) or WAV (desktop) and the import works."}},
+  {"@type":"Question","name":"My audio imports but it's silent in CapCut — fix?","acceptedAnswer":{"@type":"Answer","text":"Usually a sample rate the player can't resample on the fly, or a multichannel layout (5.1, ambisonic) CapCut doesn't know how to map. Convert here to plain 44.1 kHz stereo and the silence problem goes away."}},
+  {"@type":"Question","name":"Can I extract audio from an MP4 for use in CapCut as a separate track?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, we'll extract the audio and convert it to CapCut-friendly MP3 or WAV. You then import the audio as its own clip in CapCut and place it on the timeline."}},
+  {"@type":"Question","name":"Should I pick MP3 or WAV for CapCut?","acceptedAnswer":{"@type":"Answer","text":"MP3 for CapCut mobile (smaller, imports faster, no quality issue for voice/music in social video). WAV for CapCut desktop if you're doing serious editing and want lossless — quality difference is mostly invisible at typical export bitrates, but if you re-export multiple times, WAV avoids generation loss."}},
+  {"@type":"Question","name":"Does this work for CapCut PC version 4 / 5 / 6?","acceptedAnswer":{"@type":"Answer","text":"Yes. The output format is standard MP3 or WAV that every CapCut version accepts."}},
+  {"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Conversion happens in your browser. The file never leaves your device."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio for <span class="ital">CapCut</span>. The format it handles without complaint.</h1>
+    <p>CapCut mobile is great until it isn't. Some MP3s import silent. Some M4As don't import at all. OPUS files from voice notes go straight in the trash. Drop your audio here, pick mobile (MP3) or desktop (WAV), and we'll output a CapCut-friendly file with the right sample rate and channel layout.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your audio or video</p>
+      <p>MP3, M4A, AAC, OPUS, WMA, MP4, MOV — whatever CapCut refused.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Target
+          <select id="capcutTarget">
+            <option value="mobile-mp3" selected>CapCut mobile (MP3 192 kbps, 44.1 kHz stereo)</option>
+            <option value="desktop-wav">CapCut desktop (WAV 44.1 kHz 16-bit stereo)</option>
+            <option value="desktop-mp3-320">CapCut desktop max-quality (MP3 320 kbps)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert for CapCut</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>CapCut import problems this fixes</h2>
+    <ul>
+      <li><strong>Voice memo (M4A) imports silently</strong> — iPhone Voice Memos use HE-AAC profile. CapCut mobile sometimes doesn't decode it. MP3 fixes it.</li>
+      <li><strong>WhatsApp voice note (.opus) won't import</strong> — CapCut doesn't ship an Opus decoder on mobile. Convert here, problem gone.</li>
+      <li><strong>WMA file from a Windows voice recorder</strong> — same story.</li>
+      <li><strong>FLAC plays at the wrong speed</strong> — non-standard sample rate Resolve / CapCut won't resample. We normalize to 44.1.</li>
+      <li><strong>MP4 has audio but CapCut shows "no audio track"</strong> — some MP4s use codecs CapCut doesn't recognize for inline playback. Extract the audio here, import as a separate clip.</li>
+      <li><strong>Audio plays once, then disappears next time you open the project</strong> — usually a path issue, but a re-import of a known-good MP3 fixes it. Convert here for a fresh, clean copy.</li>
+    </ul>
+
+    <h2>What we output for each preset</h2>
+    <ul>
+      <li><strong>CapCut mobile (MP3)</strong> — 192 kbps CBR MP3 at 44.1 kHz stereo. Small, transparent for voice and music, imports cleanly on iOS and Android.</li>
+      <li><strong>CapCut desktop (WAV)</strong> — 44.1 kHz / 16-bit stereo PCM. Lossless, no codec dependency. Use for music videos or anything you'll export multiple times.</li>
+      <li><strong>CapCut desktop max-quality MP3</strong> — 320 kbps CBR at 44.1 kHz. When you want a small file but the audio is critical (released music as a backing track).</li>
+    </ul>
+
+    <h2>If your video has audio CapCut won't recognize</h2>
+    <p>The usual workflow:</p>
+    <ol>
+      <li>Drop the MP4 here. We extract the audio and convert it to CapCut-friendly format.</li>
+      <li>In CapCut, import the original MP4 as your video clip.</li>
+      <li>If CapCut shows "no audio" on the MP4, mute or delete the audio track from that clip.</li>
+      <li>Import the converted audio file as a separate clip.</li>
+      <li>Drag it to a timeline track aligned to the start of the video. If the lengths match, you're synced.</li>
+    </ol>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Why is CapCut so picky?</summary><p>Mobile CapCut runs on phone hardware that licenses fewer audio decoders. Desktop CapCut handles more but still skips a few. They're both optimized for short social-video workflows, not as a general DAW.</p></details>
+    <details><summary>Can I extract audio from a video and replace it in CapCut?</summary><p>Yes. Extract here (drop the MP4), edit the audio if needed (our <a href="/audio-cutter">cutter</a>, <a href="/normalize-audio">normalizer</a>), then import the WAV as a separate audio clip in CapCut. Mute the original video's audio track.</p></details>
+    <details><summary>Will the audio sync stay correct?</summary><p>If you don't change the length, yes — the converted file is the same duration as the source. Drop it at frame 0 of the timeline.</p></details>
+    <details><summary>Is there a CapCut alternative without these import quirks?</summary><p>DaVinci Resolve free has different quirks (see our <a href="/davinci-resolve-audio">Resolve audio page</a>). For audio-heavy projects, Audacity + a video editor is often less painful than CapCut.</p></details>
+    <details><summary>Does my audio get uploaded?</summary><p>No. Everything runs in your browser tab.</p></details>
+    <details><summary>Does this work for CapCut on iPad?</summary><p>Yes. The MP3 / WAV file you download here works in CapCut on iOS, iPadOS, Android, Windows, and macOS.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/davinci-resolve-audio"><h3>Audio for DaVinci Resolve</h3><p>Same idea, for Resolve's audio quirks.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract Audio</h3><p>Pull audio out of a video first.</p></a>
+      <a class="card" href="/opus-to-mp3"><h3>OPUS → MP3</h3><p>WhatsApp / Discord voice notes to CapCut-friendly MP3.</p></a>
+      <a class="card" href="/m4a-to-mp3"><h3>M4A → MP3</h3><p>Voice memos prepped for CapCut without the AAC profile issue.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var targetSel = $('#capcutTarget');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  var PRESETS = {
+    'mobile-mp3':       { target: 'mp3', bitrate: 192, sampleRate: 44100 },
+    'desktop-wav':      { target: 'wav', sampleRate: 44100 },
+    'desktop-mp3-320':  { target: 'mp3', bitrate: 320, sampleRate: 44100 }
+  };
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){ files = files.concat(picked); render(); }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var preset = PRESETS[targetSel.value] || PRESETS['mobile-mp3'];
+    var options = {};
+    if (preset.bitrate) options.bitrate = preset.bitrate;
+    if (preset.sampleRate) options.sampleRate = preset.sampleRate;
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++){
+      var f = files[i]; var idx = i + 1;
+      try {
+        var blob = await AudioSaw.convert(f, preset.target, options, function(pct, msg){
+          var overall = ((i + (pct/100)) / files.length) * 100;
+          CV.setProgress(progressBar, overall);
+          if (msg) CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] '+msg);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, preset.target), blob: blob });
+      } catch(e){
+        failures.push({name:f.name, error: e.message || String(e)});
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length){
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs[0].name+' (ready for CapCut)');
+      } else if (outputs.length > 1){
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-capcut.zip');
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs.length+' files zipped'+(failures.length?' ('+failures.length+' failed)':''));
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className='file-item';
+        var label = document.createElement('span');
+        var n = document.createElement('span'); n.className='name'; n.textContent=o.name;
+        var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(o.blob.size);
+        label.appendChild(n); label.appendChild(s); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>
