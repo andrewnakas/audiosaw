@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podcast audio prep — normalize, mono, MP3 in one step (free, no upload)</title>
+<meta name="description" content="One-click prep for podcast hosting: peak-normalize to -1 dB, force mono for voice content, encode to 96 or 128 kbps MP3. The combo every podcast host wants. Browser-only, no upload.">
+<meta name="keywords" content="podcast audio prep, podcast mp3 prep, normalize mp3 podcast, podcast audio normalize, podcast 96 kbps, podcast mono mp3, spotify for podcasters mp3, anchor podcast prep, buzzsprout audio prep, podcast level mp3">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/podcast-prep">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Podcast audio prep — normalize, mono, MP3 in one click">
+<meta property="og:description" content="The exact prep step every podcast host wants. Drop your raw recording, get a clean episode-ready MP3.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/podcast-prep">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Podcast Audio Prep",
+  "url": "https://audiosaw.com/podcast-prep",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What does this tool do?","acceptedAnswer":{"@type":"Answer","text":"Three steps in one click: peak-normalize to -1 dB (so the episode is at full but safe level), force mono (cuts file size in half and matches voice content), and encode to MP3 at podcast-standard bitrate. The result is a Spotify-for-Podcasters / Anchor / Buzzsprout / Transistor / Captivate ready file."}},
+  {"@type":"Question","name":"What bitrate should podcasts use?","acceptedAnswer":{"@type":"Answer","text":"96 kbps mono is the unofficial standard for voice podcasts — clean, small, no audible quality loss for talk content. 128 kbps mono is a safer pick if you have any music beds or interviews with two distinct voices. 64 kbps mono is acceptable for very long shows where storage matters."}},
+  {"@type":"Question","name":"Should I keep stereo for my podcast?","acceptedAnswer":{"@type":"Answer","text":"Probably not. Voice podcasts are heard on phone speakers, AirPods, car audio — all effectively mono playback. Stereo doubles the file size and doesn't improve the listening experience. Keep stereo only if you have legitimate stereo content (music interludes, binaural ambient)."}},
+  {"@type":"Question","name":"What loudness target should I use?","acceptedAnswer":{"@type":"Answer","text":"This tool does peak normalization to -1 dB, which is the safer default for most podcast hosts. For LUFS-targeting (Spotify wants -16 LUFS for podcasts, -14 for music), use our normalize-audio tool instead — it has LUFS metering. Peak normalization to -1 dB usually lands around -16 to -20 LUFS for typical voice content, which is in-range."}},
+  {"@type":"Question","name":"Will it work for a 2-hour podcast?","acceptedAnswer":{"@type":"Answer","text":"Yes, but browsers cap at ~500 MB processing. A 2-hour stereo WAV is ~1 GB — split first with our audio cutter or pre-encode as a smaller format. A 2-hour MP3 input is fine."}},
+  {"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. All processing in your browser. You then upload the prepped MP3 to your podcast host directly."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1><span class="ital">Podcast</span> prep. Normalize, mono, MP3 — one click.</h1>
+    <p>Every podcast you upload needs the same three things: a consistent level (so your episode isn't louder or quieter than the next show), mono channels (so it's not 2× bigger than it needs to be), and MP3 encoding at a reasonable bitrate. Drop your recording, pick a quality, get an episode-ready file. No 7-step Audacity tutorial.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your raw episode</p>
+      <p>WAV from your DAW, M4A from your recorder, MP4 if you recorded video. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Quality preset
+          <select id="preset">
+            <option value="64">64 kbps mono — small, long-form voice</option>
+            <option value="96" selected>96 kbps mono — podcast standard</option>
+            <option value="128">128 kbps mono — voice + music beds</option>
+            <option value="128-stereo">128 kbps stereo — keeps stereo (interviews / music)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Prep for podcast</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Steps applied: peak-normalize to −1 dB, mono mixdown (or kept stereo), MP3 encoding. ID3 tags can be edited in your podcast host before publishing.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What each step does</h2>
+    <ol>
+      <li><strong>Peak normalize to -1 dB</strong>. We find the loudest sample in your file and scale the whole episode so that sample lands at -1 dB (just below digital max). Quiet episodes get louder, loud episodes stay where they are. Result: consistent perceived level across your whole catalog.</li>
+      <li><strong>Mono mixdown</strong>. We sum L+R into a single channel at -3 dB compensation (no clipping). Voice content gains nothing from stereo, and mono halves the file size. Some podcast hosts even prefer mono uploads.</li>
+      <li><strong>MP3 encode</strong>. CBR (constant bitrate) at your chosen kbps. Most podcast hosts re-encode to their own delivery format anyway, so just get under the platform's max file size and you're fine.</li>
+    </ol>
+
+    <h2>What this is NOT</h2>
+    <ul>
+      <li><strong>Not a full master</strong> — no compression, EQ, de-essing, or noise reduction. If your raw recording sounds bad, this won't fix it. Edit in a DAW first.</li>
+      <li><strong>Not LUFS-normalized to Spotify's -16 LUFS target</strong> — peak normalization is close enough for most podcast hosts. For LUFS-accurate delivery, use our <a href="/normalize-audio">normalizer</a> with LUFS mode.</li>
+      <li><strong>Not metadata-aware</strong> — we don't write episode title, show name, episode number, artwork, or chapters. Add those in your podcast host (Anchor, Buzzsprout, Captivate, Transistor, etc.) before publishing.</li>
+    </ul>
+
+    <h2>Picking the right preset</h2>
+    <ul>
+      <li><strong>64 kbps mono</strong> — solo voice podcast, daily news show, audiobooks. 30 min episode is ~14 MB.</li>
+      <li><strong>96 kbps mono</strong> — most voice podcasts. The default. 30 min episode is ~22 MB.</li>
+      <li><strong>128 kbps mono</strong> — when you have music beds, interviews with distinct voices, or want a touch of headroom. 30 min is ~28 MB.</li>
+      <li><strong>128 kbps stereo</strong> — keep this if your podcast has stereo content that actually uses both channels (music shows, binaural audio, panned interviews).</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Which podcast hosts work with this output?</summary><p>All of them. Anchor / Spotify for Podcasters, Buzzsprout, Transistor, Captivate, Libsyn, Podbean, Acast. Plain MP3 is the universal upload format.</p></details>
+    <details><summary>Does the order of steps matter?</summary><p>Normalize, then mono, then encode — that's what we do. If you mono'd first then normalized you'd get the same result. Encoding last preserves quality through the prior processing.</p></details>
+    <details><summary>What's the file size for a 1-hour episode?</summary><p>At 96 kbps mono: ~43 MB. At 64 kbps mono: ~29 MB. At 128 kbps stereo: ~58 MB. All well within every podcast host's upload cap.</p></details>
+    <details><summary>What about RSS feed file size limits?</summary><p>iTunes/Apple Podcasts allows MP3 up to 200 MB per episode. Spotify, ~250 MB. Most hosts internally limit to ~500 MB. None of these are remotely close to constraining at 96 kbps mono.</p></details>
+    <details><summary>Does anything upload?</summary><p>No. All processing happens in your browser. You then upload to your host yourself.</p></details>
+    <details><summary>Should I add intro/outro music in this step?</summary><p>No — do that in your DAW (Audacity, Reaper, GarageBand). This tool just preps the finished mix for upload.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/silence-remover"><h3>Podcast Silence Remover</h3><p>Cut dead air from a recording before prepping.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize (LUFS)</h3><p>LUFS-accurate normalization for platforms that target specific loudness.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim intro / outro takes before normalizing.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch intro + content + outro into one episode.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var presetSel = $('#preset');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){ files = files.concat(picked); render(); }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  function findPeak(ab){
+    var peak = 0;
+    for (var ch = 0; ch < ab.numberOfChannels; ch++){
+      var d = ab.getChannelData(ch);
+      for (var i = 0; i < d.length; i++){
+        var v = Math.abs(d[i]);
+        if (v > peak) peak = v;
+      }
+    }
+    return peak;
+  }
+
+  function applyGain(ab, gain){
+    for (var ch = 0; ch < ab.numberOfChannels; ch++){
+      var d = ab.getChannelData(ch);
+      for (var i = 0; i < d.length; i++) d[i] *= gain;
+    }
+  }
+
+  function mixToMonoBuffer(ab){
+    if (ab.numberOfChannels === 1) return Promise.resolve(ab);
+    var ctx = new OfflineAudioContext(1, ab.length, ab.sampleRate);
+    var src = ctx.createBufferSource();
+    var newBuf = ctx.createBuffer(1, ab.length, ab.sampleRate);
+    var out = newBuf.getChannelData(0);
+    var inv = 1 / ab.numberOfChannels;
+    for (var ch = 0; ch < ab.numberOfChannels; ch++){
+      var d = ab.getChannelData(ch);
+      for (var i = 0; i < ab.length; i++) out[i] += d[i] * inv;
+    }
+    src.buffer = newBuf;
+    src.connect(ctx.destination);
+    src.start();
+    return ctx.startRendering();
+  }
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var presetVal = presetSel.value;
+    var keepStereo = presetVal === '128-stereo';
+    var bitrate = parseInt(presetVal, 10) || 96;
+    var outputs = [], failures = [];
+    for (var i = 0; i < files.length; i++){
+      var f = files[i]; var idx = i + 1;
+      try {
+        CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] decoding…');
+        var ab = await AudioSaw.decodeToAudioBuffer(f, function(pct){
+          CV.setProgress(progressBar, ((i + pct/100/4) / files.length) * 100);
+        });
+        if (!keepStereo && ab.numberOfChannels > 1){
+          CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] mixing to mono…');
+          ab = await mixToMonoBuffer(ab);
+        }
+        CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] normalizing…');
+        var peak = findPeak(ab);
+        if (peak > 0){
+          var targetPeak = Math.pow(10, -1 / 20);
+          var gain = targetPeak / peak;
+          applyGain(ab, gain);
+        }
+        CV.setProgress(progressBar, ((i + 0.5) / files.length) * 100);
+        CV.setStatus(statusEl, 'info', '['+idx+'/'+files.length+'] encoding MP3…');
+        var blob = await AudioSaw.audioBufferToMp3(ab, bitrate, function(pct){
+          CV.setProgress(progressBar, ((i + 0.5 + pct/100/2) / files.length) * 100);
+        });
+        outputs.push({ name: AudioSaw.rename(f.name, 'mp3'), blob: blob });
+      } catch(e){
+        failures.push({name:f.name, error: e.message || String(e)});
+      }
+    }
+    try {
+      if (outputs.length === 1 && !failures.length){
+        CV.downloadBlob(outputs[0].blob, outputs[0].name);
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs[0].name+' (podcast-ready)');
+      } else if (outputs.length > 1){
+        var zip = await AudioSaw.zipBlobs(outputs);
+        CV.downloadBlob(zip, 'audiosaw-podcast.zip');
+        CV.setStatus(statusEl, 'success', 'Done — '+outputs.length+' files zipped');
+      } else {
+        CV.setStatus(statusEl, 'error', 'Could not prep. ' + (failures[0] ? failures[0].error : ''));
+      }
+      outputs.forEach(function(o){
+        var row = document.createElement('div'); row.className='file-item';
+        var label = document.createElement('span');
+        var n = document.createElement('span'); n.className='name'; n.textContent=o.name;
+        var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(o.blob.size);
+        label.appendChild(n); label.appendChild(s); row.appendChild(label);
+        var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download';
+        btn.onclick = function(){ CV.downloadBlob(o.blob, o.name); };
+        row.appendChild(btn); resultList.appendChild(row);
+      });
+      if (adPost && outputs.length) adPost.classList.add('visible');
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

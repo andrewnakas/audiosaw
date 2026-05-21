@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trim silence from start and end of audio — clean tops and tails (free, no upload)</title>
+<meta name="description" content="Cut just the leading and trailing silence off an audio file — without removing dead air in the middle. For voice memos with awkward startup pause, podcasts with a pre-roll gap, samples that need a clean attack. No upload.">
+<meta name="keywords" content="trim silence audio, remove silence start end, top and tail audio, trim leading silence, trim trailing silence, voice memo silence trim, audio top tail online, clean audio start end no upload">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/trim-silence-edges">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Top and tail — trim leading / trailing silence only">
+<meta property="og:description" content="Cut the dead air off both ends without touching the middle. For voice memos, samples, podcast cuts.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/trim-silence-edges">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Trim Silence (Top and Tail)",
+  "url": "https://audiosaw.com/trim-silence-edges",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What's the difference between this and the silence remover?","acceptedAnswer":{"@type":"Answer","text":"Our silence remover cuts ALL silence including pauses inside the recording. This page only trims the silence at the very start and end — so the natural pauses inside a podcast or voice memo stay intact. Use this when you just want clean edges, not auto-editing."}},
+  {"@type":"Question","name":"How do I trim the silence at the beginning of a voice memo?","acceptedAnswer":{"@type":"Answer","text":"Drop the voice memo here. Set the silence threshold (default -45 dB, fine for most recordings). Click trim. We'll scan in from each end, find the first sample above the threshold, and cut everything before/after. The middle of the recording stays untouched."}},
+  {"@type":"Question","name":"What threshold should I use?","acceptedAnswer":{"@type":"Answer","text":"-45 dB is a safe default — strict enough to ignore quiet content like room tone or breath, loose enough to catch the very first word. For very quiet recordings, go to -55 dB. For loud recordings with significant background noise, -35 dB."}},
+  {"@type":"Question","name":"Will it accidentally cut quiet content like fades or breaths?","acceptedAnswer":{"@type":"Answer","text":"Only at the very edges. We add a 200 ms pad before the first detected sound and 300 ms after the last to preserve attack transients and natural decay. You won't lose the first consonant or last breath."}},
+  {"@type":"Question","name":"What if the file has long silence in the middle?","acceptedAnswer":{"@type":"Answer","text":"This tool ignores middle silence — by design. For an interview with a long awkward pause in the middle that you want to compress, use our auto silence remover or cut manually with the audio cutter."}},
+  {"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Trim the <span class="ital">silence</span> off the ends. Keep the middle untouched.</h1>
+    <p>You hit record, waited 3 seconds, then started talking. Or the voice memo recorded an extra 4 seconds of room tone at the end before you tapped stop. "Top and tail" trimming just snips that — without auto-editing pauses inside the recording. Drop the file, click trim, download the clean version.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your audio file</p>
+      <p>WAV, MP3, M4A, OPUS — any audio. One file at a time.</p>
+      <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Silence threshold
+          <select id="threshold">
+            <option value="-55">−55 dB — very quiet recordings</option>
+            <option value="-45" selected>−45 dB — typical voice memo</option>
+            <option value="-35">−35 dB — noisy recordings</option>
+            <option value="-25">−25 dB — very noisy / room mic</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="targetFormat">
+            <option value="wav" selected>WAV (lossless)</option>
+            <option value="mp3">MP3</option>
+          </select>
+        </label>
+        <label id="bitrateLabel" style="display:none">MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Trim silence from ends</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">We keep a 200 ms pad before the first sound and 300 ms after the last — so consonants and natural decay aren't clipped.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>When to use this vs other silence tools</h2>
+    <ul>
+      <li><strong>This page (top &amp; tail)</strong> — cuts only the start/end silence. Middle of the file unchanged. Use for voice memos with awkward startup, podcasts with pre-roll gap, samples needing clean attack/release.</li>
+      <li><strong><a href="/silence-remover">Silence remover</a></strong> — finds and cuts every silent gap. Use when you want to auto-compress a long recording: lecture, interview, sermon. Removes pauses.</li>
+      <li><strong><a href="/audio-cutter">Audio cutter</a></strong> — manual: you pick the in/out points. Use when you want exact control or you need to grab a specific section.</li>
+    </ul>
+
+    <h2>How the detection works</h2>
+    <p>We scan from the start of the file forward until we find the first sample whose absolute value exceeds the threshold (e.g., -45 dB = 0.005 in linear amplitude). We back off 200 ms from there — that's the trim point at the start. Then we scan from the end backward to find the last sample above threshold; we add 300 ms after that for the end trim point.</p>
+    <p>The samples between those two points become the output file. Nothing in the middle is altered.</p>
+
+    <h2>Good defaults for common recordings</h2>
+    <ul>
+      <li><strong>iPhone voice memo</strong> — −45 dB threshold. The handset mic has very low noise floor.</li>
+      <li><strong>Lapel mic recording</strong> — −45 dB. Lavs are clean.</li>
+      <li><strong>Phone speakerphone recording</strong> — −35 dB. More room noise.</li>
+      <li><strong>Zoom call recording (computer audio)</strong> — −45 dB. Good signal.</li>
+      <li><strong>Field recording with handheld recorder</strong> — −35 to −45 dB depending on location.</li>
+      <li><strong>Music sample with clean tail</strong> — −55 dB to preserve very quiet decay.</li>
+    </ul>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What if the file has no silence at the start or end?</summary><p>We won't trim anything. The output will be the same as the input (just re-encoded if you chose a different format).</p></details>
+    <details><summary>Will it cut a quiet intro fade?</summary><p>Only if the fade goes below the threshold for long enough. If you intended the fade, it'll be trimmed — pick a higher threshold (-55 dB) to preserve quieter content, or use our <a href="/audio-cutter">audio cutter</a> for exact control.</p></details>
+    <details><summary>How much silence is "enough" to be trimmed?</summary><p>Anything below the threshold continuously, from the edge. The first sample above threshold (going inward from either end) is the new boundary.</p></details>
+    <details><summary>Will the file length be exact, or rounded?</summary><p>Trim points are at the sample — about 0.02 ms precision at 44.1 kHz. For all practical purposes, exact.</p></details>
+    <details><summary>What if my recording is all silence?</summary><p>We'll output the file unchanged with a warning. The threshold scan found no audio above the line; we won't truncate to zero length.</p></details>
+    <details><summary>Does anything upload?</summary><p>No. Detection and trimming run in your browser.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/silence-remover"><h3>Silence Remover</h3><p>Cuts ALL silence including middle pauses. Auto-compresses a recording.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Manual trim with visual waveform. Exact in/out points.</p></a>
+      <a class="card" href="/fade-in-fade-out"><h3>Fade In / Fade Out</h3><p>Add a clean fade on the new trimmed ends if you want.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Set the level after trimming for a polished output.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
+  var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
+  var threshSel = $('#threshold'), targetSel = $('#targetFormat'), bitrateSel = $('#bitrate'), bitrateLabel = $('#bitrateLabel');
+  var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
+  var resultList = $('#resultList'), adPost = $('#adSlotPost');
+  var files = [];
+
+  targetSel.addEventListener('change', function(){
+    bitrateLabel.style.display = targetSel.value === 'mp3' ? '' : 'none';
+  });
+
+  function render(){
+    fileList.innerHTML = '';
+    if (!files.length){ controls.style.display='none'; convertBtn.disabled=true; return; }
+    controls.style.display=''; convertBtn.disabled=false;
+    files.forEach(function(f, idx){
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=f.name;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(f.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small btn-secondary'; btn.textContent='remove';
+      btn.onclick = function(){ files.splice(idx,1); render(); };
+      row.appendChild(btn); fileList.appendChild(row);
+    });
+  }
+
+  CV.bindDropzone(dropzone, fileInput, function(picked){
+    files = picked.slice(0, 1); render();
+  }, null);
+  resetBtn.addEventListener('click', function(){ files=[]; render(); CV.clearStatus(statusEl); progressWrap.style.display='none'; resultList.innerHTML=''; });
+
+  function findEdges(ab, thresholdDb){
+    var threshLinear = Math.pow(10, thresholdDb / 20);
+    var len = ab.length;
+    var chs = ab.numberOfChannels;
+    var firstHit = len;
+    var lastHit = -1;
+    for (var ch = 0; ch < chs; ch++){
+      var data = ab.getChannelData(ch);
+      for (var i = 0; i < len; i++){
+        if (Math.abs(data[i]) > threshLinear){ if (i < firstHit) firstHit = i; break; }
+      }
+      for (var j = len - 1; j >= 0; j--){
+        if (Math.abs(data[j]) > threshLinear){ if (j > lastHit) lastHit = j; break; }
+      }
+    }
+    if (firstHit >= len || lastHit < 0) return null;
+    var sr = ab.sampleRate;
+    var startSample = Math.max(0, firstHit - Math.floor(0.2 * sr));
+    var endSample = Math.min(len, lastHit + Math.floor(0.3 * sr));
+    return { start: startSample, end: endSample };
+  }
+
+  function sliceBuffer(ab, startSample, endSample){
+    var ctx = new OfflineAudioContext(ab.numberOfChannels, endSample - startSample, ab.sampleRate);
+    var src = ctx.createBufferSource();
+    var newBuf = ctx.createBuffer(ab.numberOfChannels, endSample - startSample, ab.sampleRate);
+    for (var ch = 0; ch < ab.numberOfChannels; ch++){
+      newBuf.getChannelData(ch).set(ab.getChannelData(ch).subarray(startSample, endSample));
+    }
+    src.buffer = newBuf;
+    src.connect(ctx.destination);
+    src.start();
+    return ctx.startRendering();
+  }
+
+  convertBtn.addEventListener('click', async function(){
+    if (!files.length) return;
+    convertBtn.disabled = true; resetBtn.disabled = true;
+    progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
+    var threshold = parseFloat(threshSel.value);
+    var target = targetSel.value;
+    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    try {
+      var f = files[0];
+      CV.setStatus(statusEl, 'info', 'Decoding…');
+      var ab = await AudioSaw.decodeToAudioBuffer(f, function(pct){ CV.setProgress(progressBar, pct * 0.4); });
+      var edges = findEdges(ab, threshold);
+      if (!edges){
+        CV.setStatus(statusEl, 'error', 'No audio above the threshold — file may be entirely silent.');
+        return;
+      }
+      var origSec = ab.length / ab.sampleRate;
+      var newSec = (edges.end - edges.start) / ab.sampleRate;
+      var trimmedSec = origSec - newSec;
+      CV.setStatus(statusEl, 'info', 'Trimming '+trimmedSec.toFixed(2)+' s from the ends…');
+      var newAb = await sliceBuffer(ab, edges.start, edges.end);
+      CV.setProgress(progressBar, 70);
+      var blob;
+      if (target === 'wav'){
+        blob = AudioSaw.audioBufferToWav(newAb);
+      } else {
+        CV.setStatus(statusEl, 'info', 'Encoding MP3…');
+        blob = await AudioSaw.audioBufferToMp3(newAb, bitrate, function(pct){
+          CV.setProgress(progressBar, 70 + pct * 0.3);
+        });
+      }
+      var base = AudioSaw.rename(f.name, target).replace(/\.[^.]+$/, '');
+      var finalName = base + '-trimmed.' + target;
+      CV.downloadBlob(blob, finalName);
+      CV.setStatus(statusEl, 'success', 'Done — '+finalName+' (cut '+trimmedSec.toFixed(2)+' s)');
+      var row = document.createElement('div'); row.className='file-item';
+      var label = document.createElement('span');
+      var n = document.createElement('span'); n.className='name'; n.textContent=finalName;
+      var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(blob.size);
+      label.appendChild(n); label.appendChild(s); row.appendChild(label);
+      var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download again';
+      btn.onclick = function(){ CV.downloadBlob(blob, finalName); };
+      row.appendChild(btn); resultList.appendChild(row);
+      if (adPost) adPost.classList.add('visible');
+    } catch(e){
+      CV.setStatus(statusEl, 'error', e.message || String(e));
+    } finally {
+      convertBtn.disabled = !files.length; resetBtn.disabled = false;
+      CV.setProgress(progressBar, 100);
+    }
+  });
+})();
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>

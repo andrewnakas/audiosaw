@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAC to WAV — convert lossless FLAC to editable WAV (free, no upload)</title>
+<meta name="description" content="Decompress FLAC archives into WAV files for DAW editing, CD authoring, sampling, or any tool that needs uncompressed PCM. Lossless end-to-end. Browser-only, no upload.">
+<meta name="keywords" content="flac to wav, convert flac to wav, flac decoder online, flac to wav free, lossless flac to wav, flac for ableton, flac to wav for cd, batch flac to wav, flac to pcm wav">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/flac-to-wav">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="FLAC to WAV — lossless decompression in your browser">
+<meta property="og:description" content="Decompress FLAC into editable WAV. For DAWs, CD authoring, sampling. No upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/flac-to-wav">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FLAC to WAV Converter",
+  "url": "https://audiosaw.com/flac-to-wav",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Is the FLAC to WAV conversion lossless?","acceptedAnswer":{"@type":"Answer","text":"Yes. FLAC is lossless compression — decompressing back to PCM WAV recovers the exact same audio samples. Zero data is lost in either direction. The WAV is just uncompressed, so the file gets larger."}},
+  {"@type":"Question","name":"Why would I convert FLAC to WAV if FLAC is the same audio quality?","acceptedAnswer":{"@type":"Answer","text":"For tools that require WAV — older DAWs, hardware samplers, CD authoring software, certain mastering plugins, video editors like DaVinci Resolve free. Some audio analysis tools (spectrograms, dedicated mastering tools) also only read WAV. Convert as needed, keep your FLAC as the archive."}},
+  {"@type":"Question","name":"How much bigger will the WAV be?","acceptedAnswer":{"@type":"Answer","text":"Typically 1.5 to 2.5× the FLAC size, depending on the source. A FLAC that compressed well (mostly quiet, simple recordings) will balloon more in WAV. A FLAC of a dense, loud track grows less."}},
+  {"@type":"Question","name":"Will the WAV be at the same sample rate and bit depth?","acceptedAnswer":{"@type":"Answer","text":"Yes — FLAC stores the original PCM sample rate (44.1 kHz, 48 kHz, 96 kHz, etc.) and bit depth (16, 24-bit). The WAV inherits both. If you want to downsample or downconvert during the export, use our universal converter instead."}},
+  {"@type":"Question","name":"Can I convert a folder of FLAC files at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple FLAC files, get a zip of WAV files back. Useful for moving a whole album from FLAC archive into a DAW project folder."}},
+  {"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. The decompression runs entirely in your browser."}}
+]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-H9BRRKLPPB');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H9BRRKLPPB"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>FLAC to <span class="ital">WAV</span>. Lossless decompression.</h1>
+    <p>You archived in FLAC, smart move. Now you need WAV — for Pro Tools, a CD burner, a hardware sampler, a mastering plugin that won't read FLAC. Drop your file, get back the same audio in uncompressed PCM WAV. Identical to the original recording, just unpacked.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop your FLAC file</p>
+      <p>Single track, full album, batch. We'll handle the lot.</p>
+      <input type="file" id="fileInput" accept="audio/flac,.flac" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output keeps the original sample rate and channel count. Bit depth becomes 16-bit (FLACs at 24-bit are quantized down — for 24-bit retention, contact us and we'll add a 24-bit option).</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>When you need WAV instead of FLAC</h2>
+    <ul>
+      <li><strong>Hardware samplers</strong> — SP-404, MPC, Octatrack, EMU samplers. Most read WAV only. For sampler-spec WAV at the right sample rate, see our <a href="/wav-for-sp404">SP-404/MPC preset</a>.</li>
+      <li><strong>CD burning</strong> — Red Book audio CDs need 44.1 kHz / 16-bit / stereo WAV. CD authoring software won't accept FLAC.</li>
+      <li><strong>DaVinci Resolve free</strong> — Resolve free doesn't ship a FLAC decoder. Convert to WAV to import.</li>
+      <li><strong>Older DAWs and plugins</strong> — Some legacy software (and surprisingly some current mastering plugins) only read WAV.</li>
+      <li><strong>Audio analysis tools</strong> — Spectrum analyzers, loudness meters, batch-processing scripts often expect WAV.</li>
+      <li><strong>Sample libraries you're authoring</strong> — Most sample-pack distributors (Splice, Loopcloud) want WAV at 44.1 / 16 or 44.1 / 24.</li>
+    </ul>
+
+    <h2>FLAC archive workflow</h2>
+    <p>Best practice: keep your originals in FLAC (smaller, lossless, with metadata), convert to WAV on-demand for the tool you're using, delete the WAV when done. Bandcamp, HDtracks, Qobuz all sell FLAC for exactly this reason — small distribution, identical to studio masters.</p>
+    <p>If you instead need MP3 for a player, use our <a href="/flac-to-mp3">FLAC → MP3</a> page (lossy but small).</p>
+
+    <h2>What we do</h2>
+    <ol>
+      <li>Decode the FLAC stream — runs in WebAssembly inside your browser.</li>
+      <li>Recover the original PCM samples (identical to what they were before compression).</li>
+      <li>Wrap them in a standard RIFF/WAVE header.</li>
+      <li>Hand you the WAV. End-to-end lossless — bit-for-bit identical audio.</li>
+    </ol>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is FLAC really lossless?</summary><p>Yes. FLAC compresses audio using algorithms similar to ZIP for general files — squeezes out redundancy, recovers identical bits on decompression. It's not lossy like MP3 or AAC. The same audio comes out as went in.</p></details>
+    <details><summary>Why is FLAC smaller if it's lossless?</summary><p>Audio waveforms have a lot of statistical structure (predictable patterns sample-to-sample). FLAC models that structure and stores the difference between prediction and actual, plus the prediction parameters. The result is typically 30-50% smaller than WAV with no audio quality loss.</p></details>
+    <details><summary>Can I edit the WAV and re-archive as FLAC?</summary><p>Yes. Edit in your DAW, export as WAV, then use our <a href="/wav-to-flac">WAV → FLAC</a> page to re-compress losslessly. No quality loss in any direction.</p></details>
+    <details><summary>What about FLAC files at 96 kHz or 192 kHz?</summary><p>We preserve the sample rate exactly. High-res FLAC stays high-res WAV. If you need to downsample for a specific destination, use our universal converter with the target sample rate.</p></details>
+    <details><summary>Does my FLAC get uploaded?</summary><p>No. The decoder runs in WebAssembly inside your browser tab.</p></details>
+    <details><summary>Is there a file size limit?</summary><p>Around 500 MB FLAC on a typical laptop. Since WAV is about 2× the size of FLAC, expect ~1 GB WAV output max before browser memory gets tight.</p></details>
+  </section>
+
+  <section>
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/wav-to-flac"><h3>WAV → FLAC</h3><p>Re-archive WAV into smaller lossless FLAC.</p></a>
+      <a class="card" href="/flac-to-mp3"><h3>FLAC → MP3</h3><p>FLAC to portable lossy MP3 for phones / players.</p></a>
+      <a class="card" href="/wav-44100-16bit"><h3>WAV at CD spec</h3><p>Force the WAV to 44.1 kHz / 16-bit for Red Book delivery.</p></a>
+      <a class="card" href="/wav-for-sp404"><h3>WAV for samplers</h3><p>Sampler-spec WAV at the right rate for SP-404 / MPC.</p></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
+    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+
+<script>window.AS_TOOL = { target: 'wav', accept: ['.flac'] };</script>
+<script src="/js/common.js"></script>
+<script src="/js/audio-core.js"></script>
+<script src="/js/tool-converter.js"></script>
+<script src="/js/consent.js"></script>
+</body>
+</html>
