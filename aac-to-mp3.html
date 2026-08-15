@@ -15,6 +15,11 @@
 <meta property="og:url" content="https://audiosaw.com/aac-to-mp3">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-08-14">
 <script type="application/ld+json">
 {
@@ -39,6 +44,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does converting AAC to MP3 lose quality?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, a little. Both are lossy formats, so the file is decoded and re-encoded, and each encode discards information. At 320 kbps the difference is very hard to hear on most material. Encoding from the original uncompressed source, if you still have it, always beats transcoding."}}, {"@type": "Question", "name": "What's the difference between .aac and .m4a?", "acceptedAnswer": {"@type": "Answer", "text": "Usually just the container. A bare .aac file is a raw AAC stream; an .m4a file is AAC audio inside an MP4 container, which is what lets it carry cover art and tags. The audio inside is often identical. This tool accepts both."}}, {"@type": "Question", "name": "Can I convert songs from Apple Music?", "acceptedAnswer": {"@type": "Answer", "text": "No. Apple Music streaming and download files are DRM-protected AAC, which is encrypted and cannot be decoded by this or any other browser converter. Purchased iTunes Store tracks from 2009 onward are DRM-free and convert normally."}}, {"@type": "Question", "name": "Why is my MP3 bigger than the AAC it came from?", "acceptedAnswer": {"@type": "Answer", "text": "Because AAC compresses more efficiently. To hold onto the quality of a 256 kbps AAC you need roughly a 320 kbps MP3, which is a larger file for the same audio. That is the trade you make for compatibility."}}, {"@type": "Question", "name": "Does my cover art and track info come across?", "acceptedAnswer": {"@type": "Answer", "text": "No. Metadata lives in the source container and is not transferred, so you get the audio and the filename. Re-tag afterwards with a tool like Mp3tag if you need artwork and album fields."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert AAC to MP3 in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your AAC file", "text": "Drag a .aac, .m4a or .mp4 audio file onto the drop area, or click it to pick a file. You can add several at once."}, {"@type": "HowToStep", "position": 2, "name": "Choose a bitrate", "text": "Pick 320 kbps to minimise what the second encode costs you, or a lower rate if file size matters more."}, {"@type": "HowToStep", "position": 3, "name": "Convert", "text": "Click Convert to MP3. The file is decoded and re-encoded inside the page; nothing is uploaded."}, {"@type": "HowToStep", "position": 4, "name": "Download", "text": "The MP3 downloads automatically. Several files come back as a zip."}]}
+</script>
+<!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Convert to MP3","item":"https://audiosaw.com/tools#to-mp3"},{"@type":"ListItem","position":3,"name":"AAC to MP3"}]}
@@ -72,7 +85,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>AAC to <span class="ital">MP3</span></h1>
-    <p>Drop an AAC, M4A, or AAC-in-MP4 audio file. We re-encode to MP3 locally. Your audio never uploads.</p>
+    <p>Converts AAC audio to MP3 in your browser, free, with nothing uploaded to a server. Accepts .aac, .m4a and AAC inside an .mp4 container, and writes MP3 at 128 to 320 kbps. Useful when a player, car stereo or editing program refuses to read AAC.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -112,21 +125,54 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for MP3, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Input formats</th><td>.aac, .m4a, .mp4 (AAC audio), plus most other audio files</td></tr>
+        <tr><th>Output format</th><td>MP3 (MPEG-1 Layer III)</td></tr>
+        <tr><th>Bitrates</th><td>128, 192, 256 or 320 kbps, constant</td></tr>
+        <tr><th>Sample rate</th><td>Preserved from the source</td></tr>
+        <tr><th>Batch</th><td>Yes — drop several files, get a zip back</td></tr>
+        <tr><th>Practical size limit</th><td>~500 MB per file (browser memory)</td></tr>
+        <tr><th>Uploads your file</th><td>No — conversion runs entirely in the page</td></tr>
+        <tr><th>Signup required</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-    <h3>Why convert AAC files</h3>
-    <p>AAC files are great for some workflows and frustrating for others. MP3 fixes the common compatibility headaches without losing what matters about your audio.</p>
+  <section class="content-section">
+    <h2>What actually changes</h2>
+<p>AAC and MP3 are both lossy codecs, so this is a <strong>transcode</strong>: the file is decoded back to raw audio and then re-encoded by a different algorithm. AAC is the more efficient of the two — it uses a longer transform window and better handling of high frequencies, which is why a 256 kbps AAC file is generally held to sound about as good as a 320 kbps MP3.</p>
+<p>That efficiency gap is the thing to understand before you convert. Going AAC to MP3 at the same nominal bitrate does not give you the same quality; it gives you slightly worse quality in a bigger file. Nothing that was lost during the original AAC encode comes back, and the MP3 encoder then throws away a second, different set of information. The result is still perfectly listenable — this is not a dramatic degradation — but it is a one-way trip. If you have any route back to the original uncompressed recording, encode from that instead.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Car stereos and head units built before roughly 2010.</strong> Many read MP3 off a USB stick or a burned disc and simply ignore AAC files, sometimes without showing an error.</li>
+  <li><strong>Older and budget MP3 players</strong> — Sony Walkman NW series, SanDisk Clip, generic gym players — where AAC support is patchy or tied to a specific container.</li>
+  <li><strong>Audacity without the optional FFmpeg library installed.</strong> Audacity imports MP3 out of the box but needs an extra download for AAC; converting first is quicker than chasing the plugin. If your file is an .m4a, <a href="/m4a-to-wav-for-audacity">the WAV route is better still</a>.</li>
+  <li><strong>DJ software and hardware</strong> — Serato, Rekordbox and older CDJs are happiest with MP3 and WAV, and some will not analyse AAC at all.</li>
+  <li><strong>Anything you are handing to someone else</strong>, where you cannot check what they will play it on.</li>
+</ul>
+    <h2>Settings that matter here</h2>
+<p>Because you are already one generation down, use <strong>320 kbps</strong> unless you have a specific reason not to. The extra file size over 192 kbps is a few megabytes per song, and it is the cheapest way to stop the second encode from being audible. If you want that choice made permanently, <a href="/mp3-320kbps">the 320 kbps page</a> locks it in.</p>
+<p>128 kbps is the wrong choice for music here — you would be stacking a low-bitrate MP3 encode on top of an existing lossy encode, which is where transcoding actually starts to sound bad. It is a reasonable choice for speech, where the artefacts are much harder to notice; <a href="/wav-to-mp3-128kbps">the 128 kbps page</a> covers that case.</p>
+<p>Sample rate is carried across unchanged. There is no reason to resample when converting between two lossy formats, and doing so would add another processing step for no benefit.</p>
+    <h2>What you lose</h2>
+<p>Some quality, unavoidably, because of the double encode described above. At 320 kbps most people will not hear it on most material; on sparse recordings with a lot of cymbals or applause, careful listening on good headphones may reveal a slight smearing.</p>
+<p>You also lose metadata. Cover art, track numbers, album fields and chapter markers live in the AAC container, and are not carried into the MP3 — you will get audio with the filename preserved and nothing else. If tags matter, re-tag afterwards in something like Mp3tag or MusicBrainz Picard.</p>
+<p><strong>And one hard limit:</strong> tracks downloaded from Apple Music are protected AAC. They are encrypted, this tool cannot decode them, and neither can any browser-based converter. Purchased iTunes tracks from 2009 onward are DRM-free and convert normally; anything from an active Apple Music subscription does not.</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is the converter free?</summary><p>Yes — no signup, no daily limit, no watermark.</p></details>
-    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
-    <details><summary>Can I convert multiple files?</summary><p>Yes, drop several at once and you'll get a zip back.</p></details>
-    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>Does converting AAC to MP3 lose quality?</summary><p>Yes, a little. Both are lossy formats, so the file is decoded and re-encoded, and each encode discards information. At 320 kbps the difference is very hard to hear on most material. Encoding from the original uncompressed source, if you still have it, always beats transcoding.</p></details>
+    <details><summary>What's the difference between .aac and .m4a?</summary><p>Usually just the container. A bare .aac file is a raw AAC stream; an .m4a file is AAC audio inside an MP4 container, which is what lets it carry cover art and tags. The audio inside is often identical. This tool accepts both.</p></details>
+    <details><summary>Can I convert songs from Apple Music?</summary><p>No. Apple Music streaming and download files are DRM-protected AAC, which is encrypted and cannot be decoded by this or any other browser converter. Purchased iTunes Store tracks from 2009 onward are DRM-free and convert normally.</p></details>
+    <details><summary>Why is my MP3 bigger than the AAC it came from?</summary><p>Because AAC compresses more efficiently. To hold onto the quality of a 256 kbps AAC you need roughly a 320 kbps MP3, which is a larger file for the same audio. That is the trade you make for compatibility.</p></details>
+    <details><summary>Does my cover art and track info come across?</summary><p>No. Metadata lives in the source container and is not transferred, so you get the audio and the filename. Re-tag afterwards with a tool like Mp3tag if you need artwork and album fields.</p></details>
   </section>
 
   <!-- AS:related -->

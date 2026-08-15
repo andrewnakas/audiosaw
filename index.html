@@ -19,7 +19,31 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AudioSaw — convert, cut and clean audio in your browser">
 <meta name="twitter:description" content="Drop an audio or video file. Convert, cut, join, normalize. Nothing uploads.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-08-14">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AudioSaw",
+  "url": "https://audiosaw.com/",
+  "logo": "https://audiosaw.com/assets/og-image.png",
+  "description": "Browser-based audio conversion and editing tools that process files locally, without uploading them to a server."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AudioSaw",
+  "url": "https://audiosaw.com/",
+  "publisher": {"@type": "Organization", "name": "AudioSaw"}
+}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -85,6 +109,22 @@ gtag('config', 'G-5X9ERMVYXE');
       <span class="badge">batch convert</span>
       <span class="badge">cut · join · compress · normalize</span>
       <span class="badge">ringtones · speed · reverse</span>
+    </div>
+  </section>
+
+  <!-- Most arrivals land here rather than on a tool page, so give them a route
+       in before the generic dropzone. -->
+  <section class="task-picker">
+    <h2 class="task-picker-label">What are you trying to do?</h2>
+    <div class="task-picker-row">
+      <a href="/m4a-to-mp3">voice memo → mp3</a>
+      <a href="/mp4-to-mp3">video → mp3</a>
+      <a href="/ringtone-maker">make a ringtone</a>
+      <a href="/discord-audio-compressor">shrink for Discord</a>
+      <a href="/audio-cutter">cut a clip</a>
+      <a href="/silence-remover">remove dead air</a>
+      <a href="/audio-for-whisper">prep for transcription</a>
+      <a href="/tools" class="task-picker-all">all 41 tools →</a>
     </div>
   </section>
 

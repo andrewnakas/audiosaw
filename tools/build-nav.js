@@ -165,6 +165,11 @@ ${cards}
 <meta property="og:url" content="${ORIGIN}/tools">
 <meta property="og:image" content="${ORIGIN}/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=${VERSION}">
 <script type="application/ld+json">
 ${JSON.stringify(itemList)}

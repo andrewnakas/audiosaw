@@ -379,6 +379,71 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   .footer-directory { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
 }
 
+/* Homepage task picker.
+   Two thirds of all pageviews land on the homepage, largely from AI assistants
+   that only know the root URL. This gives those arrivals a route into the tool
+   that actually matches their job, above the generic dropzone. */
+.task-picker { margin: 4px 0 28px; }
+.task-picker-label {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.task-picker-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.task-picker-row a {
+  display: inline-block;
+  padding: 8px 14px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: border-color 0.16s, color 0.16s, transform 0.16s;
+}
+.task-picker-row a:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+  transform: translateY(-1px);
+}
+.task-picker-all { color: var(--amber) !important; border-color: var(--amber-line) !important; }
+
+/* At-a-glance spec table.
+   Tables are the structure answer engines extract most reliably, and the AI
+   assistants are the site's largest referral channel. */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0 8px;
+  font-size: 0.88rem;
+}
+.spec-table th,
+.spec-table td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+}
+.spec-table th {
+  width: 34%;
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.spec-table td { color: var(--ink-soft); }
+.spec-table tr:last-child th,
+.spec-table tr:last-child td { border-bottom: 0; }
+.spec-wrap { overflow-x: auto; }
+@media (max-width: 560px) {
+  .spec-table th { width: 42%; white-space: normal; }
+}
+
 /* Breadcrumb — visible trail matching the BreadcrumbList JSON-LD. */
 .breadcrumb {
   font-family: var(--mono);

@@ -15,6 +15,11 @@
 <meta property="og:url" content="https://audiosaw.com/mp3-to-wav">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-08-14">
 <script type="application/ld+json">
 {
@@ -39,6 +44,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does converting MP3 to WAV improve the quality?", "acceptedAnswer": {"@type": "Answer", "text": "No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality."}}, {"@type": "Question", "name": "Why is the WAV so much bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB."}}, {"@type": "Question", "name": "What bit depth and sample rate do I get?", "acceptedAnswer": {"@type": "Answer", "text": "16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture."}}, {"@type": "Question", "name": "Should I use WAV or FLAC?", "acceptedAnswer": {"@type": "Answer", "text": "FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM."}}, {"@type": "Question", "name": "Why is there no bitrate setting?", "acceptedAnswer": {"@type": "Answer", "text": "Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert MP3 to WAV in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your MP3", "text": "Drag one or more MP3 files onto the drop area. They are decoded locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Convert", "text": "Click Convert to WAV. There are no settings to choose — WAV is uncompressed, so there is no bitrate."}, {"@type": "HowToStep", "position": 3, "name": "Download", "text": "You get a 16-bit PCM WAV at the original sample rate. Several files come back as a zip."}]}
+</script>
+<!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Other format conversions","item":"https://audiosaw.com/tools#formats"},{"@type":"ListItem","position":3,"name":"MP3 to WAV"}]}
@@ -72,7 +85,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>MP3 to <span class="ital">WAV</span></h1>
-    <p>Drop an MP3 — we decode it and write out a 16-bit PCM WAV file ready for your DAW or audio editor. No upload.</p>
+    <p>Decodes an MP3 and writes it out as an uncompressed 16-bit PCM WAV file, in your browser, with nothing uploaded. Useful for DAW import, CD burning and hardware samplers — anywhere software wants raw audio rather than a compressed stream. It does not improve quality, and nothing can.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -105,21 +118,55 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for WAV, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Input formats</th><td>.mp3, plus most other audio files</td></tr>
+        <tr><th>Output format</th><td>WAV, 16-bit PCM (RIFF)</td></tr>
+        <tr><th>Sample rate</th><td>Preserved from the source</td></tr>
+        <tr><th>Channels</th><td>Preserved from the source</td></tr>
+        <tr><th>Typical size change</th><td>About 10× larger</td></tr>
+        <tr><th>Batch</th><td>Yes — drop several files, get a zip back</td></tr>
+        <tr><th>Practical size limit</th><td>~500 MB per file (browser memory)</td></tr>
+        <tr><th>Uploads your file</th><td>No — runs entirely in the page</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-    <h3>Why convert MP3 files</h3>
-    <p>MP3 files are great for some workflows and frustrating for others. WAV fixes the common compatibility headaches without losing what matters about your audio.</p>
+  <section class="content-section">
+    <h2>What actually changes</h2>
+<p>An MP3 is a set of instructions for reconstructing an approximation of the original audio. A WAV is the audio itself: a list of numbers, one per sample per channel, with a 44-byte header describing the format.</p>
+<p>Converting MP3 to WAV runs the MP3 decoder and writes the resulting samples to disk uncompressed. The file gets roughly ten times bigger — a 4 MB song becomes about 40 MB — and the audio is <strong>exactly what the MP3 already sounded like</strong>. Not better. The information that MP3 encoding discarded was discarded permanently; decoding does not and cannot recover it.</p>
+<p>This is worth being explicit about because it is the single most common misunderstanding around this conversion. Converting to WAV, or to FLAC, or to any other lossless format does not upscale, restore, or "un-compress" the audio in any meaningful sense. It just stops applying further compression from this point forward. That is genuinely useful — but for workflow reasons, not quality ones.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Importing into a DAW.</strong> Ableton, Logic, Pro Tools, Reaper and FL Studio all accept MP3, but they decode it to PCM internally anyway, and some handle warping and time-stretching more predictably with a WAV. Converting first also avoids re-decoding the same file on every project load.</li>
+  <li><strong>Hardware samplers.</strong> An SP-404, MPC, Digitakt or SP-1200 reads WAV and nothing else. <a href="/wav-for-sp404">The sampler page</a> applies the exact spec each one needs.</li>
+  <li><strong>Burning an audio CD.</strong> Red Book audio is 44.1 kHz, 16-bit PCM, and burning software wants WAV or AIFF. <a href="/wav-44100-16bit">The CD-spec page</a> forces the sample rate as well.</li>
+  <li><strong>Audacity and other editors</strong>, where working from PCM avoids a decode-edit-re-encode cycle that would add a second generation of loss.</li>
+  <li><strong>Software that flatly refuses MP3</strong> — some older broadcast, voice-analysis and forensic tools only take WAV.</li>
+</ul>
+    <h2>Settings that matter here</h2>
+<p>There is nothing to choose, and that is deliberate: WAV is uncompressed, so there is no bitrate. Any converter offering you an "MP3 bitrate" for WAV output is showing you a control that does nothing.</p>
+<p>The output is <strong>16-bit PCM at the source file's original sample rate</strong>, with the channel count preserved. 16-bit is the right depth here — the source is an MP3, so there is no additional dynamic range to capture, and 24-bit would double the file size for no gain.</p>
+<p>The sample rate is carried across rather than forced, because resampling is a processing step that slightly alters the audio and there is usually no reason for it. If you specifically need 44.1 kHz — for CD burning, or because your project runs at that rate — use <a href="/wav-44100-16bit">the CD-spec page</a> or <a href="/change-sample-rate">the resampler</a>, which do it deliberately.</p>
+    <h2>What you lose</h2>
+<p>Disk space, and that is about it. The file is roughly ten times larger for audio that sounds identical.</p>
+<p>Tags are not carried over. WAV's metadata support is an afterthought — there is no standard tagging system that music software agrees on — so artist, album and artwork are dropped. For a working file heading into a DAW this is usually irrelevant; for a library file it means WAV is the wrong choice, and <a href="/wav-to-flac">FLAC</a> is the right one, since it is equally lossless, tags properly, and is about half the size.</p>
+<p>You do not lose any audio quality — but you do not gain any either. If someone has sent you an MP3 and you need a high-quality master, converting it to WAV does not produce one. Only the original recording can do that.</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is the converter free?</summary><p>Yes — no signup, no daily limit, no watermark.</p></details>
-    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
-    <details><summary>Can I convert multiple files?</summary><p>Yes, drop several at once and you'll get a zip back.</p></details>
-    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>Does converting MP3 to WAV improve the quality?</summary><p>No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality.</p></details>
+    <details><summary>Why is the WAV so much bigger?</summary><p>Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB.</p></details>
+    <details><summary>What bit depth and sample rate do I get?</summary><p>16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture.</p></details>
+    <details><summary>Should I use WAV or FLAC?</summary><p>FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM.</p></details>
+    <details><summary>Why is there no bitrate setting?</summary><p>Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result.</p></details>
   </section>
 
   <!-- AS:related -->

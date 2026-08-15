@@ -1,0 +1,86 @@
+# AudioSaw
+
+> Free browser-based audio conversion and editing tools. All processing happens
+> locally in the visitor's browser using the Web Audio API and a WebAssembly
+> build of FFmpeg — files are never uploaded to a server. No signup, no size
+> gate behind a paywall, no watermark, no queue.
+
+## Facts
+
+- Cost: free, no account required.
+- Privacy: files are processed in the browser tab and never transmitted.
+- Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
+- Output formats: mp3, wav, m4a (AAC), flac, ogg.
+- MP3 bitrates: 128, 192, 256, 320 kbps.
+- Batch: multiple files at once, returned as a zip.
+- Practical file size limit: about 500 MB per file, bounded by browser memory.
+- Works on mobile browsers, slower, with tighter memory limits on iOS Safari.
+
+- [All tools](https://audiosaw.com/tools): index of every tool on the site.
+
+## Convert to MP3
+
+- [MP4 to MP3](https://audiosaw.com/mp4-to-mp3): Pull the audio track out of a video file as MP3.
+- [M4A to MP3](https://audiosaw.com/m4a-to-mp3): iPhone voice memos and Apple audio into universally playable MP3.
+- [WAV to MP3](https://audiosaw.com/wav-to-mp3): Compress a DAW bounce or recording to a shareable MP3.
+- [FLAC to MP3](https://audiosaw.com/flac-to-mp3): Turn a lossless archive into something a phone or car will play.
+- [AAC to MP3](https://audiosaw.com/aac-to-mp3): For players and car stereos that never learned to read AAC.
+- [OGG to MP3](https://audiosaw.com/ogg-to-mp3): Vorbis audio from Discord, Telegram or game files into MP3.
+- [Opus / WhatsApp voice note to MP3](https://audiosaw.com/opus-to-mp3): WhatsApp and Signal voice notes into a format anything will open.
+- [MOV to MP3](https://audiosaw.com/mov-to-mp3): Audio out of iPhone and QuickTime recordings.
+- [AIFF to MP3](https://audiosaw.com/aiff-to-mp3): Logic and GarageBand bounces compressed for sharing.
+- [M4B to MP3](https://audiosaw.com/m4b-to-mp3): Audiobooks out of Apple’s format and onto anything else.
+
+## Other format conversions
+
+- [MP3 to WAV](https://audiosaw.com/mp3-to-wav): Uncompressed PCM for DAW import, CD burning and samplers.
+- [MP3 to M4A](https://audiosaw.com/mp3-to-m4a): AAC in an Apple-friendly container for iTunes and CarPlay.
+- [MP3 to AIFF](https://audiosaw.com/mp3-to-aiff): Apple-native uncompressed audio for Logic and Final Cut.
+- [WAV to FLAC](https://audiosaw.com/wav-to-flac): Lossless compression — same audio, roughly half the size.
+- [FLAC to WAV](https://audiosaw.com/flac-to-wav): Decompress lossless audio for software that will not read FLAC.
+- [WAV at 44.1 kHz, 16-bit](https://audiosaw.com/wav-44100-16bit): The CD standard, locked in — what most software assumes.
+- [WAV to MP3 at 128 kbps](https://audiosaw.com/wav-to-mp3-128kbps): The small-file setting — right for speech, web and email.
+- [MP3 at 320 kbps](https://audiosaw.com/mp3-320kbps): The MP3 quality ceiling, locked in.
+
+## Video to audio
+
+- [Extract audio from video](https://audiosaw.com/extract-audio): Any video container to any audio format, without uploading the video.
+- [MP4 to MP3](https://audiosaw.com/mp4-to-mp3): Pull the audio track out of a video file as MP3.
+- [MOV to MP3](https://audiosaw.com/mov-to-mp3): Audio out of iPhone and QuickTime recordings.
+
+## Cut, trim & arrange
+
+- [Audio Cutter](https://audiosaw.com/audio-cutter): Drag handles on a waveform and keep only the part you want.
+- [Audio Joiner](https://audiosaw.com/audio-joiner): Concatenate several files into one, in the order you choose.
+- [Ringtone Maker](https://audiosaw.com/ringtone-maker): A 30-second clip from any song, in the format your phone wants.
+- [Change audio speed](https://audiosaw.com/audio-speed): Slow a song or speed a podcast without shifting the pitch.
+- [Audio Reverser](https://audiosaw.com/audio-reverser): Play a file backwards — for effects, or to hear what is buried.
+- [Fade in / fade out](https://audiosaw.com/fade-in-fade-out): Clean fades on both ends without opening an editor.
+- [Trim silence off the ends](https://audiosaw.com/trim-silence-edges): Top and tail a recording, leaving the middle untouched.
+- [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
+
+## Loudness & channels
+
+- [Normalize Audio](https://audiosaw.com/normalize-audio): Bring files to a consistent level so nothing jumps out.
+- [Amplify quiet audio](https://audiosaw.com/amplify-audio): Make a too-quiet recording usable without driving it into distortion.
+- [Compress an audio file](https://audiosaw.com/audio-compressor): Get a file under an email, Discord or upload size limit.
+- [Stereo to mono](https://audiosaw.com/stereo-to-mono): Fix one-sided recordings and halve the size of voice files.
+- [Mono to stereo](https://audiosaw.com/mono-to-stereo): Honest dual-mono for software that insists on two channels.
+- [Change the sample rate](https://audiosaw.com/change-sample-rate): Resample to match a project and stop import warnings.
+
+## For a specific app or device
+
+- [Audio for Whisper](https://audiosaw.com/audio-for-whisper): 16 kHz mono WAV — exactly what Whisper wants, in one click.
+- [Prep audio for transcription](https://audiosaw.com/audio-to-text-prep): The format each transcription service actually wants.
+- [Podcast prep](https://audiosaw.com/podcast-prep): Normalize, mono mixdown and MP3 encode in a single pass.
+- [Compress audio for Discord](https://audiosaw.com/discord-audio-compressor): Fits under the upload limit without you doing the maths.
+- [Audio for CapCut](https://audiosaw.com/capcut-audio): The format CapCut imports without complaint.
+- [Audio for DaVinci Resolve](https://audiosaw.com/davinci-resolve-audio): The format Resolve always imports, no conform errors.
+- [M4A to WAV for Audacity](https://audiosaw.com/m4a-to-wav-for-audacity): Skip the FFmpeg install Audacity keeps asking you for.
+- [WAV for SP-404 / MPC](https://audiosaw.com/wav-for-sp404): The exact spec hardware samplers need, or they fail silently.
+
+## About
+
+- [About AudioSaw](https://audiosaw.com/about): what the site is and how it works.
+- [Privacy](https://audiosaw.com/privacy): what is and is not collected.
+- [Contact](https://audiosaw.com/contact)

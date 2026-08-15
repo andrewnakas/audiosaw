@@ -221,10 +221,21 @@
     objectUrls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} });
   });
 
+  // Most pages end .tool-app with #resultList, but the waveform tools
+  // (audio-cutter, audio-joiner, ringtone-maker) have their own layout and no
+  // result list. Anchor to whatever that page does have, so the panel appears
+  // everywhere rather than silently skipping three tools.
+  function panelHost() {
+    return document.getElementById('resultList')
+      || document.getElementById('adSlotPost')
+      || document.getElementById('progressWrap')
+      || document.getElementById('status');
+  }
+
   function nextStepsPanel(output) {
     var slug = currentTool();
-    var host = document.getElementById('resultList');
-    if (!host) return;
+    var host = panelHost();
+    if (!host || !host.parentNode) return;
 
     var existing = document.getElementById('nextSteps');
     if (existing) existing.remove();
@@ -396,8 +407,11 @@
   /* ------------------------------------------------------------------ init */
 
   function init() {
-    var btn = document.getElementById('convertBtn');
-    if (btn) {
+    // The action button is #convertBtn on most pages, but the waveform tools
+    // name theirs after the verb.
+    ['convertBtn', 'cutBtn', 'joinBtn'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (!btn) return;
       btn.addEventListener('click', function () {
         convertStartedAt = Date.now();
         var bitrate = document.getElementById('bitrate');
@@ -406,7 +420,7 @@
           bitrate: bitrate ? bitrate.value : undefined
         });
       });
-    }
+    });
 
     // Related-tools and footer-directory clicks, so we can tell which surface
     // actually moves people between tools.

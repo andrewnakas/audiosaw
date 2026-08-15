@@ -15,6 +15,11 @@
 <meta property="og:url" content="https://audiosaw.com/wav-to-flac">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-08-14">
 <script type="application/ld+json">
 {
@@ -39,6 +44,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is FLAC really lossless?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Decoding a FLAC returns the original samples bit for bit — you can verify it with a checksum against the source WAV. It compresses the way a zip file does, by finding redundancy, not by discarding anything."}}, {"@type": "Question", "name": "How much smaller will the file be?", "acceptedAnswer": {"@type": "Answer", "text": "Typically 40–60% smaller. Sparse recordings like solo piano or spoken word compress most; dense, heavily limited modern masters compress least, because there is less redundancy to exploit."}}, {"@type": "Question", "name": "Should I archive in FLAC or WAV?", "acceptedAnswer": {"@type": "Answer", "text": "FLAC. It is the same audio at roughly half the size, and it supports proper metadata, whereas WAV's tagging is an afterthought that no two programs agree on. Decode to WAV whenever a specific tool needs it."}}, {"@type": "Question", "name": "Will FLAC play on my car stereo or phone?", "acceptedAnswer": {"@type": "Answer", "text": "Usually on Android and most head units from the last decade, but support is not universal. Apple's Music app still does not play FLAC. If you need guaranteed playback everywhere, keep a separate MP3 copy for that purpose."}}, {"@type": "Question", "name": "Does bit depth and sample rate survive?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. A 96 kHz 24-bit file stays 96 kHz 24-bit. FLAC preserves whatever you give it, including the channel count."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert WAV to FLAC in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your WAV files", "text": "Drag one file or a batch onto the drop area. They are read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Convert", "text": "Click Convert to FLAC. There is nothing to configure — every compression setting decodes to identical audio."}, {"@type": "HowToStep", "position": 3, "name": "Download", "text": "You get a FLAC roughly half the size, with sample rate, bit depth and channels preserved. A batch comes back as a zip."}]}
+</script>
+<!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Other format conversions","item":"https://audiosaw.com/tools#formats"},{"@type":"ListItem","position":3,"name":"WAV to FLAC"}]}
@@ -72,7 +85,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>WAV to <span class="ital">FLAC</span></h1>
-    <p>Drop a WAV (or AIFF). We encode it as lossless FLAC — same audio, smaller files. Perfect for archives of your recordings.</p>
+    <p>Compresses a WAV file to FLAC in your browser, free, with no upload. FLAC is genuinely lossless — it typically halves the file size and decodes back to a bit-for-bit identical copy of the original. It is the right format for archiving recordings you want to keep.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -112,21 +125,55 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
-    <p>Your browser already decodes audio. We pair that with a tiny encoder (pure JavaScript for FLAC, or a slim WebAssembly codec for less common formats) and put it behind a drop target. The whole pipeline runs in your tab. The first conversion may take a moment to load the codec; after that it's instant and cached.</p>
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Input formats</th><td>.wav, plus most other audio files</td></tr>
+        <tr><th>Output format</th><td>FLAC (Free Lossless Audio Codec)</td></tr>
+        <tr><th>Compression</th><td>Lossless — decodes bit-for-bit identical</td></tr>
+        <tr><th>Typical size change</th><td>40–60% smaller than the WAV</td></tr>
+        <tr><th>Sample rate & depth</th><td>Preserved from the source</td></tr>
+        <tr><th>Batch</th><td>Yes — drop several files, get a zip back</td></tr>
+        <tr><th>Practical size limit</th><td>~500 MB per file (browser memory)</td></tr>
+        <tr><th>Uploads your file</th><td>No — runs entirely in the page</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-    <h3>Why convert WAV files</h3>
-    <p>WAV files are great for some workflows and frustrating for others. FLAC fixes the common compatibility headaches without losing what matters about your audio.</p>
+  <section class="content-section">
+    <h2>What actually changes</h2>
+<p>Nothing audible — that is the entire point. FLAC compresses in the way a zip archive does: it finds redundancy in the data and encodes it more efficiently, and decoding reverses the process exactly. Feed a FLAC back through <a href="/flac-to-wav">a decoder</a> and you get the original samples, byte for byte identical to the WAV you started with. You can verify this with a checksum.</p>
+<p>How much smaller depends entirely on the material. Sparse, quiet recordings — solo piano, spoken word, ambient — often compress to 40% of the original. Dense, loud, heavily limited modern masters may only reach 70%, because there is less redundancy to exploit. The typical figure people quote is "about half", and for a mixed collection that holds up well.</p>
+<p>Sample rate, bit depth and channel count are all carried through unchanged. A 96 kHz 24-bit stereo recording stays a 96 kHz 24-bit stereo recording.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Archiving recordings, stems or masters.</strong> This is the main use. You halve your storage and give up nothing, and unlike WAV, FLAC supports proper metadata so the files remain identifiable in ten years.</li>
+  <li><strong>Backing up a CD rip</strong> where you want a perfect copy rather than a listening copy, with a <a href="/flac-to-mp3">lossy version</a> generated separately for portable use.</li>
+  <li><strong>Sending session files to a collaborator</strong> — half the transfer size, and they can decode to WAV at the other end with nothing lost.</li>
+  <li><strong>Bandcamp and distribution uploads</strong>, where FLAC is commonly the preferred lossless submission format.</li>
+  <li><strong>Any WAV library that has grown unmanageable.</strong> Uncompressed audio accumulates fast, and this is the one compression choice with no downside.</li>
+</ul>
+    <h2>Settings that matter here</h2>
+<p>There are none to get wrong, which is unusual for an audio conversion. FLAC's compression level affects encoding speed and file size by a few percent, and never affects the audio — every setting decodes to the same samples. This tool uses a sensible middle setting.</p>
+<p>The one thing worth doing first is deciding whether the WAV is already what you want to keep. If it is going to be normalized, trimmed or resampled at some point, <a href="/normalize-audio">do that</a> before archiving rather than after, so the archived copy is the final one.</p>
+<p>If your WAV files came from a mix of sources at different sample rates and you want a consistent archive, <a href="/change-sample-rate">resample first</a>. FLAC will preserve whatever it is given, so any inconsistency you have now gets preserved too.</p>
+    <h2>What you lose</h2>
+<p>No audio quality — the decode is bit-exact. What you give up is compatibility, and it is worth being honest about where.</p>
+<p><strong>Hardware and older software support is good but not universal.</strong> Most car head units made in the last decade read FLAC, but plenty of older ones do not. Many DAWs import it; some, including older Pro Tools versions, want you to convert to WAV first. Hardware samplers generally do not read FLAC at all — an SP-404 or MPC wants <a href="/wav-for-sp404">plain WAV</a>. Apple's ecosystem is the notable holdout: the Music app still does not play FLAC, which is why <a href="/mp3-to-aiff">AIFF</a> or Apple Lossless persists on that side.</p>
+<p>You also pay a small amount of CPU on playback, since the file has to be decoded. On anything made this century that is not a consideration, but on very old portable players it can affect battery life.</p>
   </section>
 
   <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is the converter free?</summary><p>Yes — no signup, no daily limit, no watermark.</p></details>
-    <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs in your browser. Open this page, switch to airplane mode, drop a file — it still works.</p></details>
-    <details><summary>Can I convert multiple files?</summary><p>Yes, drop several at once and you'll get a zip back.</p></details>
-    <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
+    <details><summary>Is FLAC really lossless?</summary><p>Yes. Decoding a FLAC returns the original samples bit for bit — you can verify it with a checksum against the source WAV. It compresses the way a zip file does, by finding redundancy, not by discarding anything.</p></details>
+    <details><summary>How much smaller will the file be?</summary><p>Typically 40–60% smaller. Sparse recordings like solo piano or spoken word compress most; dense, heavily limited modern masters compress least, because there is less redundancy to exploit.</p></details>
+    <details><summary>Should I archive in FLAC or WAV?</summary><p>FLAC. It is the same audio at roughly half the size, and it supports proper metadata, whereas WAV's tagging is an afterthought that no two programs agree on. Decode to WAV whenever a specific tool needs it.</p></details>
+    <details><summary>Will FLAC play on my car stereo or phone?</summary><p>Usually on Android and most head units from the last decade, but support is not universal. Apple's Music app still does not play FLAC. If you need guaranteed playback everywhere, keep a separate MP3 copy for that purpose.</p></details>
+    <details><summary>Does bit depth and sample rate survive?</summary><p>Yes. A 96 kHz 24-bit file stays 96 kHz 24-bit. FLAC preserves whatever you give it, including the channel count.</p></details>
   </section>
 
   <!-- AS:related -->

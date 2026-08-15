@@ -39,3 +39,6 @@
   Content-Type: text/plain
 /sitemap.xml
   Content-Type: application/xml
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
