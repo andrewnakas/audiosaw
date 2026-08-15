@@ -42,3 +42,7 @@
 /llms.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=3600
+
+# IndexNow key file — must be served as plain text at the site root.
+/*.txt
+  Content-Type: text/plain; charset=utf-8
