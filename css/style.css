@@ -198,8 +198,13 @@ h2 .num {
 }
 h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; }
 
-/* Ads */
+/* Ads.
+   No <ins class="adsbygoogle"> units are placed yet, so these slots stay collapsed:
+   an empty dashed box reading "[ advertisement ]" is a quality signal against us and
+   earns nothing. When real ad units land, drop the `display:none` and the slots
+   already have their sizing and post-conversion reveal wired up below. */
 .ad-slot {
+  display: none;
   background: var(--paper-2);
   border: 1px dashed var(--rule);
   color: var(--muted);
@@ -213,14 +218,22 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-.ad-slot::before { content: "[ advertisement ]"; }
+.ad-slot:has(.adsbygoogle) { display: block; }
 .ad-slot-post {
   opacity: 0; max-height: 0; padding: 0; margin: 0; min-height: 0; border: 0; overflow: hidden;
   transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease;
 }
-.ad-slot-post.visible {
+.ad-slot-post.visible:has(.adsbygoogle) {
   opacity: 1; max-height: 400px; padding: 22px; margin: 36px 0; min-height: 90px;
   border: 1px dashed var(--rule);
+}
+
+/* Explanatory note inside a tool's control row (used where a setting would be meaningless). */
+.control-note {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 60ch;
 }
 
 .noscript-banner {

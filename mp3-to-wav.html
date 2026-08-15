@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://audiosaw.com/mp3-to-wav">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-14">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -75,14 +75,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div id="controls" style="display:none">
       <div class="controls">
-        <label>WAV bitrate
-          <select id="bitrate">
-            <option value="128">128 kbps</option>
-            <option value="192" selected>192 kbps — balanced</option>
-            <option value="256">256 kbps</option>
-            <option value="320">320 kbps — maximum</option>
-          </select>
-        </label>
+        <p class="control-note">WAV is uncompressed, so there is no bitrate to pick — the output is 16-bit PCM at your file's original sample rate.</p>
       </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
@@ -133,9 +126,9 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 
 <script>window.AS_TOOL = { target: 'wav', accept: ['.mp3'] };</script>
-<script src="/js/common.js"></script>
-<script src="/js/audio-core.js"></script>
-<script src="/js/tool-converter.js"></script>
-<script src="/js/consent.js"></script>
+<script src="/js/common.js?v=2026-08-14"></script>
+<script src="/js/audio-core.js?v=2026-08-14"></script>
+<script src="/js/tool-converter.js?v=2026-08-14"></script>
+<script src="/js/consent.js?v=2026-08-14"></script>
 </body>
 </html>

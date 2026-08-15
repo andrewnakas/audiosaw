@@ -19,7 +19,7 @@
     bar.innerHTML =
       '<div class="fbc-consent-inner">' +
         '<p>We use cookies for basic analytics and to serve ads that keep this site free. ' +
-        'Your files never leave your device &mdash; see our <a href="/pages/privacy.html">Privacy Policy</a>.</p>' +
+        'Your files never leave your device &mdash; see our <a href="/privacy">Privacy Policy</a>.</p>' +
         '<div class="fbc-consent-actions">' +
           '<button type="button" class="btn btn-secondary" data-c="essential">Essential only</button>' +
           '<button type="button" class="btn" data-c="all">Accept all</button>' +

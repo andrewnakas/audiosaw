@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://audiosaw.com/podcast-prep">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-14">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -161,8 +161,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 
+<script src="/js/common.js?v=2026-08-14"></script>
+<script src="/js/audio-core.js?v=2026-08-14"></script>
+<script src="/js/consent.js?v=2026-08-14"></script>
 <script>
 (function(){
+  if (!window.CV || !window.AudioSaw) { console.error('AudioSaw: script order broken'); return; }
   var $ = function(s){ return document.querySelector(s); };
   var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
   var controls = $('#controls'), convertBtn = $('#convertBtn'), resetBtn = $('#resetBtn');
@@ -291,8 +295,5 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   });
 })();
 </script>
-<script src="/js/common.js"></script>
-<script src="/js/audio-core.js"></script>
-<script src="/js/consent.js"></script>
 </body>
 </html>
