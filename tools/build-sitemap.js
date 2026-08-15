@@ -1,0 +1,95 @@
+#!/usr/bin/env node
+/*
+ * Regenerates sitemap.xml from the .html files in the repo root.
+ *
+ * Run by hand after adding or editing pages:   node tools/build-sitemap.js
+ *
+ * Why this exists: the sitemap previously had no <lastmod> on any URL, and
+ * pages drifted out of it entirely (/mp3-to-aiff was live but unlisted).
+ * Google ignores <changefreq> and <priority> but does use <lastmod> for
+ * recrawl scheduling, so it is the one field worth keeping accurate.
+ *
+ * <lastmod> comes from the last git commit that touched each file, not the
+ * filesystem mtime — a checkout or a bulk find/replace shouldn't tell Google
+ * that every page changed.
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { execFileSync } = require('child_process');
+
+const ROOT = path.resolve(__dirname, '..');
+const ORIGIN = 'https://audiosaw.com';
+
+// Pages that exist but should never be in the sitemap.
+const EXCLUDE = new Set(['404.html']);
+
+// Priority tiers. Anything unlisted falls through to DEFAULT_PRIORITY.
+const PRIORITY = {
+  'index.html': 1.0,
+  'tools.html': 0.9,
+  'about.html': 0.3, 'privacy.html': 0.3, 'terms.html': 0.3, 'contact.html': 0.3,
+};
+const DEFAULT_PRIORITY = 0.8;
+
+// The primary converters — the pages we most want recrawled.
+const HIGH = new Set([
+  'mp4-to-mp3', 'm4a-to-mp3', 'wav-to-mp3', 'mp3-to-wav', 'flac-to-mp3',
+  'mov-to-mp3', 'ogg-to-mp3', 'opus-to-mp3', 'aac-to-mp3', 'extract-audio',
+  'audio-cutter', 'audio-joiner', 'audio-compressor', 'normalize-audio',
+  'silence-remover', 'ringtone-maker', 'm4a-to-wav-for-audacity',
+  'audio-for-whisper', 'm4b-to-mp3', 'mp3-320kbps', 'discord-audio-compressor',
+  'audio-to-text-prep', 'davinci-resolve-audio', 'capcut-audio', 'flac-to-wav',
+  'change-sample-rate', 'podcast-prep',
+]);
+
+function lastmod(file) {
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', file], {
+      cwd: ROOT, encoding: 'utf8',
+    }).trim();
+    if (out) return out;
+  } catch (e) { /* not in git yet — fall through */ }
+  return new Date(fs.statSync(path.join(ROOT, file)).mtime).toISOString().slice(0, 10);
+}
+
+function urlFor(file) {
+  if (file === 'index.html') return ORIGIN + '/';
+  return ORIGIN + '/' + file.replace(/\.html$/, '');
+}
+
+function priorityFor(file) {
+  if (file in PRIORITY) return PRIORITY[file];
+  const slug = file.replace(/\.html$/, '');
+  if (HIGH.has(slug)) return 0.9;
+  return DEFAULT_PRIORITY;
+}
+
+function changefreqFor(file) {
+  if (file === 'index.html') return 'weekly';
+  if (priorityFor(file) <= 0.3) return 'yearly';
+  return 'monthly';
+}
+
+const files = fs.readdirSync(ROOT)
+  .filter((f) => f.endsWith('.html') && !EXCLUDE.has(f))
+  .sort((a, b) => {
+    const pa = priorityFor(a), pb = priorityFor(b);
+    if (pa !== pb) return pb - pa;
+    return a.localeCompare(b);
+  });
+
+const body = files.map((f) => {
+  return `  <url><loc>${urlFor(f)}</loc><lastmod>${lastmod(f)}</lastmod>` +
+         `<changefreq>${changefreqFor(f)}</changefreq>` +
+         `<priority>${priorityFor(f).toFixed(1)}</priority></url>`;
+}).join('\n');
+
+const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${body}
+</urlset>
+`;
+
+fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), xml);
+console.log(`sitemap.xml: ${files.length} URLs`);

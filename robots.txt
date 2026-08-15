@@ -1,3 +1,68 @@
+# audiosaw.com — everything here is free, static, and safe to crawl.
+
+# ---- Search engines ----
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# ---- AI assistants / answer engines ----
+# These are currently the site's largest referral channel, so they are
+# explicitly welcome rather than left to the wildcard. Note Google-Extended
+# defaults to disallowed for Gemini grounding unless it is named here.
+#
+# Retrieval agents (these are the ones that send live traffic):
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Training / index crawlers:
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# ---- Everyone else ----
 User-agent: *
 Allow: /
 
