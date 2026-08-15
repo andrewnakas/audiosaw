@@ -341,14 +341,136 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   font-family: var(--mono);
 }
 .site-footer .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  display: block;
 }
-.site-footer a { color: var(--ink-soft); text-decoration: none; margin: 0 6px; border-bottom: 1px solid transparent; }
+.site-footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent; }
 .site-footer a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* Footer tool directory.
+   Every tool is linked from every page. Before this, five pages held 47 inbound
+   links each while eight held one and three held none, and Search Console
+   reported "Referring page: None detected" for pages that were live. */
+.footer-directory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px 20px;
+  padding-bottom: 28px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+}
+.footer-col h4 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+.footer-col a {
+  display: block;
+  padding: 2px 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.footer-legal { margin: 0 0 8px; }
+.footer-meta a { margin-right: 6px; }
+@media (max-width: 640px) {
+  .footer-directory { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
+}
+
+/* Breadcrumb — visible trail matching the BreadcrumbList JSON-LD. */
+.breadcrumb {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+  padding-top: 18px;
+  margin-bottom: -8px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; }
+.breadcrumb a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+.breadcrumb span[aria-hidden] { margin: 0 4px; color: var(--muted-2); }
+.breadcrumb [aria-current] { color: var(--ink-soft); }
+
+.nav-all { color: var(--amber) !important; }
+
+/* Post-conversion next steps.
+   Sits directly under the result row, which is where the user is looking when
+   the download fires. The related-tools grid is ~1,200 words further down and
+   was never seen. */
+.next-steps {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--rule);
+}
+.next-steps-preview {
+  width: 100%;
+  max-width: 420px;
+  height: 36px;
+  margin-bottom: 16px;
+  display: block;
+}
+.next-steps-label {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.next-steps-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.next-chip {
+  display: block;
+  flex: 1 1 180px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.16s, transform 0.16s;
+}
+.next-chip:hover { border-color: var(--amber); transform: translateY(-1px); }
+.next-chip-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.next-chip-why { display: block; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.45; }
+
+/* File handoff from the previous tool. */
+.handoff-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-line);
+  border-radius: 3px;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+.handoff-size { color: var(--muted); font-family: var(--mono); font-size: 0.78rem; }
+.handoff-actions { display: flex; gap: 8px; }
+
+/* Error recovery — replaces a dead end with somewhere to go. */
+.error-recovery {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--paper-2);
+  border-left: 3px solid var(--warn);
+  border-radius: 0 3px 3px 0;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+.error-recovery p { margin: 0 0 12px; }
+.error-recovery .next-chip { flex: 0 1 auto; padding: 8px 12px; font-size: 0.82rem; }
 
 /* Tool app shell */
 .tool-app {

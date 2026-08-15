@@ -39,6 +39,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Video to audio","item":"https://audiosaw.com/tools#video"},{"@type":"ListItem","position":3,"name":"Extract audio from video"}]}
+</script>
+<!-- /AS:bcschema -->
 </head>
 <body>
 <header class="site-header">
@@ -50,9 +55,19 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a href="/wav-to-mp3">wav → mp3</a>
       <a href="/audio-cutter">cut</a>
       <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
     </nav>
   </div>
 </header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#video">Video to audio</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Extract audio from video</span>
+</nav>
+<!-- /AS:breadcrumb -->
 
 <main class="container">
   <section class="page-intro">
@@ -123,26 +138,95 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <details><summary>How big can the file be?</summary><p>Around 500 MB on a typical laptop. Past 1 GB the browser starts running out of memory.</p></details>
   </section>
 
-  <section>
+  <!-- AS:related -->
+  <section class="related-tools">
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
-      <a class="card" href="/mp4-to-mp3"><h3>MP4 → MP3</h3><p>Pull audio out of a video.</p></a>
-      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the extracted track down to the part you need.</p></a>
-      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Stitch multiple clips together.</p></a>
-      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out the volume after ripping from video.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 to MP3</h3><p>Just MP4 to MP3, with the settings already chosen.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the extracted track down.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out inconsistent recording levels.</p></a>
+      <a class="card" href="/audio-to-text-prep"><h3>Prep audio for transcription</h3><p>Prep it for transcription.</p></a>
     </div>
   </section>
+<!-- /AS:related -->
 </main>
 
+<!-- AS:footer -->
 <footer class="site-footer">
   <div class="container">
-    <p>&copy; 2026 AudioSaw · runs in your tab, nowhere else</p>
-    <nav><a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
   </div>
 </footer>
+<!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.avi','.m4v'], targetFromSelect: 'targetFormat' };</script>
 <script src="/js/common.js?v=2026-08-14"></script>
+<script src="/js/tool-graph.js?v=2026-08-14"></script>
+<script src="/js/flow.js?v=2026-08-14"></script>
 <script src="/js/audio-core.js?v=2026-08-14"></script>
 <script src="/js/tool-converter.js?v=2026-08-14"></script>
 <script src="/js/consent.js?v=2026-08-14"></script>
