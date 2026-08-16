@@ -116,3 +116,29 @@ and enumerate error types (see `mbBucket` and `ERROR_KINDS` in `flow.js`).
 
 Search Console property is the URL-prefix `https://audiosaw.com/`, verified via
 the GA tag. Removing the gtag snippet would break verification.
+
+## If AI-assistant traffic disappears, check Cloudflare first
+
+Answer engines are the largest referral channel here, and they were once being
+403'd at the edge for weeks. The cause was Cloudflare's **"Block AI bots"**
+feature (Security → Settings → Bot traffic), which deploys a managed rule named
+*Manage AI bots* from the *Cloudflare Bot Management rules for all plans*
+ruleset.
+
+It is easy to miss: it does not appear under Security → Security rules, it has
+no on/off switch of its own — only a "Blocks AI Bots scope" configuration line —
+and every other bot toggle can be off while it is still blocking. It also blocks
+the *retrieval* agents (`ChatGPT-User`, `OAI-SearchBot`, `Claude-User`,
+`PerplexityBot`), not just training crawlers, despite what its description says.
+
+To diagnose: Security → Analytics → Events shows the exact ruleset and rule for
+each blocked request. To confirm from a shell:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -A "Mozilla/5.0 (compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot)" \
+  https://audiosaw.com/
+```
+
+robots.txt cannot override this — the block happens at the edge, before robots
+is ever consulted.
