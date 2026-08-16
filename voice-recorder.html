@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Recorder — record audio in your browser, nothing uploaded (free)</title>
+<meta name="description" content="Free online voice recorder that never uploads. Records from your microphone straight in the browser and saves as MP3 or WAV. No signup, no time limit, no server — the audio never leaves your device.">
+<meta name="keywords" content="voice recorder, online voice recorder, record audio in browser, free voice recorder no upload, mic recorder online, record mp3 online, audio recorder private">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/voice-recorder">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Voice Recorder">
+<meta property="og:description" content="Free online voice recorder that never uploads. Records from your microphone straight in the browser and saves as MP3 or WAV. No signup, no time limit, no server — the audio never leaves your device.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/voice-recorder">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-16">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Voice Recorder", "url": "https://audiosaw.com/voice-recorder", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is my recording uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The audio is captured by your browser, encoded by JavaScript in this page, and saved by your browser's download mechanism. No server is involved. You can confirm it by watching your browser's network tab while recording — nothing is sent."}}, {"@type": "Question", "name": "Is there a time limit?", "acceptedAnswer": {"@type": "Answer", "text": "No fixed limit. The recording is held in memory until you save it, so the practical ceiling is your available RAM. For sessions over an hour, save in sections to be safe."}}, {"@type": "Question", "name": "Why does it ask for microphone permission?", "acceptedAnswer": {"@type": "Answer", "text": "Because browsers require explicit consent before any page can access a microphone. The prompt comes from your browser, not from us, and the permission only lasts for this site."}}, {"@type": "Question", "name": "Should I use the noise suppression?", "acceptedAnswer": {"@type": "Answer", "text": "For speech, yes — it removes room echo, keyboard noise and steady hum before recording. For singing or music, choose 'raw' instead: the processing is tuned for voice and will treat sustained notes as noise."}}, {"@type": "Question", "name": "The recording is too quiet — can I fix it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Save it, then run it through the amplifier or the normalizer. Clipping, on the other hand, is not fixable, so watch for the meter turning red while you record."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to record your voice in a browser without uploading", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Press record", "text": "Your browser will ask for microphone permission the first time. The prompt is the browser's own."}, {"@type": "HowToStep", "position": 2, "name": "Watch the level meter", "text": "Aim for the middle of the range. Red means clipping, which cannot be repaired afterwards."}, {"@type": "HowToStep", "position": 3, "name": "Press stop when you're done", "text": "The recording is held in the page — nothing has been sent anywhere."}, {"@type": "HowToStep", "position": 4, "name": "Choose a format and save", "text": "MP3 for sharing, WAV if the audio is going into an editor. The file downloads from your browser."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Voice recorder"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Voice recorder</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Voice <span class="ital">recorder</span>. The audio never leaves your device.</h1>
+    <p>Records from your microphone directly in the browser and saves as MP3 or WAV. Unlike every other online recorder, the audio is never streamed to a server — it is captured, encoded and downloaded entirely inside this page. No signup, no time limit, no account.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div id="unsupported" class="noscript-banner" style="display:none">Your browser does not support in-page recording. Chrome, Edge, Firefox and Safari 14.1+ all do.</div>
+
+    <div class="rec-stage">
+      <p class="rec-timer" id="timer">0:00</p>
+      <div class="rec-meter"><div class="rec-meter-bar" id="meterBar"></div></div>
+      <div class="rec-actions">
+        <button class="btn btn-record" id="recordBtn">● Record</button>
+        <button class="btn btn-secondary" id="stopBtn" disabled>■ Stop</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Microphone processing
+          <select id="cleanup">
+            <option value="clean" selected>Clean — echo &amp; noise suppression on</option>
+            <option value="full">Clean + auto gain</option>
+            <option value="raw">Raw — no processing</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="saveBtn">Save recording</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Records from</th><td>Any microphone your browser can see</td></tr>
+        <tr><th>Output formats</th><td>MP3 (128–320 kbps) or WAV</td></tr>
+        <tr><th>Time limit</th><td>None — bounded only by available memory</td></tr>
+        <tr><th>Processing options</th><td>Echo cancellation, noise suppression, auto gain, or raw</td></tr>
+        <tr><th>Uploads your audio</th><td>No — captured and encoded entirely in the page</td></tr>
+        <tr><th>Signup required</th><td>No</td></tr>
+        <tr><th>Requires</th><td>HTTPS and microphone permission (the browser's own prompt)</td></tr>
+        <tr><th>Browser support</th><td>Chrome, Edge, Firefox, Safari 14.1+</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why in-browser recording is different</h2>
+<p>Every other free online voice recorder works the same way: your microphone audio is streamed to their server, stored there, processed there, and handed back to you as a download. That is a reasonable engineering choice and a terrible privacy one. Whatever you just recorded — an interview, a medical note, a client call, a song idea — now exists on someone else's disk, subject to their retention policy and their breach history.</p>
+<p>This recorder uses the browser's own <code>MediaRecorder</code> API. The audio goes from your microphone into memory in this tab, gets encoded to MP3 or WAV by JavaScript running in this tab, and is saved by your browser's normal download mechanism. There is no upload step, because there is no server involved in the recording at all. You can verify this: open your browser's network tab while recording, and you will see nothing being sent.</p>
+    <h2>What to use it for</h2>
+<ul>
+  <li><strong>Voice memos and quick notes</strong> when you are already at a computer and reaching for your phone is slower.</li>
+  <li><strong>Interviews and meetings</strong> — particularly anything confidential, where uploading the audio to a third party is the thing you are trying to avoid.</li>
+  <li><strong>Practice takes and song ideas</strong>, then <a href="/audio-cutter">trim them</a> or <a href="/normalize-audio">level them</a> without ever leaving the browser.</li>
+  <li><strong>Pronunciation and language practice</strong>, where you want to hear yourself back immediately.</li>
+  <li><strong>Recording narration for a video</strong>, then <a href="/podcast-prep">running it through the podcast prep tool</a> to normalize and encode in one step.</li>
+</ul>
+    <h2>Getting a usable recording</h2>
+<p><strong>Leave microphone processing on "clean" unless you know you want otherwise.</strong> Echo cancellation and noise suppression are implemented in the browser's audio stack and are genuinely good — they remove keyboard clatter, room echo and steady background hum before the audio ever reaches the recorder.</p>
+<p>Switch to <strong>raw</strong> if you are recording music or singing. The processing is tuned for speech and will fight you: noise suppression treats sustained notes as noise, and auto gain pumps the level between phrases.</p>
+<p>Watch the level meter while you talk. You want it moving through the middle of its range, occasionally reaching the upper part, and turning red only rarely. Red means clipping, and clipped audio cannot be repaired afterwards — no amount of processing recovers a squared-off waveform. If it is consistently red, move further from the microphone or turn its input level down in your operating system's sound settings.</p>
+<p>If the recording came out too quiet, that is fixable: run it through <a href="/amplify-audio">the amplifier</a> or <a href="/normalize-audio">the normalizer</a> afterwards.</p>
+    <h2>Limits worth knowing</h2>
+<p><strong>The recording lives in memory until you save it.</strong> There is no time limit as such, but a very long session on a machine with little free memory can fail, and closing or reloading the tab loses the recording. For anything longer than about an hour, save in sections.</p>
+<p><strong>The permission prompt is the browser's, not ours.</strong> If you block it by accident, the site cannot re-ask — you need to re-allow it from the icon in your address bar.</p>
+<p><strong>Safari records to MP4/AAC</strong> rather than WebM/Opus, which the tool handles transparently. Either way the file is decoded and re-encoded to your chosen format before download, so what you get is the same.</p>
+<p>Recording quality is bounded by your microphone. A laptop's built-in mic in a hard-surfaced room will sound like a laptop's built-in mic in a hard-surfaced room, and no processing changes that. Getting closer to the microphone is the single biggest improvement available to most people.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is my recording uploaded anywhere?</summary><p>No. The audio is captured by your browser, encoded by JavaScript in this page, and saved by your browser's download mechanism. No server is involved. You can confirm it by watching your browser's network tab while recording — nothing is sent.</p></details>
+    <details><summary>Is there a time limit?</summary><p>No fixed limit. The recording is held in memory until you save it, so the practical ceiling is your available RAM. For sessions over an hour, save in sections to be safe.</p></details>
+    <details><summary>Why does it ask for microphone permission?</summary><p>Because browsers require explicit consent before any page can access a microphone. The prompt comes from your browser, not from us, and the permission only lasts for this site.</p></details>
+    <details><summary>Should I use the noise suppression?</summary><p>For speech, yes — it removes room echo, keyboard noise and steady hum before recording. For singing or music, choose 'raw' instead: the processing is tuned for voice and will treat sustained notes as noise.</p></details>
+    <details><summary>The recording is too quiet — can I fix it?</summary><p>Yes. Save it, then run it through the amplifier or the normalizer. Clipping, on the other hand, is not fixable, so watch for the meter turning red while you record.</p></details>
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean up the room tone you just recorded.</p></a>
+      <a class="card" href="/trim-silence-edges"><h3>Trim silence off the ends</h3><p>Top and tail the recording.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring it to a consistent level.</p></a>
+      <a class="card" href="/audio-to-text-prep"><h3>Prep audio for transcription</h3><p>Prep it for transcription.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-08-16"></script>
+<script src="/js/tool-graph.js?v=2026-08-16"></script>
+<script src="/js/flow.js?v=2026-08-16"></script>
+<script src="/js/audio-core.js?v=2026-08-16"></script>
+<script src="/js/consent.js?v=2026-08-16"></script>
+<script src="/js/voice-recorder.js?v=2026-08-16"></script>
+</body>
+</html>

@@ -69,8 +69,12 @@ what you lose. Name real hardware and software.
 ## Architecture
 
 - `js/audio-core.js` — `window.AudioSaw`. Web Audio fast path for MP3 (lamejs)
-  and WAV; a WebAssembly FFmpeg build, lazily fetched, for m4a/aac/ogg/flac and
-  video demuxing. Both are hot-linked from CDNs.
+  and WAV; a WebAssembly FFmpeg build, lazily loaded, for m4a/aac/ogg/flac and
+  video demuxing.
+- `js/tool-shell.js` — `CV.shell({process})`, the driver for tools that do
+  custom processing, plus shared DSP helpers (`CV.lowpass`, `CV.highpass`,
+  `CV.peakNormalise`, `CV.bufferFrom`, `CV.channelsOf`, `CV.encodeBuffer`).
+  `tool-converter.js` is the equivalent for plain format conversions.
 - `js/common.js` — `window.CV`. Dropzone binding and UI helpers.
 - `js/flow.js` — post-conversion behaviour and analytics. Works by wrapping
   `CV.downloadBlob` and `CV.setStatus`, which every tool on the site funnels
@@ -78,6 +82,31 @@ what you lose. Name real hardware and software.
   tool, call those two functions and you get the next-step panel, the preview,
   error recovery and event tracking for free.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
+
+### ffmpeg must be served from our own origin
+
+`/vendor/ffmpeg/` holds the ffmpeg.wasm loader, its worker chunk and the core.
+This is not a preference. ffmpeg.wasm 0.12 spawns its worker from a chunk next
+to `ffmpeg.js`, and a Worker cannot be constructed from a cross-origin URL — so
+loading the library from a CDN fails with:
+
+```
+Failed to construct 'Worker': Script at 'https://unpkg.com/.../814.ffmpeg.js'
+cannot be accessed from origin 'https://audiosaw.com'
+```
+
+That silently broke *every* ffmpeg-dependent conversion in production: all video
+input (including `/mp4-to-mp3`) and all m4a/aac/ogg/flac/aiff output. Do not
+move these back to a CDN.
+
+The 30.6 MB `ffmpeg-core.wasm` is the exception and stays on unpkg — it exceeds
+Cloudflare Pages' 25 MiB per-file limit, and it is the one piece that does not
+need to be same-origin. Because `coreURL` is then local while the wasm is
+remote, `wasmURL` must be passed explicitly or the core looks for the wasm next
+to itself and 404s.
+
+`/vendor/*` is cached immutable for a year, so the paths in `audio-core.js`
+carry `?v=<library version>`. Bump those when upgrading a library.
 
 ## Analytics
 

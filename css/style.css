@@ -379,6 +379,77 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   .footer-directory { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
 }
 
+/* Recorder: level meter + timer. */
+.rec-stage { text-align: center; padding: 12px 0 4px; }
+.rec-timer {
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  margin: 0 0 14px;
+}
+.rec-meter {
+  height: 10px;
+  background: var(--paper-3);
+  border-radius: 100px;
+  overflow: hidden;
+  max-width: 420px;
+  margin: 0 auto 20px;
+}
+.rec-meter-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--success);
+  transition: width 0.06s linear;
+}
+.rec-meter-bar.hot { background: var(--error); }
+.rec-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-record { background: var(--amber); border-color: var(--amber); color: #fff; }
+
+/* Tag editor: field grid + artwork. */
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 18px;
+  margin: 20px 0;
+}
+.tag-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.tag-grid input {
+  padding: 9px 11px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.tag-grid input:focus { outline: 2px solid var(--amber-line); border-color: var(--amber); }
+.tag-art { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.art-preview {
+  width: 120px; height: 120px;
+  border: 1px dashed var(--rule);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background: var(--paper-2);
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted-2);
+  flex: 0 0 auto;
+}
+.art-preview img { width: 100%; height: 100%; object-fit: cover; }
+.art-actions { display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; color: var(--ink-soft); }
+
+/* EQ sliders. */
+.eq-bands { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; margin: 18px 0; }
+.eq-band { display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--ink-soft); }
+.eq-band input[type=range] { width: 100%; accent-color: var(--amber); }
+.eq-val { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+
 /* Homepage task picker.
    Two thirds of all pageviews land on the homepage, largely from AI assistants
    that only know the root URL. This gives those arrivals a route into the tool

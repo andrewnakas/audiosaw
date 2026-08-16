@@ -28,6 +28,8 @@
     { id: 'video',    title: 'Video to audio', also: ['mp4-to-mp3', 'mov-to-mp3'] },
     { id: 'edit',     title: 'Cut, trim & arrange' },
     { id: 'levels',   title: 'Loudness & channels' },
+    { id: 'repair',   title: 'Clean up & separate' },
+    { id: 'create',   title: 'Record & tag' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
 
@@ -73,8 +75,8 @@
       blurb: 'Turn a lossless archive into something a phone or car will play.',
       next: [
         ['mp3-320kbps', 'Keep as much of the FLAC quality as MP3 allows'],
+        ['mp3-tag-editor', 'Put the tags back — conversion drops them'],
         ['flac-to-wav', 'Decompress to WAV instead of going lossy'],
-        ['normalize-audio', 'Even out levels across a ripped album'],
         ['audio-compressor', 'Get the whole album under a size limit']
       ]
     },
@@ -132,7 +134,7 @@
       cat: 'to-mp3', label: 'm4b → mp3', title: 'M4B to MP3',
       blurb: 'Audiobooks out of Apple’s format and onto anything else.',
       next: [
-        ['audio-cutter', 'Split a long book into chapter-sized files'],
+        ['split-audio', 'Split a long book into chapter-sized files automatically'],
         ['audio-speed', 'Speed up narration without chipmunking it'],
         ['wav-to-mp3-128kbps', 'Spoken word does not need a high bitrate'],
         ['stereo-to-mono', 'Halve the size of a mono narration']
@@ -241,7 +243,7 @@
         ['audio-joiner', 'Stitch the pieces back together'],
         ['fade-in-fade-out', 'Soften the new in and out points'],
         ['ringtone-maker', 'Turn the selection into a ringtone'],
-        ['normalize-audio', 'Level the result']
+        ['split-audio', 'Chop the whole thing into pieces automatically']
       ]
     },
     'audio-joiner': {
@@ -270,7 +272,7 @@
       next: [
         ['silence-remover', 'Cut the pauses as well as speeding it up'],
         ['audio-reverser', 'The other way to make a file unrecognisable'],
-        ['normalize-audio', 'Level the result'],
+        ['pitch-shifter', 'Change the key instead of the tempo'],
         ['m4b-to-mp3', 'Do the same to an audiobook']
       ]
     },
@@ -311,7 +313,7 @@
         ['trim-silence-edges', 'Only trim the ends instead'],
         ['normalize-audio', 'Even out what is left'],
         ['podcast-prep', 'Normalize, mono and encode in one step'],
-        ['audio-speed', 'Tighten it further by speeding it up']
+        ['noise-reduction', 'Take the hiss and hum out too']
       ]
     },
 
@@ -331,8 +333,8 @@
       blurb: 'Make a too-quiet recording usable without driving it into distortion.',
       next: [
         ['normalize-audio', 'Target a consistent level instead of a gain amount'],
+        ['noise-reduction', 'Amplifying a quiet file raises its hiss as well'],
         ['silence-remover', 'Cut the pauses that got louder too'],
-        ['stereo-to-mono', 'Consolidate a one-sided recording'],
         ['audio-to-text-prep', 'Now send it to be transcribed']
       ]
     },
@@ -377,6 +379,80 @@
       ]
     },
 
+    // ---- Clean up & separate ----------------------------------------------
+    'vocal-remover': {
+      cat: 'repair', label: 'vocal remover', title: 'Vocal remover / karaoke',
+      blurb: 'Remove the vocal from a stereo song, or isolate it, by cancelling the centre.',
+      next: [
+        ['pitch-shifter', 'Move the karaoke track into your singing range'],
+        ['audio-eq', 'Shape what is left after cancellation'],
+        ['normalize-audio', 'Bring the level back up properly'],
+        ['audio-cutter', 'Trim to the section you actually need']
+      ]
+    },
+    'noise-reduction': {
+      cat: 'repair', label: 'remove noise', title: 'Remove background noise',
+      blurb: 'Strip hiss, hum and fan noise out of a recording with spectral gating.',
+      next: [
+        ['normalize-audio', 'Denoising lowers the level — put it back'],
+        ['audio-eq', 'Clear up what is left with a little EQ'],
+        ['silence-remover', 'Cut the dead air as well'],
+        ['audio-to-text-prep', 'Now send it to be transcribed']
+      ]
+    },
+    'audio-eq': {
+      cat: 'repair', label: 'eq / bass boost', title: 'EQ & bass booster',
+      blurb: 'Adjust bass, mids and treble, or boost the low end, baked into the file.',
+      next: [
+        ['noise-reduction', 'EQ is the wrong tool for hum — this is the right one'],
+        ['normalize-audio', 'Level it after changing the tone'],
+        ['amplify-audio', 'Make a quiet file louder instead'],
+        ['podcast-prep', 'Finish a voice recording in one pass']
+      ]
+    },
+    'pitch-shifter': {
+      cat: 'repair', label: 'pitch / key', title: 'Pitch & key changer',
+      blurb: 'Shift the key up or down by semitones without changing the tempo.',
+      next: [
+        ['audio-speed', 'The opposite — change tempo, keep the pitch'],
+        ['vocal-remover', 'Make a karaoke track to transpose'],
+        ['audio-cutter', 'Trim before shifting'],
+        ['normalize-audio', 'Level the result']
+      ]
+    },
+
+    // ---- Record & tag ------------------------------------------------------
+    'voice-recorder': {
+      cat: 'create', label: 'voice recorder', title: 'Voice recorder',
+      blurb: 'Record from your microphone in the browser — the audio never leaves your device.',
+      next: [
+        ['noise-reduction', 'Clean up the room tone you just recorded'],
+        ['trim-silence-edges', 'Top and tail the recording'],
+        ['normalize-audio', 'Bring it to a consistent level'],
+        ['audio-to-text-prep', 'Prep it for transcription']
+      ]
+    },
+    'split-audio': {
+      cat: 'create', label: 'split', title: 'Split an audio file',
+      blurb: 'Cut one long recording into equal parts, fixed chunks, or at the silent gaps.',
+      next: [
+        ['mp3-tag-editor', 'Title the pieces — splitting does not carry tags'],
+        ['audio-cutter', 'Pick an exact cut point by eye instead'],
+        ['audio-joiner', 'Put pieces back together'],
+        ['audio-compressor', 'Get each piece under a size limit']
+      ]
+    },
+    'mp3-tag-editor': {
+      cat: 'create', label: 'tag editor', title: 'MP3 tag editor',
+      blurb: 'Edit title, artist, album and cover art without re-encoding the audio.',
+      next: [
+        ['split-audio', 'Split a long file, then title each piece'],
+        ['flac-to-mp3', 'Convert an album, then put its tags back'],
+        ['ringtone-maker', 'Tag a ringtone so it shows a name'],
+        ['mp3-320kbps', 'Re-encode at maximum quality first']
+      ]
+    },
+
     // ---- For a specific app or device -------------------------------------
     'audio-for-whisper': {
       cat: 'apps', label: 'for Whisper', title: 'Audio for Whisper',
@@ -393,8 +469,8 @@
       blurb: 'The format each transcription service actually wants.',
       next: [
         ['audio-for-whisper', 'Whisper specifically'],
+        ['noise-reduction', 'Clean it up — recognisers do better on clean audio'],
         ['silence-remover', 'Shorten the audio before you pay per minute'],
-        ['amplify-audio', 'Rescue a quiet recording first'],
         ['opus-to-mp3', 'Convert a voice note first']
       ]
     },
@@ -403,9 +479,9 @@
       blurb: 'Normalize, mono mixdown and MP3 encode in a single pass.',
       next: [
         ['silence-remover', 'Cut dead air before prepping'],
+        ['voice-recorder', 'Record the episode here in the first place'],
         ['audio-joiner', 'Stitch intro, content and outro first'],
-        ['trim-silence-edges', 'Top and tail the recording'],
-        ['normalize-audio', 'Just the levelling step, with LUFS targets']
+        ['trim-silence-edges', 'Top and tail the recording']
       ]
     },
     'discord-audio-compressor': {

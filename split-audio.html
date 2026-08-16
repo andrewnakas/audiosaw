@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split Audio File — into equal parts, by time, or at silence (free, no upload)</title>
+<meta name="description" content="Split a long audio file into several files — equal parts, fixed-length chunks, or at the silent gaps. Free, runs in your browser, nothing uploaded. Get the pieces back as a zip.">
+<meta name="keywords" content="split audio file, split mp3 into parts, split audio by silence, cut audio into chunks, divide mp3 file, split long recording, audiobook splitter">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/split-audio">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Split Audio File">
+<meta property="og:description" content="Split a long audio file into several files — equal parts, fixed-length chunks, or at the silent gaps. Free, runs in your browser, nothing uploaded. Get the pieces back as a zip.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/split-audio">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-16">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Split Audio File", "url": "https://audiosaw.com/split-audio", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I split an audiobook into chapters?", "acceptedAnswer": {"@type": "Answer", "text": "Use fixed length if you want even sittings — 30 minutes is a common choice. Use silent gaps if the recording has real pauses between chapters. Then title the pieces with the tag editor, since splitting does not carry metadata across."}}, {"@type": "Question", "name": "Why did silence mode find no gaps?", "acceptedAnswer": {"@type": "Answer", "text": "Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap."}}, {"@type": "Question", "name": "Why did it produce far more pieces than I expected?", "acceptedAnswer": {"@type": "Answer", "text": "The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds."}}, {"@type": "Question", "name": "Can I split several files at once?", "acceptedAnswer": {"@type": "Answer", "text": "No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another."}}, {"@type": "Question", "name": "Do the pieces keep the original quality?", "acceptedAnswer": {"@type": "Answer", "text": "They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to split an audio file into several pieces", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop one long file", "text": "Drag an MP3, WAV, M4A or FLAC onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Choose how to split it", "text": "Equal parts for a fixed count, fixed length for chapters, silent gaps for natural boundaries."}, {"@type": "HowToStep", "position": 3, "name": "Split", "text": "Each piece is cut and encoded in turn. Fragments shorter than a second are discarded."}, {"@type": "HowToStep", "position": 4, "name": "Download the zip", "text": "The pieces come back numbered in order, in a single zip file."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Split an audio file"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Split an audio file</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Split a long recording <span class="ital">into pieces</span>.</h1>
+    <p>Splits one long audio file into several, free and in your browser with nothing uploaded. Choose equal parts, fixed-length chunks, or let it cut at the silent gaps. The pieces come back as a numbered zip, ready to use.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop one long file</p>
+      <p>MP3, WAV, M4A, FLAC. One file at a time.</p>
+      <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Split by
+          <select id="mode">
+            <option value="parts" selected>Equal parts</option>
+            <option value="duration">Fixed length</option>
+            <option value="silence">Silent gaps</option>
+          </select>
+        </label>
+        <label id="partsWrap">Number of parts
+          <select id="parts">
+            <option value="2" selected>2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option>
+            <option value="6">6</option><option value="8">8</option>
+            <option value="10">10</option><option value="12">12</option>
+          </select>
+        </label>
+        <label id="minutesWrap" style="display:none">Each part
+          <select id="minutes">
+            <option value="1">1 minute</option><option value="3">3 minutes</option>
+            <option value="5" selected>5 minutes</option><option value="10">10 minutes</option>
+            <option value="15">15 minutes</option><option value="30">30 minutes</option>
+          </select>
+        </label>
+        <label id="silenceWrap" style="display:none">Silence below
+          <select id="threshold">
+            <option value="-55">−55 dB — very quiet rooms</option>
+            <option value="-45" selected>−45 dB — recommended</option>
+            <option value="-35">−35 dB — noisy recordings</option>
+          </select>
+        </label>
+        <label id="silenceWrap2" style="display:none">Gap at least
+          <select id="minGap">
+            <option value="1">1 second</option>
+            <option value="2" selected>2 seconds</option>
+            <option value="3">3 seconds</option>
+            <option value="5">5 seconds</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Split</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Split modes</th><td>Equal parts, fixed length, or at silent gaps</td></tr>
+        <tr><th>Input</th><td>One file at a time — MP3, WAV, M4A, FLAC, OGG</td></tr>
+        <tr><th>Output</th><td>Numbered files, returned as a zip</td></tr>
+        <tr><th>Silence detection</th><td>RMS threshold with a configurable minimum gap</td></tr>
+        <tr><th>Minimum piece length</th><td>1 second — shorter fragments are discarded</td></tr>
+        <tr><th>Output format</th><td>MP3 (128–320 kbps) or WAV</td></tr>
+        <tr><th>Uploads your file</th><td>No — runs entirely in the page</td></tr>
+        <tr><th>Signup required</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Which mode to use</h2>
+<p><strong>Equal parts</strong> divides the file into a fixed number of pieces of identical length. This is the one to use when the constraint is a count — you need the recording in four chunks because that is how many you are sending, or because a platform caps uploads at a certain size and dividing by four gets you under it.</p>
+<p><strong>Fixed length</strong> cuts every N minutes regardless of how many pieces that produces. This is right for chapterising: a two-hour lecture in ten-minute segments, an audiobook in half-hour chunks that match how long someone listens in one sitting.</p>
+<p><strong>Silent gaps</strong> finds the pauses and cuts there. This is the mode for material with natural boundaries — an album side recorded in one pass, a set of takes with a break between each, a recording of several songs. It gives you pieces that start and end where the content does, rather than slicing through the middle of a word.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Chapterising an audiobook or lecture</strong> so it can be listened to in sittings, and so a player remembers where you were.</li>
+  <li><strong>Getting a long recording under an upload limit</strong> — a two-hour interview that will not fit into a transcription service or an email in one piece.</li>
+  <li><strong>Splitting a vinyl or tape transfer into tracks.</strong> Recording a whole side in one pass and cutting at the gaps is far quicker than starting and stopping.</li>
+  <li><strong>Separating takes</strong> from a rehearsal or practice session recorded continuously.</li>
+  <li><strong>Cutting a long file into transcription-sized pieces</strong>, then <a href="/audio-to-text-prep">prepping each one</a> for whichever service you use.</li>
+</ul>
+    <h2>Getting silence detection right</h2>
+<p>Two settings control it. <strong>Silence below</strong> is how quiet a passage has to be to count as a gap. −45 dB works for most recordings. If your recording has audible room tone the threshold needs to be higher (−35 dB) or nothing will register as silent; if it was made in a treated room, −55 dB avoids cutting at every small pause.</p>
+<p><strong>Gap at least</strong> is the minimum length of quiet before it counts as a boundary. This is the setting that stops it cutting between every sentence. Two seconds is right for music with gaps between tracks; three to five seconds is safer for speech, where natural pauses are common and you only want the deliberate breaks.</p>
+<p>If you get too many pieces, raise the minimum gap. If you get none at all, the tool will say so rather than silently returning the whole file — lower the threshold or raise it depending on whether the recording is noisier or quieter than you assumed. Pieces shorter than a second are discarded automatically, since those are almost always an artefact rather than content.</p>
+    <h2>What you lose</h2>
+<p>A generation of quality, if you output to MP3 from an MP3. The audio is decoded and re-encoded, so use WAV if the pieces are going into an editor, or 320 kbps if they are going out into the world. This is the same trade as any lossy conversion on the site.</p>
+<p>Metadata. The pieces come out with sequential filenames and no tags, so an audiobook split into chapters will need titling — <a href="/mp3-tag-editor">the tag editor</a> handles that without re-encoding anything.</p>
+<p>Precision, in silence mode. Cuts land in the middle of a detected gap, which is usually what you want, but it means the boundary is approximate rather than sample-accurate. For an exact cut point, <a href="/audio-cutter">the cutter</a> gives you a waveform and draggable handles instead.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>How do I split an audiobook into chapters?</summary><p>Use fixed length if you want even sittings — 30 minutes is a common choice. Use silent gaps if the recording has real pauses between chapters. Then title the pieces with the tag editor, since splitting does not carry metadata across.</p></details>
+    <details><summary>Why did silence mode find no gaps?</summary><p>Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap.</p></details>
+    <details><summary>Why did it produce far more pieces than I expected?</summary><p>The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds.</p></details>
+    <details><summary>Can I split several files at once?</summary><p>No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another.</p></details>
+    <details><summary>Do the pieces keep the original quality?</summary><p>They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters.</p></details>
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Title the pieces — splitting does not carry tags.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Pick an exact cut point by eye instead.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Put pieces back together.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Get each piece under a size limit.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-08-16"></script>
+<script src="/js/tool-graph.js?v=2026-08-16"></script>
+<script src="/js/flow.js?v=2026-08-16"></script>
+<script src="/js/audio-core.js?v=2026-08-16"></script>
+<script src="/js/tool-shell.js?v=2026-08-16"></script>
+<script src="/js/consent.js?v=2026-08-16"></script>
+<script src="/js/split-audio.js?v=2026-08-16"></script>
+</body>
+</html>

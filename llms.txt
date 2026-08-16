@@ -68,6 +68,19 @@
 - [Mono to stereo](https://audiosaw.com/mono-to-stereo): Honest dual-mono for software that insists on two channels.
 - [Change the sample rate](https://audiosaw.com/change-sample-rate): Resample to match a project and stop import warnings.
 
+## Clean up & separate
+
+- [Vocal remover / karaoke](https://audiosaw.com/vocal-remover): Remove the vocal from a stereo song, or isolate it, by cancelling the centre.
+- [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fan noise out of a recording with spectral gating.
+- [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
+- [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.
+
+## Record & tag
+
+- [Voice recorder](https://audiosaw.com/voice-recorder): Record from your microphone in the browser — the audio never leaves your device.
+- [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
+- [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
+
 ## For a specific app or device
 
 - [Audio for Whisper](https://audiosaw.com/audio-for-whisper): 16 kHz mono WAV — exactly what Whisper wants, in one click.

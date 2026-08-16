@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitch Shifter / Key Changer — change key without changing tempo (free)</title>
+<meta name="description" content="Change the pitch or key of a song without changing its tempo, free and in your browser. Shift by semitones for transposing, singing in a comfortable range, or matching two tracks. Nothing is uploaded.">
+<meta name="keywords" content="pitch shifter, key changer, change key of song, transpose audio, pitch shift without changing tempo, change pitch online free, semitone shifter">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/pitch-shifter">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Pitch Shifter / Key Changer">
+<meta property="og:description" content="Change the pitch or key of a song without changing its tempo, free and in your browser. Shift by semitones for transposing, singing in a comfortable range, or matching two tracks. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/pitch-shifter">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-16">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Pitch Shifter / Key Changer", "url": "https://audiosaw.com/pitch-shifter", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the song get longer or shorter?", "acceptedAnswer": {"@type": "Answer", "text": "No. The output is exactly the same length as the input. That is the entire point — the resample that changes the pitch is cancelled by a time-stretch that restores the original tempo."}}, {"@type": "Question", "name": "How many semitones can I shift before it sounds bad?", "acceptedAnswer": {"@type": "Answer", "text": "About five in either direction stays clean. Beyond a fifth you start to hear smearing on transients and a hollow quality on sustained notes, because the time-stretch is reconstructing more of the signal."}}, {"@type": "Question", "name": "Why does a voice shifted upward sound like a chipmunk?", "acceptedAnswer": {"@type": "Answer", "text": "Because formants — the resonances that signal the size of a person's vocal tract — move up with the pitch. Preserving tempo does not preserve formants. Downward shifts sound considerably more natural than upward ones."}}, {"@type": "Question", "name": "What's the difference between this and the speed tool?", "acceptedAnswer": {"@type": "Answer", "text": "They are opposites. This changes pitch and keeps tempo. The speed tool changes tempo and keeps pitch. Both use the same underlying time-stretching, applied in different directions."}}, {"@type": "Question", "name": "Can I shift by less than a semitone?", "acceptedAnswer": {"@type": "Answer", "text": "Not from the preset list. The options are whole semitones, which covers transposition. Correcting a recording that is a few cents off pitch needs finer control than this offers."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to change the key of a song without changing its tempo", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your audio file", "text": "Drag an MP3, WAV, M4A, FLAC or OGG onto the drop area. Several at once is fine."}, {"@type": "HowToStep", "position": 2, "name": "Choose how far to shift", "text": "In semitones. Two or three is typical for getting a song into a comfortable singing range."}, {"@type": "HowToStep", "position": 3, "name": "Shift the pitch", "text": "The audio is resampled and then time-corrected so the length stays the same."}, {"@type": "HowToStep", "position": 4, "name": "Download", "text": "A single file downloads directly; a batch comes back as a zip."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"Pitch & key changer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Pitch &amp; key changer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Change the <span class="ital">key</span>. Without changing the tempo.</h1>
+    <p>Shifts the pitch of a song up or down by semitones while leaving its tempo exactly as it was, free and in your browser with nothing uploaded. Useful for transposing a backing track into your vocal range, matching two songs, or tuning a recording that was made slightly flat.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop an audio file</p>
+      <p>MP3, WAV, M4A, FLAC, OGG. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Shift by
+          <select id="semitones">
+            <option value="-12">−12 — down an octave</option>
+            <option value="-7">−7 — down a fifth</option>
+            <option value="-5">−5 — down a fourth</option>
+            <option value="-3">−3 semitones</option>
+            <option value="-2">−2 semitones (whole step)</option>
+            <option value="-1">−1 semitone (half step)</option>
+            <option value="1">+1 semitone (half step)</option>
+            <option value="2" selected>+2 semitones (whole step)</option>
+            <option value="3">+3 semitones</option>
+            <option value="5">+5 — up a fourth</option>
+            <option value="7">+7 — up a fifth</option>
+            <option value="12">+12 — up an octave</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Shift pitch</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Shift range</th><td>−12 to +12 semitones (one octave either way)</td></tr>
+        <tr><th>Tempo</th><td>Unchanged — the file stays exactly the same length</td></tr>
+        <tr><th>Method</th><td>Resample plus WSOLA time-correction (ffmpeg asetrate / atempo)</td></tr>
+        <tr><th>Best results</th><td>Within about ±5 semitones</td></tr>
+        <tr><th>Output format</th><td>MP3 (128–320 kbps) or WAV</td></tr>
+        <tr><th>Batch</th><td>Yes — drop several files, get a zip back</td></tr>
+        <tr><th>Uploads your file</th><td>No — runs entirely in the page</td></tr>
+        <tr><th>Signup required</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What actually changes</h2>
+<p>Pitch and speed are naturally coupled. Play a record faster and it gets higher; slow it down and it gets lower. Separating them takes two steps that cancel each other's side effects.</p>
+<p>First the audio is resampled, which shifts pitch and tempo together — exactly the record-player effect. Then it is time-stretched by the inverse amount, which puts the tempo back where it started while leaving the new pitch alone. The net result is a file the same length as the original, in a different key.</p>
+<p>The time-stretch is the hard part, and it is done with WSOLA — an overlap-add method that finds the point of best waveform correlation before splicing, so the joins land on matching phase rather than creating clicks. It is the same well-tested implementation used by <a href="/audio-speed">the speed tool</a>, which does the same job in the opposite direction: tempo without pitch.</p>
+<p>Shifts are measured in semitones because that is how music works. Each semitone is a ratio of the twelfth root of two, so twelve of them make exactly an octave — a doubling or halving of frequency.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Transposing a backing track into your range.</strong> The most common use by a distance — a song sits a couple of semitones too high to sing comfortably, and moving it down two or three fixes it without making the track drag.</li>
+  <li><strong>Matching two songs for a mashup or a DJ transition</strong>, where the tempos already line up but the keys clash.</li>
+  <li><strong>Fixing a recording made slightly out of tune</strong> — a tape transfer running fast, or an instrument that drifted. One semitone, or a fraction of one, brings it back to concert pitch.</li>
+  <li><strong>Practising an instrument</strong> by moving a piece into an easier key without slowing it down.</li>
+  <li><strong>Voice disguise or character work</strong>, where a few semitones down changes the character of a voice while keeping the delivery intact.</li>
+</ul>
+    <h2>Settings that matter here</h2>
+<p><strong>Stay within about ±5 semitones for the best results.</strong> Small shifts are close to transparent. Beyond a fifth the artefacts of time-stretching start to become audible — a slight smearing on transients, a hollow or metallic quality on sustained sounds — because the algorithm is having to invent progressively more.</p>
+<p>Octave shifts (±12) work, and are useful for effects, but do not expect them to sound natural. Anything that far from the original is a deliberate transformation rather than a transposition.</p>
+<p><strong>Voices tolerate downward shifts better than upward ones.</strong> Moving a vocal up tends to produce the chipmunk quality even with tempo preserved, because the formants — the resonances that make a voice sound like a particular size of person — move with the pitch. Downward shifts sound more natural.</p>
+<p>Output at 320 kbps or WAV if the result is going anywhere further. Pitch shifting is a re-encode on top of whatever the source already was, so give the encoder room.</p>
+    <h2>What you lose</h2>
+<p>A little fidelity, unavoidably. Time-stretching reconstructs the signal rather than copying it, so transients — drum hits, plucked strings, consonants — soften slightly. At small shifts this is very hard to hear; at large ones it is obvious.</p>
+<p>Formant realism on voices. Because the whole spectrum moves together, a shifted voice sounds like a different sized person rather than the same person singing higher or lower. Formant-corrected shifting is a more complex process than this does.</p>
+<p>Processing time. The file goes through the WebAssembly build of ffmpeg, which downloads on first use and is cached afterwards. A long file takes real time to process.</p>
+<p>If you want the opposite operation — same pitch, different speed — that is <a href="/audio-speed">the speed tool</a>, not this one.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Does the song get longer or shorter?</summary><p>No. The output is exactly the same length as the input. That is the entire point — the resample that changes the pitch is cancelled by a time-stretch that restores the original tempo.</p></details>
+    <details><summary>How many semitones can I shift before it sounds bad?</summary><p>About five in either direction stays clean. Beyond a fifth you start to hear smearing on transients and a hollow quality on sustained notes, because the time-stretch is reconstructing more of the signal.</p></details>
+    <details><summary>Why does a voice shifted upward sound like a chipmunk?</summary><p>Because formants — the resonances that signal the size of a person's vocal tract — move up with the pitch. Preserving tempo does not preserve formants. Downward shifts sound considerably more natural than upward ones.</p></details>
+    <details><summary>What's the difference between this and the speed tool?</summary><p>They are opposites. This changes pitch and keeps tempo. The speed tool changes tempo and keeps pitch. Both use the same underlying time-stretching, applied in different directions.</p></details>
+    <details><summary>Can I shift by less than a semitone?</summary><p>Not from the preset list. The options are whole semitones, which covers transposition. Correcting a recording that is a few cents off pitch needs finer control than this offers.</p></details>
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>The opposite — change tempo, keep the pitch.</p></a>
+      <a class="card" href="/vocal-remover"><h3>Vocal remover / karaoke</h3><p>Make a karaoke track to transpose.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim before shifting.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Level the result.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-08-16"></script>
+<script src="/js/tool-graph.js?v=2026-08-16"></script>
+<script src="/js/flow.js?v=2026-08-16"></script>
+<script src="/js/audio-core.js?v=2026-08-16"></script>
+<script src="/js/tool-shell.js?v=2026-08-16"></script>
+<script src="/js/consent.js?v=2026-08-16"></script>
+<script src="/js/pitch-shifter.js?v=2026-08-16"></script>
+</body>
+</html>

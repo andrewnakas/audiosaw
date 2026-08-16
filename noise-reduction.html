@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remove Background Noise from Audio — free, in your browser, no upload</title>
+<meta name="description" content="Remove hiss, hum and steady background noise from a recording using spectral gating, free and in your browser. Works on fan noise, air conditioning, tape hiss and preamp noise. Nothing is uploaded.">
+<meta name="keywords" content="remove background noise from audio, noise reduction online, audio noise remover, remove hiss from recording, remove hum from audio, denoise audio free, clean up audio recording">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/noise-reduction">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Remove Background Noise from Audio">
+<meta property="og:description" content="Remove hiss, hum and steady background noise from a recording using spectral gating, free and in your browser. Works on fan noise, air conditioning, tape hiss and preamp noise. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/noise-reduction">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-16">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Remove Background Noise from Audio", "url": "https://audiosaw.com/noise-reduction", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What kind of noise can this actually remove?", "acceptedAnswer": {"@type": "Answer", "text": "Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down."}}, {"@type": "Question", "name": "Can it remove someone talking in the background, or a dog barking?", "acceptedAnswer": {"@type": "Answer", "text": "No. Those are irregular, so there is no steady noise floor to estimate. Removing them needs source separation, which is a different and much harder problem. Cutting around them is usually the practical answer."}}, {"@type": "Question", "name": "Why does my voice sound slightly hollow afterwards?", "acceptedAnswer": {"@type": "Answer", "text": "You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music."}}, {"@type": "Question", "name": "Why is this slower than the other tools?", "acceptedAnswer": {"@type": "Answer", "text": "Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer."}}, {"@type": "Question", "name": "Should I denoise before or after normalizing?", "acceptedAnswer": {"@type": "Answer", "text": "Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to remove background noise from a recording in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your recording", "text": "Drag an MP3, WAV, M4A or FLAC onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Pick a strength", "text": "Medium for speech, Gentle for music, Strong for genuinely noisy recordings."}, {"@type": "HowToStep", "position": 3, "name": "Remove the noise", "text": "The file is analysed to find the noise floor, then processed. This takes longer than a plain conversion."}, {"@type": "HowToStep", "position": 4, "name": "Download and compare", "text": "Listen against the original before discarding it, especially for music."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"Remove background noise"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Remove background noise</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Remove <span class="ital">background noise</span>. Hiss, hum, fans, air con.</h1>
+    <p>Removes steady background noise from a recording — fan hum, air conditioning, tape hiss, preamp noise — using spectral gating, entirely in your browser with nothing uploaded. It analyses the noise floor automatically, so there is nothing to configure beyond how hard to push it.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+  <div class="ad-slot ad-slot-top"></div>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop a noisy recording</p>
+      <p>MP3, WAV, M4A, FLAC. Voice recordings work best.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Strength
+          <select id="strength">
+            <option value="gentle">Gentle — safest for music</option>
+            <option value="medium" selected>Medium — recommended for speech</option>
+            <option value="strong">Strong — noisy recordings</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Remove noise</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p class="control-note">Analysis takes a little longer than a straight conversion — the file is transformed into the frequency domain and back.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Method</th><td>Short-time Fourier transform with per-band spectral gating</td></tr>
+        <tr><th>Removes well</th><td>Fan hum, air conditioning, tape hiss, preamp hiss, mains hum</td></tr>
+        <tr><th>Does not remove</th><td>Coughs, door slams, traffic, other voices — anything irregular</td></tr>
+        <tr><th>Noise profile</th><td>Estimated automatically from the whole file</td></tr>
+        <tr><th>Output format</th><td>MP3 (128–320 kbps) or WAV</td></tr>
+        <tr><th>Practical size limit</th><td>~500 MB per file (browser memory)</td></tr>
+        <tr><th>Uploads your file</th><td>No — runs entirely in the page</td></tr>
+        <tr><th>Signup required</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it actually works</h2>
+<p>The recording is chopped into short overlapping frames and each one is converted into a frequency spectrum — a measurement of how much energy sits in each frequency band at that instant. Steady noise has a distinctive signature in that view: it is present in <em>every</em> frame at roughly the same level, because a fan does not stop humming between your words.</p>
+<p>The tool estimates that floor by taking a low percentile of each frequency band across the whole file, then goes back through and attenuates any band that sits close to it, leaving louder content untouched. Speech and music, which are far above the floor when present, come through; the constant hum underneath is pulled down by 9 to 24 dB depending on the strength you choose.</p>
+<p>The attenuation uses a soft knee rather than a hard cut. A hard gate produces the warbling, underwater artefact that people associate with badly denoised audio — sounds flickering in and out as they cross the threshold. Easing between attenuated and untouched avoids most of that.</p>
+    <h2>What it fixes, and what it can't</h2>
+<p><strong>It fixes steady noise.</strong> That means anything continuous and unchanging: computer fans, air conditioning, refrigerator hum, the 50 or 60 Hz buzz from bad grounding, tape hiss, the hiss of a cheap preamp or a phone microphone turned up too far. These are the things that make an otherwise fine recording sound amateur, and they come out cleanly.</p>
+<p><strong>It cannot fix irregular noise.</strong> A cough, a door closing, a car passing, a chair creaking, someone else talking in the background — none of these are stationary, so there is no consistent floor to estimate and nothing for a spectral gate to grip. Removing those requires source separation, which is a fundamentally different and much harder problem.</p>
+<p>This distinction is worth understanding before you spend time on settings. If your recording has a hum, this will fix it. If your recording has a dog barking, nothing here will help and you will need to <a href="/audio-cutter">cut around it</a>.</p>
+    <h2>Choosing a strength</h2>
+<p><strong>Medium</strong> is the right default for speech and handles most room tone and fan noise without touching the voice.</p>
+<p><strong>Gentle</strong> is the setting for music. Music occupies far more of the spectrum than speech does, including quiet passages that a more aggressive gate would mistake for noise — reverb tails, cymbal decay and the quiet end of a fade are all vulnerable. Gentle removes less noise but is much less likely to dull the recording.</p>
+<p><strong>Strong</strong> is for recordings that are genuinely noisy: a phone recording in a busy room, an old tape transfer, a video call capture. Expect some cost to the voice — a slightly hollow or processed quality — because at that level of reduction you are removing content that overlaps with the noise.</p>
+<p>A useful order of operations: <a href="/silence-remover">remove the silence</a> first if the recording has long gaps, denoise second, and <a href="/normalize-audio">normalize</a> last. Denoising lowers the overall level, so normalizing afterwards puts it back where you want it.</p>
+    <h2>What you lose</h2>
+<p>Some high-frequency detail, always. Hiss and the top end of a voice occupy the same region of the spectrum, so pulling one down inevitably takes a little of the other. On speech this reads as very slightly duller and is almost never a problem; on music it is more noticeable, which is why Gentle exists.</p>
+<p>Processing time. This is the slowest tool on the site by some margin — the file is transformed to the frequency domain, modified, and transformed back, twice over, and a long recording means a lot of frames. A three-minute file takes a few seconds; a one-hour interview takes a while. The progress bar is real.</p>
+<p>You do not lose the original. Denoising is destructive in the sense that the output is a new file, so keep the source until you have listened to the result — particularly on music, where it is worth comparing the two before committing.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What kind of noise can this actually remove?</summary><p>Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down.</p></details>
+    <details><summary>Can it remove someone talking in the background, or a dog barking?</summary><p>No. Those are irregular, so there is no steady noise floor to estimate. Removing them needs source separation, which is a different and much harder problem. Cutting around them is usually the practical answer.</p></details>
+    <details><summary>Why does my voice sound slightly hollow afterwards?</summary><p>You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music.</p></details>
+    <details><summary>Why is this slower than the other tools?</summary><p>Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer.</p></details>
+    <details><summary>Should I denoise before or after normalizing?</summary><p>Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step.</p></details>
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Denoising lowers the level — put it back.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Clear up what is left with a little EQ.</p></a>
+      <a class="card" href="/silence-remover"><h3>Remove silence</h3><p>Cut the dead air as well.</p></a>
+      <a class="card" href="/audio-to-text-prep"><h3>Prep audio for transcription</h3><p>Now send it to be transcribed.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-08-16"></script>
+<script src="/js/tool-graph.js?v=2026-08-16"></script>
+<script src="/js/flow.js?v=2026-08-16"></script>
+<script src="/js/audio-core.js?v=2026-08-16"></script>
+<script src="/js/tool-shell.js?v=2026-08-16"></script>
+<script src="/js/consent.js?v=2026-08-16"></script>
+<script src="/js/noise-reduction.js?v=2026-08-16"></script>
+</body>
+</html>
