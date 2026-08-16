@@ -384,10 +384,20 @@
       cat: 'repair', label: 'vocal remover', title: 'Vocal remover / karaoke',
       blurb: 'Remove the vocal from a stereo song, or isolate it, by cancelling the centre.',
       next: [
+        ['stem-splitter', 'The AI version — works on mono and off-centre vocals'],
         ['pitch-shifter', 'Move the karaoke track into your singing range'],
-        ['audio-eq', 'Shape what is left after cancellation'],
         ['normalize-audio', 'Bring the level back up properly'],
         ['audio-cutter', 'Trim to the section you actually need']
+      ]
+    },
+    'stem-splitter': {
+      cat: 'repair', label: 'ai vocal remover', title: 'AI vocal remover / stem splitter',
+      blurb: 'Neural separation into a clean instrumental and acapella, running on your machine.',
+      next: [
+        ['vocal-remover', 'The instant version, when centre cancellation is enough'],
+        ['audio-cutter', 'Trim to the section you need before separating'],
+        ['pitch-shifter', 'Move the finished instrumental into your key'],
+        ['split-audio', 'Break a long track into parts first']
       ]
     },
     'noise-reduction': {

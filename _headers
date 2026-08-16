@@ -46,3 +46,29 @@
 # IndexNow key file — must be served as plain text at the site root.
 /*.txt
   Content-Type: text/plain; charset=utf-8
+
+# The stem splitter runs a neural network through onnxruntime-web. Multi-threaded
+# inference needs SharedArrayBuffer, which needs the page to be cross-origin
+# isolated. Scoped to this one page: applying COEP site-wide would break the
+# AdSense and analytics embeds everywhere else.
+#
+# `credentialless` rather than `require-corp` so cross-origin subresources that
+# don't send CORP (analytics) still load, just without credentials.
+/stem-splitter
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/stem-splitter.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+
+# A dedicated worker spawned from a cross-origin-isolated page must ITSELF be
+# delivered with a compatible COEP header. Without this the worker fails to be
+# created at all, with an opaque error and before its first line runs — which
+# looks exactly like the script being broken.
+/js/stem-worker.js
+  Cross-Origin-Embedder-Policy: credentialless
+
+# ONNX Runtime's wasm binaries.
+/vendor/ort/*
+  Cache-Control: public, max-age=31536000, immutable
+  Cross-Origin-Resource-Policy: same-origin

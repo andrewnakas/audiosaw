@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Vocal Remover &amp; Stem Splitter — runs in your browser, no upload (free)</title>
+<meta name="description" content="Separate the vocal from a song with a neural network running entirely in your browser. Get a clean instrumental and an acapella. Real AI separation, not centre cancellation — works on mono and off-centre vocals. Free, nothing uploaded.">
+<meta name="keywords" content="ai vocal remover, stem splitter, separate vocals from song, acapella extractor, instrumental extractor, karaoke track maker, mdx net online, vocal isolation free, remove vocals ai no upload">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/stem-splitter">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="AI Vocal Remover &amp; Stem Splitter — in your browser, nothing uploaded">
+<meta property="og:description" content="Neural source separation running locally. A clean instrumental and an acapella from any song, with no upload and no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/stem-splitter">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="dns-prefetch" href="https://huggingface.co">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-08-16">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI Vocal Remover and Stem Splitter","url":"https://audiosaw.com/stem-splitter","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Neural source separation into vocals and instrumental; runs locally in the browser with no upload; WebGPU accelerated"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is this real AI separation or just centre cancellation?","acceptedAnswer":{"@type":"Answer","text":"Real separation. It runs an MDX-Net model, a neural network trained to recognise what a voice looks like in a spectrogram, so it works on mono files and on vocals that are not panned centre — both of which defeat centre cancellation. The simpler vocal remover on this site is the centre-cancellation approach; it is instant, where this takes about as long as the song."}},
+{"@type":"Question","name":"Does my song get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The neural network is downloaded to your browser and the audio is processed on your machine. The only network request is fetching the model, which is identical for everyone and contains none of your audio. Most free stem splitters upload your track to a server instead."}},
+{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"Roughly as long as the track itself when your browser can use the GPU — a four-minute song takes about four minutes. Without WebGPU it falls back to the CPU and takes considerably longer. The page tells you which one it is using before you start."}},
+{"@type":"Question","name":"Why is there a 64 MB download the first time?","acceptedAnswer":{"@type":"Answer","text":"That is the trained model. Because separation happens on your machine rather than on a server, the model has to come to you. It is cached afterwards, so later songs start straight away."}},
+{"@type":"Question","name":"Do I get four stems like drums and bass?","acceptedAnswer":{"@type":"Answer","text":"No — this model separates vocals from everything else, giving you an instrumental and an acapella. Four-stem models exist but the ones available as ONNX are around 158 MB and will not load in a browser; this one is 64 MB and does."}},
+{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"It may, but slowly, and long tracks are likely to run out of memory. This is one to do on a desktop."}}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"How to remove vocals from a song with AI in your browser","totalTime":"PT4M","tool":[{"@type":"HowToTool","name":"A desktop web browser with WebGPU"}],"step":[
+{"@type":"HowToStep","position":1,"name":"Drop a song","text":"Drag an audio file onto the drop area. It is decoded locally and never uploaded."},
+{"@type":"HowToStep","position":2,"name":"Choose what you want","text":"An instrumental, an acapella, or both."},
+{"@type":"HowToStep","position":3,"name":"Wait for the model","text":"The first run downloads a 64 MB neural network, which is then cached."},
+{"@type":"HowToStep","position":4,"name":"Separate and download","text":"The track is processed in overlapping six-second parts and the results are encoded and downloaded."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var g=s==='all'?'granted':'denied';
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-08-16';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"AI vocal remover / stem splitter"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">AI vocal remover / stem splitter</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>AI <span class="ital">vocal remover</span>. A real one, in your browser.</h1>
+    <p>Separates the vocal from a song using a neural network that runs entirely on your machine — nothing is uploaded. You get a clean instrumental and an acapella. Unlike centre cancellation it works on mono files and on vocals that are not panned dead centre, because it recognises a voice rather than a position in the stereo field.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, WAV, M4A, FLAC. One track at a time, up to about ten minutes.</p>
+      <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <p class="control-note" id="envNote"></p>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="wantInstrumental" checked> Instrumental (no vocals)</label>
+        <label class="check"><input type="checkbox" id="wantAcapella" checked> Acapella (vocals only)</label>
+      </div>
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="192">192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320" selected>320 kbps — recommended</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Separate</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p class="control-note">First run downloads a 64 MB model, then caches it. Processing takes roughly as long as the track. Leave the tab open.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Model</th><td>MDX-Net (UVR-MDX-NET-Voc_FT) via ONNX Runtime Web</td></tr>
+        <tr><th>Outputs</th><td>Instrumental and acapella</td></tr>
+        <tr><th>Model download</th><td>64 MB, once, then cached in your browser</td></tr>
+        <tr><th>Acceleration</th><td>WebGPU where available, CPU fallback otherwise</td></tr>
+        <tr><th>Speed</th><td>About the length of the track on a GPU; slower on CPU</td></tr>
+        <tr><th>Processing</th><td>Overlapping 5.9-second parts, cross-faded</td></tr>
+        <tr><th>Length limit</th><td>About ten minutes — both stems are held in memory</td></tr>
+        <tr><th>Uploads your file</th><td>No — only the model is fetched, and it holds none of your audio</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How this differs from the simple vocal remover</h2>
+    <p>The <a href="/vocal-remover">vocal remover</a> on this site cancels whatever is panned dead centre. That is arithmetic: instant, works anywhere, and effective on conventional stereo mixes where the lead sits in the middle. It also fails completely on a mono file, leaves a wash behind when the vocal has stereo reverb, and thins any instrument sharing the centre.</p>
+    <p>This page runs a model trained on thousands of songs to recognise what a voice looks like in a spectrogram. It does not care where anything is panned — feed it a mono recording and it still works, because it separates by timbre rather than by position.</p>
+    <p>The trade is time. Centre cancellation finishes before you look up. This downloads a neural network and then does real arithmetic on every frame of your song. Use the simple one when it works for your track; use this when it does not.</p>
+
+    <h2>Why vocals and instrumental rather than four stems</h2>
+    <p>Four-stem models — the ones that give you drums, bass, other and vocals separately — are a different weight class. The ONNX export of Demucs, the best known of them, is 158 MB, and ONNX Runtime Web cannot load it: session creation runs for two minutes inside the WebAssembly heap and then aborts. That is not a tuning problem, it is a memory ceiling.</p>
+    <p>MDX-Net is 64 MB, loads in about two seconds, and separates the one boundary most people actually want. It is the same family of model that Ultimate Vocal Remover uses on the desktop. Choosing the model that runs beat choosing the model with the better name.</p>
+
+    <h2>What it gets wrong</h2>
+    <p>Separation is very good, not perfect, and the artefacts are characteristic. Cymbals and vocal sibilance live in the same frequencies, so a harsh "s" can leave a trace in the instrumental and a hi-hat can bleed into the acapella. Heavy reverb on a voice tends to stay behind in the instrumental, because the tail no longer looks much like a voice. Backing vocals and vocal samples usually go with the lead, whether you wanted them to or not.</p>
+    <p>The two outputs sum back to the original exactly, because the instrumental is produced by subtracting the vocal rather than being estimated separately. That is a feature — nothing goes missing — but it also means anything the model fails to catch stays audible in the other file.</p>
+
+    <h2>Making it faster</h2>
+    <p>The page tells you before you start whether it is using your GPU. WebGPU is where the speed is; without it the work falls to the CPU and takes considerably longer. Chrome and Edge on a modern desktop are the safest bet.</p>
+    <p>The practical advice is to give it less to do. <a href="/audio-cutter">Trim to the section you need</a> before separating — there is no point processing four minutes to get at one chorus. For anything over the length limit, <a href="/split-audio">split it into parts</a> and run them one at a time.</p>
+  </section>
+
+  <div class="ad-slot ad-slot-mid"></div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is this real AI separation or just centre cancellation?</summary><p>Real separation. It runs an MDX-Net model trained to recognise what a voice looks like in a spectrogram, so it works on mono files and on off-centre vocals — both of which defeat centre cancellation. The <a href="/vocal-remover">simple vocal remover</a> is the cancellation approach: instant, where this takes about as long as the song.</p></details>
+    <details><summary>Does my song get uploaded?</summary><p>No. The network is downloaded to your browser and the audio is processed on your machine. The only request is for the model, which is identical for everyone and contains none of your audio. Most free stem splitters upload your track instead.</p></details>
+    <details><summary>How long does it take?</summary><p>Roughly as long as the track when your browser can use the GPU — a four-minute song takes about four minutes. Without WebGPU it falls back to the CPU and takes considerably longer. The page says which before you start.</p></details>
+    <details><summary>Why is there a 64 MB download the first time?</summary><p>That is the trained model. Separation happens on your machine, so the model has to come to you. It is cached afterwards and later songs start straight away.</p></details>
+    <details><summary>Do I get four stems like drums and bass?</summary><p>No — this separates vocals from everything else. Four-stem ONNX models are around 158 MB and will not load in a browser; ONNX Runtime Web aborts partway through. This one is 64 MB and works.</p></details>
+    <details><summary>Will it work on my phone?</summary><p>Possibly, but slowly, and long tracks are likely to run out of memory. Do this one on a desktop.</p></details>
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/vocal-remover"><h3>Vocal remover / karaoke</h3><p>The instant version, when centre cancellation is enough.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim to the section you need before separating.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the finished instrumental into your key.</p></a>
+      <a class="card" href="/split-audio"><h3>Split an audio file</h3><p>Break a long track into parts first.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-08-16"></script>
+<script src="/js/tool-graph.js?v=2026-08-16"></script>
+<script src="/js/flow.js?v=2026-08-16"></script>
+<script src="/js/audio-core.js?v=2026-08-16"></script>
+<script src="/js/spectral.js?v=2026-08-16"></script>
+<script src="/js/tool-shell.js?v=2026-08-16"></script>
+<script src="/js/consent.js?v=2026-08-16"></script>
+<script src="/js/stem-separator.js?v=2026-08-16"></script>
+</body>
+</html>

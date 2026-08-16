@@ -379,6 +379,19 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   .footer-directory { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
 }
 
+/* Stem splitter: checkbox options and per-stem result rows. */
+.controls label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.controls label.check input { accent-color: var(--amber); width: 16px; height: 16px; }
+.stem-row { margin-bottom: 14px; }
+.stem-preview { width: 100%; height: 32px; margin-top: 6px; display: block; }
+
 /* Recorder: level meter + timer. */
 .rec-stage { text-align: center; padding: 12px 0 4px; }
 .rec-timer {

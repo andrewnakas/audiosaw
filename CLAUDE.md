@@ -117,6 +117,36 @@ and enumerate error types (see `mbBucket` and `ERROR_KINDS` in `flow.js`).
 Search Console property is the URL-prefix `https://audiosaw.com/`, verified via
 the GA tag. Removing the gtag snippet would break verification.
 
+## The stem splitter
+
+`/stem-splitter` runs neural source separation through onnxruntime-web. Three
+things about it are load-bearing:
+
+**It uses MDX-Net, not Demucs, and that is not a preference.** The Demucs ONNX
+export is 158 MB; ONNX Runtime Web grinds for two minutes and then dies with
+`Aborted()` inside the WebAssembly heap. MDX-Net is 64 MB, creates a session in
+about two seconds, and separates the vocal/instrumental boundary most people
+want. Do not "upgrade" it to Demucs without re-testing that it loads at all.
+
+**The page is cross-origin isolated, and the worker script needs its own COEP
+header.** A dedicated worker spawned from an isolated page must itself be served
+with a compatible `Cross-Origin-Embedder-Policy`, or `new Worker()` fails with an
+opaque error before the script's first line — which looks exactly like a broken
+script. See the `/js/stem-worker.js` rule in `_headers`. Isolation is scoped to
+this page only; applying COEP site-wide would break the analytics and AdSense
+embeds everywhere else.
+
+**Threads are set per backend.** On the WebGPU path `numThreads` must be 1 —
+asking for a WASM thread pool inside an already-nested worker stalls session
+creation for minutes, and buys nothing when the compute is on the GPU. Only the
+CPU fallback asks for threads.
+
+`js/spectral.js` provides the STFT the model needs (n_fft 6144, which is 3x2048
+and so needs a radix-3 stage over the radix-2 kernel). It is validated against a
+numpy reference — the browser output matches a Python implementation of the same
+pipeline to six decimal places. If you change it, re-run that comparison; a
+subtly wrong STFT produces audio that sounds plausible but separates badly.
+
 ## If AI-assistant traffic disappears, check Cloudflare first
 
 Answer engines are the largest referral channel here, and they were once being

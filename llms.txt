@@ -71,6 +71,7 @@
 ## Clean up & separate
 
 - [Vocal remover / karaoke](https://audiosaw.com/vocal-remover): Remove the vocal from a stereo song, or isolate it, by cancelling the centre.
+- [AI vocal remover / stem splitter](https://audiosaw.com/stem-splitter): Neural separation into a clean instrumental and acapella, running on your machine.
 - [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fan noise out of a recording with spectral gating.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
 - [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.
