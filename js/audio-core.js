@@ -8,10 +8,25 @@
     // SRI hashes left permissive in dev; harden before launch.
   };
 
-  var LAMEJS_URL = 'https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/dist/lamejs.iife.min.js';
-  var FFMPEG_BASE = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-  var FFMPEG_UTIL = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js';
-  var FFMPEG_CORE = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js';
+  // These are served from our own origin (see /vendor) rather than a CDN.
+  //
+  // Not a preference — a requirement. ffmpeg.wasm 0.12 spawns its worker from a
+  // chunk sitting next to ffmpeg.js, so loading the library from unpkg means
+  // constructing a Worker from a cross-origin URL, which browsers refuse:
+  //   "Failed to construct 'Worker': Script at '.../814.ffmpeg.js' cannot be
+  //    accessed from origin 'https://audiosaw.com'"
+  // That failure took out every ffmpeg-dependent conversion on the site —
+  // all video input, and m4a/aac/ogg/flac/aiff output. Serving the loader
+  // ourselves puts the worker chunk on our origin and the problem disappears.
+  //
+  // The 30.6 MB core wasm stays on the CDN: it is over Cloudflare Pages' 25 MiB
+  // per-file limit, and it is the one piece that does not need to be
+  // same-origin, so coreURL below points the core at it explicitly.
+  var LAMEJS_URL = '/vendor/lame/lamejs.min.js?v=1.2.7';
+  var FFMPEG_BASE = '/vendor/ffmpeg/ffmpeg.js?v=0.12.10';
+  var FFMPEG_UTIL = '/vendor/ffmpeg/util.js?v=0.12.1';
+  var FFMPEG_CORE = '/vendor/ffmpeg/ffmpeg-core.js?v=0.12.6';
+  var FFMPEG_WASM = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
 
   var lamejsPromise = null;
   var ffmpegPromise = null;
@@ -46,9 +61,15 @@
       if (!FFmpegNS) throw new Error('ffmpeg.wasm did not initialize');
       var ffmpeg = new FFmpegNS.FFmpeg();
       if (onLog) ffmpeg.on('log', function (e) { onLog(e.message); });
-      await ffmpeg.load({ coreURL: FFMPEG_CORE });
+
+      // wasmURL is mandatory here: the core resolves its .wasm relative to
+      // itself, and ours sits on the CDN rather than next to /vendor/ffmpeg.
+      await ffmpeg.load({ coreURL: FFMPEG_CORE, wasmURL: FFMPEG_WASM });
       return { ffmpeg: ffmpeg, util: global.FFmpegUtil };
     })();
+    // Don't cache a rejected promise — a network blip on the first conversion
+    // would otherwise poison every later attempt for the life of the page.
+    ffmpegPromise.catch(function () { ffmpegPromise = null; });
     return ffmpegPromise;
   }
 
