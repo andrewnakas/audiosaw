@@ -229,6 +229,7 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 }
 
 /* Explanatory note inside a tool's control row (used where a setting would be meaningless). */
+.control-note.warn-note { color: var(--warn); }
 .control-note {
   font-size: 0.82rem;
   color: var(--ink-soft);

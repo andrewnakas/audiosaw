@@ -33,20 +33,59 @@
 
   /* --------------------------------------------------------- capabilities */
 
-  function describeEnvironment(backend) {
+  var costPerSecond = null;   // measured wall-clock seconds per second of audio
+  var trackSeconds = null;
+
+  function fmtDuration(s) {
+    if (s < 90) return Math.round(s) + ' seconds';
+    if (s < 3600) return Math.round(s / 60) + ' minutes';
+    return (s / 3600).toFixed(1) + ' hours';
+  }
+
+  function describeEnvironment(info) {
     if (!envEl) return;
-    if (backend) {
-      envEl.textContent = backend === 'webgpu'
-        ? 'Running on your GPU (WebGPU) — this is the fast path.'
-        : 'Running on the CPU' + (self.crossOriginIsolated ? ' with multiple threads' : ' single-threaded') +
-          '. Expect it to take a while.';
-      return;
+
+    if (info) {
+      costPerSecond = info.costPerSecond;
+      envEl.className = 'control-note' + (info.backend === 'webgpu' ? '' : ' warn-note');
     }
-    var bits = [];
-    if (navigator.gpu) bits.push('WebGPU available');
-    else bits.push('No WebGPU — will fall back to the CPU and run slower');
-    if (!self.crossOriginIsolated) bits.push('no multi-threading');
-    envEl.textContent = bits.join(' · ');
+
+    var parts = [];
+    if (!info) {
+      parts.push(navigator.gpu
+        ? 'WebGPU available — should run at about the length of the track.'
+        : 'No WebGPU in this browser, so this will run on the CPU and take a lot longer.');
+    } else if (info.backend === 'webgpu') {
+      parts.push('Running on your GPU (WebGPU) — the fast path.');
+    } else {
+      parts.push('Running on the CPU' +
+        (info.threads > 1 ? ' across ' + info.threads + ' threads' : ' on a single thread') + '.');
+    }
+
+    // Once both the backend and the track length are known, say plainly how
+    // long this is going to take rather than letting someone discover it.
+    if (costPerSecond && trackSeconds) {
+      var est = trackSeconds * costPerSecond;
+      parts.push('Estimated ' + fmtDuration(est) + ' for this track.');
+      if (est > 600) {
+        parts.push('That is a long wait — consider trimming to the section you need first.');
+      }
+    }
+    envEl.textContent = parts.join(' ');
+  }
+
+  // Read the duration from metadata rather than decoding, so the estimate can
+  // appear as soon as the file is picked.
+  function measureDuration(file) {
+    var url = URL.createObjectURL(file);
+    var probe = new Audio();
+    probe.preload = 'metadata';
+    probe.onloadedmetadata = function () {
+      if (isFinite(probe.duration)) { trackSeconds = probe.duration; describeEnvironment(null); }
+      URL.revokeObjectURL(url);
+    };
+    probe.onerror = function () { URL.revokeObjectURL(url); };
+    probe.src = url;
   }
 
   /* ------------------------------------------------------------- worker io */
@@ -57,7 +96,7 @@
     worker.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') onStatus(m);
-      else if (m.type === 'ready') describeEnvironment(m.backend);
+      else if (m.type === 'ready') describeEnvironment(m);
       else if (m.type === 'done') onDone(m);
       else if (m.type === 'error') onError(m.message);
     };
@@ -187,6 +226,7 @@
     controls.style.display = '';
     goBtn.disabled = false;
     CV.renderFileList(fileList, files, function () { reset(); });
+    measureDuration(files[0]);
     // Start pulling the model down while they pick options.
     if (!warmed) { warmed = true; try { ensureWorker().postMessage({ type: 'warmup' }); } catch (e) {} }
   }

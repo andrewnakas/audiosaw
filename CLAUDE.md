@@ -137,9 +137,25 @@ this page only; applying COEP site-wide would break the analytics and AdSense
 embeds everywhere else.
 
 **Threads are set per backend.** On the WebGPU path `numThreads` must be 1 —
-asking for a WASM thread pool inside an already-nested worker stalls session
-creation for minutes, and buys nothing when the compute is on the GPU. Only the
-CPU fallback asks for threads.
+asking for a WASM thread pool there stalls session creation and buys nothing
+when the compute is on the GPU. The CPU fallback does ask for threads, and needs
+them: measured, one chunk takes ~140 s on a single thread and ~45 s on seven.
+
+For those threads to work, `/vendor/ort/*` must carry a COEP header too, not
+just `/js/stem-worker.js`. ORT spawns its pthread workers from those files, and
+a nested worker needs COEP exactly as much as the top-level one. Without it,
+`numThreads > 1` hangs session creation forever — the CPU fallback looked
+completely broken until that header was added.
+
+Measured on one machine (Apple GPU, 8 cores), per 5.9 s chunk:
+
+| Backend            | Session | Per chunk | vs realtime |
+|--------------------|---------|-----------|-------------|
+| WebGPU             | 2.5 s   | 2.9 s     | ~1.1x       |
+| WASM, 7 threads    | 2.0 s   | 45 s      | ~10x        |
+| WASM, 1 thread     | 2.5 s   | 140 s     | ~31x        |
+
+Both backends produce numerically identical output; only the wait differs.
 
 `js/spectral.js` provides the STFT the model needs (n_fft 6144, which is 3x2048
 and so needs a radix-3 stage over the radix-2 kernel). It is validated against a

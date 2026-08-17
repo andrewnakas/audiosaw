@@ -69,6 +69,14 @@
   Cross-Origin-Embedder-Policy: credentialless
 
 # ONNX Runtime's wasm binaries.
+#
+# The COEP header here is what makes multi-threaded CPU inference possible.
+# ORT spawns its own pthread workers from these files, and a nested worker needs
+# a compatible COEP just as much as the top-level one does. Without it, asking
+# for more than one thread hangs session creation forever — which is why the
+# stem splitter's CPU fallback appeared to be broken. With it, threads work and
+# the CPU path is roughly three times faster.
 /vendor/ort/*
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless

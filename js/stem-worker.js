@@ -117,13 +117,25 @@ async function ensureSession() {
     }
   }
   if (!session) {
+    // Threads matter enormously on this path: measured on the same machine, one
+    // chunk takes ~140 s single-threaded and ~45 s on seven. They only work if
+    // the page is cross-origin isolated AND /vendor/ort/* carries a COEP header,
+    // because ORT spawns its pthread workers from those files.
     ort.env.wasm.numThreads = self.crossOriginIsolated
       ? Math.max(1, Math.min(8, (navigator.hardwareConcurrency || 4) - 1)) : 1;
     session = await ort.InferenceSession.create(bytes, { executionProviders: ['wasm'] });
   }
 
   spectral = new ASSpectral.Spectral(N_FFT, HOP);
-  post('ready', { backend: used, threads: ort.env.wasm.numThreads, isolated: !!self.crossOriginIsolated });
+  var threads = used === 'wasm' ? ort.env.wasm.numThreads : 0;
+  post('ready', {
+    backend: used,
+    threads: threads,
+    isolated: !!self.crossOriginIsolated,
+    // Measured wall-clock cost per second of audio, so the page can warn about
+    // a long wait before someone commits to one.
+    costPerSecond: used === 'webgpu' ? 1.1 : (threads > 1 ? 10 : 31)
+  });
   return session;
 }
 
