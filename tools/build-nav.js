@@ -218,7 +218,7 @@ const CATEGORY_INTRO = {
 // Read the version token and shared header/gtag from an existing page so the
 // generated hub stays in sync with the rest of the site.
 const sample = fs.readFileSync(path.join(ROOT, 'mp4-to-mp3.html'), 'utf8');
-const VERSION = (sample.match(/style\.css\?v=([0-9-]+)/) || [, '1'])[1];
+const VERSION = (sample.match(/style\.css\?v=([^"']+)/) || [, '1'])[1];
 const GTAG_BLOCK = sample.slice(
   sample.indexOf('<script>\nwindow.dataLayer'),
   sample.indexOf('</head>')

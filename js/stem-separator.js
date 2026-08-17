@@ -129,6 +129,15 @@
     return worker;
   }
 
+  var baseTitle = document.title;
+
+  // This is the one tool on the site that runs for minutes, so people will
+  // switch tabs while it works. Mirroring the percentage into the tab title
+  // means they can see how it is going without coming back to look.
+  function setTitleProgress(pct) {
+    document.title = pct === null ? baseTitle : '(' + Math.round(pct) + '%) ' + baseTitle;
+  }
+
   function onStatus(m) {
     // The model download dominates a first visit, so give it a real share of
     // the bar rather than leaving it pinned at zero.
@@ -137,9 +146,11 @@
       : 30 + m.pct * 0.65;
     CV.setProgress(progressBar, pct);
     CV.setStatus(statusEl, 'info', m.detail);
+    setTitleProgress(pct);
   }
 
   function onError(message) {
+    setTitleProgress(null);
     CV.setStatus(statusEl, 'error', 'Separation failed. ' + message);
     goBtn.disabled = files.length === 0;
     resetBtn.disabled = false;
@@ -226,6 +237,7 @@
     });
 
     if (adPost) adPost.classList.add('visible');
+    setTitleProgress(null);
     goBtn.disabled = files.length === 0;
     resetBtn.disabled = false;
     CV.setProgress(progressBar, 100);
@@ -264,6 +276,7 @@
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
     if (adPost) adPost.classList.remove('visible');
+    setTitleProgress(null);
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles, null);
