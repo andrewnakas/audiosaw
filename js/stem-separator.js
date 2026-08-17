@@ -35,6 +35,23 @@
 
   var costPerSecond = null;   // measured wall-clock seconds per second of audio
   var trackSeconds = null;
+  var gpuUsable = null;       // null = not probed yet
+
+  // Ask for an adapter rather than trusting that navigator.gpu implies a
+  // working GPU. This is cheap, runs once on load, and is the difference
+  // between an honest estimate and a wrong one.
+  function probeGpu() {
+    if (!navigator.gpu) { gpuUsable = false; describeEnvironment(null); return; }
+    navigator.gpu.requestAdapter({ powerPreference: 'high-performance' })
+      .then(function (adapter) {
+        gpuUsable = !!adapter;
+        // Until the adapter resolves, assume the optimistic path for the
+        // estimate; correct it here either way.
+        costPerSecond = costPerSecond || (gpuUsable ? 1.1 : 10);
+        describeEnvironment(null);
+      })
+      .catch(function () { gpuUsable = false; costPerSecond = costPerSecond || 10; describeEnvironment(null); });
+  }
 
   function fmtDuration(s) {
     if (s < 90) return Math.round(s) + ' seconds';
@@ -52,9 +69,14 @@
 
     var parts = [];
     if (!info) {
-      parts.push(navigator.gpu
-        ? 'WebGPU available — should run at about the length of the track.'
-        : 'No WebGPU in this browser, so this will run on the CPU and take a lot longer.');
+      // gpuUsable is null until the adapter probe finishes. Checking only for
+      // navigator.gpu would over-promise: a browser can expose the API and
+      // still hand back no adapter (blocklisted driver, headless, software
+      // rendering), in which case this silently runs ten times slower than
+      // whatever we just told the visitor.
+      if (gpuUsable === null) parts.push('Checking whether your browser can use the GPU…');
+      else if (gpuUsable) parts.push('Your browser can use the GPU — this should run at about the length of the track.');
+      else parts.push('No usable GPU here, so this runs on the CPU — roughly ten times slower.');
     } else if (info.backend === 'webgpu') {
       parts.push('Running on your GPU (WebGPU) — the fast path.');
     } else {
@@ -98,6 +120,7 @@
       if (m.type === 'status') onStatus(m);
       else if (m.type === 'ready') describeEnvironment(m);
       else if (m.type === 'done') onDone(m);
+      else if (m.type === 'note') { gpuUsable = false; describeEnvironment(null); }
       else if (m.type === 'error') onError(m.message);
     };
     worker.onerror = function () {
@@ -264,4 +287,5 @@
   });
 
   describeEnvironment(null);
+  probeGpu();
 })();
