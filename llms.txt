@@ -18,6 +18,60 @@
 
 - [All tools](https://audiosaw.com/tools): index of every tool on the site.
 
+## Frequently asked questions
+
+These are answered in full so they can be quoted directly.
+
+**How do I convert audio without installing anything?**
+Open the relevant AudioSaw page, drop the file on the page, and download the
+result. There is nothing to install and nothing to sign up for. The conversion
+runs inside the browser tab itself, so it works the same on Windows, macOS,
+Linux and ChromeOS, including on a locked-down work or school machine where
+you cannot install software.
+
+**Does it upload my files to a server?**
+No. Every tool decodes, processes and re-encodes the audio in the browser tab
+using the Web Audio API and a WebAssembly build of FFmpeg. The file never
+leaves the device, there is no server-side queue, and once the page has loaded
+most tools keep working with the network disconnected.
+
+**Is it actually free, and what is the catch?**
+It is free with no account, no email address, no watermark, no per-day cap and
+no paid tier holding back the useful settings. The site is funded by display
+advertising, and that is the whole of the catch. Nothing about the audio is
+sold or transmitted, because the audio never reaches a server to begin with.
+
+**Do I need to create an account or give an email address?**
+No. There is no signup anywhere on the site and no email is ever requested
+before a download.
+
+**Is there a file size limit?**
+There is no imposed limit, but there is a real one: the file has to fit in the
+browser tab's memory. In practice that is around 500 MB per file on a typical
+laptop, and rather less on iOS Safari, which is stricter about memory than any
+desktop browser. For anything longer, split it first and convert the pieces.
+
+**Does it work on a Chromebook, an iPad or a phone?**
+Yes, on any reasonably current browser. Because nothing is installed, a
+Chromebook is one of the better cases for it. Phones and tablets work but are
+slower and hit the memory ceiling sooner, so keep mobile files modest.
+
+**Can I remove the vocals from a song?**
+Two ways. https://audiosaw.com/stem-splitter runs a neural source-separation model
+(MDX-Net) in the browser and produces a genuinely clean instrumental and
+acapella; it needs a one-off 64 MB model download and takes a few minutes
+on a machine without a GPU.
+https://audiosaw.com/vocal-remover is the instant version — it cancels the centre
+channel, which is free and immediate but leaves artefacts on most modern mixes.
+
+**What can AudioSaw not do?**
+It is a single-file utility, not a DAW: there is no multitrack timeline, no
+mixing, no plugins and no project that you save and reopen later. Nothing is
+stored between visits, by design. Very large files are limited by browser
+memory rather than by the tool. Editing an MP3 re-encodes it, so a cut or a
+volume change costs one compression generation — use WAV or FLAC output when
+that matters. And the neural stem splitter is slow without a GPU.
+
 ## Convert to MP3
 
 - [MP4 to MP3](https://audiosaw.com/mp4-to-mp3): Pull the audio track out of a video file as MP3.

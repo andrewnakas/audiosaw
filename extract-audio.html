@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Extract Audio from Video — runs in your browser | AudioSaw</title>
+<title>Extract Audio from Video — MP4, MOV, MKV to MP3 free, no upload</title>
 <meta name="description" content="Extract the audio track from any video file — MP4, MOV, WebM, MKV — into MP3 or other formats. Runs in your browser.">
 <meta name="keywords" content="extract audio from video, video to mp3, audio extractor online, mp4 audio extract, mov audio rip">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/extract-audio">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="Extract Audio from Video — runs in your browser">
+<meta property="og:title" content="Extract Audio from Video — MP4, MOV, MKV to MP3 free, no upload">
 <meta property="og:description" content="Extract the audio track from any video file — MP4, MOV, WebM, MKV — into MP3 or other formats. Runs in your browser.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/extract-audio">
@@ -46,7 +46,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the video get uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The file is read and decoded inside your browser tab and never sent to a server. That is the main reason to use this rather than a typical online extractor, which uploads the entire video first — a real problem for anything confidential."}}, {"@type": "Question", "name": "Which video formats work?", "acceptedAnswer": {"@type": "Answer", "text": "MP4, MOV, WebM, MKV, AVI and M4V. The audio inside is usually AAC (MP4, MOV) or Opus and Vorbis (WebM); all of them are decoded the same way."}}, {"@type": "Question", "name": "Should I choose MP3 or WAV?", "acceptedAnswer": {"@type": "Answer", "text": "WAV if the audio is going into an editor for more work, because it avoids re-compressing audio that was already compressed inside the video. MP3 at 192 kbps or higher if you just want to listen to it or send it on."}}, {"@type": "Question", "name": "Why is the first conversion slower?", "acceptedAnswer": {"@type": "Answer", "text": "Video containers are demultiplexed by a WebAssembly build of FFmpeg that downloads the first time you use it. After that it is cached and conversions start immediately."}}, {"@type": "Question", "name": "What if my video has two audio tracks?", "acceptedAnswer": {"@type": "Answer", "text": "You get the first one. Selecting between multiple audio streams is not supported, so a file with a separate commentary or second language track will need a desktop tool if you want the other one."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does the video get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The file is read and decoded inside your browser tab and never sent to a server. That is the main reason to use this rather than a typical online extractor, which uploads the entire video first — a real problem for anything confidential."}},{"@type":"Question","name":"Which video formats work?","acceptedAnswer":{"@type":"Answer","text":"MP4, MOV, WebM, MKV, AVI and M4V. The audio inside is usually AAC (MP4, MOV) or Opus and Vorbis (WebM); all of them are decoded the same way."}},{"@type":"Question","name":"Should I choose MP3 or WAV?","acceptedAnswer":{"@type":"Answer","text":"WAV if the audio is going into an editor for more work, because it avoids re-compressing audio that was already compressed inside the video. MP3 at 192 kbps or higher if you just want to listen to it or send it on."}},{"@type":"Question","name":"Why is the first conversion slower?","acceptedAnswer":{"@type":"Answer","text":"Video containers are demultiplexed by a WebAssembly build of FFmpeg that downloads the first time you use it. After that it is cached and conversions start immediately."}},{"@type":"Question","name":"What if my video has two audio tracks?","acceptedAnswer":{"@type":"Answer","text":"You get the first one. Selecting between multiple audio streams is not supported, so a file with a separate commentary or second language track will need a desktop tool if you want the other one."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to extract audio from a video in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your video", "text": "Drag an MP4, MOV, WebM, MKV, AVI or M4V file onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Choose an output format", "text": "MP3 for listening and sharing, WAV if the audio is going into an editor."}, {"@type": "HowToStep", "position": 3, "name": "Convert", "text": "Click Convert. The container is demultiplexed and the audio stream is decoded and re-encoded in the page."}, {"@type": "HowToStep", "position": 4, "name": "Download", "text": "The audio file downloads automatically. Several videos come back as a zip."}]}
@@ -178,11 +178,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Does the video get uploaded anywhere?</summary><p>No. The file is read and decoded inside your browser tab and never sent to a server. That is the main reason to use this rather than a typical online extractor, which uploads the entire video first — a real problem for anything confidential.</p></details>
-    <details><summary>Which video formats work?</summary><p>MP4, MOV, WebM, MKV, AVI and M4V. The audio inside is usually AAC (MP4, MOV) or Opus and Vorbis (WebM); all of them are decoded the same way.</p></details>
-    <details><summary>Should I choose MP3 or WAV?</summary><p>WAV if the audio is going into an editor for more work, because it avoids re-compressing audio that was already compressed inside the video. MP3 at 192 kbps or higher if you just want to listen to it or send it on.</p></details>
-    <details><summary>Why is the first conversion slower?</summary><p>Video containers are demultiplexed by a WebAssembly build of FFmpeg that downloads the first time you use it. After that it is cached and conversions start immediately.</p></details>
-    <details><summary>What if my video has two audio tracks?</summary><p>You get the first one. Selecting between multiple audio streams is not supported, so a file with a separate commentary or second language track will need a desktop tool if you want the other one.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Does the video get uploaded anywhere?</summary><p>No. The file is read and decoded inside your browser tab and never sent to a server. That is the main reason to use this rather than a typical online extractor, which uploads the entire video first — a real problem for anything confidential.</p></details>
+      <details><summary>Which video formats work?</summary><p>MP4, MOV, WebM, MKV, AVI and M4V. The audio inside is usually AAC (MP4, MOV) or Opus and Vorbis (WebM); all of them are decoded the same way.</p></details>
+      <details><summary>Should I choose MP3 or WAV?</summary><p>WAV if the audio is going into an editor for more work, because it avoids re-compressing audio that was already compressed inside the video. MP3 at 192 kbps or higher if you just want to listen to it or send it on.</p></details>
+      <details><summary>Why is the first conversion slower?</summary><p>Video containers are demultiplexed by a WebAssembly build of FFmpeg that downloads the first time you use it. After that it is cached and conversions start immediately.</p></details>
+      <details><summary>What if my video has two audio tracks?</summary><p>You get the first one. Selecting between multiple audio streams is not supported, so a file with a separate commentary or second language track will need a desktop tool if you want the other one.</p></details>
+      <!-- /AS:faq -->
   </section>
 
   <!-- AS:related -->

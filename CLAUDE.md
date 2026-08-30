@@ -51,9 +51,17 @@ Correct order:
 
 ```bash
 node tools/build-nav.js      # footer directory, related blocks, breadcrumbs, /tools
+node tools/build-faq.js      # merges the visible FAQ with FAQPage schema
 node tools/build-sitemap.js  # sitemap.xml with lastmod from git
 node tools/build-llms.js     # llms.txt
 ```
+
+`build-faq.js` exists because the visible FAQ and the JSON-LD were authored
+separately and drifted: 31 pages shipped schema promising questions that were
+nowhere on the page, which is a structured-data policy violation and wastes the
+answers. It now generates the schema *from* the `<details>` list, so write the
+FAQ in the HTML and run the script. `node tools/build-faq.js --check` exits 1 if
+they ever disagree again.
 
 `js/tool-graph.js` is the single source of truth — both Node and the browser
 read it. Nothing else should hardcode the list of tools.
@@ -116,6 +124,16 @@ and enumerate error types (see `mbBucket` and `ERROR_KINDS` in `flow.js`).
 
 Search Console property is the URL-prefix `https://audiosaw.com/`, verified via
 the GA tag. Removing the gtag snippet would break verification.
+
+The site emits exactly eight events, all from `flow.js`: `convert_success`,
+`convert_start`, `convert_error`, `file_selected`, `next_step_click`,
+`chain_continue`, `preview_play`, `download_again`. There is no heartbeat and no
+retry loop anywhere — keep it that way. A `setInterval` that reports to GA4 does
+not stop in a background tab, so an abandoned tab reports near-perfect usage;
+and a silent retry turns one failure into hundreds of events from one user.
+
+`docs/growth-playbook.md` records what the growth work has and has not covered,
+including which GA4 key events to star and why `file_selected` must not be one.
 
 ## The stem splitter
 

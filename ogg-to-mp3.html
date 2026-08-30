@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OGG to MP3 Converter — runs in your browser | AudioSaw</title>
+<title>OGG to MP3 — free Vorbis / Opus converter for Discord and games, no upload</title>
 <meta name="description" content="Convert OGG Vorbis and Opus to MP3 in your browser. Game audio, voice chat, podcast exports — converted locally with no upload.">
 <meta name="keywords" content="ogg to mp3, convert ogg to mp3, opus to mp3, ogg vorbis mp3, free ogg converter">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/ogg-to-mp3">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="OGG to MP3 Converter — runs in your browser">
+<meta property="og:title" content="OGG to MP3 — free Vorbis / Opus converter for Discord and games, no upload">
 <meta property="og:description" content="Convert OGG Vorbis and Opus to MP3 in your browser. Game audio, voice chat, podcast exports — converted locally with no upload.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/ogg-to-mp3">
@@ -46,7 +46,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is .ogg the same as Opus?", "acceptedAnswer": {"@type": "Answer", "text": "Not quite. Ogg is a container that usually holds Vorbis audio but can also hold Opus. Discord, Telegram and WhatsApp voice messages are typically Opus inside an Ogg container. This tool decodes both, so you do not need to know which you have."}}, {"@type": "Question", "name": "What bitrate should I pick for a Discord voice message?", "acceptedAnswer": {"@type": "Answer", "text": "128 kbps is plenty. Voice messages are encoded at a low bitrate to start with, so a higher MP3 bitrate only inflates the file — it cannot restore detail that was never in the source."}}, {"@type": "Question", "name": "Why is my MP3 bigger than the original .ogg?", "acceptedAnswer": {"@type": "Answer", "text": "Because Vorbis and Opus are more efficient codecs than MP3, especially at lower bitrates. Matching the quality of an Ogg file generally takes a somewhat larger MP3. That extra size buys compatibility."}}, {"@type": "Question", "name": "Can I convert game audio files in bulk?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Drop the whole set and you get a zip back with filenames preserved. Nothing is uploaded, so the batch size is limited only by your machine's memory."}}, {"@type": "Question", "name": "Do the tags come across?", "acceptedAnswer": {"@type": "Answer", "text": "No. Vorbis comments are not translated into ID3 tags, so titles, artists and artwork are dropped and you get audio plus the filename."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is .ogg the same as Opus?","acceptedAnswer":{"@type":"Answer","text":"Not quite. Ogg is a container that usually holds Vorbis audio but can also hold Opus. Discord, Telegram and WhatsApp voice messages are typically Opus inside an Ogg container. This tool decodes both, so you do not need to know which you have."}},{"@type":"Question","name":"What bitrate should I pick for a Discord voice message?","acceptedAnswer":{"@type":"Answer","text":"128 kbps is plenty. Voice messages are encoded at a low bitrate to start with, so a higher MP3 bitrate only inflates the file — it cannot restore detail that was never in the source."}},{"@type":"Question","name":"Why is my MP3 bigger than the original .ogg?","acceptedAnswer":{"@type":"Answer","text":"Because Vorbis and Opus are more efficient codecs than MP3, especially at lower bitrates. Matching the quality of an Ogg file generally takes a somewhat larger MP3. That extra size buys compatibility."}},{"@type":"Question","name":"Can I convert game audio files in bulk?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the whole set and you get a zip back with filenames preserved. Nothing is uploaded, so the batch size is limited only by your machine's memory."}},{"@type":"Question","name":"Do the tags come across?","acceptedAnswer":{"@type":"Answer","text":"No. Vorbis comments are not translated into ID3 tags, so titles, artists and artwork are dropped and you get audio plus the filename."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert OGG to MP3 in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your .ogg file", "text": "Drag one or more files onto the drop area. Both Vorbis and Opus inside an Ogg container are handled."}, {"@type": "HowToStep", "position": 2, "name": "Choose a bitrate", "text": "128 kbps for voice messages, 256 or 320 kbps for music and game audio."}, {"@type": "HowToStep", "position": 3, "name": "Convert", "text": "Click Convert to MP3. The file is decoded and re-encoded inside the page."}, {"@type": "HowToStep", "position": 4, "name": "Download", "text": "The MP3 downloads automatically. Several files come back as a zip."}]}
@@ -170,11 +170,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is .ogg the same as Opus?</summary><p>Not quite. Ogg is a container that usually holds Vorbis audio but can also hold Opus. Discord, Telegram and WhatsApp voice messages are typically Opus inside an Ogg container. This tool decodes both, so you do not need to know which you have.</p></details>
-    <details><summary>What bitrate should I pick for a Discord voice message?</summary><p>128 kbps is plenty. Voice messages are encoded at a low bitrate to start with, so a higher MP3 bitrate only inflates the file — it cannot restore detail that was never in the source.</p></details>
-    <details><summary>Why is my MP3 bigger than the original .ogg?</summary><p>Because Vorbis and Opus are more efficient codecs than MP3, especially at lower bitrates. Matching the quality of an Ogg file generally takes a somewhat larger MP3. That extra size buys compatibility.</p></details>
-    <details><summary>Can I convert game audio files in bulk?</summary><p>Yes. Drop the whole set and you get a zip back with filenames preserved. Nothing is uploaded, so the batch size is limited only by your machine's memory.</p></details>
-    <details><summary>Do the tags come across?</summary><p>No. Vorbis comments are not translated into ID3 tags, so titles, artists and artwork are dropped and you get audio plus the filename.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Is .ogg the same as Opus?</summary><p>Not quite. Ogg is a container that usually holds Vorbis audio but can also hold Opus. Discord, Telegram and WhatsApp voice messages are typically Opus inside an Ogg container. This tool decodes both, so you do not need to know which you have.</p></details>
+      <details><summary>What bitrate should I pick for a Discord voice message?</summary><p>128 kbps is plenty. Voice messages are encoded at a low bitrate to start with, so a higher MP3 bitrate only inflates the file — it cannot restore detail that was never in the source.</p></details>
+      <details><summary>Why is my MP3 bigger than the original .ogg?</summary><p>Because Vorbis and Opus are more efficient codecs than MP3, especially at lower bitrates. Matching the quality of an Ogg file generally takes a somewhat larger MP3. That extra size buys compatibility.</p></details>
+      <details><summary>Can I convert game audio files in bulk?</summary><p>Yes. Drop the whole set and you get a zip back with filenames preserved. Nothing is uploaded, so the batch size is limited only by your machine's memory.</p></details>
+      <details><summary>Do the tags come across?</summary><p>No. Vorbis comments are not translated into ID3 tags, so titles, artists and artwork are dropped and you get audio plus the filename.</p></details>
+      <!-- /AS:faq -->
   </section>
 
   <!-- AS:related -->

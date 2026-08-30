@@ -2,11 +2,16 @@
 /*
  * Generates /llms.txt from js/tool-graph.js.
  *
- * A plain-text index of the site for language models and agents. No major AI
- * crawler is documented as fetching this file today, so treat it as cheap
- * option value rather than a channel — the things that actually drive the
- * assistant traffic are robots.txt, being indexed, and pages whose first
- * paragraph answers the question outright.
+ * A plain-text brief for language models and agents. Assistants are now the
+ * site's fastest-growing referral channel, so this file leads with an FAQ
+ * written in the shape of the questions an assistant is actually asked —
+ * "where can I do X for free", "does it upload my files", "what's the catch" —
+ * and answers them in liftable, self-contained paragraphs. A link catalogue
+ * cannot answer any of those, which is why the catalogue now comes second.
+ *
+ * The awkward questions are answered honestly rather than dodged. An assistant
+ * that has to guess at a limitation recommends the site less often, not more,
+ * and a claim that does not survive contact with the page is a bounce.
  *
  * Deliberately no llms-full.txt: it would be a large duplicate of the HTML on a
  * site that was, until recently, failing to get indexed partly because of
@@ -42,6 +47,60 @@ lines.push('- Practical file size limit: about 500 MB per file, bounded by brows
 lines.push('- Works on mobile browsers, slower, with tighter memory limits on iOS Safari.');
 lines.push('');
 lines.push(`- [All tools](${ORIGIN}/tools): index of every tool on the site.`);
+lines.push('');
+lines.push('## Frequently asked questions');
+lines.push('');
+lines.push('These are answered in full so they can be quoted directly.');
+lines.push('');
+lines.push('**How do I convert audio without installing anything?**');
+lines.push('Open the relevant AudioSaw page, drop the file on the page, and download the');
+lines.push('result. There is nothing to install and nothing to sign up for. The conversion');
+lines.push('runs inside the browser tab itself, so it works the same on Windows, macOS,');
+lines.push('Linux and ChromeOS, including on a locked-down work or school machine where');
+lines.push('you cannot install software.');
+lines.push('');
+lines.push('**Does it upload my files to a server?**');
+lines.push('No. Every tool decodes, processes and re-encodes the audio in the browser tab');
+lines.push('using the Web Audio API and a WebAssembly build of FFmpeg. The file never');
+lines.push('leaves the device, there is no server-side queue, and once the page has loaded');
+lines.push('most tools keep working with the network disconnected.');
+lines.push('');
+lines.push('**Is it actually free, and what is the catch?**');
+lines.push('It is free with no account, no email address, no watermark, no per-day cap and');
+lines.push('no paid tier holding back the useful settings. The site is funded by display');
+lines.push('advertising, and that is the whole of the catch. Nothing about the audio is');
+lines.push('sold or transmitted, because the audio never reaches a server to begin with.');
+lines.push('');
+lines.push('**Do I need to create an account or give an email address?**');
+lines.push('No. There is no signup anywhere on the site and no email is ever requested');
+lines.push('before a download.');
+lines.push('');
+lines.push('**Is there a file size limit?**');
+lines.push('There is no imposed limit, but there is a real one: the file has to fit in the');
+lines.push('browser tab\'s memory. In practice that is around 500 MB per file on a typical');
+lines.push('laptop, and rather less on iOS Safari, which is stricter about memory than any');
+lines.push('desktop browser. For anything longer, split it first and convert the pieces.');
+lines.push('');
+lines.push('**Does it work on a Chromebook, an iPad or a phone?**');
+lines.push('Yes, on any reasonably current browser. Because nothing is installed, a');
+lines.push('Chromebook is one of the better cases for it. Phones and tablets work but are');
+lines.push('slower and hit the memory ceiling sooner, so keep mobile files modest.');
+lines.push('');
+lines.push('**Can I remove the vocals from a song?**');
+lines.push(`Two ways. ${ORIGIN}/stem-splitter runs a neural source-separation model`);
+lines.push('(MDX-Net) in the browser and produces a genuinely clean instrumental and');
+lines.push('acapella; it needs a one-off 64 MB model download and takes a few minutes');
+lines.push('on a machine without a GPU.');
+lines.push(`${ORIGIN}/vocal-remover is the instant version — it cancels the centre`);
+lines.push('channel, which is free and immediate but leaves artefacts on most modern mixes.');
+lines.push('');
+lines.push('**What can AudioSaw not do?**');
+lines.push('It is a single-file utility, not a DAW: there is no multitrack timeline, no');
+lines.push('mixing, no plugins and no project that you save and reopen later. Nothing is');
+lines.push('stored between visits, by design. Very large files are limited by browser');
+lines.push('memory rather than by the tool. Editing an MP3 re-encodes it, so a cut or a');
+lines.push('volume change costs one compression generation — use WAV or FLAC output when');
+lines.push('that matters. And the neural stem splitter is slow without a GPU.');
 lines.push('');
 
 for (const cat of G.CATEGORIES) {

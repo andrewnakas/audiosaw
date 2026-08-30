@@ -57,17 +57,7 @@
 }
 </script>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},
-    {"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV and WebM. Both directions for the common pairs."}},
-    {"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},
-    {"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},
-    {"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}
-  ]
-}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio actually stay on my device?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site."}},{"@type":"Question","name":"Why does my browser need a moment to \"warm up\" the first time?","acceptedAnswer":{"@type":"Answer","text":"For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all."}},{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions."}},{"@type":"Question","name":"What about DRM-protected files like Apple Music or Spotify?","acceptedAnswer":{"@type":"Answer","text":"Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version."}},{"@type":"Question","name":"How big can the file be?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory."}},{"@type":"Question","name":"Are you keeping any data?","acceptedAnswer":{"@type":"Answer","text":"We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it."}},{"@type":"Question","name":"Why is this free?","acceptedAnswer":{"@type":"Answer","text":"No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},{"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},{"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -353,13 +343,19 @@ gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2><span class="num">03.</span>FAQ</h2>
-    <details><summary>Does my audio actually stay on my device?</summary><p>Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site.</p></details>
-    <details><summary>Why does my browser need a moment to "warm up" the first time?</summary><p>For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all.</p></details>
-    <details><summary>Which formats can I convert between?</summary><p>MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions.</p></details>
-    <details><summary>What about DRM-protected files like Apple Music or Spotify?</summary><p>Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version.</p></details>
-    <details><summary>How big can the file be?</summary><p>Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory.</p></details>
-    <details><summary>Are you keeping any data?</summary><p>We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it.</p></details>
-    <details><summary>Why is this free?</summary><p>No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Does my audio actually stay on my device?</summary><p>Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site.</p></details>
+      <details><summary>Why does my browser need a moment to "warm up" the first time?</summary><p>For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all.</p></details>
+      <details><summary>Which formats can I convert between?</summary><p>MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions.</p></details>
+      <details><summary>What about DRM-protected files like Apple Music or Spotify?</summary><p>Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version.</p></details>
+      <details><summary>How big can the file be?</summary><p>Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory.</p></details>
+      <details><summary>Are you keeping any data?</summary><p>We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it.</p></details>
+      <details><summary>Why is this free?</summary><p>No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier.</p></details>
+      <details><summary>Does my audio file get uploaded?</summary><p>No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test.</p></details>
+      <details><summary>Can I batch-convert a folder of files?</summary><p>Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that.</p></details>
+      <details><summary>What about file size limits?</summary><p>Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can.</p></details>
+      <details><summary>Will it work on my phone?</summary><p>Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari.</p></details>
+      <!-- /AS:faq -->
   </section>
 </main>
 

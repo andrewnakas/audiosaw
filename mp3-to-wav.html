@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MP3 to WAV Converter — runs in your browser | AudioSaw</title>
+<title>MP3 to WAV — free 16-bit PCM converter for DAWs and samplers, no upload</title>
 <meta name="description" content="Convert MP3 to WAV (uncompressed PCM) in your browser. Decode losslessly, optionally resample, no upload. For DAW import and audio editing.">
 <meta name="keywords" content="mp3 to wav, convert mp3 to wav, mp3 wav converter, mp3 to pcm, decode mp3, mp3 to wave online">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/mp3-to-wav">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="MP3 to WAV Converter — runs in your browser">
+<meta property="og:title" content="MP3 to WAV — free 16-bit PCM converter for DAWs and samplers, no upload">
 <meta property="og:description" content="Convert MP3 to WAV (uncompressed PCM) in your browser. Decode losslessly, optionally resample, no upload. For DAW import and audio editing.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/mp3-to-wav">
@@ -46,7 +46,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does converting MP3 to WAV improve the quality?", "acceptedAnswer": {"@type": "Answer", "text": "No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality."}}, {"@type": "Question", "name": "Why is the WAV so much bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB."}}, {"@type": "Question", "name": "What bit depth and sample rate do I get?", "acceptedAnswer": {"@type": "Answer", "text": "16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture."}}, {"@type": "Question", "name": "Should I use WAV or FLAC?", "acceptedAnswer": {"@type": "Answer", "text": "FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM."}}, {"@type": "Question", "name": "Why is there no bitrate setting?", "acceptedAnswer": {"@type": "Answer", "text": "Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does converting MP3 to WAV improve the quality?","acceptedAnswer":{"@type":"Answer","text":"No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality."}},{"@type":"Question","name":"Why is the WAV so much bigger?","acceptedAnswer":{"@type":"Answer","text":"Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB."}},{"@type":"Question","name":"What bit depth and sample rate do I get?","acceptedAnswer":{"@type":"Answer","text":"16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture."}},{"@type":"Question","name":"Should I use WAV or FLAC?","acceptedAnswer":{"@type":"Answer","text":"FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM."}},{"@type":"Question","name":"Why is there no bitrate setting?","acceptedAnswer":{"@type":"Answer","text":"Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert MP3 to WAV in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your MP3", "text": "Drag one or more MP3 files onto the drop area. They are decoded locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Convert", "text": "Click Convert to WAV. There are no settings to choose — WAV is uncompressed, so there is no bitrate."}, {"@type": "HowToStep", "position": 3, "name": "Download", "text": "You get a 16-bit PCM WAV at the original sample rate. Several files come back as a zip."}]}
@@ -162,11 +162,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Does converting MP3 to WAV improve the quality?</summary><p>No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality.</p></details>
-    <details><summary>Why is the WAV so much bigger?</summary><p>Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB.</p></details>
-    <details><summary>What bit depth and sample rate do I get?</summary><p>16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture.</p></details>
-    <details><summary>Should I use WAV or FLAC?</summary><p>FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM.</p></details>
-    <details><summary>Why is there no bitrate setting?</summary><p>Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Does converting MP3 to WAV improve the quality?</summary><p>No. The data that MP3 compression discarded is gone permanently, and decoding cannot recover it. The WAV sounds exactly like the MP3, in a file about ten times larger. It is useful for compatibility and editing, not for quality.</p></details>
+      <details><summary>Why is the WAV so much bigger?</summary><p>Because it is uncompressed. WAV stores every sample directly — around 10 MB per minute at CD quality — whereas MP3 stores a compressed approximation. A 4 MB song typically becomes about 40 MB.</p></details>
+      <details><summary>What bit depth and sample rate do I get?</summary><p>16-bit PCM at the source file's original sample rate, with the channel count preserved. 16-bit is appropriate because an MP3 source has no extra dynamic range to capture.</p></details>
+      <details><summary>Should I use WAV or FLAC?</summary><p>FLAC if you are storing it — it is equally lossless, about half the size, and supports tags properly. WAV if it is going into a DAW, a hardware sampler or CD-burning software, which often want raw PCM.</p></details>
+      <details><summary>Why is there no bitrate setting?</summary><p>Because WAV is uncompressed, so bitrate does not apply. A converter that offers you a bitrate for WAV output is showing a control that has no effect on the result.</p></details>
+      <!-- /AS:faq -->
   </section>
 
   <!-- AS:related -->

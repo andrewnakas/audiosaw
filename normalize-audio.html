@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Normalize Audio — make audio louder or even out volume | AudioSaw</title>
+<title>Normalize Audio — even out volume across tracks free, no upload</title>
 <meta name="description" content="Normalize audio in your browser. Peak-normalize MP3, WAV, M4A so the loudest moment hits your target dB. No upload, no signup.">
 <meta name="keywords" content="normalize audio, normalize mp3, make audio louder online, audio volume normalizer, peak normalize, even out audio volume">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/normalize-audio">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="Normalize Audio — peak-normalize in your browser">
+<meta property="og:title" content="Normalize Audio — even out volume across tracks free, no upload">
 <meta property="og:description" content="Bring your audio up to a target level without uploading anything.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/normalize-audio">
@@ -36,6 +36,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will normalizing distort my audio?","acceptedAnswer":{"@type":"Answer","text":"Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean."}},{"@type":"Question","name":"Why is the change subtle on some files?","acceptedAnswer":{"@type":"Answer","text":"If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings."}},{"@type":"Question","name":"What's the difference between this and \"make audio louder\"?","acceptedAnswer":{"@type":"Answer","text":"Same thing, often. \"Make louder\" tools usually peak-normalize."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Local processing in your browser tab."}}]}
+</script>
+<!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Loudness & channels","item":"https://audiosaw.com/tools#levels"},{"@type":"ListItem","position":3,"name":"Normalize Audio"}]}
@@ -141,10 +146,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Will normalizing distort my audio?</summary><p>Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean.</p></details>
-    <details><summary>Why is the change subtle on some files?</summary><p>If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings.</p></details>
-    <details><summary>What's the difference between this and "make audio louder"?</summary><p>Same thing, often. "Make louder" tools usually peak-normalize.</p></details>
-    <details><summary>Does my audio upload?</summary><p>No. Local processing in your browser tab.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Will normalizing distort my audio?</summary><p>Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean.</p></details>
+      <details><summary>Why is the change subtle on some files?</summary><p>If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings.</p></details>
+      <details><summary>What's the difference between this and "make audio louder"?</summary><p>Same thing, often. "Make louder" tools usually peak-normalize.</p></details>
+      <details><summary>Does my audio upload?</summary><p>No. Local processing in your browser tab.</p></details>
+      <!-- /AS:faq -->
   </section>
 
   <!-- AS:related -->

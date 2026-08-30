@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOV to MP3 Converter — runs in your browser | AudioSaw</title>
+<title>MOV to MP3 — free iPhone / QuickTime audio extractor, no upload</title>
 <meta name="description" content="Convert iPhone .mov and QuickTime files to MP3. Extract audio in your browser, no upload, no daily limit.">
 <meta name="keywords" content="mov to mp3, convert mov to mp3, iphone video to mp3, quicktime to mp3, mov audio extract">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/mov-to-mp3">
 <link rel="icon" href="/favicon.ico">
-<meta property="og:title" content="MOV to MP3 Converter — runs in your browser">
+<meta property="og:title" content="MOV to MP3 — free iPhone / QuickTime audio extractor, no upload">
 <meta property="og:description" content="Convert iPhone .mov and QuickTime files to MP3. Extract audio in your browser, no upload, no daily limit.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/mov-to-mp3">
@@ -46,7 +46,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does my video get uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The .mov is read and decoded inside your browser tab and never sent to a server. Most online converters upload the whole video first, which for a private recording is exactly what you want to avoid."}}, {"@type": "Question", "name": "Why is this slower than the other converters?", "acceptedAnswer": {"@type": "Answer", "text": "Video containers are demultiplexed by a WebAssembly build of FFmpeg, which has to download the first time you use it and is heavier than the audio-only path. After that first load it is cached, but a long .mov still takes real time to read through."}}, {"@type": "Question", "name": "What bitrate should I use for a voice recording?", "acceptedAnswer": {"@type": "Answer", "text": "192 kbps is more than enough for speech and keeps an hour of audio around 85 MB. Use 320 kbps if there is music in the recording or you plan to edit it further."}}, {"@type": "Question", "name": "The audio is very quiet — can this fix that?", "acceptedAnswer": {"@type": "Answer", "text": "Not on its own. Convert first, then run the MP3 through the normalizer to hit a consistent target level, or the amplifier if you need a specific gain increase without distortion."}}, {"@type": "Question", "name": "Does the recording date survive the conversion?", "acceptedAnswer": {"@type": "Answer", "text": "No. The creation date, location and device metadata an iPhone writes into a .mov are not carried into the MP3. Keep the original file if that information matters."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my video get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The .mov is read and decoded inside your browser tab and never sent to a server. Most online converters upload the whole video first, which for a private recording is exactly what you want to avoid."}},{"@type":"Question","name":"Why is this slower than the other converters?","acceptedAnswer":{"@type":"Answer","text":"Video containers are demultiplexed by a WebAssembly build of FFmpeg, which has to download the first time you use it and is heavier than the audio-only path. After that first load it is cached, but a long .mov still takes real time to read through."}},{"@type":"Question","name":"What bitrate should I use for a voice recording?","acceptedAnswer":{"@type":"Answer","text":"192 kbps is more than enough for speech and keeps an hour of audio around 85 MB. Use 320 kbps if there is music in the recording or you plan to edit it further."}},{"@type":"Question","name":"The audio is very quiet — can this fix that?","acceptedAnswer":{"@type":"Answer","text":"Not on its own. Convert first, then run the MP3 through the normalizer to hit a consistent target level, or the amplifier if you need a specific gain increase without distortion."}},{"@type":"Question","name":"Does the recording date survive the conversion?","acceptedAnswer":{"@type":"Answer","text":"No. The creation date, location and device metadata an iPhone writes into a .mov are not carried into the MP3. Keep the original file if that information matters."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to convert a MOV file to MP3 in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your .mov file", "text": "Drag the QuickTime file onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Choose a bitrate", "text": "192 kbps for speech, 320 kbps for music or anything you will edit further."}, {"@type": "HowToStep", "position": 3, "name": "Convert", "text": "Click Convert to MP3. The container is demultiplexed and the audio re-encoded. The first run downloads the decoder, so allow a moment."}, {"@type": "HowToStep", "position": 4, "name": "Download", "text": "The MP3 downloads automatically. Several files come back as a zip."}]}
@@ -170,11 +170,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Does my video get uploaded?</summary><p>No. The .mov is read and decoded inside your browser tab and never sent to a server. Most online converters upload the whole video first, which for a private recording is exactly what you want to avoid.</p></details>
-    <details><summary>Why is this slower than the other converters?</summary><p>Video containers are demultiplexed by a WebAssembly build of FFmpeg, which has to download the first time you use it and is heavier than the audio-only path. After that first load it is cached, but a long .mov still takes real time to read through.</p></details>
-    <details><summary>What bitrate should I use for a voice recording?</summary><p>192 kbps is more than enough for speech and keeps an hour of audio around 85 MB. Use 320 kbps if there is music in the recording or you plan to edit it further.</p></details>
-    <details><summary>The audio is very quiet — can this fix that?</summary><p>Not on its own. Convert first, then run the MP3 through the normalizer to hit a consistent target level, or the amplifier if you need a specific gain increase without distortion.</p></details>
-    <details><summary>Does the recording date survive the conversion?</summary><p>No. The creation date, location and device metadata an iPhone writes into a .mov are not carried into the MP3. Keep the original file if that information matters.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Does my video get uploaded?</summary><p>No. The .mov is read and decoded inside your browser tab and never sent to a server. Most online converters upload the whole video first, which for a private recording is exactly what you want to avoid.</p></details>
+      <details><summary>Why is this slower than the other converters?</summary><p>Video containers are demultiplexed by a WebAssembly build of FFmpeg, which has to download the first time you use it and is heavier than the audio-only path. After that first load it is cached, but a long .mov still takes real time to read through.</p></details>
+      <details><summary>What bitrate should I use for a voice recording?</summary><p>192 kbps is more than enough for speech and keeps an hour of audio around 85 MB. Use 320 kbps if there is music in the recording or you plan to edit it further.</p></details>
+      <details><summary>The audio is very quiet — can this fix that?</summary><p>Not on its own. Convert first, then run the MP3 through the normalizer to hit a consistent target level, or the amplifier if you need a specific gain increase without distortion.</p></details>
+      <details><summary>Does the recording date survive the conversion?</summary><p>No. The creation date, location and device metadata an iPhone writes into a .mov are not carried into the MP3. Keep the original file if that information matters.</p></details>
+      <!-- /AS:faq -->
   </section>
 
   <!-- AS:related -->
