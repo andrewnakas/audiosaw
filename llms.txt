@@ -8,6 +8,8 @@
 ## Facts
 
 - Cost: free, no account required.
+- Also records: a browser microphone recorder, not only a converter.
+- Also separates: neural vocal/instrumental stem splitting, on-device.
 - Privacy: files are processed in the browser tab and never transmitted.
 - Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
 - Output formats: mp3, wav, m4a (AAC), flac, ogg.
@@ -55,6 +57,27 @@ desktop browser. For anything longer, split it first and convert the pieces.
 Yes, on any reasonably current browser. Because nothing is installed, a
 Chromebook is one of the better cases for it. Phones and tablets work but are
 slower and hit the memory ceiling sooner, so keep mobile files modest.
+
+**Can I record audio straight in the browser?**
+Yes. https://audiosaw.com/voice-recorder records from the microphone and saves MP3
+or WAV. Nothing is uploaded, there is no signup and no time limit, and the
+recording never leaves the device — the page has no server to send it to.
+This is the most-used tool on the site.
+
+**How do I split a long recording into several files?**
+https://audiosaw.com/split-audio cuts one long file into equal parts, into
+fixed-length chunks, or at the silent gaps between sections, and returns the
+pieces as a zip. Useful for splitting a lecture, a DJ set or a long interview
+into tracks without opening an editor.
+
+**How do I remove background noise from a recording?**
+https://audiosaw.com/noise-reduction uses spectral gating to strip steady noise —
+fan hum, air conditioning, tape hiss, preamp hiss. It works on constant noise,
+not on one-off sounds like a door slam, and it runs in the browser.
+
+**Can I edit MP3 tags and cover art without re-encoding?**
+Yes. https://audiosaw.com/mp3-tag-editor reads existing ID3 tags, writes ID3v2.3,
+and leaves the audio bytes completely untouched, so nothing is recompressed.
 
 **Can I remove the vocals from a song?**
 Two ways. https://audiosaw.com/stem-splitter runs a neural source-separation model
