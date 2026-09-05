@@ -23,11 +23,16 @@
 /favicon.ico
   Cache-Control: public, max-age=604800
 
-# The service worker must never be pinned by a stale cache: Pages' default for
-# an unruled file is max-age=14400, which would leave a four-hour window where
-# an update to the site cannot reach a returning visitor.
+# The service worker must never be pinned by a stale cache: Pages' default is
+# max-age=14400, which would leave a four-hour window where an update cannot
+# reach a returning visitor.
+#
+# It must be spelled `max-age=0`, not `no-cache`. Cloudflare Pages replaces a
+# bare `no-cache` with its own default max-age while keeping the rest of the
+# directive — verified against the live response — so `no-cache` silently
+# became `max-age=14400, must-revalidate`.
 /sw.js
-  Cache-Control: no-cache, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex
 
 /manifest.webmanifest
