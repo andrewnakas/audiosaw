@@ -23,14 +23,16 @@
 /favicon.ico
   Cache-Control: public, max-age=604800
 
-# The service worker must never be pinned by a stale cache: Pages' default is
-# max-age=14400, which would leave a four-hour window where an update cannot
-# reach a returning visitor.
+# Cloudflare Pages will not let us shorten the browser TTL on a .js file. Both
+# `no-cache` and `max-age=0` come back as `max-age=14400`, while the identical
+# rule on /manifest.webmanifest keeps its `max-age=3600` — so it is the
+# extension, not the rule, and a marker header proved the rule itself matches.
 #
-# It must be spelled `max-age=0`, not `no-cache`. Cloudflare Pages replaces a
-# bare `no-cache` with its own default max-age while keeping the rest of the
-# directive — verified against the live response — so `no-cache` silently
-# became `max-age=14400, must-revalidate`.
+# The rule stays because it is correct and costs nothing if Pages changes. What
+# actually keeps the worker fresh is the registration: js/pwa.js registers with
+# `updateViaCache: 'none'`, which makes the browser bypass its HTTP cache when
+# fetching the script, and calls reg.update() once per load. must-revalidate
+# plus the ETag keeps the edge honest.
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex

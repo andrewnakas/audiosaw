@@ -37,6 +37,15 @@
       // No ?v= on the URL: the browser byte-compares the script itself, and the
       // no-cache header on /sw.js is what makes an update land promptly.
       navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+        .then(function (reg) {
+          // Cloudflare Pages forces a four-hour browser TTL on any .js file and
+          // will not accept a shorter one (see the /sw.js note in _headers).
+          // updateViaCache:'none' already makes this fetch bypass the HTTP
+          // cache; asking explicitly once per load means a returning visitor
+          // picks up a new worker on their next navigation rather than
+          // whenever the browser decides to look.
+          try { reg.update(); } catch (e) {}
+        })
         .catch(function () { /* offline support is a bonus, never a blocker */ });
     });
   }

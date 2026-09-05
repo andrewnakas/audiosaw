@@ -102,7 +102,12 @@ what you lose. Name real hardware and software.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
-- `sw.js` — offline support and the share target. Deliberately narrow: it
+- `sw.js` — offline support and the share target. Cloudflare Pages will not
+  serve a `.js` file with a browser TTL shorter than four hours, so the worker
+  is kept fresh by `updateViaCache: 'none'` plus an explicit `reg.update()` in
+  `pwa.js`, not by the `_headers` rule. Do not "fix" that rule by deleting it or
+  by registering the worker with a `?v=` — a versioned URL creates a *new*
+  registration each release and orphans the old one. Deliberately narrow: it
   bypasses everything cross-origin, and it bypasses `/stem-splitter`,
   `/js/stem-worker.js` and `/vendor/ort/*` entirely, because a synthesised or
   fallback response there would arrive without the COOP/COEP/CORP headers those
