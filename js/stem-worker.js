@@ -23,7 +23,13 @@
  */
 
 /* global ort, ASSpectral */
-self.importScripts('/vendor/ort/ort.webgpu.min.js', '/js/spectral.js');
+
+// The worker is spawned as /js/stem-worker.js?v=<token>, so its own query
+// string carries the site's asset version. Pass it on: /js/* is served
+// immutable for a year, and an unversioned import here would pin a returning
+// visitor's worker to whatever spectral.js it first cached.
+var AS_V = (self.location.search || '').replace(/^\?/, '');
+self.importScripts('/vendor/ort/ort.webgpu.min.js', '/js/spectral.js' + (AS_V ? '?' + AS_V : ''));
 
 var MODEL_URL = 'https://huggingface.co/Politrees/UVR_resources/resolve/main/models/MDXNet/UVR-MDX-NET-Voc_FT.onnx';
 var CACHE_NAME = 'audiosaw-models-v2';
