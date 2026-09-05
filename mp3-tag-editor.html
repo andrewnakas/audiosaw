@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "MP3 Tag Editor", "url": "https://audiosaw.com/mp3-tag-editor", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MP3 Tag Editor",
+  "url": "https://audiosaw.com/mp3-tag-editor",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does editing tags reduce the audio quality?","acceptedAnswer":{"@type":"Answer","text":"No. The audio frames are copied across untouched — not decoded, not re-encoded. Only the tag at the front of the file is rewritten, so the output is bit-identical to the input where the sound is concerned."}},{"@type":"Question","name":"Why does my compilation album split into separate albums?","acceptedAnswer":{"@type":"Answer","text":"Because album artist is not set consistently. Music apps group by album artist, so on a compilation every track needs the same value — usually 'Various Artists' — even though the artist field differs per track."}},{"@type":"Question","name":"Can I edit M4A, FLAC or WAV files?","acceptedAnswer":{"@type":"Answer","text":"No. Those formats store metadata in completely different structures — MP4 atoms, Vorbis comments, or nothing standardised at all in WAV's case. This tool handles ID3, which means MP3."}},{"@type":"Question","name":"What size should the cover art be?","acceptedAnswer":{"@type":"Answer","text":"Square, and no larger than about 1000 pixels. Most players crop to a square anyway, and the image is embedded in every copy of the file, so a very large one inflates the file for no visible benefit."}},{"@type":"Question","name":"Why ID3v2.3 rather than the newer 2.4?","acceptedAnswer":{"@type":"Answer","text":"Compatibility. Version 2.4 uses syncsafe frame sizes that some car stereos and older hardware players misread, and they then display no tags at all. Version 2.3 is read correctly by effectively everything."}}]}

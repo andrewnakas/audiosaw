@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Remove Background Noise from Audio", "url": "https://audiosaw.com/noise-reduction", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Remove Background Noise from Audio",
+  "url": "https://audiosaw.com/noise-reduction",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What kind of noise can this actually remove?","acceptedAnswer":{"@type":"Answer","text":"Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down."}},{"@type":"Question","name":"Can it remove someone talking in the background, or a dog barking?","acceptedAnswer":{"@type":"Answer","text":"No. Those are irregular, so there is no steady noise floor to estimate. Removing them needs source separation, which is a different and much harder problem. Cutting around them is usually the practical answer."}},{"@type":"Question","name":"Why does my voice sound slightly hollow afterwards?","acceptedAnswer":{"@type":"Answer","text":"You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music."}},{"@type":"Question","name":"Why is this slower than the other tools?","acceptedAnswer":{"@type":"Answer","text":"Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer."}},{"@type":"Question","name":"Should I denoise before or after normalizing?","acceptedAnswer":{"@type":"Answer","text":"Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step."}}]}
@@ -189,6 +202,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Clear up what is left with a little EQ.</p></a>
       <a class="card" href="/silence-remover"><h3>Remove silence</h3><p>Cut the dead air as well.</p></a>
       <a class="card" href="/audio-to-text-prep"><h3>Prep audio for transcription</h3><p>Now send it to be transcribed.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Separate the voice from the background instead of filtering it.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

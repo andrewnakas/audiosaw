@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Reverser","url":"https://audiosaw.com/audio-reverser","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Reverser",
+  "url": "https://audiosaw.com/audio-reverser",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -45,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will the reverse sound clean?","acceptedAnswer":{"@type":"Answer","text":"Yes, the samples are exactly mirrored. Any artifact is from the encoder, not the reversal."}},{"@type":"Question","name":"Can I reverse just part of a file?","acceptedAnswer":{"@type":"Answer","text":"Cut it first with our audio cutter, then reverse the clip."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything happens in your browser tab."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will the reverse sound clean?","acceptedAnswer":{"@type":"Answer","text":"Yes, the samples are exactly mirrored. Any artifact is from the encoder, not the reversal."}},{"@type":"Question","name":"Can I reverse just part of a file?","acceptedAnswer":{"@type":"Answer","text":"Cut it first with our audio cutter, then reverse the clip."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything happens in your browser tab."}},{"@type":"Question","name":"Does reversing lose quality?","acceptedAnswer":{"@type":"Answer","text":"The reversal itself is exact — it reorders samples and changes nothing else. Any loss comes from re-encoding to MP3 at the end, which you avoid by choosing WAV."}},{"@type":"Question","name":"Can I reverse just part of a file?","acceptedAnswer":{"@type":"Answer","text":"Not here. Cut the section you want with the audio cutter first, then reverse that clip."}},{"@type":"Question","name":"How do I get the reverse-reverb vocal effect?","acceptedAnswer":{"@type":"Answer","text":"Three steps: reverse the audio here, add reverb to it in a DAW, then reverse the bounced result here again. The tail then runs into the note rather than away from it."}},{"@type":"Question","name":"Why does my reversed pad sound almost the same?","acceptedAnswer":{"@type":"Answer","text":"Because it had no sharp attack to move to the other end. Reversal is dramatic on percussive sounds and nearly inaudible on sustained ones."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -126,13 +139,26 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="content-section">
     <h2>What this is good for</h2>
     <ul>
-      <li><strong>Reversed cymbals and risers</strong> — classic build-up effect in electronic music and trailers.</li>
-      <li><strong>Hidden-message hunts</strong> — flipping a sample to see what's "in" it.</li>
-      <li><strong>Sample design</strong> — reversed snare into a snare hit is a familiar trope.</li>
-      <li><strong>Speech and lyric experiments</strong> — what does the chorus sound like backwards?</li>
+      <li><strong>Reversed cymbals and risers.</strong> The standard build-up before a drop or a cut in a trailer. A crash cymbal played backwards swells into the downbeat instead of decaying away from it.</li>
+      <li><strong>Reverse reverb.</strong> The effect on countless vocal productions, where a word seems to arrive before itself.</li>
+      <li><strong>Sample design.</strong> A reversed snare in front of a snare hit is a familiar trope for a reason: it gives a percussive sound an approach.</li>
+      <li><strong>Hidden-message hunts.</strong> Flipping a record backwards, without the record.</li>
     </ul>
+
     <h3>How it works</h3>
-    <p>We decode the file to raw samples, reverse each channel's array in place, then re-encode to the format you pick. No DSP, no quality loss — the output is bit-for-bit reversed (within encoding tolerances).</p>
+    <p>The file is decoded to raw samples, each channel's array is reversed, and the result is encoded to the format you pick. There is no processing beyond the reversal — no filtering, no gain change, no resampling. Reverse the output again and you get the original back, sample for sample, apart from whatever the lossy encoder does on the round trip.</p>
+
+    <h3>Why reversed audio sounds so strange</h3>
+    <p>Almost every natural sound has a sharp attack and a slow decay: a struck string, a hit drum, a plucked note, a consonant. Reversal swaps those, giving a slow swell into an abrupt stop, which is a shape the physical world almost never produces. That is the whole effect — your ear is hearing an envelope that could not have happened in a room.</p>
+    <p>It is also why reversal is so much more dramatic on percussion and piano than on sustained sounds. A held organ note or a pad reversed sounds nearly identical to the original, because there was no attack to move to the other end.</p>
+
+    <h3>Getting the reverse-reverb effect</h3>
+    <p>The classic production trick needs three steps and this tool does two of them. Reverse the source here, add reverb to the reversed file in a DAW like Ableton, Logic, Reaper or Audacity, bounce that, then reverse the result again here. The reverb tail, having been created on backwards audio, now runs forwards into the note instead of trailing away from it.</p>
+    <p>Doing it without a DAW is not possible on this site — there is no reverb tool here, deliberately, because a convincing reverb needs impulse responses and a mixing context that a single-purpose page cannot give you.</p>
+
+    <h3>Practical notes</h3>
+    <p>Cut before you reverse, not after. Finding the right region is far easier on audio that still sounds like itself, so take the slice with the <a href="/audio-cutter">cutter</a> first and reverse the clip. Choose WAV if the result is going into a sampler or a DAW, since you will almost certainly process it again and a lossy intermediate is a needless generation of loss.</p>
+    <p>A reversed file often peaks differently from the original once it has been through a lossy encoder, so if you are lining it up against other material, run <a href="/normalize-audio">normalize</a> afterwards to put it back on a known ceiling.</p>
   </section>
 
   <section class="faq">
@@ -141,6 +167,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Will the reverse sound clean?</summary><p>Yes, the samples are exactly mirrored. Any artifact is from the encoder, not the reversal.</p></details>
       <details><summary>Can I reverse just part of a file?</summary><p>Cut it first with our <a href="/audio-cutter">audio cutter</a>, then reverse the clip.</p></details>
       <details><summary>Does my audio upload?</summary><p>No. Everything happens in your browser tab.</p></details>
+      <details><summary>Does reversing lose quality?</summary><p>The reversal itself is exact — it reorders samples and changes nothing else. Any loss comes from re-encoding to MP3 at the end, which you avoid by choosing WAV.</p></details>
+      <details><summary>Can I reverse just part of a file?</summary><p>Not here. Cut the section you want with the audio cutter first, then reverse that clip.</p></details>
+      <details><summary>How do I get the reverse-reverb vocal effect?</summary><p>Three steps: reverse the audio here, add reverb to it in a DAW, then reverse the bounced result here again. The tail then runs into the note rather than away from it.</p></details>
+      <details><summary>Why does my reversed pad sound almost the same?</summary><p>Because it had no sharp attack to move to the other end. Reversal is dramatic on percussive sounds and nearly inaudible on sustained ones.</p></details>
       <!-- /AS:faq -->
   </section>
 

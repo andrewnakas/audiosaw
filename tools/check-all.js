@@ -9,7 +9,7 @@
 const { execFileSync } = require('child_process');
 const path = require('path');
 
-const CHECKS = ['build-nav.js', 'build-faq.js', 'build-sitemap.js', 'build-llms.js'];
+const CHECKS = ['build-nav.js', 'build-faq.js', 'build-dates.js', 'build-sitemap.js', 'build-llms.js'];
 
 let failed = 0;
 for (const script of CHECKS) {

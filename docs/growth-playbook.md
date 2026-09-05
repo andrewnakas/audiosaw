@@ -91,17 +91,57 @@ the only tool pages invisible to FAQ rich results and to assistants that read
 schema. The JSON-LD is generated from the page's own `<details>` markup so the
 two cannot drift.
 
-## §5 — Retention (deliberately not shipped)
+## §5 — Retention (shipped 5 Sep 2026)
 
-The playbook's email capture was declined, and there is a real reason beyond
-preference: "no signup, no email" now appears in thirty-odd page titles and is
-the first thing `llms.txt` says. That claim is doing conversion work. An email
-capture would cost it.
+The playbook's email capture stays declined, and the reason still holds: "no
+signup, no email" appears in thirty-odd page titles and is the first thing
+`llms.txt` says. That claim does conversion work an email field would cost.
 
-If retention is revisited, the utility-site equivalent is an installable PWA —
-manifest, offline service worker, and an install prompt after a successful
-conversion. It puts an icon on the dock, needs no backend, and keeps the claim
-intact. `chain_continue` is already the best retention signal the site has.
+What shipped instead is the utility-site equivalent, an installable PWA:
+
+- `manifest.webmanifest`, an icon set, and `sw.js` at the root.
+- The service worker makes the "kill your wifi and it still works" claim true on
+  a **return** visit. It was previously true only for a tab you already had open,
+  which is not what the sentence implies to a reader.
+- A `share_target`, so a voice memo shared from a phone lands directly in the
+  right tool with the file already loaded. This is the mobile job the site is
+  pitched at — `m4a-to-mp3` and `opus-to-mp3` exist for it — and there was
+  previously no path into it at all short of opening Safari and finding the page.
+- An install chip in the post-conversion panel, on the **second** success rather
+  than the first, snoozed for 30 days if dismissed and 90 if the native prompt is
+  refused.
+- Dropdowns remember their last setting, and the homepage, 404 and offline pages
+  offer back the last five tools used.
+
+### What to watch, and what would disprove it
+
+PWA launches carry `utm_source=pwa`, so they appear in GA4 acquisition as
+`pwa / standalone` with no new event. Shortcut launches are `pwa / shortcut`.
+
+- `chain_continue` was already the best retention signal and should rise: the
+  handoff record used to be deleted on read, so reloading the landing page lost
+  the carried file permanently and the chip never returned.
+- `next_step_click` with `to_tool: install` counts accepted installs;
+  `install_later` counts dismissals. If dismissals swamp accepts, the threshold
+  is wrong, not the feature — raise it above two successes before removing it.
+- The honest failure mode: installs happen and return visits do not follow. Give
+  it a month, then compare returning-user share against the pre-PWA baseline
+  rather than counting installs, which measure intent and not behaviour.
+
+## §5b — Ads removed (5 Sep 2026)
+
+AdSense loaded on 55 pages and there was never a single `<ins>` unit on the
+site, so it earned nothing and cost every visitor the largest third-party script
+on the page. Removed entirely, along with the prose that claimed the site had
+ads. `ads.txt` stays.
+
+Consent became region-aware at the same time. Everyone worldwide was previously
+served a banner with analytics denied by default, which is the European
+requirement applied to jurisdictions that are opt-out. Outside Europe the
+default is now granted with a footer opt-out, so those sessions are counted
+properly instead of arriving pre-declined. **Expect reported users to rise
+without traffic changing** — that is measurement catching up, not growth, and
+comparing across the change will mislead.
 
 ## §6 — Deploy traps
 
@@ -115,11 +155,13 @@ curl -s -o /dev/null -w '%{http_code}\n' https://audiosaw.com/mp4-to-mp3
 
 ## Order of operations for the next deploy
 
-1. Push to `main`.
-2. Re-run `node tools/build-sitemap.js` **after** committing — `lastmod` comes
-   from each file's last git commit, so running it on a dirty tree writes the
-   previous commit's date for pages you just changed.
-3. `node tools/indexnow.js` once the deploy is live.
+1. `node tools/check-all.js` — it must exit 0.
+2. Push to `main`.
+3. Re-run `node tools/build-sitemap.js` and `node tools/build-dates.js`
+   **after** committing — both read each file's last git commit, so running them
+   on a dirty tree writes the previous commit's date for pages you just changed.
+   Commit that as a follow-up.
+4. `node tools/indexnow.js` once the deploy is live.
 4. Google gets nothing from IndexNow. For the retitled pages, the sitemap plus
    the `lastmod` bump is the mechanism; expect ~10 days before CTR moves.
 

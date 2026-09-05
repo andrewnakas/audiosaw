@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Cutter","url":"https://audiosaw.com/audio-cutter","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Cutter",
+  "url": "https://audiosaw.com/audio-cutter",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -45,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The cutter runs entirely in your browser tab."}},{"@type":"Question","name":"What formats can I cut?","acceptedAnswer":{"@type":"Answer","text":"Anything your browser can decode — MP3, WAV, M4A, FLAC, OGG, AAC, and audio inside MP4/MOV/WebM video."}},{"@type":"Question","name":"Can I cut a very long file?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop, after which browser memory gets tight."}},{"@type":"Question","name":"Does it re-encode the whole file or just the slice?","acceptedAnswer":{"@type":"Answer","text":"Just the slice. We decode the full file (which takes a moment), then encode only the selected range."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The cutter runs entirely in your browser tab."}},{"@type":"Question","name":"What formats can I cut?","acceptedAnswer":{"@type":"Answer","text":"Anything your browser can decode — MP3, WAV, M4A, FLAC, OGG, AAC, and audio inside MP4/MOV/WebM video."}},{"@type":"Question","name":"Can I cut a very long file?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop, after which browser memory gets tight."}},{"@type":"Question","name":"Does it re-encode the whole file or just the slice?","acceptedAnswer":{"@type":"Answer","text":"Just the slice. We decode the full file (which takes a moment), then encode only the selected range."}},{"@type":"Question","name":"Why is there a click at the start or end of my clip?","acceptedAnswer":{"@type":"Answer","text":"Because the cut landed on a non-zero part of the waveform, so the audio jumps straight to silence. Move the handle a few milliseconds into an actual gap, or run the clip through the fade tool with a 10 ms fade at each end."}},{"@type":"Question","name":"Can I cut out the middle and keep both ends?","acceptedAnswer":{"@type":"Answer","text":"Not in one pass. Cut the two parts you want to keep as separate clips, then put them back together with the audio joiner."}},{"@type":"Question","name":"Should I save as MP3 or WAV?","acceptedAnswer":{"@type":"Answer","text":"WAV if the clip is going into an editor, a sampler or another tool here — it is exactly what came out of the decoder. MP3 if it is going straight to a listener, since it is about a tenth of the size."}},{"@type":"Question","name":"Does the waveform show the whole file?","acceptedAnswer":{"@type":"Answer","text":"Yes, always the full duration, scaled to the width of the window. There is no zoom, so on a very long recording each pixel covers several seconds — use the preview rather than the picture to place a precise edit."}},{"@type":"Question","name":"Can I cut a file straight from my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, and the handles are sized for a finger. Very long recordings are more likely to run out of memory on a phone than on a laptop, iPhones soonest of all."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -136,12 +149,29 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2>How to use it</h2>
     <ol>
       <li>Drop your audio file on the dropzone.</li>
-      <li>Drag the green start handle to where you want the clip to begin.</li>
-      <li>Drag the green end handle to where you want it to stop.</li>
-      <li>Hit <em>play selection</em> to preview.</li>
+      <li>Drag the start handle to where you want the clip to begin.</li>
+      <li>Drag the end handle to where you want it to stop.</li>
+      <li>Hit <em>play selection</em> to check the edges before committing.</li>
       <li>Click <em>cut and download</em>. The clip downloads as MP3 or WAV.</li>
     </ol>
-    <p>Need a ringtone? Set a length around 30 seconds and pick MP3 (Android compatible).</p>
+
+    <h3>What actually happens to the audio</h3>
+    <p>The whole file is decoded first. That is the pause you see after dropping a long recording: the browser has to turn compressed audio into raw samples before it can show you a waveform, and there is no shortcut to drawing a picture of something you have not read. Once decoded, only the range between the handles is copied out and encoded. Nothing outside the selection is touched, and nothing is re-encoded twice.</p>
+    <p>That distinction matters for quality. Cutting an MP3 and saving as MP3 means one further lossy encode of the selected part — a generation loss you can usually not hear on speech and can sometimes hear on cymbals and applause. If the clip is going into an editor or a sampler rather than straight to a listener, choose WAV. It is roughly ten times larger and it is bit-for-bit what came out of the decoder.</p>
+
+    <h3>Finding the edit point</h3>
+    <p>The waveform is a peak envelope, not a spectrogram, so it shows you loudness over time and nothing about pitch. Speech is easy to cut this way: words are visible as clumps and the gaps between sentences are obvious. Music is harder, because a downbeat and the note before it can look identical. Use <em>play selection</em> rather than trusting your eyes — the ear finds a bad edit instantly and the eye often does not.</p>
+    <p>Cut on silence wherever you can. An edit that lands mid-word or mid-note produces a click, because the waveform jumps from some non-zero value straight to zero. If the click bothers you, run the result through <a href="/fade-in-fade-out">fade in and out</a> with a 10&nbsp;ms fade at each end; that is short enough to be inaudible as a fade and long enough to remove the discontinuity that causes the click.</p>
+
+    <h3>When this is the wrong tool</h3>
+    <p>One selection, one clip. If you need the recording broken into many pieces at once — an hour of practice takes split into individual songs, say — <a href="/split-audio">split audio</a> does it in one pass by silence or by fixed length. If you want to remove several sections from the middle and keep the rest, cut the keepers separately and rejoin them with the <a href="/audio-joiner">joiner</a>; there is no multi-region delete here, deliberately, because the interface for it is worse than doing it in two steps.</p>
+    <p>If what you actually want is to trim the dead air at the very beginning and end of a take, <a href="/trim-silence-edges">trim silence at the edges</a> does that automatically and gets it right more often than a hand-placed handle does.</p>
+
+    <h3>Working with video</h3>
+    <p>Dropping an MP4, MOV, WebM or MKV works: the audio track is pulled out and you cut that. What comes back is audio only, always — there is no video output here. If you wanted the video trimmed as well, this is the wrong site, and a local tool like Handbrake or the trim function in CapCut or DaVinci Resolve is what you want. If you only ever wanted the sound, <a href="/mp4-to-mp3">MP4 to MP3</a> skips the waveform and converts the whole thing.</p>
+
+    <h3>Size and speed</h3>
+    <p>The practical ceiling is around 500&nbsp;MB, and it is memory rather than time that stops you: the decoded audio sits in RAM uncompressed, so a 200&nbsp;MB MP3 can occupy well over a gigabyte once it is samples. A phone will give up sooner than a laptop, and Safari on iOS sooner than Chrome on Android, because iOS caps how much memory a single tab may hold. If a long file fails, converting it to a lower sample rate first with <a href="/change-sample-rate">change sample rate</a> shrinks the decoded size proportionally and often gets it through.</p>
   </section>
 
   <section class="faq">
@@ -151,6 +181,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>What formats can I cut?</summary><p>Anything your browser can decode — MP3, WAV, M4A, FLAC, OGG, AAC, and audio inside MP4/MOV/WebM video.</p></details>
       <details><summary>Can I cut a very long file?</summary><p>Up to roughly 500 MB on a typical laptop, after which browser memory gets tight.</p></details>
       <details><summary>Does it re-encode the whole file or just the slice?</summary><p>Just the slice. We decode the full file (which takes a moment), then encode only the selected range.</p></details>
+      <details><summary>Why is there a click at the start or end of my clip?</summary><p>Because the cut landed on a non-zero part of the waveform, so the audio jumps straight to silence. Move the handle a few milliseconds into an actual gap, or run the clip through the fade tool with a 10 ms fade at each end.</p></details>
+      <details><summary>Can I cut out the middle and keep both ends?</summary><p>Not in one pass. Cut the two parts you want to keep as separate clips, then put them back together with the audio joiner.</p></details>
+      <details><summary>Should I save as MP3 or WAV?</summary><p>WAV if the clip is going into an editor, a sampler or another tool here — it is exactly what came out of the decoder. MP3 if it is going straight to a listener, since it is about a tenth of the size.</p></details>
+      <details><summary>Does the waveform show the whole file?</summary><p>Yes, always the full duration, scaled to the width of the window. There is no zoom, so on a very long recording each pixel covers several seconds — use the preview rather than the picture to place a precise edit.</p></details>
+      <details><summary>Can I cut a file straight from my phone?</summary><p>Yes, and the handles are sized for a finger. Very long recordings are more likely to run out of memory on a phone than on a laptop, iPhones soonest of all.</p></details>
       <!-- /AS:faq -->
   </section>
 
@@ -162,6 +197,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/fade-in-fade-out"><h3>Fade in / fade out</h3><p>Soften the new in and out points.</p></a>
       <a class="card" href="/ringtone-maker"><h3>Ringtone Maker</h3><p>Turn the selection into a ringtone.</p></a>
       <a class="card" href="/split-audio"><h3>Split an audio file</h3><p>Chop the whole thing into pieces automatically.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 to MP3</h3><p>Pull the audio out of a video before you trim it.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Podcast Silence Remover","url":"https://audiosaw.com/silence-remover","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Podcast Silence Remover",
+  "url": "https://audiosaw.com/silence-remover",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I remove dead air from a podcast for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the WAV or MP3, leave threshold at -50 dB and padding at 0.1 s for typical home-studio recordings, and download the trimmed file. No signup, no upload, no daily quota."}},{"@type":"Question","name":"Can I auto-trim a long voice memo before sending it for transcription?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the .m4a (it works, even though we recommend converting to MP3 first), pick a threshold matching your room (-50 dB is a safe default), and get back a tighter file that costs less to transcribe on Otter / Notta / Whisper."}},{"@type":"Question","name":"Will this remove silence between sentences?","acceptedAnswer":{"@type":"Answer","text":"No — this trims leading and trailing silence only. Cutting pauses between phrases is destructive editing that needs a different approach to avoid clicks and artifacts. For surgical edits, use our Audio Cutter."}},{"@type":"Question","name":"The tool cut off the first word — what now?","acceptedAnswer":{"@type":"Answer","text":"Raise the threshold (closer to 0, like -40 dB) or increase the padding to 0.25 s."}},{"@type":"Question","name":"The tool left silence at the start.","acceptedAnswer":{"@type":"Answer","text":"Lower the threshold (more negative — try -55 or -60 dB). Your noise floor is probably very low."}},{"@type":"Question","name":"What format works best?","acceptedAnswer":{"@type":"Answer","text":"Any common audio format. WAV gives the cleanest detection; MP3 works fine."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Processing is in the browser tab only. Disconnect from wifi and the tool still works."}}]}
@@ -179,6 +192,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out what is left.</p></a>
       <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Normalize, mono and encode in one step.</p></a>
       <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Take the hiss and hum out too.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record the next take without leaving the browser.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

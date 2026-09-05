@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Normalize Audio","url":"https://audiosaw.com/normalize-audio","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Normalize Audio",
+  "url": "https://audiosaw.com/normalize-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -45,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will normalizing distort my audio?","acceptedAnswer":{"@type":"Answer","text":"Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean."}},{"@type":"Question","name":"Why is the change subtle on some files?","acceptedAnswer":{"@type":"Answer","text":"If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings."}},{"@type":"Question","name":"What's the difference between this and \"make audio louder\"?","acceptedAnswer":{"@type":"Answer","text":"Same thing, often. \"Make louder\" tools usually peak-normalize."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Local processing in your browser tab."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will normalizing distort my audio?","acceptedAnswer":{"@type":"Answer","text":"Not unless your target is above 0 dBFS, which we don't allow. Peak normalize at -1 dB is fully clean."}},{"@type":"Question","name":"Why is the change subtle on some files?","acceptedAnswer":{"@type":"Answer","text":"If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings."}},{"@type":"Question","name":"What's the difference between this and \"make audio louder\"?","acceptedAnswer":{"@type":"Answer","text":"Same thing, often. \"Make louder\" tools usually peak-normalize."}},{"@type":"Question","name":"Does my audio upload?","acceptedAnswer":{"@type":"Answer","text":"No. Local processing in your browser tab."}},{"@type":"Question","name":"I normalized and it barely got louder. Why?","acceptedAnswer":{"@type":"Answer","text":"Something in the file is already near full scale — usually one bump, slam or clipped transient. Peak normalization is set entirely by that one loudest instant, so everything else stays put. Cut the spike out, or use the compressor, which raises the average level rather than the peak."}},{"@type":"Question","name":"Which target should I choose?","acceptedAnswer":{"@type":"Answer","text":"-1 dB for something a person listens to directly, -3 dB if the file will be converted again afterwards, -6 dB if it is going into a mix as one layer among several."}},{"@type":"Question","name":"Will this make my track as loud as songs on Spotify?","acceptedAnswer":{"@type":"Answer","text":"No. Streaming services normalize by perceived loudness (LUFS), not by peak, and they will turn your track down to their own target anyway. Peak normalization gives you a known ceiling, not a matched volume."}},{"@type":"Question","name":"Can it fix audio that is already distorted?","acceptedAnswer":{"@type":"Answer","text":"No. Clipping removes the tops of the waveform permanently; turning the file down afterwards just gives you quieter distortion."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -133,17 +146,28 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="content-section">
     <h2>What this does</h2>
-    <p>We scan every sample in your file to find the loudest peak, then multiply the whole signal by a gain factor so that peak sits at the target dBFS you chose. The relative dynamics stay intact — quiet parts stay proportionally quiet, loud parts stay proportionally loud — but the whole file gets shifted up (or sometimes down) to a known ceiling.</p>
+    <p>Every sample in the file is scanned to find the single loudest peak, and then the whole signal is multiplied by one gain factor so that peak lands exactly on the target you chose. The relative dynamics are untouched — quiet passages stay proportionally quiet, loud ones stay proportionally loud — and the entire file simply moves up, or occasionally down, to a known ceiling.</p>
+    <p>Because it is one multiplication applied uniformly, nothing is compressed, limited or coloured. Run it twice and the second pass does nothing, since the peak is already where you asked for it. That predictability is the point: it is the safe operation to reach for when you do not know what else has been done to a file.</p>
 
-    <h3>When to use peak normalization</h3>
+    <h3>Which target to pick</h3>
+    <p>The number is dBFS, decibels relative to full scale, and it is always negative because 0&nbsp;dBFS is the loudest a digital file can represent. The setting you want depends entirely on where the audio goes next.</p>
     <ul>
-      <li><strong>A recorded interview is too quiet.</strong> Normalize to -1 dB to maximize loudness without clipping.</li>
-      <li><strong>You're stitching tracks together.</strong> Normalize each one to the same target so transitions don't blow out speakers.</li>
-      <li><strong>You're uploading to a service that requires headroom.</strong> -3 or -6 dB leaves room for the platform's processing.</li>
+      <li><strong>-1&nbsp;dB</strong> for something a person will listen to directly — a voice memo, an interview, a lecture recording. It is as loud as the file can honestly go with a sliver of headroom left.</li>
+      <li><strong>-3&nbsp;dB</strong> when the file is going to be converted again afterwards. Lossy encoders can overshoot the original peak slightly on decode, and that margin absorbs it.</li>
+      <li><strong>-6&nbsp;dB</strong> when the audio is one layer of something larger: a stem going into Ableton or Logic, a bed under a voiceover, a clip that will be mixed with others. Leaving room is what makes the mix possible.</li>
     </ul>
 
-    <h3>What this doesn't do</h3>
-    <p>This is <em>peak</em> normalization, not loudness normalization (LUFS). A quiet song with one loud transient will only get raised by the amount that transient allows. For true perceived-loudness matching (Spotify/Apple Music style), you want LUFS normalization — that's a more involved algorithm we don't have a tab for yet.</p>
+    <h3>Why it sometimes seems to do nothing</h3>
+    <p>This is the most common surprise, and it is not a bug. Peak normalization is governed entirely by the single loudest instant in the file. One door slam, one coughed microphone bump, one stray clipped transient, and that sample is already near full scale — so the calculated gain is close to 1.0 and everything else stays exactly as quiet as it was.</p>
+    <p>The fix is to find and remove the offender rather than to normalize harder. Cut it out with the <a href="/audio-cutter">cutter</a>, or if the recording is generally quiet with occasional spikes, <a href="/audio-compressor">compression</a> is the tool that actually raises the average level rather than the peak.</p>
+
+    <h3>Peak is not loudness</h3>
+    <p>Two files normalized to the same peak can sound wildly different in volume, because human loudness perception tracks average energy over time, not the highest instantaneous sample. This is why streaming services use LUFS instead: Spotify targets around -14&nbsp;LUFS, Apple Music about -16, YouTube roughly -14. Those platforms will turn your track down to hit their number regardless of what you did here, so normalizing to -1 before uploading buys nothing except a smaller safety margin.</p>
+    <p>Peak normalization is the right tool when you need a known ceiling — no clipping, predictable headroom, nothing else changed. It is the wrong tool when you need two files to sound equally loud to a listener. There is no LUFS mode here yet.</p>
+
+    <h3>What it will not repair</h3>
+    <p>If the audio was recorded so hot that it already clipped, the waveform is squared off and the information is gone. Turning it down afterwards makes a quieter distorted file, not a clean one. Nothing recovers a clipped recording, here or anywhere, which is why every meter is worth watching on the way in rather than on the way out.</p>
+    <p>Equally, a recording that is quiet because the microphone was too far away has a noise floor that comes up with the signal. Normalizing a hissy file gives you a louder hiss along with the louder voice; run <a href="/noise-reduction">noise reduction</a> first, then normalize, in that order.</p>
   </section>
 
   <section class="faq">
@@ -153,6 +177,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Why is the change subtle on some files?</summary><p>If the file already has a peak near your target (say it already hits -1.2 dB), there's only a tiny gain to apply. Normalization shines on quiet recordings.</p></details>
       <details><summary>What's the difference between this and "make audio louder"?</summary><p>Same thing, often. "Make louder" tools usually peak-normalize.</p></details>
       <details><summary>Does my audio upload?</summary><p>No. Local processing in your browser tab.</p></details>
+      <details><summary>I normalized and it barely got louder. Why?</summary><p>Something in the file is already near full scale — usually one bump, slam or clipped transient. Peak normalization is set entirely by that one loudest instant, so everything else stays put. Cut the spike out, or use the compressor, which raises the average level rather than the peak.</p></details>
+      <details><summary>Which target should I choose?</summary><p>-1 dB for something a person listens to directly, -3 dB if the file will be converted again afterwards, -6 dB if it is going into a mix as one layer among several.</p></details>
+      <details><summary>Will this make my track as loud as songs on Spotify?</summary><p>No. Streaming services normalize by perceived loudness (LUFS), not by peak, and they will turn your track down to their own target anyway. Peak normalization gives you a known ceiling, not a matched volume.</p></details>
+      <details><summary>Can it fix audio that is already distorted?</summary><p>No. Clipping removes the tops of the waveform permanently; turning the file down afterwards just gives you quieter distortion.</p></details>
       <!-- /AS:faq -->
   </section>
 
@@ -164,6 +192,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Shrink the file after levelling.</p></a>
       <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Normalize, mono and encode together.</p></a>
       <a class="card" href="/fade-in-fade-out"><h3>Fade in / fade out</h3><p>Add fades once levels are set.</p></a>
+      <a class="card" href="/wav-to-mp3"><h3>WAV to MP3</h3><p>Turn the levelled WAV into an MP3 for sharing.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Split Audio File", "url": "https://audiosaw.com/split-audio", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Split Audio File",
+  "url": "https://audiosaw.com/split-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I split an audiobook into chapters?","acceptedAnswer":{"@type":"Answer","text":"Use fixed length if you want even sittings — 30 minutes is a common choice. Use silent gaps if the recording has real pauses between chapters. Then title the pieces with the tag editor, since splitting does not carry metadata across."}},{"@type":"Question","name":"Why did silence mode find no gaps?","acceptedAnswer":{"@type":"Answer","text":"Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap."}},{"@type":"Question","name":"Why did it produce far more pieces than I expected?","acceptedAnswer":{"@type":"Answer","text":"The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds."}},{"@type":"Question","name":"Can I split several files at once?","acceptedAnswer":{"@type":"Answer","text":"No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another."}},{"@type":"Question","name":"Do the pieces keep the original quality?","acceptedAnswer":{"@type":"Answer","text":"They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters."}}]}
@@ -221,6 +234,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Pick an exact cut point by eye instead.</p></a>
       <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Put pieces back together.</p></a>
       <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Get each piece under a size limit.</p></a>
+      <a class="card" href="/m4b-to-mp3"><h3>M4B to MP3</h3><p>Break an audiobook into chapter files.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

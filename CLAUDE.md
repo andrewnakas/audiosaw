@@ -13,9 +13,13 @@ unversioned filenames. `immutable` tells browsers not to revalidate, so a
 returning visitor is pinned to whatever they cached until the token changes.
 Shortening the header does nothing for responses already in a cache.
 
+`sw.js` carries the same token in its `Q` constant and precaches those exact
+URLs, so it has to move with them — miss it and the worker precaches the old
+filenames.
+
 ```bash
 # after editing js/ or css/
-grep -rl '?v=2026-08-14' *.html | xargs sed -i '' 's/?v=2026-08-14/?v=2026-09-01/g'
+grep -rl '?v=2026-09-05' *.html sw.js | xargs sed -i '' 's/?v=2026-09-05/?v=2026-10-01/g'
 ```
 
 **2. On a tool page, the `/js/*` includes must come before the page's own
@@ -50,11 +54,17 @@ Correct order:
 3. Run the generators:
 
 ```bash
-node tools/build-nav.js      # footer directory, related blocks, breadcrumbs, /tools
+node tools/build-nav.js      # footer directory, related blocks, breadcrumbs, /tools, PWA head
 node tools/build-faq.js      # merges the visible FAQ with FAQPage schema
+node tools/build-dates.js    # dateModified in each SoftwareApplication block
 node tools/build-sitemap.js  # sitemap.xml with lastmod from git
 node tools/build-llms.js     # llms.txt
+node tools/check-all.js      # runs all of the above in --check mode; use before committing
 ```
+
+`build-dates.js` and `build-sitemap.js` both read the last git commit that
+touched each file, so run them **after** committing or they write the previous
+commit's date.
 
 `build-faq.js` exists because the visible FAQ and the JSON-LD were authored
 separately and drifted: 31 pages shipped schema promising questions that were
@@ -90,6 +100,33 @@ what you lose. Name real hardware and software.
   tool, call those two functions and you get the next-step panel, the preview,
   error recovery and event tracking for free.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
+- `js/pwa.js` — service worker registration and the install prompt. Loaded last
+  on every page, including the five that carry no other JavaScript.
+- `sw.js` — offline support and the share target. Deliberately narrow: it
+  bypasses everything cross-origin, and it bypasses `/stem-splitter`,
+  `/js/stem-worker.js` and `/vendor/ort/*` entirely, because a synthesised or
+  fallback response there would arrive without the COOP/COEP/CORP headers those
+  files need and hang session creation exactly as documented below.
+
+### The share target writes into the same store flow.js reads
+
+`sw.js` answers `POST /share` by putting `{name, blob, from:'share'}` into
+IndexedDB `audiosaw` v1, store `handoff`, key `pending` — a hand-copied mirror
+of `withStore` in `flow.js`. The database name, version and store name must
+match on both sides or one of them throws `VersionError`. There is no build
+step to share the code, so the two carry cross-referencing comments instead.
+
+### The ffmpeg core is cached by audio-core.js, not by the service worker
+
+`fetchCoreWasm` streams the 32 MB core with a `ReadableStream` reader, reports
+byte progress, and keeps it in a Cache Storage bucket named
+`audiosaw-ffmpeg-core`. unpkg gzips it and sends no `Content-Length`, so
+`FFMPEG_WASM_BYTES` is the hard-coded decoded size — **update it whenever
+`FFMPEG_WASM`'s version changes** or the progress bar is scaled against the
+wrong denominator. Measured: 5.2 s cold, 78 ms from cache.
+
+The service worker never touches it. One writer, one reader, and the worker
+receives a `blob:` URL it never sees.
 
 ### ffmpeg must be served from our own origin
 
@@ -122,15 +159,46 @@ GA4 `G-5X9ERMVYXE`. Key events: `convert_success`, `next_step_click`,
 `chain_continue`. Never send filenames or raw exception strings — bucket sizes
 and enumerate error types (see `mbBucket` and `ERROR_KINDS` in `flow.js`).
 
+**There are no ads.** AdSense used to load on 55 pages with zero ad units ever
+placed, so it was cost without revenue; the script, the meta, the slot divs, the
+CSS and the per-page toggles are all gone. `ads.txt` stays, because an AdSense
+account whose site drops it flags a misconfiguration. If ads ever return, they
+need real `<ins>` units, not just the loader.
+
+Consent is region-aware: the inline bootstrap in every `<head>` reads the
+browser timezone and defaults to granted outside Europe, denied inside it, and
+an unreadable timezone counts as European. A stored choice always wins. The
+footer's "cookie settings" link reopens the banner anywhere, which is also the
+opt-out path for visitors who never saw it.
+
 Search Console property is the URL-prefix `https://audiosaw.com/`, verified via
 the GA tag. Removing the gtag snippet would break verification.
 
-The site emits exactly eight events, all from `flow.js`: `convert_success`,
-`convert_start`, `convert_error`, `file_selected`, `next_step_click`,
-`chain_continue`, `preview_play`, `download_again`. There is no heartbeat and no
-retry loop anywhere — keep it that way. A `setInterval` that reports to GA4 does
-not stop in a background tab, so an abandoned tab reports near-perfect usage;
-and a silent retry turns one failure into hundreds of events from one user.
+The site emits exactly eight events, all through `track()` in `flow.js`:
+`convert_success`, `convert_start`, `convert_error`, `file_selected`,
+`next_step_click`, `chain_continue`, `preview_play`, `download_again`. There is
+no heartbeat and no retry loop anywhere — keep it that way.
+
+New outcomes become new *values* on those events, never a ninth event:
+
+| Event | Value | Means |
+|---|---|---|
+| `convert_error` | `error_type: wrong_type` | a file the tool does not accept |
+| `next_step_click` | `placement: recent` | the recent-tools row |
+| `next_step_click` | `to_tool: install` / `install_later` | the PWA install chip |
+| `chain_continue` | `from_tool: share` | arrived through the OS share sheet |
+
+A `validation` error kind exists for UI hints like "Selection too short" and is
+deliberately **silent** — it fires no event and shows no recovery panel. Those
+used to be counted as conversion failures, which buried the real error rate.
+
+Why no heartbeat and no retry: a `setInterval` that reports to GA4 does not stop
+in a background tab, so an abandoned tab reports near-perfect usage; and a silent
+retry turns one failure into hundreds of events from one user.
+
+The one periodic thing that does exist is `CV.setProgress` mirroring the
+percentage into `document.title`. It is driven by conversion progress, not by a
+timer, and it sends nothing.
 
 `docs/growth-playbook.md` records what the growth work has and has not covered,
 including which GA4 key events to star and why `file_selected` must not be one.

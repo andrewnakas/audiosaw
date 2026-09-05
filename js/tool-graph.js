@@ -149,7 +149,8 @@
         ['wav-44100-16bit', 'Lock it to the CD spec most software expects'],
         ['change-sample-rate', 'Match your project’s sample rate'],
         ['wav-for-sp404', 'Prep it for a hardware sampler'],
-        ['m4a-to-wav-for-audacity', 'Same idea, but from an .m4a, for Audacity']
+        ['m4a-to-wav-for-audacity', 'Same idea, but from an .m4a, for Audacity'],
+        ['wav-to-flac', 'Archive it losslessly at about half the size of WAV']
       ]
     },
     'mp3-to-m4a': {
@@ -231,7 +232,8 @@
         ['mp4-to-mp3', 'Just MP4 to MP3, with the settings already chosen'],
         ['audio-cutter', 'Trim the extracted track down'],
         ['normalize-audio', 'Even out inconsistent recording levels'],
-        ['audio-to-text-prep', 'Prep it for transcription']
+        ['audio-to-text-prep', 'Prep it for transcription'],
+        ['capcut-audio', 'Match what CapCut expects on import']
       ]
     },
 
@@ -243,7 +245,8 @@
         ['audio-joiner', 'Stitch the pieces back together'],
         ['fade-in-fade-out', 'Soften the new in and out points'],
         ['ringtone-maker', 'Turn the selection into a ringtone'],
-        ['split-audio', 'Chop the whole thing into pieces automatically']
+        ['split-audio', 'Chop the whole thing into pieces automatically'],
+        ['mp4-to-mp3', 'Pull the audio out of a video before you trim it']
       ]
     },
     'audio-joiner': {
@@ -253,7 +256,8 @@
         ['normalize-audio', 'Match levels so the seams do not jump'],
         ['fade-in-fade-out', 'Fade the ends of the finished piece'],
         ['audio-cutter', 'Trim each part before joining'],
-        ['podcast-prep', 'Finish an assembled episode in one pass']
+        ['podcast-prep', 'Finish an assembled episode in one pass'],
+        ['mp3-to-m4a', 'Repackage the result for Apple devices']
       ]
     },
     'ringtone-maker': {
@@ -263,7 +267,8 @@
         ['audio-cutter', 'Pick the exact section by ear'],
         ['fade-in-fade-out', 'Fade so it does not start mid-note'],
         ['amplify-audio', 'Make sure it is loud enough to hear'],
-        ['mp3-to-m4a', 'Apple-friendly container']
+        ['mp3-to-m4a', 'Apple-friendly container'],
+        ['m4a-to-wav-for-audacity', 'Edit the source in Audacity first']
       ]
     },
     'audio-speed': {
@@ -273,7 +278,8 @@
         ['silence-remover', 'Cut the pauses as well as speeding it up'],
         ['audio-reverser', 'The other way to make a file unrecognisable'],
         ['pitch-shifter', 'Change the key instead of the tempo'],
-        ['m4b-to-mp3', 'Do the same to an audiobook']
+        ['m4b-to-mp3', 'Do the same to an audiobook'],
+        ['mov-to-mp3', 'Same job starting from a QuickTime recording']
       ]
     },
     'audio-reverser': {
@@ -293,7 +299,8 @@
         ['trim-silence-edges', 'Tighten the ends first'],
         ['audio-cutter', 'Set the exact in and out points'],
         ['normalize-audio', 'Level before fading'],
-        ['audio-joiner', 'Fade each part of a longer piece']
+        ['audio-joiner', 'Fade each part of a longer piece'],
+        ['audio-eq', 'Shape the tone as well as the edges']
       ]
     },
     'trim-silence-edges': {
@@ -303,7 +310,8 @@
         ['silence-remover', 'Also cut the pauses in the middle'],
         ['fade-in-fade-out', 'Soften the newly tight ends'],
         ['normalize-audio', 'Level the trimmed file'],
-        ['podcast-prep', 'Finish the episode in one pass']
+        ['podcast-prep', 'Finish the episode in one pass'],
+        ['audio-reverser', 'Reverse it if you are hunting for a hidden tail']
       ]
     },
     'silence-remover': {
@@ -313,7 +321,8 @@
         ['trim-silence-edges', 'Only trim the ends instead'],
         ['normalize-audio', 'Even out what is left'],
         ['podcast-prep', 'Normalize, mono and encode in one step'],
-        ['noise-reduction', 'Take the hiss and hum out too']
+        ['noise-reduction', 'Take the hiss and hum out too'],
+        ['voice-recorder', 'Record the next take without leaving the browser']
       ]
     },
 
@@ -325,7 +334,8 @@
         ['amplify-audio', 'Push a very quiet file harder'],
         ['audio-compressor', 'Shrink the file after levelling'],
         ['podcast-prep', 'Normalize, mono and encode together'],
-        ['fade-in-fade-out', 'Add fades once levels are set']
+        ['fade-in-fade-out', 'Add fades once levels are set'],
+        ['wav-to-mp3', 'Turn the levelled WAV into an MP3 for sharing']
       ]
     },
     'amplify-audio': {
@@ -345,7 +355,8 @@
         ['discord-audio-compressor', 'Target Discord’s specific limit'],
         ['wav-to-mp3-128kbps', 'Fixed small-file bitrate'],
         ['stereo-to-mono', 'Halve the size again for speech'],
-        ['audio-cutter', 'Shorten it instead of degrading it']
+        ['audio-cutter', 'Shorten it instead of degrading it'],
+        ['m4a-to-mp3', 'Convert a voice memo first if it is still .m4a']
       ]
     },
     'stereo-to-mono': {
@@ -365,7 +376,8 @@
         ['stereo-to-mono', 'Going the other direction'],
         ['change-sample-rate', 'Match the rest of the project spec'],
         ['normalize-audio', 'Level it'],
-        ['davinci-resolve-audio', 'Prep it for an NLE that wants stereo']
+        ['davinci-resolve-audio', 'Prep it for an NLE that wants stereo'],
+        ['aiff-to-mp3', 'Compress a Logic or GarageBand bounce afterwards']
       ]
     },
     'change-sample-rate': {
@@ -387,7 +399,8 @@
         ['stem-splitter', 'The AI version — works on mono and off-centre vocals'],
         ['pitch-shifter', 'Move the karaoke track into your singing range'],
         ['normalize-audio', 'Bring the level back up properly'],
-        ['audio-cutter', 'Trim to the section you actually need']
+        ['audio-cutter', 'Trim to the section you actually need'],
+        ['ogg-to-mp3', 'Convert an OGG export into something universal']
       ]
     },
     'stem-splitter': {
@@ -407,7 +420,8 @@
         ['normalize-audio', 'Denoising lowers the level — put it back'],
         ['audio-eq', 'Clear up what is left with a little EQ'],
         ['silence-remover', 'Cut the dead air as well'],
-        ['audio-to-text-prep', 'Now send it to be transcribed']
+        ['audio-to-text-prep', 'Now send it to be transcribed'],
+        ['stem-splitter', 'Separate the voice from the background instead of filtering it']
       ]
     },
     'audio-eq': {
@@ -417,7 +431,8 @@
         ['noise-reduction', 'EQ is the wrong tool for hum — this is the right one'],
         ['normalize-audio', 'Level it after changing the tone'],
         ['amplify-audio', 'Make a quiet file louder instead'],
-        ['podcast-prep', 'Finish a voice recording in one pass']
+        ['podcast-prep', 'Finish a voice recording in one pass'],
+        ['aac-to-mp3', 'Convert an AAC source before shaping it']
       ]
     },
     'pitch-shifter': {
@@ -449,7 +464,8 @@
         ['mp3-tag-editor', 'Title the pieces — splitting does not carry tags'],
         ['audio-cutter', 'Pick an exact cut point by eye instead'],
         ['audio-joiner', 'Put pieces back together'],
-        ['audio-compressor', 'Get each piece under a size limit']
+        ['audio-compressor', 'Get each piece under a size limit'],
+        ['m4b-to-mp3', 'Break an audiobook into chapter files']
       ]
     },
     'mp3-tag-editor': {
@@ -491,7 +507,8 @@
         ['silence-remover', 'Cut dead air before prepping'],
         ['voice-recorder', 'Record the episode here in the first place'],
         ['audio-joiner', 'Stitch intro, content and outro first'],
-        ['trim-silence-edges', 'Top and tail the recording']
+        ['trim-silence-edges', 'Top and tail the recording'],
+        ['mp3-to-wav', 'Hand an editor an uncompressed file to work from']
       ]
     },
     'discord-audio-compressor': {

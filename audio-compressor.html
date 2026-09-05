@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Compressor","url":"https://audiosaw.com/audio-compressor","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Compressor",
+  "url": "https://audiosaw.com/audio-compressor",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I compress an MP3 to under 25 MB for Gmail?","acceptedAnswer":{"@type":"Answer","text":"Drop the file, pick 96 kbps mono, and most hour-long voice recordings come out around 21 MB. If it's still too big, drop to 64 kbps or trim with the cutter first."}},{"@type":"Question","name":"How do I compress audio for Discord's 10 MB limit?","acceptedAnswer":{"@type":"Answer","text":"For voice clips, 64 kbps mono fits ~20 minutes under 10 MB. For music, you'll usually need to trim — a typical 3-minute song at 128 kbps stereo is ~3 MB, comfortably under."}},{"@type":"Question","name":"How do I send a WhatsApp voice note as a standard MP3?","acceptedAnswer":{"@type":"Answer","text":"WhatsApp uses the OPUS codec, not MP3. Save the .opus file out of WhatsApp, drop it here, pick MP3 at 96 kbps. For batches of WhatsApp voice notes, see our OPUS to MP3 page."}},{"@type":"Question","name":"Will compressing an MP3 again make it worse?","acceptedAnswer":{"@type":"Answer","text":"Slightly — every lossy re-encode loses some fidelity. If you have the original WAV, compress that instead. If all you have is the MP3, the difference at 128 kbps and above is usually inaudible on consumer speakers."}},{"@type":"Question","name":"Can I compress to WAV?","acceptedAnswer":{"@type":"Answer","text":"WAV is uncompressed by definition — there's no bitrate to lower, only the sample rate and bit depth. To meaningfully shrink a WAV you have to encode to a compressed format like MP3 or OGG."}},{"@type":"Question","name":"What bitrate for a podcast upload?","acceptedAnswer":{"@type":"Answer","text":"128 kbps stereo is the unofficial standard. 96 kbps mono is fine for pure voice and cuts size by ~40%. Most podcast hosts (Anchor, Buzzsprout, Transistor) accept up to 250 MB per episode."}},{"@type":"Question","name":"Does this work offline?","acceptedAnswer":{"@type":"Answer","text":"Once the page has loaded, yes. You can disconnect from the internet and the tool still works."}},{"@type":"Question","name":"What's the size limit?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB per file on a typical laptop. Browser memory is the bottleneck."}},{"@type":"Question","name":"How much can I shrink an audio file?","acceptedAnswer":{"@type":"Answer","text":"A 320 kbps MP3 dropped to 128 kbps is about 60% smaller. WAV to 192 kbps MP3 is typically 90% smaller or more. Downmixing stereo to mono cuts size roughly in half on top of that."}},{"@type":"Question","name":"Will the audio quality drop?","acceptedAnswer":{"@type":"Answer","text":"Below 128 kbps, yes — noticeably for music, less for voice. 192 kbps is a sweet spot for most material. We let you pick so you can trade size for quality knowingly."}},{"@type":"Question","name":"Does my file upload?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab."}}]}
@@ -190,6 +203,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/wav-to-mp3-128kbps"><h3>WAV to MP3 at 128 kbps</h3><p>Fixed small-file bitrate.</p></a>
       <a class="card" href="/stereo-to-mono"><h3>Stereo to mono</h3><p>Halve the size again for speech.</p></a>
       <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Shorten it instead of degrading it.</p></a>
+      <a class="card" href="/m4a-to-mp3"><h3>M4A to MP3</h3><p>Convert a voice memo first if it is still .m4a.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

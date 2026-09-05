@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Vocal Remover", "url": "https://audiosaw.com/vocal-remover", "applicationCategory": "MultimediaApplication", "operatingSystem": "Browser", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Vocal Remover",
+  "url": "https://audiosaw.com/vocal-remover",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this actually remove vocals, or just make them quieter?","acceptedAnswer":{"@type":"Answer","text":"On a well-mixed stereo track it removes them almost entirely. On tracks with heavy reverb or double-tracked vocals it reduces them substantially but leaves a residue, because the parts of the vocal that are not dead centre cannot be cancelled."}},{"@type":"Question","name":"Why does it say my file is mono?","acceptedAnswer":{"@type":"Answer","text":"Centre cancellation works by subtracting the right channel from the left. In a mono file both channels are identical, so subtracting them gives silence — there is no stereo information to separate. You need a genuine stereo mix."}},{"@type":"Question","name":"Is this the same as AI stem separation?","acceptedAnswer":{"@type":"Answer","text":"No. Tools like Demucs and Spleeter use trained models to identify and separate instruments, and get better results on difficult material. They also need a large model download and much more processing. This is centre cancellation: instant, private, and effective on most conventional mixes."}},{"@type":"Question","name":"Why does the instrumental sound thin?","acceptedAnswer":{"@type":"Answer","text":"Because kick and bass are usually centred too, so a plain cancellation removes them. Raise the 'keep bass below' crossover to 300 Hz and the low end comes back. That setting exists specifically to fix this."}},{"@type":"Question","name":"Can I get a clean acapella out of it?","acceptedAnswer":{"@type":"Answer","text":"Partly. Isolating the centre keeps the vocal but also keeps anything else centred, typically kick and snare. It is good enough for learning a part or checking lyrics, not usually clean enough to build a new production around."}}]}
@@ -206,6 +219,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the karaoke track into your singing range.</p></a>
       <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Bring the level back up properly.</p></a>
       <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim to the section you actually need.</p></a>
+      <a class="card" href="/ogg-to-mp3"><h3>OGG to MP3</h3><p>Convert an OGG export into something universal.</p></a>
     </div>
   </section>
 <!-- /AS:related -->

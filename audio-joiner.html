@@ -29,7 +29,20 @@
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Joiner","url":"https://audiosaw.com/audio-joiner","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Joiner",
+  "url": "https://audiosaw.com/audio-joiner",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-05"
+}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -45,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are my clips uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The joiner runs entirely in your browser."}},{"@type":"Question","name":"How many clips can I join?","acceptedAnswer":{"@type":"Answer","text":"Practically, around 20–30 clips of a few minutes each. The limit is browser memory, not the tool."}},{"@type":"Question","name":"Can I add fades between clips?","acceptedAnswer":{"@type":"Answer","text":"Yes — pick a crossfade length in the controls."}},{"@type":"Question","name":"Mixed formats?","acceptedAnswer":{"@type":"Answer","text":"Fine. MP3 + WAV + M4A in one join is supported."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are my clips uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The joiner runs entirely in your browser."}},{"@type":"Question","name":"How many clips can I join?","acceptedAnswer":{"@type":"Answer","text":"Practically, around 20–30 clips of a few minutes each. The limit is browser memory, not the tool."}},{"@type":"Question","name":"Can I add fades between clips?","acceptedAnswer":{"@type":"Answer","text":"Yes — pick a crossfade length in the controls."}},{"@type":"Question","name":"Mixed formats?","acceptedAnswer":{"@type":"Answer","text":"Fine. MP3 + WAV + M4A in one join is supported."}},{"@type":"Question","name":"What order do the files join in?","acceptedAnswer":{"@type":"Answer","text":"Top to bottom in the list. Dropping several at once orders them naturally, so track2 comes before track10. Drag a row to change it."}},{"@type":"Question","name":"Why is there a click where two clips meet?","acceptedAnswer":{"@type":"Answer","text":"The two files are not both at silence at the boundary. Set a crossfade of 20 to 50 ms, which is short enough to be inaudible as a fade and long enough to remove the step."}},{"@type":"Question","name":"Can I join files with different sample rates?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is resampled up to the highest rate in the set, so there is no pitch shift at the joins."}},{"@type":"Question","name":"Should I normalize before or after joining?","acceptedAnswer":{"@type":"Answer","text":"Before, and each clip separately. Normalizing the finished file only fixes the peak of the whole thing, which does nothing about one section being quieter than the next."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -133,8 +146,29 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
   <section class="content-section">
     <h2>How it works</h2>
-    <p>We decode every clip into the same sample rate, then concatenate the PCM samples (with an optional linear crossfade at each boundary), and finally encode the result as MP3 or WAV. The whole thing runs in your tab.</p>
-    <p>Clips with different sample rates are resampled to the highest one in the set, so you don't get pitch shifts. Channel counts are normalized to stereo if any input is stereo.</p>
+    <p>Every clip is decoded to raw samples, brought to a common sample rate and channel count, concatenated in the order you set, and encoded once at the end. There is no intermediate file and no repeated re-encoding: the join happens on the raw audio, so the only lossy step is the final export.</p>
+    <p>Files with different sample rates are resampled up to the highest one in the set rather than down to the lowest. Resampling down would throw away information that the better file actually has, and mismatched rates joined without resampling is what produces the classic chipmunk or slow-motion effect halfway through a compilation.</p>
+
+    <h3>Order, and how to change it</h3>
+    <p>Clips join top to bottom in the list. Dropping several files at once orders them naturally, so <code>track2</code> lands before <code>track10</code> rather than after it, which is what a plain alphabetical sort gets wrong. Drag a row to move it. If the running order matters and the filenames do not carry it, rename before dropping — it is quicker than rearranging afterwards.</p>
+
+    <h3>The crossfade</h3>
+    <p>With the crossfade at zero, clips are butted directly against each other, and the join is audible whenever the two files do not both sit at silence at the boundary — you hear a click or an abrupt change in room tone. A crossfade of 20 to 50&nbsp;ms is enough to hide that on speech without smearing the words. For music, a longer fade of one to three seconds blends two pieces into each other, which is what you want for a continuous mix and emphatically not what you want for an audiobook.</p>
+    <p>The crossfade overlaps the clips rather than adding silence between them, so the finished file is slightly shorter than the sum of its parts. On a long compilation with many joins that adds up, which matters if you are matching a target duration.</p>
+
+    <h3>What people use this for</h3>
+    <ul>
+      <li><strong>Rebuilding an edit.</strong> Cut the sections you want with the <a href="/audio-cutter">cutter</a>, then join the keepers. This is how you remove something from the middle of a recording.</li>
+      <li><strong>Audiobook chapters into one file</strong>, so a car stereo or an old MP3 player treats the book as a single track and remembers its position.</li>
+      <li><strong>Voice memos from a series of takes</strong>, joined in order before sending them to a transcriber.</li>
+      <li><strong>DJ-style continuous mixes</strong>, using a long crossfade at each boundary.</li>
+    </ul>
+
+    <h3>Before you join</h3>
+    <p>Level differences between clips are the thing that most often ruins a join, and joining does not fix them: a quiet take stays quiet next to a loud one, and the listener reaches for the volume control at every boundary. Run each source through <a href="/normalize-audio">normalize</a> to the same target first, then join. If the clips came from different rooms or different microphones, no amount of level matching hides the change in tone — that is a recording problem, not an editing one.</p>
+
+    <h3>Limits</h3>
+    <p>Everything is held in memory at once, decoded and uncompressed, so the practical ceiling is the total of all the clips rather than the size of the largest. Around 500&nbsp;MB of combined source is where a laptop starts to struggle and a phone gives up sooner. Joining a long book in two halves and then joining the halves works when a single pass does not.</p>
   </section>
 
   <section class="faq">
@@ -144,6 +178,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>How many clips can I join?</summary><p>Practically, around 20–30 clips of a few minutes each. The limit is browser memory, not the tool.</p></details>
       <details><summary>Can I add fades between clips?</summary><p>Yes — pick a crossfade length in the controls.</p></details>
       <details><summary>Mixed formats?</summary><p>Fine. MP3 + WAV + M4A in one join is supported.</p></details>
+      <details><summary>What order do the files join in?</summary><p>Top to bottom in the list. Dropping several at once orders them naturally, so track2 comes before track10. Drag a row to change it.</p></details>
+      <details><summary>Why is there a click where two clips meet?</summary><p>The two files are not both at silence at the boundary. Set a crossfade of 20 to 50 ms, which is short enough to be inaudible as a fade and long enough to remove the step.</p></details>
+      <details><summary>Can I join files with different sample rates?</summary><p>Yes. Everything is resampled up to the highest rate in the set, so there is no pitch shift at the joins.</p></details>
+      <details><summary>Should I normalize before or after joining?</summary><p>Before, and each clip separately. Normalizing the finished file only fixes the peak of the whole thing, which does nothing about one section being quieter than the next.</p></details>
       <!-- /AS:faq -->
   </section>
 
@@ -155,6 +193,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/fade-in-fade-out"><h3>Fade in / fade out</h3><p>Fade the ends of the finished piece.</p></a>
       <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim each part before joining.</p></a>
       <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Finish an assembled episode in one pass.</p></a>
+      <a class="card" href="/mp3-to-m4a"><h3>MP3 to M4A</h3><p>Repackage the result for Apple devices.</p></a>
     </div>
   </section>
 <!-- /AS:related -->
