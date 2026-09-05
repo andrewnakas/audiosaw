@@ -27,7 +27,8 @@
 # an unruled file is max-age=14400, which would leave a four-hour window where
 # an update to the site cannot reach a returning visitor.
 /sw.js
-  Cache-Control: no-cache
+  Cache-Control: no-cache, must-revalidate
+  X-Robots-Tag: noindex
 
 /manifest.webmanifest
   Content-Type: application/manifest+json
