@@ -10,6 +10,15 @@
 <meta name="author" content="AudioSaw">
 <link rel="canonical" href="https://audiosaw.com/">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="AudioSaw — convert, cut and clean audio in your browser">
 <meta property="og:description" content="Free audio converter, cutter and ringtone maker in your browser — M4A, MP4, WAV and Opus to MP3, plus compress, slow down and clean up. Nothing uploads.">
 <meta property="og:type" content="website">
@@ -19,12 +28,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AudioSaw — convert, cut and clean audio in your browser">
 <meta name="twitter:description" content="Drop an audio or video file. Convert, cut, join, normalize. Nothing uploads.">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -57,21 +64,21 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio actually stay on my device?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site."}},{"@type":"Question","name":"Why does my browser need a moment to \"warm up\" the first time?","acceptedAnswer":{"@type":"Answer","text":"For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all."}},{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions."}},{"@type":"Question","name":"What about DRM-protected files like Apple Music or Spotify?","acceptedAnswer":{"@type":"Answer","text":"Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version."}},{"@type":"Question","name":"How big can the file be?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory."}},{"@type":"Question","name":"Are you keeping any data?","acceptedAnswer":{"@type":"Answer","text":"We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it."}},{"@type":"Question","name":"Why is this free?","acceptedAnswer":{"@type":"Answer","text":"No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},{"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},{"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio actually stay on my device?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site."}},{"@type":"Question","name":"Why does my browser need a moment to \"warm up\" the first time?","acceptedAnswer":{"@type":"Answer","text":"For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all."}},{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions."}},{"@type":"Question","name":"What about DRM-protected files like Apple Music or Spotify?","acceptedAnswer":{"@type":"Answer","text":"Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version."}},{"@type":"Question","name":"How big can the file be?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory."}},{"@type":"Question","name":"Are you keeping any data?","acceptedAnswer":{"@type":"Answer","text":"An analytics ping: page views, which tool you used, whether it worked. No audio data, no filenames, no personal identifiers. No ads and no ad network. You can turn the analytics off from the cookie settings link in the footer."}},{"@type":"Question","name":"Why is this free?","acceptedAnswer":{"@type":"Answer","text":"The work happens on your computer, so there are no servers to pay for — the whole site is static files on a CDN. No accounts, no upsell, no Pro tier, and currently no ads."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},{"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},{"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date());
 gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 </head>
 <body>
 <header class="site-header">
@@ -93,34 +100,11 @@ gtag('config', 'G-5X9ERMVYXE');
     <p class="eyebrow">free, runs in your browser, nothing uploads</p>
     <h1>Convert an <span class="ital">audio</span> file. Without uploading it anywhere.</h1>
     <p class="lead">Drop an MP3, WAV, M4A, FLAC, MP4 — whatever you have. We convert, cut, or clean it right here in the tab. It never touches a server. Your unreleased track stays yours.</p>
-    <div class="badges">
-      <span class="badge hot">no upload</span>
-      <span class="badge">mp3, wav, m4a, flac, ogg, aac</span>
-      <span class="badge">batch convert</span>
-      <span class="badge">cut · join · compress · normalize</span>
-      <span class="badge">ringtones · speed · reverse</span>
-    </div>
-  </section>
-
-  <!-- Most arrivals land here rather than on a tool page, so give them a route
-       in before the generic dropzone. -->
-  <section class="task-picker">
-    <h2 class="task-picker-label">What are you trying to do?</h2>
-    <div class="task-picker-row">
-      <a href="/m4a-to-mp3">voice memo → mp3</a>
-      <a href="/mp4-to-mp3">video → mp3</a>
-      <a href="/ringtone-maker">make a ringtone</a>
-      <a href="/discord-audio-compressor">shrink for Discord</a>
-      <a href="/audio-cutter">cut a clip</a>
-      <a href="/silence-remover">remove dead air</a>
-      <a href="/audio-for-whisper">prep for transcription</a>
-      <a href="/tools" class="task-picker-all">all 41 tools →</a>
-    </div>
   </section>
 
   <section class="tool-app" id="universalApp">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop an audio or video file</p>
       <p>We'll auto-detect the format and let you pick what to do with it. Drop multiple files for batch conversion.</p>
       <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.wma,.mp4,.mov,.webm,.mkv" multiple>
@@ -156,18 +140,45 @@ gtag('config', 'G-5X9ERMVYXE');
         </label>
       </div>
       <div class="actions">
-        <button class="btn" id="convertBtn">Convert</button>
+        <button class="btn" id="convertBtn" disabled>Convert</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
     </div>
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
-  <div class="ad-slot ad-slot-top"></div>
+
+  <!-- Below the dropzone, not above it. Most arrivals do land here rather than
+       on a tool page, but a row of eight links between someone and the tool they
+       came for is a toll booth, not a shortcut. -->
+  <section class="task-picker">
+    <h2 class="task-picker-label">Or jump straight to a job</h2>
+    <div class="task-picker-row">
+      <a href="/m4a-to-mp3">voice memo → mp3</a>
+      <a href="/mp4-to-mp3">video → mp3</a>
+      <a href="/ringtone-maker">make a ringtone</a>
+      <a href="/discord-audio-compressor">shrink for Discord</a>
+      <a href="/audio-cutter">cut a clip</a>
+      <a href="/silence-remover">remove dead air</a>
+      <a href="/audio-for-whisper">prep for transcription</a>
+      <a href="/tools" class="task-picker-all">all 49 tools →</a>
+    </div>
+  </section>
+
+  <section class="task-picker" id="recentTools" hidden></section>
+
+  <section class="hero-badges">
+    <div class="badges">
+      <span class="badge hot">no upload</span>
+      <span class="badge">mp3, wav, m4a, flac, ogg, aac</span>
+      <span class="badge">batch convert</span>
+      <span class="badge">cut · join · compress · normalize</span>
+      <span class="badge">ringtones · speed · reverse</span>
+    </div>
+  </section>
 
   <section>
     <h2><span class="num">01.</span>Pick a focused tool</h2>
@@ -339,8 +350,6 @@ gtag('config', 'G-5X9ERMVYXE');
     </div>
   </section>
 
-  <div class="ad-slot ad-slot-mid"></div>
-
   <section class="faq">
     <h2><span class="num">03.</span>FAQ</h2>
     <!-- AS:faq -->
@@ -349,8 +358,8 @@ gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Which formats can I convert between?</summary><p>MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions.</p></details>
       <details><summary>What about DRM-protected files like Apple Music or Spotify?</summary><p>Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version.</p></details>
       <details><summary>How big can the file be?</summary><p>Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory.</p></details>
-      <details><summary>Are you keeping any data?</summary><p>We have a privacy-respecting analytics ping (page views, no audio data, no personal identifiers) and Google AdSense ads, which you can opt out of with the consent banner. That's it.</p></details>
-      <details><summary>Why is this free?</summary><p>No servers to run means almost zero cost. There's an ad slot or two. No accounts, no upsell, no Pro tier.</p></details>
+      <details><summary>Are you keeping any data?</summary><p>An analytics ping: page views, which tool you used, whether it worked. No audio data, no filenames, no personal identifiers. No ads and no ad network. You can turn the analytics off from the cookie settings link in the footer.</p></details>
+      <details><summary>Why is this free?</summary><p>The work happens on your computer, so there are no servers to pay for — the whole site is static files on a CDN. No accounts, no upsell, no Pro tier, and currently no ads.</p></details>
       <details><summary>Does my audio file get uploaded?</summary><p>No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test.</p></details>
       <details><summary>Can I batch-convert a folder of files?</summary><p>Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that.</p></details>
       <details><summary>What about file size limits?</summary><p>Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can.</p></details>
@@ -440,15 +449,16 @@ gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/universal-converter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/universal-converter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

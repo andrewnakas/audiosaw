@@ -9,18 +9,25 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/mov-to-mp3">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="MOV to MP3 — free iPhone / QuickTime audio extractor, no upload">
 <meta property="og:description" content="Convert iPhone .mov and QuickTime files to MP3. Extract audio in your browser, no upload, no daily limit.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/mov-to-mp3">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,14 +43,14 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my video get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The .mov is read and decoded inside your browser tab and never sent to a server. Most online converters upload the whole video first, which for a private recording is exactly what you want to avoid."}},{"@type":"Question","name":"Why is this slower than the other converters?","acceptedAnswer":{"@type":"Answer","text":"Video containers are demultiplexed by a WebAssembly build of FFmpeg, which has to download the first time you use it and is heavier than the audio-only path. After that first load it is cached, but a long .mov still takes real time to read through."}},{"@type":"Question","name":"What bitrate should I use for a voice recording?","acceptedAnswer":{"@type":"Answer","text":"192 kbps is more than enough for speech and keeps an hour of audio around 85 MB. Use 320 kbps if there is music in the recording or you plan to edit it further."}},{"@type":"Question","name":"The audio is very quiet — can this fix that?","acceptedAnswer":{"@type":"Answer","text":"Not on its own. Convert first, then run the MP3 through the normalizer to hit a consistent target level, or the amplifier if you need a specific gain increase without distortion."}},{"@type":"Question","name":"Does the recording date survive the conversion?","acceptedAnswer":{"@type":"Answer","text":"No. The creation date, location and device metadata an iPhone writes into a .mov are not carried into the MP3. Keep the original file if that information matters."}}]}
@@ -73,7 +80,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -89,11 +95,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
-  <div class="ad-slot ad-slot-top"></div>
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop your MOV here</p>
       <p>or click to pick. .qt files supported too.</p>
       <input type="file" id="fileInput" accept="video/*,.mov,.qt" multiple>
@@ -120,7 +125,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
@@ -165,8 +169,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>Metadata does not survive. The creation date, location and device fields that an iPhone writes into a .mov are not carried into the MP3, so if the recording date matters, note it before you convert or keep the original file.</p>
 <p>Very long recordings can exceed what a browser tab can hold in memory — past roughly 500 MB the conversion will fail rather than slow down. <a href="/audio-cutter">Splitting the source</a> is the workaround.</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -273,17 +275,18 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'mp3', accept: ['.mov','.qt'] };</script>
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/tool-converter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/tool-converter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

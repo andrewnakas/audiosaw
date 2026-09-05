@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Maskable variant: same mark, pulled into the safe zone (centre 66%) and
+     full-bleed so a circular or squircle mask never clips it. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#fbf6ed"/>
+  <g stroke="#c2410c" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M152 256 L188 196 L224 300 L260 160 L296 320 L332 208 L360 262"/>
+  </g>
+  <rect x="152" y="348" width="208" height="12" rx="2" fill="#1a1814"/>
+</svg>

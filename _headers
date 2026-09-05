@@ -1,11 +1,14 @@
 # Cloudflare Pages headers
 # Docs: https://developers.cloudflare.com/pages/configuration/headers/
 
+# Permissions-Policy note: microphone is (self), not (). An empty allowlist
+# denies the permission to this origin's own documents, which silently broke
+# /voice-recorder — the browser never even showed its prompt.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Permissions-Policy: camera=(), microphone=(self), geolocation=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 # Long-cache static assets
@@ -20,6 +23,16 @@
 /favicon.ico
   Cache-Control: public, max-age=604800
 
+# The service worker must never be pinned by a stale cache: Pages' default for
+# an unruled file is max-age=14400, which would leave a four-hour window where
+# an update to the site cannot reach a returning visitor.
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=3600
+
 # WASM needs the right MIME type for ffmpeg.wasm
 /*.wasm
   Content-Type: application/wasm
@@ -31,7 +44,8 @@
 /
   Cache-Control: public, max-age=300, must-revalidate
 
-# AdSense compliance files
+# Kept even though the site currently serves no ads: an AdSense account with a
+# site that used to have it flags a removed ads.txt as a misconfiguration.
 /ads.txt
   Content-Type: text/plain
   Cache-Control: public, max-age=86400
@@ -50,7 +64,7 @@
 # The stem splitter runs a neural network through onnxruntime-web. Multi-threaded
 # inference needs SharedArrayBuffer, which needs the page to be cross-origin
 # isolated. Scoped to this one page: applying COEP site-wide would break the
-# AdSense and analytics embeds everywhere else.
+# analytics embed everywhere else.
 #
 # `credentialless` rather than `require-corp` so cross-origin subresources that
 # don't send CORP (analytics) still load, just without credentials.

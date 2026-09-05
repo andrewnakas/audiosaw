@@ -1,4 +1,8 @@
 # Cloudflare Pages handles .html stripping automatically.
 # Only need the 404 fallback here.
 
+
+# Share-target fallback. The service worker answers POST /share and carries the
+# file across; if it has been evicted, Pages would otherwise return a bare 405.
+/share  /?from=share  303
 /*    /404.html    404

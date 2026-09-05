@@ -9,18 +9,25 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/audio-cutter">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="Free Audio Cutter — trim MP3, WAV, M4A online, no upload, no signup">
 <meta property="og:description" content="Drag handles on a waveform, cut out the part you want. Local-only.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/audio-cutter">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Audio Cutter","url":"https://audiosaw.com/audio-cutter","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 </script>
@@ -28,14 +35,14 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The cutter runs entirely in your browser tab."}},{"@type":"Question","name":"What formats can I cut?","acceptedAnswer":{"@type":"Answer","text":"Anything your browser can decode — MP3, WAV, M4A, FLAC, OGG, AAC, and audio inside MP4/MOV/WebM video."}},{"@type":"Question","name":"Can I cut a very long file?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop, after which browser memory gets tight."}},{"@type":"Question","name":"Does it re-encode the whole file or just the slice?","acceptedAnswer":{"@type":"Answer","text":"Just the slice. We decode the full file (which takes a moment), then encode only the selected range."}}]}
@@ -62,7 +69,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -78,11 +84,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
-  <div class="ad-slot ad-slot-top"></div>
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop audio here</p>
       <p>MP3, WAV, M4A, FLAC, OGG, AAC, or audio from a video file.</p>
       <input type="file" id="fileInput" accept="audio/*,video/*">
@@ -125,7 +130,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
   </section>
 
   <section class="content-section">
@@ -139,8 +143,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     </ol>
     <p>Need a ringtone? Set a length around 30 seconds and pick MP3 (Android compatible).</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -246,16 +248,17 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/audio-cutter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/audio-cutter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

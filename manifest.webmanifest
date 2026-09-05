@@ -1,0 +1,42 @@
+{
+  "id": "/",
+  "name": "AudioSaw — convert, cut and clean audio",
+  "short_name": "AudioSaw",
+  "description": "Convert, cut, join, normalize and clean audio in your browser. Files never upload.",
+  "start_url": "/?utm_source=pwa&utm_medium=standalone",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "dir": "ltr",
+  "background_color": "#fbf6ed",
+  "theme_color": "#fbf6ed",
+  "categories": ["utilities", "music", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "MP4 to MP3", "url": "/mp4-to-mp3?utm_source=pwa&utm_medium=shortcut" },
+    { "name": "Voice memo to MP3", "url": "/m4a-to-mp3?utm_source=pwa&utm_medium=shortcut" },
+    { "name": "Cut audio", "url": "/audio-cutter?utm_source=pwa&utm_medium=shortcut" },
+    { "name": "Make a ringtone", "url": "/ringtone-maker?utm_source=pwa&utm_medium=shortcut" }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "media",
+          "accept": ["audio/*", "video/*", ".mp3", ".m4a", ".wav", ".flac", ".ogg", ".opus", ".aac", ".aiff", ".m4b", ".mp4", ".mov", ".webm", ".mkv"]
+        }
+      ]
+    }
+  },
+  "launch_handler": { "client_mode": "auto" }
+}

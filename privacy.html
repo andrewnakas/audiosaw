@@ -8,24 +8,31 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/privacy">
 <link rel="icon" href="/favicon.ico">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 </head>
 <body>
 <header class="site-header">
@@ -51,24 +58,23 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2><span class="num">02.</span>What does get collected</h2>
     <ul>
       <li>Normal web-server logs. The host (Cloudflare Pages) records request data — IP, user-agent, which URL you hit — the same as basically every site. Used for outages and abuse, kept briefly.</li>
-      <li>Ad cookies if you opt in. Google AdSense sets cookies to serve relevant ads. Pick "essential only" in the consent banner and AdSense switches to non-personalized.</li>
-      <li>Google Analytics 4 — aggregated traffic counts (page views, country, browser). Only fires after you accept analytics cookies. No audio data, no personal identifiers.</li>
-      <li>One localStorage key, <code>fex_consent_v1</code>, which stores whether you accepted cookies. Stays on your device.</li>
+      <li>Google Analytics 4 — aggregated traffic counts (page views, country, browser), plus which tool you used, which format you picked, how long a conversion took, and a size band for the file. No audio data, no filenames, no personal identifiers. To be precise about how this works: the analytics script loads on every page, and your consent choice controls whether it is allowed to store anything on your device. Decline and it runs without cookies, which means you are counted but not recognised on a later visit.</li>
+      <li>A few localStorage keys, all of them on your device and readable by nobody else: <code>fex_consent_v1</code> (your consent choice), your last-used bitrate and format so the dropdowns remember them, and the last five tools you used so the homepage can offer them back to you.</li>
     </ul>
 
     <h2><span class="num">03.</span>What does NOT get collected</h2>
     <ul>
       <li>The audio files you convert, cut, or join. We don't have them. They never leave your browser tab.</li>
-      <li>The names of files you process, the lengths, the bitrates — none of it.</li>
+      <li>The names of the files you process, or any of their contents. The settings you choose are counted — that a conversion was 320 kbps, say — but never tied to a file or a person.</li>
+      <li>Advertising of any kind. There are no ads on this site and no ad network is loaded. There used to be an ad script here; it has been removed.</li>
       <li>Account info. There are no accounts to make.</li>
     </ul>
 
     <h2><span class="num">04.</span>Third parties</h2>
     <ul>
-      <li>Google AdSense (display ads). <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
-      <li>Google Analytics 4 — aggregated, anonymized traffic counts. Only fires after consent. <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
+      <li>Google Analytics 4 — aggregated, anonymised traffic counts. <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
       <li>Cloudflare Pages (hosting and CDN).</li>
-      <li>jsDelivr / unpkg CDN — JavaScript libraries (lamejs, ffmpeg.wasm) load from these public CDNs on first use, then your browser caches them. The CDNs see your IP at load time; they don't see your audio.</li>
+      <li>unpkg — one 30 MB WebAssembly file (the FFmpeg core) loads from this public CDN the first time you use a tool that needs it, and is then cached on your device. unpkg sees your IP at that moment; it does not see your audio. Every other library is served from this site.</li>
     </ul>
 
     <h2><span class="num">05.</span>Your options</h2>
@@ -160,10 +166,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

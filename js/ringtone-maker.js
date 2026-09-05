@@ -1,6 +1,9 @@
 // Ringtone maker: cutter with a 30s cap, fade in/out, iOS .m4r or Android .mp3 output.
 (function () {
   'use strict';
+
+  var RING_ACCEPT = ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus',
+    '.aif', '.aiff', '.m4b', '.wma', '.mp4', '.mov', '.webm', '.mkv'];
   var $ = CV.$;
   var MAX_LEN = 30; // seconds (iOS limit)
 
@@ -24,7 +27,6 @@
   var statusEl = $('#status');
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
-  var adPost = $('#adSlotPost');
 
   var sourceFile = null;
   var audioBuffer = null;
@@ -96,6 +98,7 @@
       e.preventDefault();
       var rect = canvas.getBoundingClientRect();
       function move(ev) {
+        if (ev.touches && ev.cancelable) ev.preventDefault();
         var x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
         var pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
         setter(pct);
@@ -109,11 +112,11 @@
       }
       window.addEventListener('mousemove', move);
       window.addEventListener('mouseup', up);
-      window.addEventListener('touchmove', move);
+      window.addEventListener('touchmove', move, { passive: false });
       window.addEventListener('touchend', up);
     }
     handle.addEventListener('mousedown', down);
-    handle.addEventListener('touchstart', down);
+    handle.addEventListener('touchstart', down, { passive: false });
   }
 
   bindHandle(handleStart, function (p) { startPct = p; });
@@ -173,7 +176,7 @@
       });
   }
 
-  CV.bindDropzone(dropzone, fileInput, function (files) { if (files[0]) onFile(files[0]); });
+  CV.bindDropzone(dropzone, fileInput, function (files) { if (files[0]) onFile(files[0]); }, RING_ACCEPT);
 
   resetBtn.addEventListener('click', function () {
     sourceFile = null; audioBuffer = null;
@@ -181,7 +184,6 @@
     CV.clearStatus(statusEl);
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
-    if (adPost) adPost.classList.remove('visible');
     stopPlayback();
   });
 
@@ -248,7 +250,6 @@
       CV.setProgress(progressBar, 100);
       CV.downloadBlob(blob, outName);
       CV.setStatus(statusEl, 'success', 'Done — downloaded ' + outName);
-      if (adPost) adPost.classList.add('visible');
     } catch (err) {
       CV.setStatus(statusEl, 'error', 'Ringtone failed: ' + (err.message || err));
     } finally {

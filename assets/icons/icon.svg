@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AudioSaw mark. Warm paper ground, amber saw-tooth waveform, ink baseline rule
+  echoing the site header. The mark sits inside the central 66% so the maskable
+  variant survives a circular crop.
+
+  Rasterise with:
+    qlmanage -t -s 512 -o . icon.svg
+  or ImageMagick, then hand-crop to the sizes listed in manifest.webmanifest.
+  /assets is served immutable for a year, so a changed icon needs a NEW
+  filename, never an in-place edit.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#fbf6ed"/>
+  <g stroke="#c2410c" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M104 256 L148 178 L192 300 L236 140 L280 334 L324 196 L368 268 L408 256"/>
+  </g>
+  <rect x="104" y="378" width="304" height="14" rx="2" fill="#1a1814"/>
+</svg>

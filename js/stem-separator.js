@@ -21,7 +21,6 @@
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
   var resultList = $('#resultList');
-  var adPost = $('#adSlotPost');
   var envEl = $('#envNote');
 
   if (!dropzone) return;
@@ -236,7 +235,6 @@
       resultList.appendChild(wrap);
     });
 
-    if (adPost) adPost.classList.add('visible');
     setTitleProgress(null);
     goBtn.disabled = files.length === 0;
     resetBtn.disabled = false;
@@ -275,11 +273,11 @@
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
-    if (adPost) adPost.classList.remove('visible');
     setTitleProgress(null);
   }
 
-  CV.bindDropzone(dropzone, fileInput, onFiles, null);
+  CV.bindDropzone(dropzone, fileInput, onFiles,
+    ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus', '.aif', '.aiff', '.mp4', '.mov', '.webm', '.mkv']);
   if (resetBtn) resetBtn.addEventListener('click', reset);
 
   goBtn.addEventListener('click', async function () {

@@ -9,18 +9,25 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/aac-to-mp3">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="AAC to MP3 — free converter for car stereos and old players, no upload">
 <meta property="og:description" content="Convert AAC audio (including .m4a and streaming rips) to MP3. Free, in-browser, no upload.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/aac-to-mp3">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,14 +43,14 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does converting AAC to MP3 lose quality?","acceptedAnswer":{"@type":"Answer","text":"Yes, a little. Both are lossy formats, so the file is decoded and re-encoded, and each encode discards information. At 320 kbps the difference is very hard to hear on most material. Encoding from the original uncompressed source, if you still have it, always beats transcoding."}},{"@type":"Question","name":"What's the difference between .aac and .m4a?","acceptedAnswer":{"@type":"Answer","text":"Usually just the container. A bare .aac file is a raw AAC stream; an .m4a file is AAC audio inside an MP4 container, which is what lets it carry cover art and tags. The audio inside is often identical. This tool accepts both."}},{"@type":"Question","name":"Can I convert songs from Apple Music?","acceptedAnswer":{"@type":"Answer","text":"No. Apple Music streaming and download files are DRM-protected AAC, which is encrypted and cannot be decoded by this or any other browser converter. Purchased iTunes Store tracks from 2009 onward are DRM-free and convert normally."}},{"@type":"Question","name":"Why is my MP3 bigger than the AAC it came from?","acceptedAnswer":{"@type":"Answer","text":"Because AAC compresses more efficiently. To hold onto the quality of a 256 kbps AAC you need roughly a 320 kbps MP3, which is a larger file for the same audio. That is the trade you make for compatibility."}},{"@type":"Question","name":"Does my cover art and track info come across?","acceptedAnswer":{"@type":"Answer","text":"No. Metadata lives in the source container and is not transferred, so you get the audio and the filename. Re-tag afterwards with a tool like Mp3tag if you need artwork and album fields."}}]}
@@ -73,7 +80,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -89,11 +95,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
-  <div class="ad-slot ad-slot-top"></div>
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop your AAC here</p>
       <p>or click to pick a file.</p>
       <input type="file" id="fileInput" accept="audio/*,.aac,.m4a,.mp4" multiple>
@@ -120,7 +125,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
@@ -163,8 +167,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>You also lose metadata. Cover art, track numbers, album fields and chapter markers live in the AAC container, and are not carried into the MP3 — you will get audio with the filename preserved and nothing else. If tags matter, re-tag afterwards in something like Mp3tag or MusicBrainz Picard.</p>
 <p><strong>And one hard limit:</strong> tracks downloaded from Apple Music are protected AAC. They are encrypted, this tool cannot decode them, and neither can any browser-based converter. Purchased iTunes tracks from 2009 onward are DRM-free and convert normally; anything from an active Apple Music subscription does not.</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -271,17 +273,18 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'mp3', accept: ['.aac','.m4a','.mp4'] };</script>
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/tool-converter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/tool-converter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

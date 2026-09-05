@@ -11,13 +11,52 @@
     return (n / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
   }
 
-  function bindDropzone(dropzoneEl, fileInputEl, onFiles, accept) {
+  // Extension filter, applied to BOTH intake paths. It used to run only on the
+  // drop path, so a file chosen through the OS picker skipped validation
+  // entirely and went straight to the decoder.
+  function filterAccepted(files, accept) {
+    if (!accept || !accept.length) return { ok: files, rejected: [] };
+    var ok = [], rejected = [];
+    files.forEach(function (f) {
+      var match = accept.some(function (ext) {
+        return f.name.toLowerCase().endsWith(ext.toLowerCase());
+      });
+      (match ? ok : rejected).push(f);
+    });
+    return { ok: ok, rejected: rejected };
+  }
+
+  function bindDropzone(dropzoneEl, fileInputEl, onFiles, accept, onRejected) {
+    function openPicker() { fileInputEl.click(); }
+
+    // The dropzone is a div, so it needs the button semantics spelled out or it
+    // is unreachable by keyboard — and the file input itself is display:none,
+    // which takes it out of the tab order too.
+    dropzoneEl.setAttribute('role', 'button');
+    dropzoneEl.setAttribute('tabindex', '0');
+    if (!dropzoneEl.getAttribute('aria-label')) {
+      var big = dropzoneEl.querySelector('.big');
+      dropzoneEl.setAttribute('aria-label', (big ? big.textContent.trim() : 'Choose a file') + ' — opens a file picker');
+    }
+    dropzoneEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        openPicker();
+      }
+    });
+
+    function deliver(files) {
+      var split = filterAccepted(files, accept);
+      if (split.rejected.length && onRejected) onRejected(split.rejected, accept);
+      onFiles(split.ok);
+    }
+
     dropzoneEl.addEventListener('click', function (e) {
       if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-      fileInputEl.click();
+      openPicker();
     });
     fileInputEl.addEventListener('change', function (e) {
-      onFiles(Array.from(e.target.files));
+      deliver(Array.from(e.target.files));
       fileInputEl.value = '';
     });
     ['dragenter', 'dragover'].forEach(function (ev) {
@@ -33,20 +72,22 @@
       });
     });
     dropzoneEl.addEventListener('drop', function (e) {
-      var files = Array.from(e.dataTransfer.files);
-      if (accept && accept.length) {
-        files = files.filter(function (f) {
-          return accept.some(function (ext) {
-            return f.name.toLowerCase().endsWith(ext.toLowerCase());
-          });
-        });
-      }
-      onFiles(files);
+      deliver(Array.from(e.dataTransfer.files));
     });
   }
 
+  // Status text is the only feedback several tools give, and it was invisible to
+  // assistive tech: a plain div whose textContent was swapped. alert for errors
+  // (interrupts), polite status for everything else.
   function setStatus(el, kind, msg) {
     el.className = 'status ' + kind;
+    if (kind === 'error') {
+      el.setAttribute('role', 'alert');
+      el.setAttribute('aria-live', 'assertive');
+    } else {
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+    }
     el.textContent = msg;
   }
   function clearStatus(el) {
@@ -54,7 +95,33 @@
     el.textContent = '';
   }
   function setProgress(barEl, pct) {
-    barEl.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    var v = Math.max(0, Math.min(100, pct));
+    barEl.style.width = v + '%';
+    var wrap = barEl.parentNode;
+    if (wrap && wrap.classList && wrap.classList.contains('progress')) {
+      wrap.setAttribute('role', 'progressbar');
+      wrap.setAttribute('aria-valuemin', '0');
+      wrap.setAttribute('aria-valuemax', '100');
+      wrap.setAttribute('aria-valuenow', String(Math.round(v)));
+    }
+  }
+
+  // Remember a <select> across visits. Restores only a value this page actually
+  // offers, so a 320 kbps preference does not select a missing option on a page
+  // whose list stops at 256.
+  function remember(sel, key) {
+    if (!sel) return;
+    var k = 'as_pref:' + (key || sel.id);
+    try {
+      var saved = localStorage.getItem(k);
+      if (saved !== null) {
+        var has = Array.prototype.some.call(sel.options, function (o) { return o.value === saved; });
+        if (has) sel.value = saved;
+      }
+    } catch (e) {}
+    sel.addEventListener('change', function () {
+      try { localStorage.setItem(k, sel.value); } catch (e) {}
+    });
   }
 
   function downloadBlob(blob, filename) {
@@ -109,7 +176,8 @@
   var MIME_BY_EXT = {
     'jpg':'image/jpeg','jpeg':'image/jpeg','png':'image/png','gif':'image/gif',
     'webp':'image/webp','bmp':'image/bmp','svg':'image/svg+xml','ico':'image/x-icon',
-    'mp3':'audio/mpeg','wav':'audio/wav','ogg':'audio/ogg','m4a':'audio/mp4','flac':'audio/flac',
+    'mp3':'audio/mpeg','wav':'audio/wav','ogg':'audio/ogg','oga':'audio/ogg','m4a':'audio/mp4','flac':'audio/flac',
+    'opus':'audio/opus','aac':'audio/aac','aiff':'audio/aiff','aif':'audio/aiff','m4b':'audio/mp4','m4r':'audio/mp4','weba':'audio/webm','amr':'audio/amr','wma':'audio/x-ms-wma',
     'mp4':'video/mp4','webm':'video/webm','mov':'video/quicktime','mkv':'video/x-matroska',
     'pdf':'application/pdf',
     'json':'application/json','xml':'application/xml','html':'text/html','htm':'text/html',
@@ -134,6 +202,8 @@
     $: $, $$: $$,
     fmtBytes: fmtBytes,
     bindDropzone: bindDropzone,
+    filterAccepted: filterAccepted,
+    remember: remember,
     setStatus: setStatus,
     clearStatus: clearStatus,
     setProgress: setProgress,

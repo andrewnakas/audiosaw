@@ -3,11 +3,6 @@
 (function (global) {
   'use strict';
 
-  var SRI = {
-    lamejs: 'sha384-AbCdLZ7XWxv3+oRgFq2yYzGZUOcLkaSDQ6P0CKuLZ8m+8mYrr9rKtoq9eRkD5Y2P'
-    // SRI hashes left permissive in dev; harden before launch.
-  };
-
   // These are served from our own origin (see /vendor) rather than a CDN.
   //
   // Not a preference — a requirement. ffmpeg.wasm 0.12 spawns its worker from a
@@ -27,6 +22,18 @@
   var FFMPEG_UTIL = '/vendor/ffmpeg/util.js?v=0.12.1';
   var FFMPEG_CORE = '/vendor/ffmpeg/ffmpeg-core.js?v=0.12.6';
   var FFMPEG_WASM = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+
+  // unpkg serves the core gzipped and sends no Content-Length, so there is no
+  // header to read a total from. This is the decoded size of core@0.12.6 —
+  // update it whenever FFMPEG_WASM's version changes, or the progress bar will
+  // be scaled against the wrong denominator.
+  var FFMPEG_WASM_BYTES = 32129114;
+
+  // Own cache bucket, written here rather than in sw.js: this is the only code
+  // that fetches the wasm (the worker gets a blob: URL it never sees), it works
+  // before a service worker controls the page, and it keeps a 30 MB clone out
+  // of the worker's memory.
+  var CORE_CACHE = 'audiosaw-ffmpeg-core';
 
   var lamejsPromise = null;
   var ffmpegPromise = null;
@@ -52,7 +59,84 @@
     return lamejsPromise;
   }
 
-  function ensureFFmpeg(onLog) {
+  function fmtMb(n) { return (n / (1024 * 1024)).toFixed(1); }
+
+  // Fetch the core wasm with byte-level progress, and keep it in Cache Storage.
+  //
+  // Before this, the first ffmpeg conversion sat at 55% for a 30 MB download
+  // with no feedback at all — which is the first thing most /mp4-to-mp3 users
+  // ever see. Cache Storage rather than the HTTP cache because a 30 MB entry is
+  // the first thing evicted under pressure, and this is the one download worth
+  // keeping.
+  async function fetchCoreWasm(onBytes) {
+    var cache = null;
+    try { if (global.caches) cache = await global.caches.open(CORE_CACHE); } catch (e) { cache = null; }
+
+    if (cache) {
+      try {
+        var hit = await cache.match(FFMPEG_WASM);
+        if (hit) {
+          var cached = new Uint8Array(await hit.arrayBuffer());
+          if (onBytes) onBytes(cached.length, cached.length, 'cache');
+          return cached;
+        }
+        // Drop cores from a previous library version.
+        var keys = await cache.keys();
+        for (var k = 0; k < keys.length; k++) {
+          if (keys[k].url !== FFMPEG_WASM) await cache.delete(keys[k]);
+        }
+      } catch (e) { /* a miss is just a download */ }
+    }
+
+    var res = await fetch(FFMPEG_WASM, { mode: 'cors', credentials: 'omit' });
+    if (!res.ok) throw new Error('Failed to load codec (' + res.status + ')');
+
+    var bytes;
+    if (!res.body || !res.body.getReader) {
+      bytes = new Uint8Array(await res.arrayBuffer());
+      if (onBytes) onBytes(bytes.length, bytes.length, 'network');
+    } else {
+      // Content-Length, when present, is the *compressed* size while the reader
+      // yields decoded bytes, so the ratio can pass 1. Clamp it.
+      var total = parseInt(res.headers.get('Content-Length'), 10) || FFMPEG_WASM_BYTES;
+      var reader = res.body.getReader();
+      var chunks = [];
+      var received = 0;
+      for (;;) {
+        var step = await reader.read();
+        if (step.done) break;
+        chunks.push(step.value);
+        received += step.value.length;
+        if (onBytes) onBytes(Math.min(received, total * 0.99), total, 'network');
+      }
+      bytes = new Uint8Array(received);
+      var at = 0;
+      for (var i = 0; i < chunks.length; i++) { bytes.set(chunks[i], at); at += chunks[i].length; }
+      chunks.length = 0;
+      if (onBytes) onBytes(received, received, 'network');
+    }
+
+    if (cache) {
+      try {
+        await cache.put(FFMPEG_WASM, new Response(bytes, {
+          headers: { 'Content-Type': 'application/wasm', 'Content-Length': String(bytes.length) }
+        }));
+      } catch (e) { /* quota or private mode — the conversion still works */ }
+    }
+    return bytes;
+  }
+
+  // Watchers rather than a single callback: several tools can await the same
+  // shared load promise, and all of them should see the download progress.
+  var loadWatchers = [];
+  function notifyLoad(received, total, source) {
+    loadWatchers.forEach(function (fn) {
+      try { fn(received, total, source); } catch (e) {}
+    });
+  }
+
+  function ensureFFmpeg(onLog, onLoad) {
+    if (onLoad) loadWatchers.push(onLoad);
     if (ffmpegPromise) return ffmpegPromise;
     ffmpegPromise = (async function () {
       await loadScript(FFMPEG_UTIL);
@@ -64,12 +148,28 @@
 
       // wasmURL is mandatory here: the core resolves its .wasm relative to
       // itself, and ours sits on the CDN rather than next to /vendor/ffmpeg.
-      await ffmpeg.load({ coreURL: FFMPEG_CORE, wasmURL: FFMPEG_WASM });
+      // A blob: URL is what @ffmpeg/util's own toBlobURL helper produces, so
+      // the core is happy with one — and it lets us do the fetch ourselves.
+      var wasmURL = FFMPEG_WASM;
+      var blobURL = null;
+      try {
+        var bytes = await fetchCoreWasm(notifyLoad);
+        blobURL = URL.createObjectURL(new Blob([bytes], { type: 'application/wasm' }));
+        wasmURL = blobURL;
+      } catch (e) {
+        // Streaming failed; let the core fetch the URL itself as before.
+      }
+      try {
+        await ffmpeg.load({ coreURL: FFMPEG_CORE, wasmURL: wasmURL });
+      } finally {
+        if (blobURL) URL.revokeObjectURL(blobURL);
+        loadWatchers = [];
+      }
       return { ffmpeg: ffmpeg, util: global.FFmpegUtil };
     })();
     // Don't cache a rejected promise — a network blip on the first conversion
     // would otherwise poison every later attempt for the life of the page.
-    ffmpegPromise.catch(function () { ffmpegPromise = null; });
+    ffmpegPromise.catch(function () { ffmpegPromise = null; loadWatchers = []; });
     return ffmpegPromise;
   }
 
@@ -218,10 +318,19 @@
   // Generic conversion via ffmpeg.wasm for formats lamejs can't do (m4a/aac/ogg/flac).
   async function convertViaFFmpeg(file, outExt, options, onProgress) {
     options = options || {};
-    var pack = await ensureFFmpeg(function (msg) { /* console.log(msg); */ });
+    // Download occupies 55–90 on a cold start and collapses to a single jump to
+    // 60 when the core is already cached, so the bar never runs backwards.
+    var loadEnd = 60;
+    var pack = await ensureFFmpeg(function (msg) { /* console.log(msg); */ },
+      function (received, total, source) {
+        if (!onProgress || source !== 'network' || !total) return;
+        loadEnd = 90;
+        onProgress(55 + 35 * (received / total),
+          'Downloading codec… ' + fmtMb(received) + ' of ' + fmtMb(total) + ' MB (first time only)');
+      });
     var ffmpeg = pack.ffmpeg;
     var fetchFile = pack.util.fetchFile;
-    if (onProgress) onProgress(55, 'Loading codec…');
+    if (onProgress) onProgress(loadEnd, 'Codec ready');
 
     var inName = 'in_' + Date.now() + '.' + (file.name.split('.').pop() || 'bin');
     var outName = 'out.' + outExt;
@@ -240,16 +349,23 @@
     args.push('-vn');
     args.push(outName);
 
-    ffmpeg.on('progress', function (e) {
+    // Named so it can be removed again. Registering an anonymous listener per
+    // call left every previous conversion's closure attached and firing.
+    var span = Math.max(5, 97 - loadEnd);
+    function onFFProgress(e) {
       if (onProgress && e && e.progress != null) {
-        var pct = 60 + Math.min(35, Math.max(0, e.progress * 35));
-        onProgress(pct, 'Converting…');
+        onProgress(loadEnd + Math.min(span, Math.max(0, e.progress * span)), 'Converting…');
       }
-    });
+    }
+    ffmpeg.on('progress', onFFProgress);
 
-    if (onProgress) onProgress(60, 'Converting…');
-    await ffmpeg.exec(args);
-    var data = await ffmpeg.readFile(outName);
+    var data;
+    try {
+      await ffmpeg.exec(args);
+      data = await ffmpeg.readFile(outName);
+    } finally {
+      try { ffmpeg.off('progress', onFFProgress); } catch (e) {}
+    }
     try { await ffmpeg.deleteFile(inName); await ffmpeg.deleteFile(outName); } catch (e) {}
     var mime = ({
       mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', aac: 'audio/aac',

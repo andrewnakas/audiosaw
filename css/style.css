@@ -1,6 +1,47 @@
-/* unrarit.com — warm paper, ink, amber. Editorial / human voice. */
+/* audiosaw.com — warm paper, ink, amber. Editorial / human voice. */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+/*
+ * Self-hosted latin subsets, replacing the @import that used to sit here. That
+ * @import serialised four round trips — HTML, style.css, Google's CSS, then the
+ * font files — before a glyph appeared in its intended face, and it was the
+ * largest single delay before first paint.
+ *
+ * Fraunces and IBM Plex Sans are variable fonts: one file covers the whole
+ * weight range, so do not add a second file per weight. Regenerate from
+ * fonts.googleapis.com/css2 with the same families if a version bump is needed.
+ */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/fraunces-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/ibm-plex-sans-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/ibm-plex-mono-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/ibm-plex-mono-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 :root {
   --paper: #fbf6ed;
@@ -9,8 +50,8 @@
   --ink: #1a1814;
   --ink-2: #2a261f;
   --ink-soft: #4a4338;
-  --muted: #7a705f;
-  --muted-2: #9a8e7a;
+  --muted: #6b6152;      /* 5.6:1 on paper; #7a705f sat exactly on 4.5 */
+  --muted-2: #766b59;    /* was #9a8e7a — 3.0:1, failed */
   --amber: #c2410c;
   --amber-2: #dc7a18;
   --amber-soft: #fde8ce;
@@ -21,7 +62,7 @@
   --shadow-sm: 0 1px 0 rgba(26, 24, 20, 0.06), 0 1px 2px rgba(26, 24, 20, 0.04);
   --shadow-md: 0 2px 0 rgba(26, 24, 20, 0.06), 0 8px 22px rgba(122, 112, 95, 0.14);
   --shadow-lg: 0 30px 60px rgba(26, 24, 20, 0.16);
-  --success: #4a7c2a;
+  --success: #3d6a1f;    /* 5.7:1 on the success background */
   --error:   #b91c1c;
   --warn:    #b45309;
   --serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
@@ -116,11 +157,20 @@ body {
 }
 
 /* Hero — magazine cover */
+/* Trimmed from 70px top / 30px bottom. The dropzone used to start around 750px
+   down the page, below the fold on a laptop, behind a headline and eight links.
+   The tool is what people came for; it goes first. */
 .hero {
   text-align: left;
-  padding: 70px 0 30px;
+  padding: 40px 0 22px;
   border-bottom: 1px dashed var(--rule);
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+}
+
+/* Badges moved below the tool, so they read as reassurance rather than as
+   another thing to get past. */
+.hero-badges {
+  margin: 26px 0 8px;
 }
 .hero .eyebrow {
   font-family: var(--mono);
@@ -198,35 +248,8 @@ h2 .num {
 }
 h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; }
 
-/* Ads.
-   No <ins class="adsbygoogle"> units are placed yet, so these slots stay collapsed:
-   an empty dashed box reading "[ advertisement ]" is a quality signal against us and
-   earns nothing. When real ad units land, drop the `display:none` and the slots
-   already have their sizing and post-conversion reveal wired up below. */
-.ad-slot {
-  display: none;
-  background: var(--paper-2);
-  border: 1px dashed var(--rule);
-  color: var(--muted);
-  text-align: center;
-  padding: 22px;
-  margin: 36px 0;
-  border-radius: 2px;
-  min-height: 90px;
-  font-size: 0.78rem;
-  font-family: var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.ad-slot:has(.adsbygoogle) { display: block; }
-.ad-slot-post {
-  opacity: 0; max-height: 0; padding: 0; margin: 0; min-height: 0; border: 0; overflow: hidden;
-  transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease;
-}
-.ad-slot-post.visible:has(.adsbygoogle) {
-  opacity: 1; max-height: 400px; padding: 22px; margin: 36px 0; min-height: 90px;
-  border: 1px dashed var(--rule);
-}
+/* Install prompt, shown inside the post-conversion panel. */
+.install-chip { margin-top: 16px; }
 
 /* Explanatory note inside a tool's control row (used where a setting would be meaningless). */
 .control-note.warn-note { color: var(--warn); }
@@ -701,7 +724,7 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   box-shadow: 3px 3px 0 var(--ink);
 }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--amber); }
-.btn:disabled { background: var(--rule); border-color: var(--rule); color: var(--muted); cursor: not-allowed; box-shadow: 3px 3px 0 var(--rule-soft); }
+.btn:disabled { background: var(--rule); border-color: var(--rule); color: var(--ink-soft); cursor: not-allowed; box-shadow: 3px 3px 0 var(--rule-soft); }
 .btn-secondary {
   background: transparent;
   color: var(--ink);
@@ -710,6 +733,23 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 }
 .btn-secondary:hover { background: var(--ink); color: var(--paper); }
 .btn-small { padding: 6px 12px; font-size: 0.78rem; box-shadow: 2px 2px 0 var(--amber); }
+
+/* Keyboard focus. Several interactive things here are <div>s and <a>s with only
+   hover styles, so tabbing through the page gave no indication of position. */
+.btn:focus-visible,
+.next-chip:focus-visible,
+.card:focus-visible,
+.dropzone:focus-visible,
+.task-picker-row a:focus-visible,
+.file-item .remove:focus-visible,
+.site-header nav a:focus-visible,
+.footer-directory a:focus-visible,
+.breadcrumb a:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 
 .file-list { margin: 20px 0; }
 .file-item {
@@ -1026,12 +1066,24 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   bottom: 0;
   width: 12px;
   margin-left: -6px;
+  /* Or a drag scrolls the page instead of moving the handle. */
+  touch-action: none;
   background: var(--amber);
   border: 2px solid var(--ink);
   border-radius: 2px;
   cursor: ew-resize;
   z-index: 2;
   box-shadow: 0 2px 4px rgba(26,24,20,0.2);
+}
+/* The visible handle is 12px; a finger needs 44. */
+.cut-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 44px;
+  transform: translateX(-50%);
 }
 .cut-handle::after {
   content: "";
@@ -1085,8 +1137,12 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   .site-header .container { flex-direction: column; height: auto; padding: 14px 20px; }
   .site-header nav { margin-top: 10px; }
   .site-header nav a { margin: 0 8px; font-size: 0.78rem; }
-  .hero { padding: 40px 0 24px; }
+  .hero { padding: 22px 0 16px; }
   .hero h1 { max-width: none; }
+  /* On a phone the header already stacks; anything more than this puts the
+     dropzone off the first screen again. */
+  .hero .lead { font-size: 1.02rem; }
+  .hero-badges { margin: 20px 0 4px; }
   #fbc-consent { left: 8px; right: 8px; bottom: 8px; padding: 14px; }
   .tool-app { padding: 22px; }
   .content-section { padding: 22px; }

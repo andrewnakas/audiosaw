@@ -9,18 +9,25 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/extract-audio">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="Extract Audio from Video — MP4, MOV, MKV to MP3 free, no upload">
 <meta property="og:description" content="Extract the audio track from any video — MP4, MOV, WebM, MKV — into MP3 free in your browser. No upload, no signup, no daily limit.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/extract-audio">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,14 +43,14 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does the video get uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The file is read and decoded inside your browser tab and never sent to a server. That is the main reason to use this rather than a typical online extractor, which uploads the entire video first — a real problem for anything confidential."}},{"@type":"Question","name":"Which video formats work?","acceptedAnswer":{"@type":"Answer","text":"MP4, MOV, WebM, MKV, AVI and M4V. The audio inside is usually AAC (MP4, MOV) or Opus and Vorbis (WebM); all of them are decoded the same way."}},{"@type":"Question","name":"Should I choose MP3 or WAV?","acceptedAnswer":{"@type":"Answer","text":"WAV if the audio is going into an editor for more work, because it avoids re-compressing audio that was already compressed inside the video. MP3 at 192 kbps or higher if you just want to listen to it or send it on."}},{"@type":"Question","name":"Why is the first conversion slower?","acceptedAnswer":{"@type":"Answer","text":"Video containers are demultiplexed by a WebAssembly build of FFmpeg that downloads the first time you use it. After that it is cached and conversions start immediately."}},{"@type":"Question","name":"What if my video has two audio tracks?","acceptedAnswer":{"@type":"Answer","text":"You get the first one. Selecting between multiple audio streams is not supported, so a file with a separate commentary or second language track will need a desktop tool if you want the other one."}}]}
@@ -73,7 +80,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -89,11 +95,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
-  <div class="ad-slot ad-slot-top"></div>
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop your Video here</p>
       <p>MP4, MOV, WebM, MKV, AVI, M4V all welcome.</p>
       <input type="file" id="fileInput" accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.m4v" multiple>
@@ -129,7 +134,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
@@ -173,8 +177,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>You lose a little quality on any lossy output, for the double-encode reason above. Choosing WAV avoids this.</p>
 <p>Very large files are the practical limit. Browsers cap how much memory a page can allocate, and the whole file has to be held while it is processed, so somewhere past roughly 500 MB — a long recording at high bitrate — conversion will fail rather than run slowly. Splitting the source video first is the workaround.</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -281,17 +283,18 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.avi','.m4v'], targetFromSelect: 'targetFormat' };</script>
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/tool-converter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/tool-converter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

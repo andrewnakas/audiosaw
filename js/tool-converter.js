@@ -22,9 +22,34 @@
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
   var resultList = $('#resultList');
-  var adPost = $('#adSlotPost');
 
   var files = [];
+
+  // The button stayed on its idle label for the whole conversion, so a slow
+  // encode looked like a dead page.
+  function setBusy(btn, busy) {
+    if (!btn) return;
+    if (busy) {
+      if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+      btn.textContent = 'Converting…';
+      btn.setAttribute('aria-busy', 'true');
+      btn.disabled = true;
+    } else {
+      if (btn.dataset.label) btn.textContent = btn.dataset.label;
+      btn.removeAttribute('aria-busy');
+    }
+  }
+
+  // Named, not arguments.callee: this file is strict mode, where reading
+  // .callee throws, so removing one file from a list of three or more used to
+  // blow up after the splice and leave a stale list on screen.
+  function renderList() {
+    CV.renderFileList(fileList, files, function (idx) {
+      files.splice(idx, 1);
+      if (!files.length) reset();
+      else renderList();
+    });
+  }
 
   function onFiles(picked) {
     if (!picked || !picked.length) return;
@@ -32,11 +57,7 @@
     fileList.style.display = '';
     if (controls) controls.style.display = '';
     convertBtn.disabled = false;
-    CV.renderFileList(fileList, files, function (idx) {
-      files.splice(idx, 1);
-      if (!files.length) reset();
-      else CV.renderFileList(fileList, files, arguments.callee);
-    });
+    renderList();
   }
 
   function reset() {
@@ -48,15 +69,16 @@
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
-    if (adPost) adPost.classList.remove('visible');
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles, accept);
   if (resetBtn) resetBtn.addEventListener('click', reset);
+  if (bitrateSel && !cfg.lockedBitrate) CV.remember(bitrateSel);
+  if (targetSelect) CV.remember(targetSelect);
 
   convertBtn.addEventListener('click', async function () {
     if (!files.length) return;
-    convertBtn.disabled = true;
+    setBusy(convertBtn, true);
     if (resetBtn) resetBtn.disabled = true;
     progressWrap.style.display = '';
     CV.setProgress(progressBar, 0);
@@ -108,12 +130,12 @@
         row.appendChild(label);
         var btn = document.createElement('button');
         btn.className = 'btn btn-small'; btn.textContent = 'download';
-        btn.onclick = function () { CV.downloadBlob(o.blob, o.name); };
+        btn.onclick = function () { CV.downloadBlob(o.blob, o.name, { again: true }); };
         row.appendChild(btn);
         resultList.appendChild(row);
       });
-      if (adPost && outputs.length) adPost.classList.add('visible');
     } finally {
+      setBusy(convertBtn, false);
       convertBtn.disabled = files.length === 0;
       if (resetBtn) resetBtn.disabled = false;
       CV.setProgress(progressBar, 100);

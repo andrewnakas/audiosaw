@@ -48,6 +48,7 @@ lines.push('- Batch: multiple files at once, returned as a zip.');
 lines.push('- Practical file size limit: about 500 MB per file, bounded by browser memory.');
 lines.push('- Works on mobile browsers, slower, with tighter memory limits on iOS Safari.');
 lines.push('');
+lines.push(`- [AudioSaw home](${ORIGIN}/): drop any audio or video file and pick a target format; the general-purpose converter.`);
 lines.push(`- [All tools](${ORIGIN}/tools): index of every tool on the site.`);
 lines.push('');
 lines.push('## Frequently asked questions');
@@ -143,5 +144,16 @@ lines.push(`- [Privacy](${ORIGIN}/privacy): what is and is not collected.`);
 lines.push(`- [Contact](${ORIGIN}/contact)`);
 lines.push('');
 
-fs.writeFileSync(path.join(ROOT, 'llms.txt'), lines.join('\n'));
+const OUT = path.join(ROOT, 'llms.txt');
+const text = lines.join('\n');
+if (process.argv.includes('--check')) {
+  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
+  if (current !== text) {
+    console.error('build-llms --check: llms.txt is out of date. Run: node tools/build-llms.js');
+    process.exit(1);
+  }
+  console.log('build-llms --check: llms.txt is current.');
+  process.exit(0);
+}
+fs.writeFileSync(OUT, text);
 console.log(`llms.txt: ${G.slugs().length} tools listed`);

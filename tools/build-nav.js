@@ -31,7 +31,7 @@ const ROOT = path.resolve(__dirname, '..');
 const G = require(path.join(ROOT, 'js', 'tool-graph.js'));
 const ORIGIN = 'https://audiosaw.com';
 
-const NON_TOOL = new Set(['index', 'about', 'privacy', 'terms', 'contact', '404', 'tools']);
+const NON_TOOL = new Set(['index', 'about', 'privacy', 'terms', 'contact', '404', 'tools', 'offline']);
 const LEGAL = new Set(['about', 'privacy', 'terms', 'contact']);
 
 function esc(s) {
@@ -71,7 +71,7 @@ function footerDirectory() {
 ${cols}
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>`;
 }
@@ -159,15 +159,14 @@ ${cards}
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="${ORIGIN}/tools">
 <link rel="icon" href="/favicon.ico">
+${wrap('pwa', pwaHead())}
 <meta property="og:title" content="All AudioSaw tools">
 <meta property="og:description" content="Every AudioSaw tool in one place. ${G.slugs().length} free audio tools that run in your browser — nothing is uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${ORIGIN}/tools">
 <meta property="og:image" content="${ORIGIN}/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="stylesheet" href="/css/style.css?v=${VERSION}">
@@ -199,6 +198,7 @@ ${FOOTER_PLACEHOLDER}
 <script src="/js/tool-graph.js?v=${VERSION}"></script>
 <script src="/js/flow.js?v=${VERSION}"></script>
 <script src="/js/consent.js?v=${VERSION}"></script>
+<script src="/js/pwa.js?v=${VERSION}"></script>
 </body>
 </html>
 `;
@@ -210,8 +210,34 @@ const CATEGORY_INTRO = {
   'video': 'Video files are containers — the audio inside is usually AAC, and it can be lifted out without re-encoding the picture. Because everything runs locally, the video itself never leaves your machine, which matters more here than anywhere else on the site.',
   'edit': 'Cutting, joining, trimming and shaping. These change the length or arrangement of a file rather than its format, and they are the ones worth chaining together — cut, then join, then fade.',
   'levels': 'Loudness and channel-count fixes. Most "this file sounds wrong" problems are one of these: it is too quiet, it is louder than everything around it, it is stuck in one ear, or the sample rate does not match the project it is going into.',
+  'repair': 'Fixing what is wrong with a recording rather than converting it. Hiss, hum, dead air, a vocal you need isolated from the backing — these read the audio, decide what to keep, and write it back out. The separation tools run a neural network locally, which is slower than everything else here and still never uploads your file.',
+  'create': 'Making a file rather than changing one. Record straight from a microphone, or fix the metadata that decides what your music player prints on screen.',
   'apps': 'Presets for a specific destination. Each of these targets one program or device that is fussy about what it accepts, and applies the exact spec that program wants, so the import works the first time.'
 };
+
+// Two categories shipped without an intro and rendered a literal "undefined"
+// paragraph on the hub page for months. Fail the build instead.
+for (const cat of G.CATEGORIES) {
+  if (!CATEGORY_INTRO[cat.id]) {
+    console.error(`build-nav: no CATEGORY_INTRO for "${cat.id}" — add one before shipping.`);
+    process.exit(1);
+  }
+}
+
+/* ----------------------------------------------------------- 5. PWA head */
+
+// Installability, the tab/theme colour, and the icons Safari and Android look
+// for. Injected from here because it belongs on all 56 pages, including the
+// five that load no other JavaScript.
+function pwaHead() {
+  return `<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="${ORIGIN}/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>`;
+}
 
 /* ------------------------------------------------------------------ main */
 
@@ -240,10 +266,18 @@ const HEADER = `<header class="site-header">
 </header>`;
 
 let changed = 0;
+const CHECK = process.argv.includes('--check');
+const stale = [];
 
 // --- write tools.html first so it exists before we link to it everywhere
-fs.writeFileSync(path.join(ROOT, 'tools.html'), toolsPage());
-console.log('wrote tools.html');
+const toolsOut = path.join(ROOT, 'tools.html');
+if (CHECK) {
+  const current = fs.existsSync(toolsOut) ? fs.readFileSync(toolsOut, 'utf8') : '';
+  if (current !== toolsPage()) stale.push('tools.html');
+} else {
+  fs.writeFileSync(toolsOut, toolsPage());
+  console.log('wrote tools.html');
+}
 
 const files = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
 
@@ -258,6 +292,24 @@ for (const file of files) {
     html = html.replace(
       /(<a href="\/audio-joiner">join<\/a>)(\s*)/,
       '$1\n      <a href="/tools" class="nav-all">all tools</a>$2'
+    );
+  }
+
+  // ---- PWA head block, on every page ------------------------------------
+  if (html.includes('<!-- AS:pwa -->')) {
+    html = replaceBlock(html, 'pwa', pwaHead());
+  } else {
+    html = html.replace(
+      /(<link rel="icon" href="\/favicon\.ico">\n)/,
+      '$1' + wrap('pwa', pwaHead()) + '\n'
+    );
+  }
+
+  // ---- service worker registration + install prompt, last script --------
+  if (!html.includes('/js/pwa.js')) {
+    html = html.replace(
+      /(\n<\/body>)/,
+      `\n<script src="/js/pwa.js?v=${VERSION}"></script>$1`
     );
   }
 
@@ -317,10 +369,33 @@ for (const file of files) {
     );
   }
 
+  // ---- 404 and offline: recent tools needs the graph and flow -----------
+  // These two carried no JavaScript at all, so a dead end stayed a dead end.
+  if ((slug === '404' || slug === 'offline') && !html.includes('/js/flow.js')) {
+    html = html.replace(
+      /(\n<script src="\/js\/pwa\.js)/,
+      `\n<script src="/js/common.js?v=${VERSION}"></script>` +
+      `\n<script src="/js/tool-graph.js?v=${VERSION}"></script>` +
+      `\n<script src="/js/flow.js?v=${VERSION}"></script>` +
+      `\n<script src="/js/consent.js?v=${VERSION}"></script>$1`
+    );
+  }
+
   if (html !== before) {
-    fs.writeFileSync(p, html);
+    if (CHECK) stale.push(file);
+    else fs.writeFileSync(p, html);
     changed++;
   }
+}
+
+if (CHECK) {
+  if (stale.length) {
+    console.error(`build-nav --check: ${stale.length} file(s) out of date: ${stale.join(', ')}`);
+    console.error('Run: node tools/build-nav.js');
+    process.exit(1);
+  }
+  console.log('build-nav --check: every generated block is current.');
+  process.exit(0);
 }
 
 console.log(`build-nav: updated ${changed} files`);

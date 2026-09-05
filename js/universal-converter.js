@@ -16,20 +16,38 @@
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
   var resultList = $('#resultList');
-  var adPost = $('#adSlotPost');
 
   var files = [];
+
+  function setBusy(btn, busy) {
+    if (!btn) return;
+    if (busy) {
+      if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+      btn.textContent = 'Converting…';
+      btn.setAttribute('aria-busy', 'true');
+      btn.disabled = true;
+    } else {
+      if (btn.dataset.label) btn.textContent = btn.dataset.label;
+      btn.removeAttribute('aria-busy');
+    }
+  }
+
+  // Named, not arguments.callee — see tool-converter.js.
+  function renderList() {
+    CV.renderFileList(fileList, files, function (idx) {
+      files.splice(idx, 1);
+      if (!files.length) { reset(); return; }
+      renderList();
+    });
+  }
 
   function onFiles(picked) {
     if (!picked || !picked.length) return;
     files = files.concat(picked);
     fileList.style.display = '';
     controls.style.display = '';
-    CV.renderFileList(fileList, files, function (idx) {
-      files.splice(idx, 1);
-      if (!files.length) { reset(); return; }
-      CV.renderFileList(fileList, files, arguments.callee);
-    });
+    convertBtn.disabled = false;
+    renderList();
   }
 
   function reset() {
@@ -40,15 +58,18 @@
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
-    if (adPost) adPost.classList.remove('visible');
+    convertBtn.disabled = true;
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles);
   resetBtn.addEventListener('click', reset);
+  CV.remember(targetSel);
+  CV.remember(bitrateSel);
+  CV.remember(sampleSel);
 
   convertBtn.addEventListener('click', async function () {
     if (!files.length) return;
-    convertBtn.disabled = true;
+    setBusy(convertBtn, true);
     resetBtn.disabled = true;
     progressWrap.style.display = '';
     CV.setProgress(progressBar, 0);
@@ -92,11 +113,11 @@
       } else {
         CV.setStatus(statusEl, 'error', 'All conversions failed: ' + failures.map(function (x) { return x.name + ' (' + x.error + ')'; }).join('; '));
       }
-      if (adPost && outputs.length) adPost.classList.add('visible');
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Conversion error: ' + (e.message || e));
     } finally {
-      convertBtn.disabled = false;
+      setBusy(convertBtn, false);
+      convertBtn.disabled = files.length === 0;
       resetBtn.disabled = false;
       CV.setProgress(progressBar, 100);
     }
@@ -115,7 +136,7 @@
       var btn = document.createElement('button');
       btn.className = 'btn btn-small';
       btn.textContent = 'download';
-      btn.onclick = function () { CV.downloadBlob(o.blob, o.name); };
+      btn.onclick = function () { CV.downloadBlob(o.blob, o.name, { again: true }); };
       row.appendChild(btn);
       resultList.appendChild(row);
     });

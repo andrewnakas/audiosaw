@@ -22,7 +22,8 @@ const ROOT = path.resolve(__dirname, '..');
 const ORIGIN = 'https://audiosaw.com';
 
 // Pages that exist but should never be in the sitemap.
-const EXCLUDE = new Set(['404.html']);
+// offline.html is the service worker's fallback, not a destination.
+const EXCLUDE = new Set(['404.html', 'offline.html']);
 
 // Priority tiers. Anything unlisted falls through to DEFAULT_PRIORITY.
 const PRIORITY = {
@@ -91,5 +92,15 @@ ${body}
 </urlset>
 `;
 
-fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), xml);
+const OUT = path.join(ROOT, 'sitemap.xml');
+if (process.argv.includes('--check')) {
+  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
+  if (current !== xml) {
+    console.error('build-sitemap --check: sitemap.xml is out of date. Run: node tools/build-sitemap.js');
+    process.exit(1);
+  }
+  console.log('build-sitemap --check: sitemap.xml is current.');
+  process.exit(0);
+}
+fs.writeFileSync(OUT, xml);
 console.log(`sitemap.xml: ${files.length} URLs`);

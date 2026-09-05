@@ -9,6 +9,15 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/stem-splitter">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="AI Vocal Remover &amp; Stem Splitter — in your browser, nothing uploaded">
 <meta property="og:description" content="Free AI vocal remover — a neural network runs in your browser to make a clean instrumental and acapella. Real separation, not centre cancellation. No upload.">
 <meta property="og:type" content="website">
@@ -18,7 +27,7 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI Vocal Remover and Stem Splitter","url":"https://audiosaw.com/stem-splitter","applicationCategory":"MultimediaApplication","operatingSystem":"Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Neural source separation into vocals and instrumental; runs locally in the browser with no upload; WebGPU accelerated"}
 </script>
@@ -36,10 +45,13 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
-gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});})();
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
-window.AS_VERSION = '2026-08-17b';
+window.AS_VERSION = '2026-09-05';
 </script>
 <script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:bcschema -->
@@ -63,7 +75,6 @@ window.AS_VERSION = '2026-08-17b';
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -82,7 +93,7 @@ window.AS_VERSION = '2026-08-17b';
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop a song</p>
       <p>MP3, WAV, M4A, FLAC. One track at a time, up to about ten minutes.</p>
       <input type="file" id="fileInput" accept="audio/*">
@@ -120,7 +131,6 @@ window.AS_VERSION = '2026-08-17b';
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
@@ -161,8 +171,6 @@ window.AS_VERSION = '2026-08-17b';
     <p>The CPU path is multi-threaded where the browser allows it, which is about three times faster than a single thread. The separation itself is identical either way — same model, same numbers out, just a different amount of waiting.</p>
     <p>The practical advice is to give it less to do. <a href="/audio-cutter">Trim to the section you need</a> before separating — there is no point processing four minutes to get at one chorus. For anything over the length limit, <a href="/split-audio">split it into parts</a> and run them one at a time.</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -270,18 +278,19 @@ window.AS_VERSION = '2026-08-17b';
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/spectral.js?v=2026-08-17b"></script>
-<script src="/js/tool-shell.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
-<script src="/js/stem-separator.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/spectral.js?v=2026-09-05"></script>
+<script src="/js/tool-shell.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/stem-separator.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

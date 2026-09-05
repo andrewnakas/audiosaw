@@ -15,7 +15,6 @@
   var statusEl = $('#status');
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
-  var adPost = $('#adSlotPost');
 
   var clips = []; // { file, buffer, name }
 
@@ -62,7 +61,6 @@
     CV.clearStatus(statusEl);
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
-    if (adPost) adPost.classList.remove('visible');
   }
 
   function addFiles(files) {
@@ -79,7 +77,8 @@
     render();
   }
 
-  CV.bindDropzone(dropzone, fileInput, addFiles);
+  CV.bindDropzone(dropzone, fileInput, addFiles,
+    ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus', '.aif', '.aiff', '.m4b', '.wma']);
   resetBtn.addEventListener('click', reset);
 
   function concatBuffers(buffers, crossfadeSec) {
@@ -164,7 +163,6 @@
       var name = 'audiosaw-joined.' + fmt;
       CV.downloadBlob(blob, name);
       CV.setStatus(statusEl, 'success', 'Done — downloaded ' + name);
-      if (adPost) adPost.classList.add('visible');
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Join failed: ' + (e.message || e));
     } finally {

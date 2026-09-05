@@ -49,6 +49,22 @@
   // Map a raw exception onto a small enum plus a recovery suggestion.
   var ERROR_KINDS = [
     {
+      // A UI hint, not a failure: "Selection too short", "pick a region first".
+      // These used to fire convert_error and open a "tell us about this file"
+      // panel under a message that only meant "drag the handle further".
+      id: 'validation',
+      test: /too short|too long|select a region|pick a region|choose at least|at least two|nothing to/i,
+      silent: true,
+      message: null,
+      action: null
+    },
+    {
+      id: 'wrong_type',
+      test: /wrong file type/i,
+      message: null,
+      action: { href: '/', label: 'Use the universal converter' }
+    },
+    {
       id: 'decode',
       test: /decodeAudioData|EncodingError|Unable to decode|unsupported|could not decode/i,
       message: 'Your browser could not decode this file directly.',
@@ -84,6 +100,9 @@
   /* ----------------------------------------------------------- tool identity */
 
   function currentTool() {
+    // 404 and offline pages would otherwise report whatever URL a bot probed as
+    // the tool name, which is unbounded cardinality in GA4.
+    if (global.AS_PAGE) return global.AS_PAGE;
     var p = global.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
     if (p === '' || p === 'index') return 'index';
     return p;
@@ -143,13 +162,10 @@
   }
 
   function putHandoff(payload) { return withStore('readwrite', function (s) { return s.put(payload, 'pending'); }); }
-  function takeHandoff() {
-    return withStore('readwrite', function (s) {
-      var g = s.get('pending');
-      s.delete('pending');
-      return g;
-    });
-  }
+  // Read without consuming. Deleting on read meant a reload after landing lost
+  // the carried file for good, and the chip never came back.
+  function peekHandoff() { return withStore('readonly', function (s) { return s.get('pending'); }); }
+  function dropHandoff() { return withStore('readwrite', function (s) { return s.delete('pending'); }); }
 
   function canInjectFiles() {
     try { return typeof DataTransfer === 'function' && 'files' in HTMLInputElement.prototype; }
@@ -175,9 +191,11 @@
     var from = new URLSearchParams(global.location.search).get('from');
     if (!from) return;
 
-    takeHandoff().then(function (payload) {
+    peekHandoff().then(function (payload) {
       if (!payload || !payload.blob) return;
-      var fromTool = (G.TOOLS[payload.from] || {}).title || payload.from;
+      var fromTool = payload.from === 'share'
+        ? 'your share sheet'
+        : ((G.TOOLS[payload.from] || {}).title || payload.from);
 
       var chip = document.createElement('div');
       chip.className = 'handoff-chip';
@@ -203,6 +221,7 @@
         } else {
           track('chain_continue', { from_tool: payload.from, to_tool: currentTool(), accepted: false });
         }
+        dropHandoff().catch(function () {});
         chip.remove();
       });
     }).catch(function () { /* handoff is a nicety; never block the page */ });
@@ -217,9 +236,11 @@
   /* ------------------------------------------------- post-conversion panel */
 
   var objectUrls = [];
-  global.addEventListener('pagehide', function () {
+  function releaseUrls() {
     objectUrls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} });
-  });
+    objectUrls = [];
+  }
+  global.addEventListener('pagehide', releaseUrls);
 
   // Most pages end .tool-app with #resultList, but the waveform tools
   // (audio-cutter, audio-joiner, ringtone-maker) have their own layout and no
@@ -227,7 +248,6 @@
   // everywhere rather than silently skipping three tools.
   function panelHost() {
     return document.getElementById('resultList')
-      || document.getElementById('adSlotPost')
       || document.getElementById('progressWrap')
       || document.getElementById('status');
   }
@@ -239,6 +259,7 @@
 
     var existing = document.getElementById('nextSteps');
     if (existing) existing.remove();
+    releaseUrls();
 
     var sec = document.createElement('section');
     sec.className = 'next-steps';
@@ -292,10 +313,8 @@
 
     host.parentNode.insertBefore(sec, host.nextSibling);
 
-    // The ad slot sat in the highest-value post-conversion spot; put the useful
-    // thing there instead and move the (currently empty) slot below it.
-    var ad = document.getElementById('adSlotPost');
-    if (ad && ad.parentNode) ad.parentNode.insertBefore(ad, sec.nextSibling);
+    // Let pwa.js decide whether this is a moment to offer the install.
+    try { document.dispatchEvent(new CustomEvent('as:converted', { detail: { tool: slug } })); } catch (e) {}
   }
 
   function errorPanel(rawMessage) {
@@ -307,6 +326,7 @@
     if (existing) existing.remove();
 
     var kind = classifyError(rawMessage);
+    if (kind.silent) return;
     var box = document.createElement('div');
     box.className = 'error-recovery';
     box.id = 'errorHelp';
@@ -349,10 +369,16 @@
   var convertStartedAt = 0;
 
   var _downloadBlob = CV.downloadBlob;
-  CV.downloadBlob = function (blob, filename) {
+  CV.downloadBlob = function (blob, filename, opts) {
     _downloadBlob(blob, filename);
-    // The per-result "download again" buttons reuse the same blob; only the
-    // first sighting is a conversion.
+    // The per-result buttons re-download an output that has already been
+    // counted. In a batch they hand back the individual file rather than the
+    // zip we tracked, so the blob identity check alone missed them and every
+    // click was counted as another conversion.
+    if (opts && opts.again) {
+      track('download_again', { tool: currentTool() });
+      return;
+    }
     if (seenOutputs) {
       if (seenOutputs.has(blob)) {
         track('download_again', { tool: currentTool() });
@@ -361,6 +387,8 @@
       seenOutputs.add(blob);
     }
     var slug = currentTool();
+    pushRecent(slug);
+    bumpSuccessCount();
     track('convert_success', {
       tool: slug,
       target_format: extOf(filename),
@@ -376,15 +404,52 @@
     _setStatus(el, kind, msg);
     if (kind === 'error') {
       var k = classifyError(msg);
-      track('convert_error', { tool: currentTool(), error_type: k.id });
+      // A validation hint is not a conversion failure; counting it as one
+      // buried the real error rate.
+      if (!k.silent) track('convert_error', { tool: currentTool(), error_type: k.id });
       try { errorPanel(msg); } catch (e) {}
     }
   };
 
+  // Long conversions run in a background tab. The stem splitter already put its
+  // progress in the tab title; do it for every tool from one place.
+  var baseTitle = null;
+  var _setProgress = CV.setProgress;
+  CV.setProgress = function (barEl, pct) {
+    _setProgress(barEl, pct);
+    try {
+      var v = Math.round(Math.max(0, Math.min(100, pct)));
+      if (baseTitle === null) baseTitle = document.title;
+      if (v > 0 && v < 100) document.title = v + '% · ' + baseTitle;
+      else if (baseTitle) { document.title = baseTitle; baseTitle = null; }
+    } catch (e) {}
+  };
+
+  var BIG_FILE_BYTES = 500 * 1024 * 1024;
+
+  function describeAccept(accept) {
+    if (!accept || !accept.length) return '';
+    return accept.map(function (e) { return e.replace(/^\./, '').toUpperCase(); }).join(', ');
+  }
+
   var _bindDropzone = CV.bindDropzone;
-  CV.bindDropzone = function (dropzoneEl, fileInputEl, onFiles, accept) {
+  CV.bindDropzone = function (dropzoneEl, fileInputEl, onFiles, accept, onRejected) {
     var seenDrop = false;
     dropzoneEl.addEventListener('drop', function () { seenDrop = true; }, true);
+
+    // Rejected files used to vanish: onFiles([]) and every consumer returned
+    // early, so dropping a .txt on a converter did nothing at all — no message,
+    // no event, no way to know the site had seen the file.
+    function rejected(files, acc) {
+      if (onRejected) return onRejected(files, acc);
+      var statusEl = document.getElementById('status');
+      if (!statusEl) return;
+      var want = describeAccept(acc);
+      CV.setStatus(statusEl, 'error',
+        'Wrong file type: .' + extOf(files[0].name) +
+        (want ? ' — this tool takes ' + want + '.' : '.'));
+    }
+
     _bindDropzone(dropzoneEl, fileInputEl, function (files) {
       if (files && files.length) {
         track('file_selected', {
@@ -399,18 +464,80 @@
         if (old) old.remove();
         var oldErr = document.getElementById('errorHelp');
         if (oldErr) oldErr.remove();
+
+        // Warn before the wait, not after it. The memory ceiling was only ever
+        // discovered by spending five minutes and getting a RangeError.
+        var big = files.filter(function (f) { return f.size >= BIG_FILE_BYTES; })[0];
+        var statusEl = document.getElementById('status');
+        if (big && statusEl) {
+          CV.setStatus(statusEl, 'warn', 'That file is ' + CV.fmtBytes(big.size) +
+            '. Browsers usually run out of memory somewhere past 500 MB — it may fail. ' +
+            'Cutting it into pieces first is more reliable.');
+        }
       }
       onFiles(files);
-    }, accept);
+    }, accept, rejected);
   };
+
+  /* --------------------------------------------------------------- recents */
+
+  var RECENT_KEY = 'as_recent_tools';
+  var COUNT_KEY = 'as_success_count';
+
+  function readJSON(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      var v = raw ? JSON.parse(raw) : null;
+      return Array.isArray(v) ? v : fallback;
+    } catch (e) { return fallback; }
+  }
+
+  function pushRecent(slug) {
+    if (!slug || slug === 'index' || !G.TOOLS[slug]) return;
+    try {
+      var list = readJSON(RECENT_KEY, []).filter(function (s) { return s !== slug; });
+      list.unshift(slug);
+      localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 5)));
+    } catch (e) {}
+  }
+
+  function bumpSuccessCount() {
+    try {
+      var n = parseInt(localStorage.getItem(COUNT_KEY), 10) || 0;
+      localStorage.setItem(COUNT_KEY, String(n + 1));
+    } catch (e) {}
+  }
+
+  function renderRecents() {
+    var host = document.getElementById('recentTools');
+    if (!host) return;
+    var list = readJSON(RECENT_KEY, []).filter(function (s) { return G.TOOLS[s]; });
+    if (!list.length) return;
+    var label = document.createElement('p');
+    label.className = 'task-picker-label';
+    label.textContent = 'Pick up where you left off';
+    var row = document.createElement('div');
+    row.className = 'task-picker-row';
+    list.forEach(function (slug) {
+      var a = document.createElement('a');
+      a.href = '/' + slug;
+      a.textContent = G.TOOLS[slug].label || G.TOOLS[slug].title || slug;
+      row.appendChild(a);
+    });
+    host.appendChild(label);
+    host.appendChild(row);
+    host.hidden = false;
+  }
 
   /* ------------------------------------------------------------------ init */
 
   function init() {
     // The action button is #convertBtn on most pages, but the waveform tools
     // name theirs after the verb.
-    ['convertBtn', 'cutBtn', 'joinBtn'].forEach(function (id) {
-      var btn = document.getElementById(id);
+    var actionBtns = ['convertBtn', 'cutBtn', 'joinBtn'].map(function (id) {
+      return document.getElementById(id);
+    }).concat(Array.prototype.slice.call(document.querySelectorAll('[data-track="convert"]')));
+    actionBtns.forEach(function (btn) {
       if (!btn) return;
       btn.addEventListener('click', function () {
         convertStartedAt = Date.now();
@@ -429,6 +556,7 @@
       if (!a) return;
       var placement = a.closest('.related-tools') ? 'related'
         : a.closest('.footer-directory') ? 'footer_dir'
+        : a.closest('#recentTools') ? 'recent'
         : a.closest('.card-grid') && currentTool() === 'index' ? 'home_grid'
         : null;
       if (placement) {
@@ -441,6 +569,7 @@
     });
 
     offerHandoff();
+    renderRecents();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

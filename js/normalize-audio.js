@@ -16,7 +16,6 @@
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
   var resultList = $('#resultList');
-  var adPost = $('#adSlotPost');
 
   var files = [];
 
@@ -42,7 +41,6 @@
     progressWrap.style.display = 'none';
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
-    if (adPost) adPost.classList.remove('visible');
   }
 
   // Find max |sample| across all channels.
@@ -155,7 +153,6 @@
         row.appendChild(btn);
         resultList.appendChild(row);
       });
-      if (adPost && outputs.length) adPost.classList.add('visible');
     } finally {
       convertBtn.disabled = files.length === 0;
       resetBtn.disabled = false;

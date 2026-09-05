@@ -9,18 +9,25 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/mp3-to-m4a">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="MP3 to M4A — free AAC converter for iTunes, iPhone and CarPlay, no upload">
 <meta property="og:description" content="Convert MP3 to M4A / AAC in your browser. Apple-friendly format for iTunes, iPhone, and ringtone workflows. No upload.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/mp3-to-m4a">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-08-17b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,14 +43,14 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 (function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
-var g=s==='all'?'granted':'denied';
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
 gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
-window.adsbygoogle=window.adsbygoogle||[];if(s!=='all'){window.adsbygoogle.requestNonPersonalizedAds=1;}})();
+window.AS_CONSENT={eu:eu,choice:s};})();
 gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593636324187853" crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-3593636324187853">
 <!-- AS:pageschema -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is M4A better quality than MP3?","acceptedAnswer":{"@type":"Answer","text":"AAC is a more efficient codec, so at the same bitrate from a lossless source it sounds better. But converting an existing MP3 to M4A cannot recover what MP3 encoding already discarded, so the result is slightly worse than your source, not better."}},{"@type":"Question","name":"What's the difference between M4A, MP4 and AAC?","acceptedAnswer":{"@type":"Answer","text":"AAC is the codec. MP4 is the container. M4A is an MP4 container holding only audio — the .m4a extension is a convention to signal that there is no video. An .m4r ringtone is the same thing again with a different extension."}},{"@type":"Question","name":"Will this work for an iPhone ringtone?","acceptedAnswer":{"@type":"Answer","text":"It produces the right format, but iOS ringtones must be 40 seconds or shorter and use the .m4r extension. The ringtone tool handles the trimming and naming, which is easier than doing it by hand."}},{"@type":"Question","name":"Do my tags and album art transfer?","acceptedAnswer":{"@type":"Answer","text":"No. ID3 tags from the MP3 are not translated into the MP4 container's metadata system, so you get audio and a filename. Re-tag afterwards if the file is going into a music library."}},{"@type":"Question","name":"Should I convert my whole MP3 library to M4A?","acceptedAnswer":{"@type":"Answer","text":"Generally no. You would lose a generation of quality on every file and gain compatibility only within Apple's ecosystem, while losing it elsewhere. It is worth doing for specific files with a specific destination, not as a bulk migration."}}]}
@@ -73,7 +80,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </header>
 
-
 <!-- AS:breadcrumb -->
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
@@ -89,11 +95,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
-  <div class="ad-slot ad-slot-top"></div>
 
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
-      <span class="icon">＋</span>
+      <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop your MP3 here</p>
       <p>or click to pick a file.</p>
       <input type="file" id="fileInput" accept="audio/*,.mp3" multiple>
@@ -120,7 +125,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div class="status hidden" id="status"></div>
     <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="ad-slot ad-slot-post" id="adSlotPost"></div>
     <div class="result-list" id="resultList"></div>
   </section>
 
@@ -164,8 +168,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>Tags do not survive. ID3 metadata from the MP3 is not translated into the MP4 container's tagging system, so artist, album and cover art are dropped. Re-tag afterwards in the Music app or a tool like Mp3tag if the file is going into a library.</p>
 <p>You also lose some compatibility in the other direction, which is easy to overlook. MP3 plays on essentially everything ever made; M4A does not. Older car stereos, cheap MP3 players and some Android media apps handle it inconsistently. If the file needs to work everywhere rather than specifically on Apple hardware, staying with MP3 is the better call — and <a href="/mp3-320kbps">re-encoding at 320</a> is not a reason to convert at all.</p>
   </section>
-
-  <div class="ad-slot ad-slot-mid"></div>
 
   <section class="faq">
     <h2>FAQ</h2>
@@ -272,17 +274,18 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
     </nav>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
-    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a></nav>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'm4a', accept: ['.mp3'] };</script>
-<script src="/js/common.js?v=2026-08-17b"></script>
-<script src="/js/tool-graph.js?v=2026-08-17b"></script>
-<script src="/js/flow.js?v=2026-08-17b"></script>
-<script src="/js/audio-core.js?v=2026-08-17b"></script>
-<script src="/js/tool-converter.js?v=2026-08-17b"></script>
-<script src="/js/consent.js?v=2026-08-17b"></script>
+<script src="/js/common.js?v=2026-09-05"></script>
+<script src="/js/tool-graph.js?v=2026-09-05"></script>
+<script src="/js/flow.js?v=2026-09-05"></script>
+<script src="/js/audio-core.js?v=2026-09-05"></script>
+<script src="/js/tool-converter.js?v=2026-09-05"></script>
+<script src="/js/consent.js?v=2026-09-05"></script>
+<script src="/js/pwa.js?v=2026-09-05"></script>
 </body>
 </html>

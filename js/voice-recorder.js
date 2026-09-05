@@ -31,7 +31,6 @@
   var controls = $('#controls');
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
-  var adPost = $('#adSlotPost');
   var unsupported = $('#unsupported');
 
   if (!startBtn) return;
@@ -212,7 +211,6 @@
       btn.onclick = function () { CV.downloadBlob(out, name); };
       row.appendChild(btn);
       resultList.appendChild(row);
-      if (adPost) adPost.classList.add('visible');
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not save the recording. ' + (e.message || e));
     } finally {
@@ -235,7 +233,6 @@
       startBtn.disabled = false;
       stopBtn.disabled = true;
       CV.clearStatus(statusEl);
-      if (adPost) adPost.classList.remove('visible');
     });
   }
 

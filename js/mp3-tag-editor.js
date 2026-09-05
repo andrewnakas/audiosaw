@@ -349,8 +349,6 @@
       btn.onclick = function () { CV.downloadBlob(blob, name); };
       row.appendChild(btn);
       resultList.appendChild(row);
-      var adPost = $('#adSlotPost');
-      if (adPost) adPost.classList.add('visible');
     } catch (e) {
       CV.setStatus($('#status'), 'error', 'Could not write tags. ' + (e.message || e));
     }
