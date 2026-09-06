@@ -148,7 +148,25 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     </ul>
 
     <h2>How it works</h2>
-    <p>Your browser decodes WAV/AIFF natively. We pipe the raw PCM samples into a JavaScript port of LAME (the reference open-source MP3 encoder) running in your tab. No upload, no codec install. Sample rate is preserved (44.1 or 48 kHz typical for music; we don't resample unless you ask).</p>
+    <p>Your browser decodes WAV and AIFF natively — no WebAssembly download, no codec install, which is why this conversion starts instantly while video conversions do not. The raw PCM samples go straight into a JavaScript port of LAME, the reference open-source MP3 encoder, running in your tab. Sample rate is preserved: 44.1 or 48&nbsp;kHz as bounced, and nothing is resampled unless you ask.</p>
+
+    <h3>What the encoder actually discards</h3>
+    <p>MP3 is a perceptual codec. It models what human hearing cannot resolve — a quiet sound immediately after a loud one, frequencies masked by louder neighbours, content above roughly 16&nbsp;kHz at lower bitrates — and spends its bits on what is left. That is why 320&nbsp;kbps is transparent on most material despite being about a tenth the size of the WAV.</p>
+    <p>The material where it is not transparent is predictable: massed cymbals, applause, harpsichord, and anything with a lot of dense high-frequency noise, because noise-like content is exactly what a psychoacoustic model cannot cheaply predict. Solo piano and vocals survive far better than a loud, bright master. If you are going to hear a difference anywhere, it is on the cymbals.</p>
+
+    <h3>Keep the WAV</h3>
+    <p>The MP3 is a deliverable, not a master. Every later operation — mastering revisions, a vinyl cut, a sync licence, a remaster in five years — wants the WAV, and re-encoding an MP3 into another lossy format compounds the loss rather than averaging it out. Distribution platforms know this: DistroKid, CD Baby and TuneCore all ask for lossless on ingest and generate their own lossy versions.</p>
+    <p>The one place this bites people is sending a "final" MP3 to a mastering engineer. They will ask for the WAV, and the MP3 cannot be turned back into one — <a href="/mp3-to-wav">converting MP3 to WAV</a> makes a large file containing exactly the same lossy audio, not a recovered master.</p>
+
+    <h3>Loudness, and why your MP3 sounds quieter than the WAV</h3>
+    <p>Encoding can push peaks slightly above where they were, because the decoder reconstructs a waveform that is close to but not identical to the original. A master that peaks at exactly 0&nbsp;dBFS can therefore clip on playback after encoding, and it is a common cause of a mix that sounded fine in Ableton and sounds harsh on a phone. Leaving about 1&nbsp;dB of headroom before you bounce avoids it; <a href="/normalize-audio">normalizing to -1&nbsp;dB</a> first does the same job if the bounce is already made.</p>
+    <p>Separately, streaming services apply their own loudness normalization — roughly -14&nbsp;LUFS on Spotify and YouTube, about -16 on Apple Music — so a heavily limited master is turned down to sit alongside everything else. Mastering louder than that buys nothing except a smaller dynamic range.</p>
+
+    <h3>Batch and filenames</h3>
+    <p>Drop a whole folder of stems or an album's worth of masters and you get a zip back with the original filenames, extensions swapped. The order does not matter and nothing is renamed, which is what you want when the filenames are already track numbers. Every file gets the same bitrate, so bounce them at one setting or run the odd one out separately.</p>
+
+    <h3>What this does not carry across</h3>
+    <p>Tags. A WAV usually has little or no metadata to begin with, and the MP3 that comes out has no ID3 frames — no artist, no album, no artwork. Music players will show the filename. If that matters, run the result through the <a href="/mp3-tag-editor">tag editor</a> afterwards, which is also where you add the cover art that distribution platforms expect.</p>
   </section>
 
   <section class="faq">

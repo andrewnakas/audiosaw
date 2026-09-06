@@ -143,6 +143,21 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li><strong>Ringtones (.m4r) you want to edit</strong> — same AAC inside, .m4r extension. Convert to WAV, edit, re-export.</li>
       <li><strong>Audio from an MP4 video</strong> — drop the .mp4 here, we'll extract and convert to WAV in one step. (For multi-format video, use our <a href="/extract-audio">extract audio</a> tool.)</li>
     </ul>
+
+    <h3>Why Audacity refuses the file in the first place</h3>
+    <p>Audacity can only import formats it holds a decoder for, and AAC — the audio inside almost every .m4a — is patent-encumbered in a way that kept it out of the default build for years. The functionality lives in the optional FFmpeg library, which is a separate download, matched to your exact Audacity version, installed to a path you then point Audacity at in Preferences → Libraries.</p>
+    <p>That is a genuinely fiddly process, and the usual failure is a version mismatch: an FFmpeg build for Audacity 2.x will not load in 3.x, and Audacity reports it as simply not found. Converting to WAV sidesteps the whole thing, which is why this page exists. If you import .m4a files constantly, installing the library is still the better long-term answer.</p>
+
+    <h3>The error you probably saw</h3>
+    <p>Audacity's wording has changed across versions, but it is one of a small set: "Audacity did not recognise the type of the file", "This version of Audacity was not compiled with support for...", or an import dialog that lists the file and then does nothing. All three mean the same thing — no decoder — and all three are fixed the same way.</p>
+
+    <h3>Why 16-bit, and when to want 32-bit float</h3>
+    <p>The output is 16-bit PCM at the source's own sample rate, which is the correct default for a voice memo or a downloaded track. The source is lossy AAC, so its effective noise floor is far above the point where extra bit depth carries information; a 24-bit file would be half again as large and identical in content.</p>
+    <p>Audacity will convert to 32-bit float on import anyway if that is your project default, and it works in that internally regardless. Bit depth matters when you are recording, not when you are importing something that has already been through a lossy encoder.</p>
+
+    <h3>After the import</h3>
+    <p>Export back to whatever you actually need rather than leaving the project as WAV — the file is roughly ten times the size of the .m4a and there is no reason to keep that once editing is finished. Audacity exports MP3 without any extra library (LAME has been bundled since 2.3.2), so File → Export → Export as MP3 works out of the box.</p>
+    <p>If it is only the trimming or the level you needed, you may not need Audacity at all: the <a href="/audio-cutter">cutter</a>, the <a href="/normalize-audio">normalizer</a> and the <a href="/silence-remover">silence trimmer</a> here do those jobs on the .m4a directly, with no import step and no conversion.</p>
   </section>
 
   <section class="faq">

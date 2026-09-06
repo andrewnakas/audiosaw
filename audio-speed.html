@@ -168,6 +168,27 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li><strong>Chipmunk / demon voice effects:</strong> 1.5× or 0.5× with pitch <em>shifted</em> (tape effect).</li>
       <li><strong>Matching a sample to a different key:</strong> pitch-shifted mode at the speed ratio of the semitone change.</li>
     </ul>
+
+    <h3>How far you can push it</h3>
+    <p>Time-stretching works by cutting the audio into short overlapping grains and repeating or dropping them, then crossfading the seams. That is cheap and convincing over a modest range, and it falls apart outside it. Between about 0.75× and 1.5× the result is essentially clean. Past 2× or below 0.5× you start to hear the mechanism: a metallic ringing, a smeared flam on transients, and a characteristic warbling on sustained notes where the grain boundaries beat against the pitch.</p>
+    <p>Percussion suffers first and worst, because a drum hit is a single sharp transient and the algorithm has to decide whether to repeat it. Sustained material — pads, strings, a held vocal — stretches much further before it complains. If you need 0.25× to learn a passage, expect artefacts and accept them; the goal is hearing the notes, not a pleasant listen.</p>
+
+    <h3>The exact ratios for changing key</h3>
+    <p>In pitch-shifted mode, speed and pitch move together by the same factor, so a musical interval is a specific number rather than a guess. Each semitone is a ratio of 2^(1/12), about 1.0595.</p>
+    <ul>
+      <li><strong>Up one semitone:</strong> 1.059×. <strong>Down one:</strong> 0.944×.</li>
+      <li><strong>Up two semitones (a whole tone):</strong> 1.122×. <strong>Down two:</strong> 0.891×.</li>
+      <li><strong>Up three (a minor third):</strong> 1.189×. <strong>Down three:</strong> 0.841×.</li>
+      <li><strong>Up an octave:</strong> 2.0×. <strong>Down an octave:</strong> 0.5×.</li>
+    </ul>
+    <p>This is how samplers behaved before pitch and time were separable, and it is why an old breakbeat pitched up sounds faster as well as higher. If you want the key changed without the tempo moving, that is a different operation — use the <a href="/pitch-shifter">pitch shifter</a>, which holds the length constant.</p>
+
+    <h3>Which mode you actually want</h3>
+    <p>The test is whether the recording contains a musical pitch you care about. Learning a solo, transcribing a bassline, practising along with a track: keep pitch, always, or you are practising in the wrong key. Speeding up a lecture or a podcast: keep pitch, or the speaker sounds absurd. Building a riser, a sound effect or a deliberately strange vocal: shift pitch, because the artefact is the point.</p>
+    <p>Keeping pitch is the heavier option — it runs through FFmpeg's atempo filter and needs the codec downloaded on first use — so a long file takes noticeably longer in that mode than in the plain resampling one.</p>
+
+    <h3>A note on speeding up speech for transcription</h3>
+    <p>If the goal is a transcript rather than listening, do not speed the file up at all. Whisper and similar models are not charged by wall-clock time in a way you control here, and stretched audio measurably hurts accuracy on unclear speech. Send them the original, prepared properly: <a href="/audio-for-whisper">the Whisper prep tool</a> converts to the 16&nbsp;kHz mono those models expect, which shrinks the file far more than a speed change would.</p>
   </section>
 
   <section class="faq">

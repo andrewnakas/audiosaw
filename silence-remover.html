@@ -169,6 +169,21 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li><strong>Audiobook chapters</strong> — make every chapter start instantly.</li>
       <li><strong>Auto-trim before transcription</strong> — Otter and Notta charge by audio length. Trimming dead air is free minutes.</li>
     </ul>
+
+    <h3>What the threshold actually measures</h3>
+    <p>"Silence" in a recording is almost never digital zero. A room has a noise floor — air conditioning, traffic, the hiss of the preamp itself — that typically sits somewhere between -60 and -40&nbsp;dBFS. The threshold is the level below which audio is treated as nothing, so it has to sit above your room's noise floor and below your quietest real content.</p>
+    <p>If nothing is trimmed, the threshold is too low: the room tone is louder than you assumed, which is common with a laptop microphone or a phone recording in a live room. If the first word is clipped off, it is too high, and a quiet breath or a soft consonant has been mistaken for silence. Those two symptoms tell you which way to move it, and one adjustment usually settles it.</p>
+
+    <h3>Why it only trims the ends</h3>
+    <p>Removing the pauses <em>between</em> phrases is a much harder problem and a destructive one. Speech pauses carry meaning — the gap before a punchline, the breath that signals a new sentence — and an algorithm that deletes every gap over 400&nbsp;ms produces a recording that sounds rushed and slightly inhuman, which is why the podcast editors that do this offer heavy per-gap controls rather than a single button.</p>
+    <p>Trimming the ends has no such ambiguity: the dead air before someone starts and after they finish is never meaningful. If you do need internal edits, <a href="/audio-cutter">cut</a> the sections you want and <a href="/audio-joiner">rejoin</a> them, which keeps the judgement with you.</p>
+
+    <h3>Do this before you normalize, not after</h3>
+    <p>Order matters more than people expect. <a href="/normalize-audio">Peak normalization</a> is set by the single loudest sample in the file, and a door slam or a microphone bump in the dead air at the start counts. Trim first and that spike is gone, so the normalizer works from the actual content. Trim second and you have already normalized against a noise you were about to delete.</p>
+    <p>The same applies to transcription: trim, then convert. Whisper and its relatives occasionally hallucinate text out of long stretches of near-silence, and removing the dead lead-in makes that less likely as well as cheaper on the services that bill by the minute.</p>
+
+    <h3>A padding note</h3>
+    <p>A completely hard cut at the first sample of speech can sound abrupt, because a listener expects a beat of room tone before a voice. If the result feels like it starts too suddenly, that is usually the fix rather than the trim being wrong — leave a little of the original in with the <a href="/audio-cutter">cutter</a>, or add a short fade with <a href="/fade-in-fade-out">fade in and out</a>.</p>
   </section>
 
   <section class="faq">

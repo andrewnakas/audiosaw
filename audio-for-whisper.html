@@ -153,6 +153,22 @@ whisper your-file.wav --model base.en
 # faster-whisper (Python)
 from faster_whisper import WhisperModel
 WhisperModel("base.en").transcribe("your-file.wav")</pre>
+
+    <h3>Why 16 kHz mono, specifically</h3>
+    <p>Whisper resamples everything to 16&nbsp;kHz mono before it does anything else — that is the rate its log-Mel spectrogram front end is built around, and it is not configurable. Handing it a 48&nbsp;kHz stereo file does not give the model more to work with; it gives it the same thing after an extra conversion step you have paid to upload and it has paid to perform.</p>
+    <p>Doing that conversion here means the file you send is roughly a sixth the size for identical transcription output. On the hosted API, which bills per minute of audio rather than per megabyte, the saving is in upload time and failed requests rather than in the bill. On a local run of whisper.cpp on a laptop it removes a resampling pass from every run.</p>
+
+    <h3>The 25 MB API limit</h3>
+    <p>OpenAI's hosted transcription endpoint rejects files over 25&nbsp;MB, and this is the single most common reason people end up on a page like this one. At 16&nbsp;kHz mono 16-bit WAV, that ceiling is about thirteen minutes of audio; as MP3 at 64&nbsp;kbps it is over fifty. If you are close to the limit, exporting MP3 rather than WAV is the easier fix, and it costs you nothing in accuracy at speech bitrates.</p>
+    <p>For anything genuinely long — a lecture, a deposition, a two-hour interview — split it first with the <a href="/split-audio">splitter</a> and transcribe the pieces. Cut on silence rather than at a fixed length so no word lands on a boundary.</p>
+
+    <h3>What actually improves accuracy</h3>
+    <p>Not the sample rate, and not the bitrate above about 64&nbsp;kbps. What helps is the recording itself: a microphone close to the speaker, one speaker at a time, and a room that is not reverberant. Whisper handles accents and background noise remarkably well and handles heavy reverb and overlapping speech badly, and no amount of preprocessing fixes either.</p>
+    <p>Two preparation steps do measurably help. Trimming dead air with the <a href="/silence-remover">silence remover</a> reduces the model's tendency to hallucinate text during long silences — a well-documented failure mode where it emits a stray subtitle line or a repeated phrase into nothing. And if the recording is very quiet, <a href="/normalize-audio">normalizing</a> it first gives the front end a healthier signal to work from.</p>
+    <p>What does <em>not</em> help is speeding the audio up to save time. Stretched speech measurably hurts accuracy on anything unclear, and the model is not billed by wall-clock time in a way you control.</p>
+
+    <h3>Which model size to run</h3>
+    <p>For clean English speech, <code>base.en</code> is usually enough and runs comfortably on a laptop CPU. <code>small.en</code> is the sweet spot for interviews with some crosstalk. The full <code>large-v3</code> is worth the wait for accented speech, technical vocabulary or anything multilingual, but it wants a GPU to be pleasant. The English-only <code>.en</code> variants are more accurate than their multilingual counterparts at the same size, so use them when you know the language.</p>
   </section>
 
   <section class="faq">

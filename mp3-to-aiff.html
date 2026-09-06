@@ -137,6 +137,21 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li>Compatibility with Apple's loop/region time-stretching engines.</li>
     </ul>
     <p>What it doesn't give you: better audio quality than the source MP3. Lossy compression is one-way.</p>
+
+    <h3>Why the file gets ten times bigger for no extra quality</h3>
+    <p>This surprises people, so it is worth stating plainly. A three-minute MP3 at 192&nbsp;kbps is about 4&nbsp;MB; the same audio as 16-bit 44.1&nbsp;kHz stereo AIFF is about 32&nbsp;MB. Nothing has been added. AIFF simply stores every sample as a raw number instead of a compressed description, so the detail the MP3 encoder discarded stays discarded — it is now just written out at full size.</p>
+    <p>What you gain is a format that will not lose anything <em>further</em>. That is the entire reason to do this: you are about to edit, and you want the edits and the re-export to be lossless even though the source was not.</p>
+
+    <h3>AIFF or WAV?</h3>
+    <p>They are the same idea with different byte order and different metadata conventions — AIFF is big-endian and came from Apple, WAV is little-endian and came from Microsoft. Both store uncompressed PCM, both are lossless, and every DAW written in the last twenty years reads both.</p>
+    <p>Choose AIFF when the destination is specifically Apple: Logic Pro, Final Cut, Apple Loops Utility, or an older Mac project that expects it. Choose <a href="/mp3-to-wav">WAV</a> for anything else, including Audacity, Reaper, Ableton, Premiere and every hardware sampler. If you have no particular reason, WAV travels further.</p>
+
+    <h3>Frame boundaries, and the real reason to convert before editing</h3>
+    <p>An MP3 is not a continuous stream of samples but a sequence of frames, each covering 1152 samples, and you cannot cut between them without either re-encoding or accepting a small imprecision. Encoders also add a short padding at the start, which is why an MP3 and its source rarely line up sample-for-sample.</p>
+    <p>Converting to AIFF resolves all of that into a plain array of samples, so an edit lands exactly where you put it and a loop is seamless. If you have ever lined up an MP3 loop in Logic and found it drifting slightly, that padding is the reason.</p>
+
+    <h3>Bit depth and sample rate</h3>
+    <p>The output is 16-bit at the source's own sample rate — no resampling, because resampling an already lossy file adds a second unnecessary transformation. 16-bit is the right choice here: the source is an MP3, its noise floor is far above the point where 24-bit would matter, and the extra depth would only make the file half again as large. If your project runs at 24-bit, your DAW will convert on import without complaint.</p>
   </section>
 
   <section class="faq">

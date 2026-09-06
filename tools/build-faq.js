@@ -14,11 +14,20 @@
  * and the property can take a manual action. It also wasted the content: those
  * schema-only answers are good, and no human or assistant could read them.
  *
- * The merge keeps every visible Q&A in its authored order, then appends any
- * schema-only Q&A that is not a near-duplicate of one already there. Schema is
- * then regenerated *from the merged visible list*, so the two cannot drift
- * again — that is the whole point, and it is why the schema is written by this
- * script rather than by hand.
+ * The visible <details> list is the single source of truth. Schema is generated
+ * from it, so the two cannot drift again — that is the whole point, and it is
+ * why the schema is written by this script rather than by hand.
+ *
+ * Promotion (schema-only Q&A appended to the visible list) was the one-time
+ * rescue for those 141 stranded answers. It has run, and it is now OFF by
+ * default, because leaving it on makes the script hostile to editing: deleting
+ * a visible question resurrects it from the schema on the next run. That
+ * happened — a rewrite of mp4-to-mp3 dropped two duplicate upload questions and
+ * the next build put them straight back, because "Does my MP4 get uploaded" and
+ * "Does my video get uploaded" share only two content words out of three and so
+ * fall under the similarity threshold.
+ *
+ * Pass --promote if you ever again need to rescue schema-only answers.
  *
  * The <details> list lives between <!-- AS:faq --> markers, like the other
  * generated blocks. Do not hand-edit inside them; edit the page's FAQ, run this.
@@ -32,6 +41,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CHECK = process.argv.includes('--check');
+const PROMOTE = process.argv.includes('--promote');
 
 const STOP = new Set(['a', 'an', 'the', 'is', 'it', 'do', 'does', 'my', 'i', 'to', 'in',
   'of', 'for', 'and', 'or', 'this', 'that', 'get', 'can', 'will', 'be', 'are', 'you',
@@ -94,10 +104,12 @@ for (const file of files) {
   if (!visible.length) continue;
 
   const merged = visible.slice();
-  for (const s of schemaQA(html)) {
-    if (merged.some((v) => similar(v.q, s.q))) continue;
-    merged.push(s);
-    added++;
+  if (PROMOTE) {
+    for (const s of schemaQA(html)) {
+      if (merged.some((v) => similar(v.q, s.q))) continue;
+      merged.push(s);
+      added++;
+    }
   }
 
   const detailsHtml = merged.map((x) =>
@@ -148,6 +160,7 @@ if (CHECK) {
   }
   console.log('build-faq --check: visible FAQ and schema agree on every page.');
 } else {
-  console.log(`build-faq: ${touched} pages rewritten, ${added} schema-only Q&A promoted to visible.`);
+  console.log(`build-faq: ${touched} pages rewritten`
+    + (PROMOTE ? `, ${added} schema-only Q&A promoted to visible.` : '.'));
   if (drifted.length) console.log('  ' + drifted.join('\n  '));
 }
