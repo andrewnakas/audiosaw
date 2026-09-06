@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AC3 to MP3 Converter — free, 5.1 downmixed to stereo</title>
+<meta name="description" content="Convert AC3 Dolby Digital audio to MP3 free in your browser. No upload, no signup. 5.1 surround is downmixed to stereo so it plays on headphones and phones.">
+<meta name="keywords" content="ac3 to mp3, convert ac3 to mp3, dolby digital to mp3, ac3 converter, 5.1 to stereo, dvd audio to mp3">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/ac3-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="AC3 to MP3 Converter — free, 5.1 downmixed to stereo">
+<meta property="og:description" content="Convert AC3 Dolby Digital audio to MP3 free in your browser. No upload, no signup. 5.1 surround is downmixed to stereo so it plays on headphones and phones.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/ac3-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AC3 to MP3 Converter",
+  "url": "https://audiosaw.com/ac3-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an AC3 file?","acceptedAnswer":{"@type":"Answer","text":"Dolby Digital audio — the soundtrack format of DVDs, Blu-ray and broadcast television. A standalone .ac3 file is nearly always a soundtrack that has been separated from its video."}},{"@type":"Question","name":"What happens to 5.1 surround?","acceptedAnswer":{"@type":"Answer","text":"It is downmixed to stereo with the standard Dolby coefficients. Measured: front left and right at full level, the centre channel about 4 dB down into both sides, the surrounds about 6 dB down, and the LFE subwoofer channel dropped. The centre is what carries film dialogue, so it is deliberately kept."}},{"@type":"Question","name":"Why is the dialogue so quiet compared with the effects?","acceptedAnswer":{"@type":"Answer","text":"Film soundtracks are mixed for a cinema and carry a huge dynamic range. Run the result through the audio compressor, which lifts speech and holds the loud parts down. Normalizing will not help, because one explosion sets the peak."}},{"@type":"Question","name":"Does my file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs entirely in your browser tab, which also means a full-length film soundtrack never leaves your machine."}},{"@type":"Question","name":"Can I drop the video file instead?","acceptedAnswer":{"@type":"Answer","text":"Yes. MKV, MP4, M2TS and VOB all work — the audio track is extracted and converted in one step."}},{"@type":"Question","name":"My rip has commentary and two languages. Which do I get?","acceptedAnswer":{"@type":"Answer","text":"The first audio track. Browsers give no reliable way to pick between streams, so for a specific track use MKVToolNix or VLC on the desktop."}},{"@type":"Question","name":"Which bitrate should I choose?","acceptedAnswer":{"@type":"Answer","text":"192 kbps is comfortably enough for a downmixed soundtrack and 256 is generous. DVD AC3 is usually 384 to 448 kbps spread across six channels, so 320 recovers nothing extra."}},{"@type":"Question","name":"Does it handle E-AC3 or Dolby Atmos?","acceptedAnswer":{"@type":"Answer","text":"E-AC3, also called Dolby Digital Plus, converts fine. TrueHD and Atmos do not — they are lossless object-based formats that normally live inside a Blu-ray container."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Convert to MP3","item":"https://audiosaw.com/tools#to-mp3"},{"@type":"ListItem","position":3,"name":"AC3 / Dolby Digital to MP3"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#to-mp3">Convert to MP3</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">AC3 / Dolby Digital to MP3</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>AC3 to <span class="ital">MP3</span></h1>
+    <p>Dolby Digital audio converted to MP3 in your tab, with 5.1 surround folded down to stereo so it actually plays on headphones. Nothing uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop your .ac3 file here</p>
+      <p>or click to pick. A video file with an AC3 track works too.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.ac3,.eac3,.vob,.mkv,.mp4,.m2ts" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="96">96 kbps — voice, tiny</option>
+            <option value="128" selected>128 kbps — voice / balanced</option>
+            <option value="192">192 kbps — high quality</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Where AC3 comes from</h2>
+    <p>AC3 is Dolby Digital, the audio format of the DVD era and still the standard soundtrack codec on broadcast television, Blu-ray and a great deal of streamed video. A standalone <code>.ac3</code> file is almost always a soundtrack that has been separated from its picture — extracted from a DVD, demuxed from a recording, or pulled out of an MKV by someone assembling a release.</p>
+    <p>It is a broadcast and cinema format rather than a music one, so general-purpose players are patchy about it and portable devices largely ignore it. Converting to MP3 turns a soundtrack into something a phone will play.</p>
+
+    <h3>Six channels into two</h3>
+    <p>This is the part that matters and the part most converters handle silently. An AC3 track is frequently 5.1: front left, centre, front right, two surrounds and a low-frequency effects channel. MP3 is stereo. Something has to decide how six channels become two, and that decision changes what you hear.</p>
+    <p>The downmix here follows the standard Dolby coefficients, and it is worth knowing what they do because the dialogue depends on them. Measured on a test file with a separate tone in every channel, the front left and right arrive at full level, the centre channel is mixed into both sides about 4&nbsp;dB down, the surrounds fold in around 6&nbsp;dB down, and the LFE channel is discarded entirely.</p>
+    <p>The centre being present is the part that matters: in a film mix it carries nearly all the dialogue, and a downmix that dropped it would give you effects and music with no speech. Discarding the LFE, by contrast, is deliberate and correct — it holds only the sub-bass rumble meant for a dedicated subwoofer, and folding it into a stereo mix makes the result boomy without making it fuller.</p>
+
+    <h3>Why the dialogue sounds quiet, and what to do</h3>
+    <p>Film soundtracks are mixed for a cinema, with an enormous dynamic range between whispered dialogue and an explosion. On a proper system that is the point. Through laptop speakers or earbuds it means you cannot hear the words without the effects becoming painful — the single most common complaint about converted movie audio.</p>
+    <p>The fix is not volume, it is dynamic range. Run the MP3 through the <a href="/audio-compressor">compressor</a>, which pulls the loud parts down and lifts the quiet ones so speech stays intelligible. <a href="/normalize-audio">Normalizing</a> alone will not do it: a single explosion sets the peak and everything else stays exactly as quiet as it was.</p>
+
+    <h3>Which bitrate for a soundtrack</h3>
+    <p>AC3 on a DVD is typically 384 or 448&nbsp;kbps across six channels, which is a fairly modest allocation per channel. After a downmix to stereo, 192&nbsp;kbps MP3 is comfortably enough and 256 is generous. Choosing 320 does not recover anything the source lacked. If the track is mostly dialogue — a commentary, a lecture recording, an audio description — 128 is fine and the file is half the size.</p>
+
+    <h3>Video files and multiple tracks</h3>
+    <p>You can drop the video itself rather than extracting the audio first: MKV, MP4, M2TS and VOB all work, and the audio track is pulled out and converted in one step. Where that gets awkward is a disc rip with several tracks — a 5.1 mix, a stereo mix, a director's commentary and two languages. The first audio track is what gets converted, and there is no way to choose in a browser. If the first track is not the one you want, MKVToolNix or VLC on the desktop can extract a specific stream.</p>
+
+    <h3>E-AC3 and the newer formats</h3>
+    <p>Enhanced AC3, sometimes written E-AC3 or Dolby Digital Plus, is the streaming-era successor and converts here as well. Dolby TrueHD and Atmos are a different matter — they are lossless and object-based, they usually live inside a Blu-ray container rather than as a plain file, and they are not handled here. Their core is generally an AC3 or E-AC3 stream that a desktop tool can extract if you need it.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>What is an AC3 file?</summary><p>Dolby Digital audio — the soundtrack format of DVDs, Blu-ray and broadcast television. A standalone .ac3 file is nearly always a soundtrack that has been separated from its video.</p></details>
+      <details><summary>What happens to 5.1 surround?</summary><p>It is downmixed to stereo with the standard Dolby coefficients. Measured: front left and right at full level, the centre channel about 4 dB down into both sides, the surrounds about 6 dB down, and the LFE subwoofer channel dropped. The centre is what carries film dialogue, so it is deliberately kept.</p></details>
+      <details><summary>Why is the dialogue so quiet compared with the effects?</summary><p>Film soundtracks are mixed for a cinema and carry a huge dynamic range. Run the result through the audio compressor, which lifts speech and holds the loud parts down. Normalizing will not help, because one explosion sets the peak.</p></details>
+      <details><summary>Does my file get uploaded?</summary><p>No. The conversion runs entirely in your browser tab, which also means a full-length film soundtrack never leaves your machine.</p></details>
+      <details><summary>Can I drop the video file instead?</summary><p>Yes. MKV, MP4, M2TS and VOB all work — the audio track is extracted and converted in one step.</p></details>
+      <details><summary>My rip has commentary and two languages. Which do I get?</summary><p>The first audio track. Browsers give no reliable way to pick between streams, so for a specific track use MKVToolNix or VLC on the desktop.</p></details>
+      <details><summary>Which bitrate should I choose?</summary><p>192 kbps is comfortably enough for a downmixed soundtrack and 256 is generous. DVD AC3 is usually 384 to 448 kbps spread across six channels, so 320 recovers nothing extra.</p></details>
+      <details><summary>Does it handle E-AC3 or Dolby Atmos?</summary><p>E-AC3, also called Dolby Digital Plus, converts fine. TrueHD and Atmos do not — they are lossless object-based formats that normally live inside a Blu-ray container.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Make film dialogue audible on headphones.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Pull the track out of a video container yourself.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Keep one scene rather than the whole soundtrack.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Set a known ceiling before listening.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.ac3','.eac3','.vob','.mkv','.mp4','.m2ts'] };</script>
+<script src="/js/common.js?v=2026-09-05c"></script>
+<script src="/js/tool-graph.js?v=2026-09-05c"></script>
+<script src="/js/flow.js?v=2026-09-05c"></script>
+<script src="/js/audio-core.js?v=2026-09-05c"></script>
+<script src="/js/tool-converter.js?v=2026-09-05c"></script>
+<script src="/js/consent.js?v=2026-09-05c"></script>
+<script src="/js/pwa.js?v=2026-09-05c"></script>
+</body>
+</html>

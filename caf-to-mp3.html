@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAF to MP3 Converter — free, no upload, no signup</title>
+<meta name="description" content="Convert Apple CAF audio to MP3 free in your browser. No upload, no signup. For GarageBand iOS recordings, Logic bounces and older iPhone voice memos.">
+<meta name="keywords" content="caf to mp3, convert caf to mp3, core audio format, apple caf converter, garageband caf to mp3, caf file opener">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/caf-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="CAF to MP3 Converter — free, no upload, no signup">
+<meta property="og:description" content="Convert Apple CAF audio to MP3 free in your browser. No upload, no signup. For GarageBand iOS recordings, Logic bounces and older iPhone voice memos.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/caf-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CAF to MP3 Converter",
+  "url": "https://audiosaw.com/caf-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a CAF file?","acceptedAnswer":{"@type":"Answer","text":"Apple’s Core Audio Format, a container with no practical size limit — unlike WAV, which caps out at 4 GB. The audio inside is usually uncompressed PCM, but it can also be Apple Lossless, AAC or ADPCM."}},{"@type":"Question","name":"Why can nothing open my CAF file?","acceptedAnswer":{"@type":"Answer","text":"Support is essentially Apple-only. Windows Media Player, most Android players and many editors have no decoder for it, which is why converting to MP3 makes the recording portable."}},{"@type":"Question","name":"Does my recording get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab. You can turn off your wifi after the page loads and the conversion still works."}},{"@type":"Question","name":"My CAF came from GarageBand. Should I use MP3?","acceptedAnswer":{"@type":"Answer","text":"Only if you are finished editing. If the audio is going back into an editor, convert to WAV instead — MP3 discards information you may still want, and WAV costs only disk space."}},{"@type":"Question","name":"Why is my CAF file so big?","acceptedAnswer":{"@type":"Answer","text":"Because it is almost certainly uncompressed: about 10 MB per minute in CD-quality stereo. Nothing is wrong with it. MP3 cuts that by roughly ten to one."}},{"@type":"Question","name":"Which bitrate should I choose?","acceptedAnswer":{"@type":"Answer","text":"CAF is usually a lossless source, so a high bitrate is genuinely worth it: 256 or 320 kbps for music, 128 for a spoken recording."}},{"@type":"Question","name":"Can I convert on my iPhone?","acceptedAnswer":{"@type":"Answer","text":"Yes. This page works in Safari on iOS, so a file saved to the Files app can be dropped straight in without a computer."}},{"@type":"Question","name":"My file will not convert. What now?","acceptedAnswer":{"@type":"Answer","text":"It probably holds an unusual codec. Open it in QuickTime Player or GarageBand and export an uncompressed copy, which converts here without trouble."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Convert to MP3","item":"https://audiosaw.com/tools#to-mp3"},{"@type":"ListItem","position":3,"name":"CAF to MP3"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#to-mp3">Convert to MP3</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">CAF to MP3</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>CAF to <span class="ital">MP3</span></h1>
+    <p>Apple’s Core Audio Format, converted here in the tab. CAF files come out of GarageBand on iOS, Logic and some iPhone recordings, and almost nothing outside Apple will open one.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop your .caf file here</p>
+      <p>or click to pick. Several at once is fine — you get a zip back.</p>
+      <input type="file" id="fileInput" accept="audio/*,.caf" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="96">96 kbps — voice, tiny</option>
+            <option value="128" selected>128 kbps — voice / balanced</option>
+            <option value="192">192 kbps — high quality</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What a CAF file actually is</h2>
+    <p>Core Audio Format is a container Apple introduced to get past the limits of WAV and AIFF, and its main advantage is that it has no practical size ceiling. A WAV stores its length in a 32-bit field, which caps the file at 4&nbsp;GB — a real constraint for long multitrack recordings — and CAF simply does not have that limit.</p>
+    <p>Because it is a container rather than a codec, the audio inside can be almost anything: uncompressed PCM most commonly, sometimes Apple Lossless, sometimes AAC or even IMA ADPCM in older recordings. That is why two CAF files can behave completely differently, and why a file that one program opens may still be refused by another.</p>
+
+    <h3>Where yours probably came from</h3>
+    <p>GarageBand on iPhone and iPad is the most common source: its recordings and exports are CAF, and moving a project off the device leaves you with files nothing on a Windows machine will touch. Logic Pro uses CAF internally for some assets and for anything over the WAV size limit. Older iOS voice recordings and some third-party recording apps also produce it, as do a few macOS system sounds.</p>
+    <p>If your file came from GarageBand and you want to keep editing rather than just listen, converting to MP3 is the wrong move — take <a href="/extract-audio">the extractor</a> and choose WAV, which every editor reads and which loses nothing on the way.</p>
+
+    <h3>Uncompressed in, compressed out</h3>
+    <p>Most CAF files hold uncompressed PCM, which means you are usually converting from a genuine lossless source. That is the good case: nothing has been discarded yet, so the MP3 encoder is working from the full signal and a higher bitrate is actually worth paying for. 256 or 320&nbsp;kbps is a reasonable choice for music from GarageBand; 128 is plenty for a spoken recording.</p>
+    <p>Expect a dramatic size drop. A ten-minute uncompressed stereo CAF is around 100&nbsp;MB, and the same audio at 320&nbsp;kbps MP3 is about 23&nbsp;MB. That is the entire reason to do this — the file becomes something you can email or upload.</p>
+
+    <h3>Why the file is so large to begin with</h3>
+    <p>People often arrive here because a CAF will not fit somewhere. Uncompressed audio runs about 10&nbsp;MB per minute in stereo at CD quality, and Logic or GarageBand will happily produce an hour of it. There is nothing wrong with the file; it simply has not been compressed. If size is the only problem and quality matters, <a href="/wav-to-flac">FLAC</a> halves it losslessly, while MP3 cuts it by roughly ten to one with some loss.</p>
+
+    <h3>Getting the file off the device first</h3>
+    <p>The awkward part of this job usually happens before the conversion. GarageBand for iOS does not put files in a normal folder: you export a song, choose to save it to Files, and it lands in iCloud Drive or On My iPhone. From there AirDrop, iCloud or a cable gets it to a computer. Once it is a file you can drag, it can be dropped here — including directly from Safari on the phone itself, since this page runs on iOS as well.</p>
+
+    <h3>If the conversion fails</h3>
+    <p>A CAF holding an unusual codec occasionally will not decode. The most likely culprits are the Apple-specific compressed formats in older files. If that happens, opening the file in QuickTime Player on a Mac and exporting as audio, or in GarageBand and sharing as an uncompressed file, produces something ordinary that converts here without complaint.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>What is a CAF file?</summary><p>Apple’s Core Audio Format, a container with no practical size limit — unlike WAV, which caps out at 4 GB. The audio inside is usually uncompressed PCM, but it can also be Apple Lossless, AAC or ADPCM.</p></details>
+      <details><summary>Why can nothing open my CAF file?</summary><p>Support is essentially Apple-only. Windows Media Player, most Android players and many editors have no decoder for it, which is why converting to MP3 makes the recording portable.</p></details>
+      <details><summary>Does my recording get uploaded?</summary><p>No. Everything runs in your browser tab. You can turn off your wifi after the page loads and the conversion still works.</p></details>
+      <details><summary>My CAF came from GarageBand. Should I use MP3?</summary><p>Only if you are finished editing. If the audio is going back into an editor, convert to WAV instead — MP3 discards information you may still want, and WAV costs only disk space.</p></details>
+      <details><summary>Why is my CAF file so big?</summary><p>Because it is almost certainly uncompressed: about 10 MB per minute in CD-quality stereo. Nothing is wrong with it. MP3 cuts that by roughly ten to one.</p></details>
+      <details><summary>Which bitrate should I choose?</summary><p>CAF is usually a lossless source, so a high bitrate is genuinely worth it: 256 or 320 kbps for music, 128 for a spoken recording.</p></details>
+      <details><summary>Can I convert on my iPhone?</summary><p>Yes. This page works in Safari on iOS, so a file saved to the Files app can be dropped straight in without a computer.</p></details>
+      <details><summary>My file will not convert. What now?</summary><p>It probably holds an unusual codec. Open it in QuickTime Player or GarageBand and export an uncompressed copy, which converts here without trouble.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Get WAV instead if you are still editing.</p></a>
+      <a class="card" href="/silence-remover"><h3>Remove silence</h3><p>Trim the dead air off a phone recording.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Lift a quiet GarageBand bounce.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Keep only the part you want.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.caf'] };</script>
+<script src="/js/common.js?v=2026-09-05c"></script>
+<script src="/js/tool-graph.js?v=2026-09-05c"></script>
+<script src="/js/flow.js?v=2026-09-05c"></script>
+<script src="/js/audio-core.js?v=2026-09-05c"></script>
+<script src="/js/tool-converter.js?v=2026-09-05c"></script>
+<script src="/js/consent.js?v=2026-09-05c"></script>
+<script src="/js/pwa.js?v=2026-09-05c"></script>
+</body>
+</html>

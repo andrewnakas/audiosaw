@@ -105,6 +105,9 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [AAC to MP3](https://audiosaw.com/aac-to-mp3): For players and car stereos that never learned to read AAC.
 - [OGG to MP3](https://audiosaw.com/ogg-to-mp3): Vorbis audio from Discord, Telegram or game files into MP3.
 - [Opus / WhatsApp voice note to MP3](https://audiosaw.com/opus-to-mp3): WhatsApp and Signal voice notes into a format anything will open.
+- [WMA to MP3](https://audiosaw.com/wma-to-mp3): Old Windows Media libraries into something a Mac or a phone will play.
+- [CAF to MP3](https://audiosaw.com/caf-to-mp3): Apple Core Audio files from GarageBand and Logic, made portable.
+- [AC3 / Dolby Digital to MP3](https://audiosaw.com/ac3-to-mp3): DVD and broadcast soundtracks, with 5.1 folded down to stereo.
 - [MOV to MP3](https://audiosaw.com/mov-to-mp3): Audio out of iPhone and QuickTime recordings.
 - [AIFF to MP3](https://audiosaw.com/aiff-to-mp3): Logic and GarageBand bounces compressed for sharing.
 - [M4B to MP3](https://audiosaw.com/m4b-to-mp3): Audiobooks out of Apple’s format and onto anything else.

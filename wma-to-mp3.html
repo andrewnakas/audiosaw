@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMA to MP3 Converter — free, no upload, works on Mac</title>
+<meta name="description" content="Convert WMA to MP3 free in your browser. No upload, no signup. Rescue an old Windows Media Player library so it plays on a Mac, an iPhone or anything else.">
+<meta name="keywords" content="wma to mp3, convert wma to mp3, wma to mp3 mac, windows media audio to mp3, wma converter, open wma on iphone">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/wma-to-mp3">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="WMA to MP3 Converter — free, no upload, works on Mac">
+<meta property="og:description" content="Convert WMA to MP3 free in your browser. No upload, no signup. Rescue an old Windows Media Player library so it plays on a Mac, an iPhone or anything else.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/wma-to-mp3">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-05c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WMA to MP3 Converter",
+  "url": "https://audiosaw.com/wma-to-mp3",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why will my Mac not play WMA files?","acceptedAnswer":{"@type":"Answer","text":"Because WMA is a Microsoft format and macOS ships no decoder for it. QuickTime and the Music app both refuse it. Converting to MP3 is the simplest fix, and it runs here without installing anything."}},{"@type":"Question","name":"Can you convert a DRM-protected WMA?","acceptedAnswer":{"@type":"Answer","text":"No, and nor can anything else. Files bought in the PlaysForSure or Zune era are encrypted and their licence servers were shut down years ago. Music you ripped from your own CDs is not protected and converts normally."}},{"@type":"Question","name":"Do my files get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Load the page, switch to airplane mode, then drop a file — it still works."}},{"@type":"Question","name":"Can I convert my whole library at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop as many files as you like and you get a zip of MP3s back with the original filenames. They all use the same bitrate, so convert a mixed library in two passes if that matters."}},{"@type":"Question","name":"Will my artist and album names carry over?","acceptedAnswer":{"@type":"Answer","text":"No. WMA stores tags in Microsoft’s own format and the MP3 comes out with no ID3 data, so players show the filename. Use the tag editor for a few files, or MusicBrainz Picard for a whole library."}},{"@type":"Question","name":"Which bitrate should I pick?","acceptedAnswer":{"@type":"Answer","text":"At or slightly above the source. A 128 kbps WMA converted to 320 kbps MP3 is a much larger file with no more detail in it. Windows Explorer shows the source bitrate in the Details pane."}},{"@type":"Question","name":"Does it handle .asf and .wmv?","acceptedAnswer":{"@type":"Answer","text":"Yes. WMA is an ASF container underneath, so .asf works directly, and a .wmv video has its audio track extracted and converted."}},{"@type":"Question","name":"What about .wax or .asx files?","acceptedAnswer":{"@type":"Answer","text":"Those are playlists, not audio — small text files pointing at other files. There is nothing in them to convert."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Convert to MP3","item":"https://audiosaw.com/tools#to-mp3"},{"@type":"ListItem","position":3,"name":"WMA to MP3"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#to-mp3">Convert to MP3</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">WMA to MP3</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>WMA to <span class="ital">MP3</span></h1>
+    <p>Windows Media Audio files, converted in your tab. Drop a folder of them and get MP3s back. Nothing uploads, which matters when the files are a music library you ripped yourself.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop your .wma files here</p>
+      <p>or click to pick. Drop the whole folder — batch conversion returns a zip.</p>
+      <input type="file" id="fileInput" accept="audio/*,.wma,.asf" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="96">96 kbps — voice, tiny</option>
+            <option value="128" selected>128 kbps — voice / balanced</option>
+            <option value="192">192 kbps — high quality</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Convert to MP3</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why nothing will play these</h2>
+    <p>WMA is Microsoft's format, and for about a decade it was what Windows Media Player produced by default when you ripped a CD. That default is the reason so many people have a music library in a format their current devices refuse: macOS will not play WMA, iOS will not play WMA, Android generally will not, and neither will most car stereos built after the format faded.</p>
+    <p>The files themselves are usually fine. They are simply in a container and codec that stopped being supported outside Windows, and converting them to MP3 makes the library portable again without touching the originals.</p>
+
+    <h3>The DRM problem, and how to tell in advance</h3>
+    <p>Some WMA files cannot be converted by anything, including this tool, because they were sold with Windows Media DRM — the PlaysForSure and Zune Marketplace era. Those files carry an encrypted stream and a licence that lived on the machine that bought them, and Microsoft shut the licence servers down years ago.</p>
+    <p>You can spot them before wasting time: right-click the file in Windows and look at Properties, or check whether the extension is <code>.wma</code> against a file size that seems reasonable for the length. A protected file will fail here with a decode error rather than converting badly. Music you ripped from your own CDs is never protected; music you bought from a defunct store usually is. There is no legitimate way around that, and this tool does not attempt one.</p>
+
+    <h3>What the conversion costs you</h3>
+    <p>WMA is lossy and MP3 is lossy, so this is a second generation of compression and some detail is discarded again. In practice it is inaudible on the material most WMA libraries contain — CD rips at 128 or 192&nbsp;kbps of ordinary pop and rock, listened to on ordinary speakers.</p>
+    <p>Pick a bitrate at or slightly above the source rather than jumping to 320. If the WMA is 128&nbsp;kbps, a 320&nbsp;kbps MP3 is two and a half times the size holding exactly the same information. Windows shows the source bitrate in Explorer's Details pane, and if you cannot be bothered to check, 192 is a safe answer for everything.</p>
+    <p>There is a lossless variant, WMA Lossless, which some careful rippers used. If that is what you have, you are converting from a true master and 320&nbsp;kbps is genuinely worth choosing.</p>
+
+    <h3>Converting a whole library</h3>
+    <p>Drop as many files as you like and you get a zip back with the original filenames, extensions swapped. Everything is converted at the same bitrate, so if the library is mixed you may want two passes.</p>
+    <p>The one thing that does not survive is the tags. A WMA carries its artist, album and track number in Microsoft's own metadata format, and the MP3 that comes out has no ID3 frames at all — your music player will fall back to the filename. For a handful of files the <a href="/mp3-tag-editor">tag editor</a> fixes that. For a library of several hundred, a desktop tool such as MusicBrainz Picard is the sane choice, and it can re-tag from the filenames afterwards.</p>
+
+    <h3>ASF, WMV and the other Windows Media names</h3>
+    <p>WMA is really an ASF container with WMA audio inside, which is why <code>.asf</code> files are accepted here too. WMV is the same container with video, and if you drop one the audio track is extracted and converted like any other video. Windows Media Player also produced <code>.wax</code> and <code>.asx</code> files, but those are playlists — text files pointing at other files — and there is no audio in them to convert.</p>
+
+    <h3>Doing it without a Windows machine</h3>
+    <p>This runs entirely in the browser, so it works on a Mac, a Chromebook, a Linux desktop or a phone, none of which can otherwise open a WMA at all. That is the usual reason people arrive here: the files came off an old Windows PC or an external drive, and the machine that could read them is gone.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Why will my Mac not play WMA files?</summary><p>Because WMA is a Microsoft format and macOS ships no decoder for it. QuickTime and the Music app both refuse it. Converting to MP3 is the simplest fix, and it runs here without installing anything.</p></details>
+      <details><summary>Can you convert a DRM-protected WMA?</summary><p>No, and nor can anything else. Files bought in the PlaysForSure or Zune era are encrypted and their licence servers were shut down years ago. Music you ripped from your own CDs is not protected and converts normally.</p></details>
+      <details><summary>Do my files get uploaded?</summary><p>No. The conversion runs in your browser tab. Load the page, switch to airplane mode, then drop a file — it still works.</p></details>
+      <details><summary>Can I convert my whole library at once?</summary><p>Yes. Drop as many files as you like and you get a zip of MP3s back with the original filenames. They all use the same bitrate, so convert a mixed library in two passes if that matters.</p></details>
+      <details><summary>Will my artist and album names carry over?</summary><p>No. WMA stores tags in Microsoft’s own format and the MP3 comes out with no ID3 data, so players show the filename. Use the tag editor for a few files, or MusicBrainz Picard for a whole library.</p></details>
+      <details><summary>Which bitrate should I pick?</summary><p>At or slightly above the source. A 128 kbps WMA converted to 320 kbps MP3 is a much larger file with no more detail in it. Windows Explorer shows the source bitrate in the Details pane.</p></details>
+      <details><summary>Does it handle .asf and .wmv?</summary><p>Yes. WMA is an ASF container underneath, so .asf works directly, and a .wmv video has its audio track extracted and converted.</p></details>
+      <details><summary>What about .wax or .asx files?</summary><p>Those are playlists, not audio — small text files pointing at other files. There is nothing in them to convert.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>WMA tags do not survive the conversion — put them back.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Shrink a large library further.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Even out levels across a mixed rip.</p></a>
+      <a class="card" href="/mp3-320kbps"><h3>MP3 at 320 kbps</h3><p>Re-encode at a fixed high bitrate.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script>window.AS_TOOL = { target: 'mp3', accept: ['.wma','.asf'] };</script>
+<script src="/js/common.js?v=2026-09-05c"></script>
+<script src="/js/tool-graph.js?v=2026-09-05c"></script>
+<script src="/js/flow.js?v=2026-09-05c"></script>
+<script src="/js/audio-core.js?v=2026-09-05c"></script>
+<script src="/js/tool-converter.js?v=2026-09-05c"></script>
+<script src="/js/consent.js?v=2026-09-05c"></script>
+<script src="/js/pwa.js?v=2026-09-05c"></script>
+</body>
+</html>

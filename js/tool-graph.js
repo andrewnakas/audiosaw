@@ -57,7 +57,8 @@
         ['silence-remover', 'Cut the dead air out of a voice memo'],
         ['stereo-to-mono', 'Halve the file size — voice does not need stereo'],
         ['aac-to-mp3', 'Same codec, bare .aac file rather than .m4a'],
-        ['normalize-audio', 'Bring a quietly recorded memo up to a usable level']
+        ['normalize-audio', 'Bring a quietly recorded memo up to a usable level'],
+        ['caf-to-mp3', 'Same job for a GarageBand or Logic recording']
       ]
     },
     'wav-to-mp3': {
@@ -108,6 +109,36 @@
         ['silence-remover', 'Cut the pauses out of a long voice note'],
         ['stereo-to-mono', 'Voice notes do not need two channels'],
         ['amplify-audio', 'Rescue a note recorded too far from the mic']
+      ]
+    },
+    'wma-to-mp3': {
+      cat: 'to-mp3', label: 'wma → mp3', title: 'WMA to MP3',
+      blurb: 'Old Windows Media libraries into something a Mac or a phone will play.',
+      next: [
+        ['mp3-tag-editor', 'WMA tags do not survive the conversion — put them back'],
+        ['audio-compressor', 'Shrink a large library further'],
+        ['normalize-audio', 'Even out levels across a mixed rip'],
+        ['mp3-320kbps', 'Re-encode at a fixed high bitrate']
+      ]
+    },
+    'caf-to-mp3': {
+      cat: 'to-mp3', label: 'caf → mp3', title: 'CAF to MP3',
+      blurb: 'Apple Core Audio files from GarageBand and Logic, made portable.',
+      next: [
+        ['extract-audio', 'Get WAV instead if you are still editing'],
+        ['silence-remover', 'Trim the dead air off a phone recording'],
+        ['normalize-audio', 'Lift a quiet GarageBand bounce'],
+        ['audio-cutter', 'Keep only the part you want']
+      ]
+    },
+    'ac3-to-mp3': {
+      cat: 'to-mp3', label: 'ac3 → mp3', title: 'AC3 / Dolby Digital to MP3',
+      blurb: 'DVD and broadcast soundtracks, with 5.1 folded down to stereo.',
+      next: [
+        ['audio-compressor', 'Make film dialogue audible on headphones'],
+        ['extract-audio', 'Pull the track out of a video container yourself'],
+        ['audio-cutter', 'Keep one scene rather than the whole soundtrack'],
+        ['normalize-audio', 'Set a known ceiling before listening']
       ]
     },
     'mov-to-mp3': {
@@ -220,7 +251,8 @@
         ['wav-to-mp3', 'Start from an uncompressed bounce'],
         ['normalize-audio', 'Match levels across an album'],
         ['fade-in-fade-out', 'Add clean fades before release'],
-        ['wav-to-flac', 'Keep a lossless archive copy too']
+        ['wav-to-flac', 'Keep a lossless archive copy too'],
+        ['wma-to-mp3', 'Rescue a WMA library at a fixed high bitrate']
       ]
     },
 
@@ -233,7 +265,8 @@
         ['audio-cutter', 'Trim the extracted track down'],
         ['normalize-audio', 'Even out inconsistent recording levels'],
         ['audio-to-text-prep', 'Prep it for transcription'],
-        ['capcut-audio', 'Match what CapCut expects on import']
+        ['capcut-audio', 'Match what CapCut expects on import'],
+        ['ac3-to-mp3', 'Dolby Digital soundtracks, downmixed to stereo']
       ]
     },
 
@@ -356,7 +389,8 @@
         ['wav-to-mp3-128kbps', 'Fixed small-file bitrate'],
         ['stereo-to-mono', 'Halve the size again for speech'],
         ['audio-cutter', 'Shorten it instead of degrading it'],
-        ['m4a-to-mp3', 'Convert a voice memo first if it is still .m4a']
+        ['m4a-to-mp3', 'Convert a voice memo first if it is still .m4a'],
+        ['ac3-to-mp3', 'Convert a film soundtrack before compressing it']
       ]
     },
     'stereo-to-mono': {
@@ -387,7 +421,8 @@
         ['wav-44100-16bit', 'Jump straight to the CD spec'],
         ['audio-for-whisper', '16 kHz mono for speech recognition'],
         ['wav-for-sp404', 'Sampler-specific rates'],
-        ['mono-to-stereo', 'Fix the channel count too']
+        ['mono-to-stereo', 'Fix the channel count too'],
+        ['caf-to-mp3', 'Apple Core Audio files convert here first']
       ]
     },
 
@@ -475,7 +510,8 @@
         ['split-audio', 'Split a long file, then title each piece'],
         ['flac-to-mp3', 'Convert an album, then put its tags back'],
         ['ringtone-maker', 'Tag a ringtone so it shows a name'],
-        ['mp3-320kbps', 'Re-encode at maximum quality first']
+        ['mp3-320kbps', 'Re-encode at maximum quality first'],
+        ['wma-to-mp3', 'Convert an old Windows Media library first']
       ]
     },
 
