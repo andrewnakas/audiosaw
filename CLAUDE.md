@@ -113,6 +113,20 @@ carrying a separate tone per channel, not because the coefficient tables say
   tool, call those two functions and you get the next-step panel, the preview,
   error recovery and event tracking for free.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
+- `js/loudness.js` — ITU-R BS.1770-4 loudness and true peak, behind
+  `/loudness-normalizer`. **Validated against ffmpeg's `ebur128` filter**, the
+  reference implementation: `node tools/check-loudness.js` generates its own
+  fixtures and compares. Integrated loudness must stay within 0.1 LU. True peak
+  is checked asymmetrically — at most 0.15 dB *under* the reference, up to
+  0.6 dB over — because reading a peak low is the error that lets a file clip.
+  Re-run it after any change here, the same way `spectral.js` is checked
+  against numpy.
+
+  Two rate subtleties that caused real bugs: loudness must be measured at
+  48 kHz because that is where the spec defines its filter coefficients, but
+  true peak must be measured on the buffer that actually gets written, since
+  resampling moves inter-sample peaks. Measuring both on the resampled copy
+  overshot a -1 dBTP ceiling by 0.2 dB.
 - `js/bpm-detector.js` + `js/bpm-page.js` — `/bpm-finder`. The third page shape
   on the site: a tool that produces a *number* rather than a file. It still goes
   through `CV.bindDropzone` and `CV.setStatus` so validation, the wrong-type

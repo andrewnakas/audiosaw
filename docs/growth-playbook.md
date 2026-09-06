@@ -171,6 +171,28 @@ known tempos and lands within 0.2 BPM on musical material.
 Note for reading the numbers: `bpm-finder` produces no download, so it emits
 `convert_start` and never `convert_success`. Do not read its zero as failure.
 
+## §8 — Building from the site's own admissions (6 Sep 2026)
+
+A cheap way to find real unmet needs without analytics access: grep the site
+for places it tells users it cannot do something. Those are documented demand,
+written in our own words.
+
+That search produced a short list. The clearest was on `/normalize-audio`:
+**"There is no LUFS mode here yet"**, sitting in the middle of several
+paragraphs explaining why peak normalization is not what anyone publishing to
+Spotify wants. Built as `/loudness-normalizer`, and that sentence is now a link.
+
+Still open, roughly in order of demand:
+
+| Admission | Where | Note |
+|---|---|---|
+| Silence *between* phrases is not removed | `silence-remover` | Podcast jump-cuts. Real demand, but destructive and easy to make artefacts |
+| No multi-region delete | `audio-cutter` | Currently two steps, cut then join |
+| Tags do not survive conversion | several converters | `mp3-tag-editor` exists but nothing carries tags across a conversion |
+| Cannot choose which audio track | `ac3-to-mp3`, `mp4-to-mp3` | Browsers give no reliable stream picker |
+| No key detection | `bpm-finder` | Declined deliberately — a confident wrong key is worse than none |
+| No reverb | `audio-reverser` | Declined deliberately — needs a mixing context |
+
 ## §6 — Deploy traps
 
 AudioSaw deploys from a `main` push via Cloudflare Pages' git integration, so
