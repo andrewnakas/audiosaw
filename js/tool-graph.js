@@ -312,7 +312,8 @@
         ['audio-reverser', 'The other way to make a file unrecognisable'],
         ['pitch-shifter', 'Change the key instead of the tempo'],
         ['m4b-to-mp3', 'Do the same to an audiobook'],
-        ['mov-to-mp3', 'Same job starting from a QuickTime recording']
+        ['mov-to-mp3', 'Same job starting from a QuickTime recording'],
+        ['bpm-finder', 'Find both tempos before you stretch anything']
       ]
     },
     'audio-reverser': {
@@ -445,7 +446,8 @@
         ['vocal-remover', 'The instant version, when centre cancellation is enough'],
         ['audio-cutter', 'Trim to the section you need before separating'],
         ['pitch-shifter', 'Move the finished instrumental into your key'],
-        ['split-audio', 'Break a long track into parts first']
+        ['split-audio', 'Break a long track into parts first'],
+        ['bpm-finder', 'Read the tempo off the isolated drums']
       ]
     },
     'noise-reduction': {
@@ -477,7 +479,8 @@
         ['audio-speed', 'The opposite — change tempo, keep the pitch'],
         ['vocal-remover', 'Make a karaoke track to transpose'],
         ['audio-cutter', 'Trim before shifting'],
-        ['normalize-audio', 'Level the result']
+        ['normalize-audio', 'Level the result'],
+        ['bpm-finder', 'Check the tempo you are working against']
       ]
     },
 
@@ -490,6 +493,16 @@
         ['trim-silence-edges', 'Top and tail the recording'],
         ['normalize-audio', 'Bring it to a consistent level'],
         ['audio-to-text-prep', 'Prep it for transcription']
+      ]
+    },
+    'bpm-finder': {
+      cat: 'create', label: 'bpm finder', title: 'BPM Finder',
+      blurb: 'Detect the tempo of a track, with half and double time shown.',
+      next: [
+        ['audio-speed', 'Stretch a sample to match another tempo'],
+        ['audio-cutter', 'Trim a loop to a whole number of bars'],
+        ['pitch-shifter', 'Change the key without moving the tempo'],
+        ['stem-splitter', 'Pull the drums out to hear the pulse alone']
       ]
     },
     'split-audio': {
@@ -594,7 +607,8 @@
         ['stereo-to-mono', 'Mono one-shots for pads'],
         ['audio-cutter', 'Chop a sample to length'],
         ['trim-silence-edges', 'Tighten the start so pads trigger instantly'],
-        ['normalize-audio', 'Even out a kit of samples']
+        ['normalize-audio', 'Even out a kit of samples'],
+        ['bpm-finder', 'Get the tempo before chopping the sample']
       ]
     }
   };

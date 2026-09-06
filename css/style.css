@@ -1147,3 +1147,11 @@ select:focus-visible {
   .tool-app { padding: 22px; }
   .content-section { padding: 22px; }
 }
+
+/* BPM finder result panel. */
+.bpm-headline { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 6px; }
+.bpm-number { font-family: var(--serif); font-size: clamp(2.8rem, 9vw, 4.6rem); font-weight: 600; line-height: 1; color: var(--amber); }
+.bpm-unit { font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.bpm-conf { color: var(--ink-soft); margin: 0 0 18px; }
+.bpm-alts { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; font-size: 0.86rem; color: var(--muted); font-family: var(--mono); }
+.bpm-detail { margin-top: 8px; }

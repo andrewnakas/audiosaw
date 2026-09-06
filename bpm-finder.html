@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPM Finder — detect the tempo of any song, free, no upload</title>
+<meta name="description" content="Find the BPM of any audio file free in your browser. Drop a track and get its tempo, with half and double time shown. No upload, no signup.">
+<meta name="keywords" content="bpm finder, bpm counter, tempo detector, find bpm of song, bpm analyzer online, song tempo finder, detect bpm">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/bpm-finder">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="BPM Finder — detect the tempo of any song, free, no upload">
+<meta property="og:description" content="Find the BPM of any audio file free in your browser. Drop a track and get its tempo, with half and double time shown. No upload, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/bpm-finder">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06b">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "BPM Finder",
+  "url": "https://audiosaw.com/bpm-finder",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my track uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The analysis runs entirely in your browser tab. You can load the page, disconnect from the internet and still get a tempo — which is the point when the file is an unreleased demo."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"Within about a fifth of a BPM on material with a clear beat, measured against drum patterns at known tempos. If you get 127.9 on a produced track, the real answer is almost certainly the round 128."}},{"@type":"Question","name":"Why does it show half and double time?","acceptedAnswer":{"@type":"Answer","text":"Because that reading is genuinely ambiguous. A drum and bass track at 174 is often counted as 87, and trap at 140 is often written as 70. Both describe the same recording, so both are offered."}},{"@type":"Question","name":"The tempo it picked looks wrong. What now?","acceptedAnswer":{"@type":"Answer","text":"Click the half or double button. The headline number is weighted toward the range people naturally tap in, around 120 BPM, and on fast or slow music the alternate is often the one you want."}},{"@type":"Question","name":"Does it work on any kind of music?","acceptedAnswer":{"@type":"Answer","text":"It is reliable on anything with a clear percussive pulse. It struggles on ambient, drones, solo legato strings and unaccompanied singing, because there are no transients for it to lock onto."}},{"@type":"Question","name":"Will it work on a live recording that speeds up?","acceptedAnswer":{"@type":"Answer","text":"It will give you a single average tempo, not a moving one. For a performance that drifts, treat the number as a rough guide."}},{"@type":"Question","name":"Can I analyse a video file?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop an MP4, MOV, WebM or MKV and the audio track is analysed."}},{"@type":"Question","name":"Why is my vinyl rip not a round number?","acceptedAnswer":{"@type":"Answer","text":"Because it genuinely is not. The turntable was slightly off speed, so a record mastered at 120 can read 120.7. That is a real measurement, and the speed tool can correct it."}},{"@type":"Question","name":"Does it detect the musical key too?","acceptedAnswer":{"@type":"Answer","text":"No, only tempo. Key detection is a different and much less reliable problem, and a confident wrong answer would be worse than none."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"BPM Finder"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">BPM Finder</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Find the <span class="ital">BPM</span> of a track</h1>
+    <p>Drop an audio file and get its tempo. The analysis runs in your tab — the track is never uploaded, which matters when it is an unreleased demo. Half and double time are shown too, because that ambiguity is real and no detector settles it for you.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a track here</p>
+      <p>or click to pick. MP3, WAV, M4A, FLAC, OGG and video files all work.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Find the BPM</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="bpmResult" hidden>
+      <div class="bpm-headline">
+        <span class="bpm-number" id="bpmNumber">—</span>
+        <span class="bpm-unit">BPM</span>
+      </div>
+      <p class="bpm-conf" id="bpmConfidence"></p>
+      <div class="bpm-alts">
+        <span>Also plausible:</span>
+        <button type="button" class="btn btn-small btn-secondary" id="bpmHalf"></button>
+        <button type="button" class="btn btn-small btn-secondary" id="bpmDouble"></button>
+      </div>
+      <table class="spec-table bpm-detail">
+        <tr><th>Track length</th><td id="bpmLength">—</td></tr>
+        <tr><th>Bars at this tempo</th><td id="bpmBars">—</td></tr>
+        <tr><th>One beat</th><td id="bpmBeat">—</td></tr>
+        <tr><th>One bar (4/4)</th><td id="bpmBar">—</td></tr>
+      </table>
+    </div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How the detection works</h2>
+    <p>The file is decoded, summed to mono and reduced to an onset envelope — a measure, eight hundred times a second, of how sharply the energy is rising. Drum hits and note attacks show up as spikes in that envelope; sustained sound does not. The envelope is then correlated with delayed copies of itself, and the delay that produces the strongest agreement is the beat period.</p>
+    <p>That last step has a well-known trap. On anything periodic, the correlation at twice the beat period is just as strong as at the beat itself, because every beat still lines up. A detector that simply takes the highest peak will therefore report an arbitrary multiple of the real tempo. This one scores each candidate by the correlation at its period <em>and</em> at two, three and four times it, which is the pattern a genuine pulse leaves and a doubled reading does not.</p>
+
+    <h3>Why half and double time are shown</h3>
+    <p>Because the ambiguity is real, and not only for machines. A drum and bass track at 174 is counted by some people as 87 with a half-time feel, and both are defensible descriptions of the same recording. The same is true of a lot of trap, which sits at 140 or so but is often written as 70.</p>
+    <p>Where a machine and a listener can disagree, the honest interface shows both. The number chosen as the headline is the one weighted toward the range people actually tap in, around 120 BPM, which is the standard perceptual assumption. If it looks wrong, the alternate is one click away and it is probably what you wanted.</p>
+
+    <h3>What it is good at, and what it is not</h3>
+    <p>It is reliable on anything with a clear percussive pulse: house, techno, hip-hop, rock, pop, drum and bass. Measured against drum patterns at known tempos, the answer lands within a fifth of a BPM, and on a bare click track within a twentieth.</p>
+    <p>It is much weaker on material with no transients — ambient, drones, solo legato strings, a cappella singing — because there is nothing for the onset envelope to catch. On that kind of file the confidence reading collapses, measurably: a real drum pattern scores around 0.2 to 0.35 on the internal scale and a sustained drone scores under 0.01. When that happens the page says so instead of showing you a number that means nothing.</p>
+    <p>It is also unreliable on live recordings that drift in tempo, since it reports a single average rather than a moving one, and on rubato classical performance the idea of one BPM is not really meaningful.</p>
+
+    <h3>Getting an exact tempo for a DAW</h3>
+    <p>A detected tempo is an estimate of what was played, not a recovery of the project's setting. If a track was produced at exactly 128 and you get 127.9, the true answer is almost certainly the round number — producers rarely choose fractional tempos, so rounding to the nearest whole number is usually right.</p>
+    <p>Vinyl rips and tape transfers are the exception: they are genuinely off-grid, because the playback speed was not exact. A record mastered at 120 and ripped from a slightly fast turntable might read 120.7, and that is a real measurement rather than an error. If you need it on the grid, correct the speed with <a href="/audio-speed">the speed tool</a> in pitch-shifted mode, which changes tempo and pitch together the way a turntable does.</p>
+
+    <h3>Using it to match two tracks</h3>
+    <p>The common job is fitting a sample or an acapella to a project. Find the BPM of both, then change the sample's speed by the ratio of the two — a 90 BPM loop going into a 120 BPM project needs 120 ÷ 90, or 1.333×. In pitch-shifted mode the sample also rises in pitch, which is what a hardware sampler would do and is often musically fine. In pitch-preserved mode the key stays put, which is what you want if the sample is melodic and already in the right key.</p>
+    <p>If the loop needs to be trimmed to an exact number of bars first, the bar length is shown above, and <a href="/audio-cutter">the cutter</a> takes it from there.</p>
+
+    <h3>Nothing is uploaded</h3>
+    <p>The whole analysis happens in the page. That matters more here than on a format converter: the files people want tempos for are usually unreleased demos, promos and stems, and there is no reason any of that should be sitting on someone else's disk to have a number counted.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my track uploaded anywhere?</summary><p>No. The analysis runs entirely in your browser tab. You can load the page, disconnect from the internet and still get a tempo — which is the point when the file is an unreleased demo.</p></details>
+      <details><summary>How accurate is it?</summary><p>Within about a fifth of a BPM on material with a clear beat, measured against drum patterns at known tempos. If you get 127.9 on a produced track, the real answer is almost certainly the round 128.</p></details>
+      <details><summary>Why does it show half and double time?</summary><p>Because that reading is genuinely ambiguous. A drum and bass track at 174 is often counted as 87, and trap at 140 is often written as 70. Both describe the same recording, so both are offered.</p></details>
+      <details><summary>The tempo it picked looks wrong. What now?</summary><p>Click the half or double button. The headline number is weighted toward the range people naturally tap in, around 120 BPM, and on fast or slow music the alternate is often the one you want.</p></details>
+      <details><summary>Does it work on any kind of music?</summary><p>It is reliable on anything with a clear percussive pulse. It struggles on ambient, drones, solo legato strings and unaccompanied singing, because there are no transients for it to lock onto.</p></details>
+      <details><summary>Will it work on a live recording that speeds up?</summary><p>It will give you a single average tempo, not a moving one. For a performance that drifts, treat the number as a rough guide.</p></details>
+      <details><summary>Can I analyse a video file?</summary><p>Yes. Drop an MP4, MOV, WebM or MKV and the audio track is analysed.</p></details>
+      <details><summary>Why is my vinyl rip not a round number?</summary><p>Because it genuinely is not. The turntable was slightly off speed, so a record mastered at 120 can read 120.7. That is a real measurement, and the speed tool can correct it.</p></details>
+      <details><summary>Does it detect the musical key too?</summary><p>No, only tempo. Key detection is a different and much less reliable problem, and a confident wrong answer would be worse than none.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Stretch a sample to match another tempo.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim a loop to a whole number of bars.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Change the key without moving the tempo.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Pull the drums out to hear the pulse alone.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-06b"></script>
+<script src="/js/tool-graph.js?v=2026-09-06b"></script>
+<script src="/js/flow.js?v=2026-09-06b"></script>
+<script src="/js/audio-core.js?v=2026-09-06b"></script>
+<script src="/js/bpm-detector.js?v=2026-09-06b"></script>
+<script src="/js/bpm-page.js?v=2026-09-06b"></script>
+<script src="/js/consent.js?v=2026-09-06b"></script>
+<script src="/js/pwa.js?v=2026-09-06b"></script>
+</body>
+</html>
