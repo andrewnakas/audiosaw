@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-06b">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -162,8 +162,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>The fix is to find and remove the offender rather than to normalize harder. Cut it out with the <a href="/audio-cutter">cutter</a>, or if the recording is generally quiet with occasional spikes, <a href="/audio-compressor">compression</a> is the tool that actually raises the average level rather than the peak.</p>
 
     <h3>Peak is not loudness</h3>
-    <p>Two files normalized to the same peak can sound wildly different in volume, because human loudness perception tracks average energy over time, not the highest instantaneous sample. This is why streaming services use LUFS instead: Spotify targets around -14&nbsp;LUFS, Apple Music about -16, YouTube roughly -14. Those platforms will turn your track down to hit their number regardless of what you did here, so normalizing to -1 before uploading buys nothing except a smaller safety margin.</p>
-    <p>Peak normalization is the right tool when you need a known ceiling — no clipping, predictable headroom, nothing else changed. It is the wrong tool when you need two files to sound equally loud to a listener. There is no LUFS mode here yet.</p>
+    <p>Two files normalized to the same peak can sound wildly different in volume, because human loudness perception tracks average energy over time, not the highest instantaneous sample. This is why streaming services use LUFS instead: Spotify targets around -14&nbsp;LUFS, Apple Music about -16, YouTube roughly -14. Those platforms will turn your track down to hit their number regardless of what you did here, so normalizing to -1 before uploading buys nothing except a smaller safety margin. If that is the job, use the <a href="/loudness-normalizer">LUFS normalizer</a>.</p>
+    <p>Peak normalization is the right tool when you need a known ceiling — no clipping, predictable headroom, nothing else changed. It is the wrong tool when you need two files to sound equally loud to a listener. For that, the <a href="/loudness-normalizer">LUFS normalizer</a> measures loudness the way the platforms do and moves the file to their target.</p>
 
     <h3>What it will not repair</h3>
     <p>If the audio was recorded so hot that it already clipped, the waveform is squared off and the information is gone. Turning it down afterwards makes a quieter distorted file, not a clean one. Nothing recovers a clipped recording, here or anywhere, which is why every meter is worth watching on the way in rather than on the way out.</p>
@@ -193,6 +193,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Normalize, mono and encode together.</p></a>
       <a class="card" href="/fade-in-fade-out"><h3>Fade in / fade out</h3><p>Add fades once levels are set.</p></a>
       <a class="card" href="/wav-to-mp3"><h3>WAV to MP3</h3><p>Turn the levelled WAV into an MP3 for sharing.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Match a streaming loudness target instead of a peak.</p></a>
     </div>
   </section>
 <!-- /AS:related -->
@@ -248,6 +249,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       </div>
       <div class="footer-col">
         <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
         <a href="/normalize-audio">normalize</a>
         <a href="/amplify-audio">amplify</a>
         <a href="/audio-compressor">compress</a>
@@ -288,12 +290,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-06b"></script>
-<script src="/js/tool-graph.js?v=2026-09-06b"></script>
-<script src="/js/flow.js?v=2026-09-06b"></script>
-<script src="/js/audio-core.js?v=2026-09-06b"></script>
-<script src="/js/normalize-audio.js?v=2026-09-06b"></script>
-<script src="/js/consent.js?v=2026-09-06b"></script>
-<script src="/js/pwa.js?v=2026-09-06b"></script>
+<script src="/js/common.js?v=2026-09-06d"></script>
+<script src="/js/tool-graph.js?v=2026-09-06d"></script>
+<script src="/js/flow.js?v=2026-09-06d"></script>
+<script src="/js/audio-core.js?v=2026-09-06d"></script>
+<script src="/js/normalize-audio.js?v=2026-09-06d"></script>
+<script src="/js/consent.js?v=2026-09-06d"></script>
+<script src="/js/pwa.js?v=2026-09-06d"></script>
 </body>
 </html>

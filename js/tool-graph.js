@@ -252,7 +252,8 @@
         ['normalize-audio', 'Match levels across an album'],
         ['fade-in-fade-out', 'Add clean fades before release'],
         ['wav-to-flac', 'Keep a lossless archive copy too'],
-        ['wma-to-mp3', 'Rescue a WMA library at a fixed high bitrate']
+        ['wma-to-mp3', 'Rescue a WMA library at a fixed high bitrate'],
+        ['loudness-normalizer', 'Check what Spotify will do to the level']
       ]
     },
 
@@ -361,6 +362,16 @@
     },
 
     // ---- Loudness & channels ---------------------------------------------
+    'loudness-normalizer': {
+      cat: 'levels', label: 'lufs normalize', title: 'LUFS Loudness Normalizer',
+      blurb: 'Match the loudness target Spotify, Apple or broadcast expects.',
+      next: [
+        ['audio-compressor', 'Reduce dynamic range when the target will not fit'],
+        ['normalize-audio', 'Set a peak ceiling instead of a loudness target'],
+        ['audio-joiner', 'Assemble the episode once each part matches'],
+        ['podcast-prep', 'Get the rest of the episode spec right too']
+      ]
+    },
     'normalize-audio': {
       cat: 'levels', label: 'normalize', title: 'Normalize Audio',
       blurb: 'Bring files to a consistent level so nothing jumps out.',
@@ -369,7 +380,8 @@
         ['audio-compressor', 'Shrink the file after levelling'],
         ['podcast-prep', 'Normalize, mono and encode together'],
         ['fade-in-fade-out', 'Add fades once levels are set'],
-        ['wav-to-mp3', 'Turn the levelled WAV into an MP3 for sharing']
+        ['wav-to-mp3', 'Turn the levelled WAV into an MP3 for sharing'],
+        ['loudness-normalizer', 'Match a streaming loudness target instead of a peak']
       ]
     },
     'amplify-audio': {
@@ -379,7 +391,8 @@
         ['normalize-audio', 'Target a consistent level instead of a gain amount'],
         ['noise-reduction', 'Amplifying a quiet file raises its hiss as well'],
         ['silence-remover', 'Cut the pauses that got louder too'],
-        ['audio-to-text-prep', 'Now send it to be transcribed']
+        ['audio-to-text-prep', 'Now send it to be transcribed'],
+        ['loudness-normalizer', 'Use a measured target rather than a gain guess']
       ]
     },
     'audio-compressor': {
@@ -391,7 +404,8 @@
         ['stereo-to-mono', 'Halve the size again for speech'],
         ['audio-cutter', 'Shorten it instead of degrading it'],
         ['m4a-to-mp3', 'Convert a voice memo first if it is still .m4a'],
-        ['ac3-to-mp3', 'Convert a film soundtrack before compressing it']
+        ['ac3-to-mp3', 'Convert a film soundtrack before compressing it'],
+        ['loudness-normalizer', 'Set the final loudness once the range is controlled']
       ]
     },
     'stereo-to-mono': {
@@ -557,7 +571,8 @@
         ['voice-recorder', 'Record the episode here in the first place'],
         ['audio-joiner', 'Stitch intro, content and outro first'],
         ['trim-silence-edges', 'Top and tail the recording'],
-        ['mp3-to-wav', 'Hand an editor an uncompressed file to work from']
+        ['mp3-to-wav', 'Hand an editor an uncompressed file to work from'],
+        ['loudness-normalizer', 'Hit the -16 LUFS podcast platforms expect']
       ]
     },
     'discord-audio-compressor': {

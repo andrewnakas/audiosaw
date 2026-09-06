@@ -142,6 +142,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 
 ## Loudness & channels
 
+- [LUFS Loudness Normalizer](https://audiosaw.com/loudness-normalizer): Match the loudness target Spotify, Apple or broadcast expects.
 - [Normalize Audio](https://audiosaw.com/normalize-audio): Bring files to a consistent level so nothing jumps out.
 - [Amplify quiet audio](https://audiosaw.com/amplify-audio): Make a too-quiet recording usable without driving it into distortion.
 - [Compress an audio file](https://audiosaw.com/audio-compressor): Get a file under an email, Discord or upload size limit.

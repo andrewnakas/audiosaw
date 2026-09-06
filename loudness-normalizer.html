@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUFS Loudness Normalizer — hit -14 for Spotify, free, no upload</title>
+<meta name="description" content="Normalize audio to a LUFS target in your browser: -14 for Spotify and YouTube, -16 for podcasts, -23 for broadcast. True-peak safe. No upload, no signup.">
+<meta name="keywords" content="lufs normalizer, loudness normalization, normalize to -14 lufs, ebu r128, spotify loudness, podcast loudness, true peak, lufs meter online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/loudness-normalizer">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="LUFS Loudness Normalizer — hit -14 for Spotify, free, no upload">
+<meta property="og:description" content="Normalize audio to a LUFS target in your browser: -14 for Spotify and YouTube, -16 for podcasts, -23 for broadcast. True-peak safe. No upload, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/loudness-normalizer">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06d">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LUFS Loudness Normalizer",
+  "url": "https://audiosaw.com/loudness-normalizer",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What LUFS should I use for Spotify?","acceptedAnswer":{"@type":"Answer","text":"-14 LUFS integrated, with a true peak no higher than -1 dBTP. YouTube, Amazon Music and Tidal use the same figure. Apple Music and Apple Podcasts use -16."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Measurement and gain both run in your browser tab. You can disconnect from the internet after the page loads and it still works."}},{"@type":"Question","name":"How is this different from the normalize tool?","acceptedAnswer":{"@type":"Answer","text":"That one sets the loudest sample to a ceiling, which says nothing about perceived loudness — two files peak-normalized identically can differ by 10 LU. This measures loudness the way streaming platforms do and matches that."}},{"@type":"Question","name":"Should I master louder than -14 to stand out?","acceptedAnswer":{"@type":"Answer","text":"No. The platform turns anything louder back down to its own target, so all you lose is dynamic range. That is why the loudness war ended when normalization became standard."}},{"@type":"Question","name":"Why did it stop short of my target?","acceptedAnswer":{"@type":"Answer","text":"Because reaching it would have pushed the true peak past your ceiling. This tool only applies gain — it will not compress your file to hit a number. Run it through the compressor first, then normalize."}},{"@type":"Question","name":"What is a true peak, and why -1 dBTP?","acceptedAnswer":{"@type":"Answer","text":"The reconstructed waveform between samples can be louder than any stored sample, and an encoder will clip on that. Measuring with oversampling catches it, and the 1 dB of headroom is there to survive the platform re-encoding your file."}},{"@type":"Question","name":"Does it change the dynamics of my mix?","acceptedAnswer":{"@type":"Answer","text":"Not at all. One gain figure is applied across the whole file. Nothing is compressed, limited or equalised."}},{"@type":"Question","name":"Can I normalize a whole podcast at once?","acceptedAnswer":{"@type":"Answer","text":"You can, but it is usually the wrong move. A single gain on a finished episode shifts everything together and does not fix a quiet guest. Normalize each source to the same target, then join them."}},{"@type":"Question","name":"Which target for an audiobook?","acceptedAnswer":{"@type":"Answer","text":"ACX asks for RMS between -23 and -18 dB with peaks under -3 dB, which is a different measurement, but -19 LUFS with a -3 dBTP ceiling lands comfortably inside it."}},{"@type":"Question","name":"Is the measurement accurate?","acceptedAnswer":{"@type":"Answer","text":"It is validated against ffmpeg ebur128, the reference implementation, to within 0.05 LU across tones, noise, drums, speech and mono files. The check is in the repository."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Loudness & channels","item":"https://audiosaw.com/tools#levels"},{"@type":"ListItem","position":3,"name":"LUFS Loudness Normalizer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#levels">Loudness &amp; channels</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">LUFS Loudness Normalizer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Normalize to a <span class="ital">LUFS</span> target</h1>
+    <p>Measure how loud a file actually sounds and move it to the level your platform expects — -14 LUFS for Spotify and YouTube, -16 for Apple Podcasts, -23 for broadcast. Measured with ITU-R BS.1770, the same standard the platforms use. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a track, mix or episode here</p>
+      <p>or click to pick. Drop several and each is measured and normalized on its own.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Target loudness
+          <select id="target">
+            <option value="-14" selected>-14 LUFS — Spotify, YouTube, Amazon, Tidal</option>
+            <option value="-16">-16 LUFS — Apple Music &amp; Apple Podcasts</option>
+            <option value="-19">-19 LUFS — spoken-word podcast, mono</option>
+            <option value="-23">-23 LUFS — EBU R128 broadcast</option>
+            <option value="-24">-24 LUFS — ATSC A/85, US broadcast</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </label>
+        <label id="customWrap" style="display:none">Custom target (LUFS)
+          <input type="number" id="customTarget" value="-14" min="-40" max="0" step="0.1">
+        </label>
+        <label>True-peak ceiling
+          <select id="ceiling">
+            <option value="-1" selected>-1 dBTP — the usual streaming ceiling</option>
+            <option value="-2">-2 dBTP — safer for lossy encoding</option>
+            <option value="-0.1">-0.1 dBTP — as hot as is sane</option>
+          </select>
+        </label>
+        <label>Output
+          <select id="outFormat">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — lossless</option>
+          </select>
+        </label>
+        <label id="bitrateWrap">MP3 bitrate
+          <select id="bitrate">
+            <option value="192">192 kbps</option>
+            <option value="256" selected>256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Measure &amp; normalize</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="loudReport" hidden>
+      <table class="spec-table">
+        <tr><th></th><th>Before</th><th>After</th></tr>
+        <tr><th>Integrated loudness</th><td id="loudBefore">—</td><td id="loudAfter">—</td></tr>
+        <tr><th>True peak</th><td id="peakBefore">—</td><td id="peakAfter">—</td></tr>
+        <tr><th>Gain applied</th><td colspan="2" id="gainApplied">—</td></tr>
+      </table>
+      <p class="control-note" id="loudNote" hidden></p>
+    </div>
+
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why peak normalizing does not do this</h2>
+    <p>The <a href="/normalize-audio">peak normalizer</a> sets the loudest single sample to a chosen ceiling. That guarantees no clipping and tells you nothing about how loud the file <em>sounds</em>: two tracks peak-normalized to the same -1&nbsp;dB routinely differ by ten decibels in perceived loudness, because loudness follows average energy over time and peaks do not.</p>
+    <p>Every streaming service measures perceived loudness instead, using ITU-R BS.1770, and turns your track down to their own target if it arrives louder. So the useful question is not "how high is my peak" but "what will Spotify do to this", and the only way to know is to measure the same way they do.</p>
+
+    <h3>What LUFS actually measures</h3>
+    <p>The signal is first K-weighted — a high shelf and a high-pass that together approximate how the head and ear respond, which is why bass contributes less to the reading than its raw energy suggests. It is then divided into 400&nbsp;ms blocks overlapping by three quarters, and the mean square of each block is taken.</p>
+    <p>Then come the two gates, which are the part most home-made implementations get wrong. An absolute gate discards anything below -70&nbsp;LUFS, so leader silence does not count. A relative gate then discards blocks more than 10&nbsp;LU below the average of what survived, so a quiet intro or a long fade does not drag the number down. Integrated loudness is the average of what is left. Without the gates, a track with a quiet opening measures far softer than it sounds.</p>
+
+    <h3>The numbers worth knowing</h3>
+    <ul>
+      <li><strong>-14 LUFS</strong> — Spotify, YouTube, Amazon Music and Tidal. The most common answer for music.</li>
+      <li><strong>-16 LUFS</strong> — Apple Music and Apple Podcasts.</li>
+      <li><strong>-19 LUFS</strong> — a common spoken-word podcast target for mono episodes, where a lower figure is normal because mono measures differently from stereo.</li>
+      <li><strong>-23 LUFS</strong> — EBU R128, European broadcast. <strong>-24 LUFS</strong> is the American equivalent, ATSC A/85.</li>
+    </ul>
+    <p>Mastering louder than the target buys nothing. The platform turns it down to their number regardless, and all you have given up is dynamic range — which is why the loudness war stopped making sense the moment normalization became standard.</p>
+
+    <h3>True peak, and why the ceiling is -1</h3>
+    <p>The waveform between two samples can rise above both of them. A converter or a lossy encoder reconstructing that curve will clip on it even though no stored sample was ever over full scale, which is why a master that looked clean can distort after it has been turned into an AAC stream.</p>
+    <p>True-peak measurement oversamples before looking, so it catches those inter-sample peaks. The -1&nbsp;dBTP ceiling is the standard allowance, and it exists precisely to leave room for what encoding will do. If your file is going to be encoded again after this — which it will be, by the platform — that headroom is not optional.</p>
+
+    <h3>What this tool will not do to your file</h3>
+    <p>It applies one gain figure to the whole file and nothing else. No compression, no limiting, no EQ, no dynamic adjustment of any kind. Turn it down and it is the same recording, quieter. Turn it up and it is the same recording, louder.</p>
+    <p>That matters because reaching a loud target on quiet, dynamic material is not always possible without changing the material. If the gain needed would push the true peak past your ceiling, this stops at the ceiling and tells you how far short it landed rather than squashing the file to hit a number. When that happens the honest fix is upstream: reduce the dynamic range deliberately with the <a href="/audio-compressor">compressor</a>, then normalize.</p>
+
+    <h3>Podcasts, and why they need this most</h3>
+    <p>Music arrives at a platform already mastered. A podcast usually does not, and an episode assembled from a host in a treated room, a guest on a laptop microphone and an intro bed bounced from a library is routinely inconsistent by more than 10&nbsp;LU. Listeners experience that as reaching for the volume control every few minutes.</p>
+    <p>Normalize each source separately before assembling, not the finished episode afterwards: a single gain on the final mix moves everything together and fixes none of the imbalance between segments. Measure each part, bring each to the same target, then <a href="/audio-joiner">join</a> them.</p>
+
+    <h3>How the measurement was checked</h3>
+    <p>BS.1770 is fully specified, so an implementation of it can be verified rather than trusted. This one is validated against ffmpeg's <code>ebur128</code> filter — the reference implementation — across tones, pink noise, drums, speech-like bursts, mono files and a track with a long silent intro that exercises both gates. Integrated loudness agrees to within 0.05&nbsp;LU. True peak agrees to within a third of a decibel and is biased deliberately high rather than low, because reading a peak low is the error that lets a file clip.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>What LUFS should I use for Spotify?</summary><p>-14 LUFS integrated, with a true peak no higher than -1 dBTP. YouTube, Amazon Music and Tidal use the same figure. Apple Music and Apple Podcasts use -16.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. Measurement and gain both run in your browser tab. You can disconnect from the internet after the page loads and it still works.</p></details>
+      <details><summary>How is this different from the normalize tool?</summary><p>That one sets the loudest sample to a ceiling, which says nothing about perceived loudness — two files peak-normalized identically can differ by 10 LU. This measures loudness the way streaming platforms do and matches that.</p></details>
+      <details><summary>Should I master louder than -14 to stand out?</summary><p>No. The platform turns anything louder back down to its own target, so all you lose is dynamic range. That is why the loudness war ended when normalization became standard.</p></details>
+      <details><summary>Why did it stop short of my target?</summary><p>Because reaching it would have pushed the true peak past your ceiling. This tool only applies gain — it will not compress your file to hit a number. Run it through the compressor first, then normalize.</p></details>
+      <details><summary>What is a true peak, and why -1 dBTP?</summary><p>The reconstructed waveform between samples can be louder than any stored sample, and an encoder will clip on that. Measuring with oversampling catches it, and the 1 dB of headroom is there to survive the platform re-encoding your file.</p></details>
+      <details><summary>Does it change the dynamics of my mix?</summary><p>Not at all. One gain figure is applied across the whole file. Nothing is compressed, limited or equalised.</p></details>
+      <details><summary>Can I normalize a whole podcast at once?</summary><p>You can, but it is usually the wrong move. A single gain on a finished episode shifts everything together and does not fix a quiet guest. Normalize each source to the same target, then join them.</p></details>
+      <details><summary>Which target for an audiobook?</summary><p>ACX asks for RMS between -23 and -18 dB with peaks under -3 dB, which is a different measurement, but -19 LUFS with a -3 dBTP ceiling lands comfortably inside it.</p></details>
+      <details><summary>Is the measurement accurate?</summary><p>It is validated against ffmpeg ebur128, the reference implementation, to within 0.05 LU across tones, noise, drums, speech and mono files. The check is in the repository.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Reduce dynamic range when the target will not fit.</p></a>
+      <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Set a peak ceiling instead of a loudness target.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Assemble the episode once each part matches.</p></a>
+      <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Get the rest of the episode spec right too.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-06d"></script>
+<script src="/js/tool-graph.js?v=2026-09-06d"></script>
+<script src="/js/flow.js?v=2026-09-06d"></script>
+<script src="/js/audio-core.js?v=2026-09-06d"></script>
+<script src="/js/tool-shell.js?v=2026-09-06d"></script>
+<script src="/js/loudness.js?v=2026-09-06d"></script>
+<script src="/js/loudness-page.js?v=2026-09-06d"></script>
+<script src="/js/consent.js?v=2026-09-06d"></script>
+<script src="/js/pwa.js?v=2026-09-06d"></script>
+</body>
+</html>
