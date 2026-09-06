@@ -143,6 +143,34 @@ properly instead of arriving pre-declined. **Expect reported users to rise
 without traffic changing** — that is measurement catching up, not growth, and
 comparing across the change will mislead.
 
+## §7 — Content depth and new surface (6 Sep 2026)
+
+Two levers pulled after the completion and retention work.
+
+**Every thin page rewritten.** `mp4-to-mp3` — the highest-intent query on the
+site — was also its thinnest tool page at 418 words, and two of its seven FAQ
+answers were the same question. Seven pages were under 700 words; none are now,
+and the median is about 940. The new material is the part a SERP snippet cannot
+answer: why an MP3 sounds quieter than its WAV, the semitone ratios for
+pitch-shifted speed changes, where a silence threshold sits against a room's
+noise floor.
+
+**Four new tools**, taking the site from 49 to 53:
+
+| Page | Why it exists |
+|---|---|
+| `wma-to-mp3` | Old Windows Media Player CD rips that a Mac or phone refuses |
+| `caf-to-mp3` | Apple Core Audio out of GarageBand iOS and Logic |
+| `ac3-to-mp3` | DVD and broadcast soundtracks, 5.1 downmixed to stereo |
+| `bpm-finder` | Tempo detection — a new capability, not another format pair |
+
+Formats were verified decodable in a real browser before any page was written.
+The BPM detector was validated against click tracks and drum patterns at six
+known tempos and lands within 0.2 BPM on musical material.
+
+Note for reading the numbers: `bpm-finder` produces no download, so it emits
+`convert_start` and never `convert_success`. Do not read its zero as failure.
+
 ## §6 — Deploy traps
 
 AudioSaw deploys from a `main` push via Cloudflare Pages' git integration, so

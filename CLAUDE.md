@@ -82,7 +82,20 @@ markers and gets replaced, not duplicated. Do not hand-edit inside those markers
 **Write real content.** Eight pages once shipped the same paragraphs with the
 format name swapped and Google indexed none of them. Aim for 700–900 unique
 words: what actually changes, when you'd want it, which settings matter, and
-what you lose. Name real hardware and software.
+what you lose. Name real hardware and software. Every tool page now clears 700;
+the median is around 940.
+
+**Test the format before you write the page.** Before adding a converter, feed a
+real file of that format through `AudioSaw.convert` in a browser and confirm it
+decodes. WMA, CAF, AC3, ALAC and WavPack were all checked that way; ALAC was
+dropped because it arrives as `.m4a` and would only cannibalise the existing
+page. Generating fixtures with local ffmpeg is fine, but verify the fixture too
+— a bad `-f` guess produced a 460-byte "m4r" that looked like a site bug.
+
+**Claim only what you measured.** The AC3 page states the centre channel sits
+about 4 dB down in the stereo downmix because that was measured with a 5.1 file
+carrying a separate tone per channel, not because the coefficient tables say
+-3 dB. Same for the BPM confidence thresholds.
 
 ## Architecture
 
@@ -100,6 +113,13 @@ what you lose. Name real hardware and software.
   tool, call those two functions and you get the next-step panel, the preview,
   error recovery and event tracking for free.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
+- `js/bpm-detector.js` + `js/bpm-page.js` — `/bpm-finder`. The third page shape
+  on the site: a tool that produces a *number* rather than a file. It still goes
+  through `CV.bindDropzone` and `CV.setStatus` so validation, the wrong-type
+  message and the aria-live announcements behave identically, but it never calls
+  `CV.downloadBlob`, so it fires `convert_start` (via `data-track="convert"`)
+  and no `convert_success`. That is correct — nothing was converted — but it
+  means the tool is invisible in the `convert_success` metric by design.
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not
