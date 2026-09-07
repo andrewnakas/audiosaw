@@ -182,11 +182,15 @@ That search produced a short list. The clearest was on `/normalize-audio`:
 paragraphs explaining why peak normalization is not what anyone publishing to
 Spotify wants. Built as `/loudness-normalizer`, and that sentence is now a link.
 
+Two built so far: `/loudness-normalizer` and, from the same list,
+`/auto-cut-silence` — the "we don't yet remove silence between phrases"
+admission on `silence-remover`. Both source pages now link to the new tool
+instead of apologising.
+
 Still open, roughly in order of demand:
 
 | Admission | Where | Note |
 |---|---|---|
-| Silence *between* phrases is not removed | `silence-remover` | Podcast jump-cuts. Real demand, but destructive and easy to make artefacts |
 | No multi-region delete | `audio-cutter` | Currently two steps, cut then join |
 | Tags do not survive conversion | several converters | `mp3-tag-editor` exists but nothing carries tags across a conversion |
 | Cannot choose which audio track | `ac3-to-mp3`, `mp4-to-mp3` | Browsers give no reliable stream picker |

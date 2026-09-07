@@ -127,6 +127,16 @@ carrying a separate tone per channel, not because the coefficient tables say
   true peak must be measured on the buffer that actually gets written, since
   resampling moves inter-sample peaks. Measuring both on the resampled copy
   overshot a -1 dBTP ceiling by 0.2 dB.
+- `js/silence-gaps.js` — shortens the pauses *between* phrases, behind
+  `/auto-cut-silence`. Checked by `node tools/check-silence.js`, which asserts
+  the three things that make this sound bad if they regress: no speech is
+  truncated, the largest sample-to-sample step in the output never exceeds the
+  input's (i.e. no clicks at the joins), and pauses are shortened rather than
+  deleted. Also that stereo channels are cut at identical positions.
+
+  The threshold is derived from the file's own noise floor — the 10th
+  percentile of frame energy — not set in absolute dBFS, because the right
+  value differs by ~30 dB between a booth and a kitchen. Keep it that way.
 - `js/bpm-detector.js` + `js/bpm-page.js` — `/bpm-finder`. The third page shape
   on the site: a tool that produces a *number* rather than a file. It still goes
   through `CV.bindDropzone` and `CV.setStatus` so validation, the wrong-type

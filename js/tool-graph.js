@@ -346,7 +346,18 @@
         ['fade-in-fade-out', 'Soften the newly tight ends'],
         ['normalize-audio', 'Level the trimmed file'],
         ['podcast-prep', 'Finish the episode in one pass'],
-        ['audio-reverser', 'Reverse it if you are hunting for a hidden tail']
+        ['audio-reverser', 'Reverse it if you are hunting for a hidden tail'],
+        ['auto-cut-silence', 'Tighten the gaps in the middle as well']
+      ]
+    },
+    'auto-cut-silence': {
+      cat: 'edit', label: 'auto-cut silence', title: 'Auto-Cut Silence',
+      blurb: 'Shorten the pauses between phrases, keeping speech natural.',
+      next: [
+        ['loudness-normalizer', 'Set the level once the timing is right'],
+        ['audio-for-whisper', 'Transcribe the tightened file'],
+        ['audio-cutter', 'Fix any pause the detector got wrong'],
+        ['noise-reduction', 'Clean the room tone the gaps revealed']
       ]
     },
     'silence-remover': {
@@ -357,7 +368,8 @@
         ['normalize-audio', 'Even out what is left'],
         ['podcast-prep', 'Normalize, mono and encode in one step'],
         ['noise-reduction', 'Take the hiss and hum out too'],
-        ['voice-recorder', 'Record the next take without leaving the browser']
+        ['voice-recorder', 'Record the next take without leaving the browser'],
+        ['auto-cut-silence', 'Shorten the pauses inside the recording too']
       ]
     },
 
@@ -527,7 +539,8 @@
         ['audio-cutter', 'Pick an exact cut point by eye instead'],
         ['audio-joiner', 'Put pieces back together'],
         ['audio-compressor', 'Get each piece under a size limit'],
-        ['m4b-to-mp3', 'Break an audiobook into chapter files']
+        ['m4b-to-mp3', 'Break an audiobook into chapter files'],
+        ['auto-cut-silence', 'Tighten the pauses instead of splitting on them']
       ]
     },
     'mp3-tag-editor': {
@@ -560,7 +573,8 @@
         ['audio-for-whisper', 'Whisper specifically'],
         ['noise-reduction', 'Clean it up — recognisers do better on clean audio'],
         ['silence-remover', 'Shorten the audio before you pay per minute'],
-        ['opus-to-mp3', 'Convert a voice note first']
+        ['opus-to-mp3', 'Convert a voice note first'],
+        ['auto-cut-silence', 'Shorter audio transcribes faster and cheaper']
       ]
     },
     'podcast-prep': {
@@ -572,7 +586,8 @@
         ['audio-joiner', 'Stitch intro, content and outro first'],
         ['trim-silence-edges', 'Top and tail the recording'],
         ['mp3-to-wav', 'Hand an editor an uncompressed file to work from'],
-        ['loudness-normalizer', 'Hit the -16 LUFS podcast platforms expect']
+        ['loudness-normalizer', 'Hit the -16 LUFS podcast platforms expect'],
+        ['auto-cut-silence', 'Cut the dead air before you publish']
       ]
     },
     'discord-audio-compressor': {

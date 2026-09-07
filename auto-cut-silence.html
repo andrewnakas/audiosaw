@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto-Cut Silence — remove dead air between phrases, free, no upload</title>
+<meta name="description" content="Automatically remove the silence between phrases in a podcast, voiceover or lecture. Keeps a natural pause, no clicks. Runs in your browser, nothing uploaded.">
+<meta name="keywords" content="remove silence from audio, auto cut silence, podcast silence remover, remove dead air, jump cut audio, cut pauses out of recording">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/auto-cut-silence">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Auto-Cut Silence — remove dead air between phrases, free, no upload">
+<meta property="og:description" content="Automatically remove the silence between phrases in a podcast, voiceover or lecture. Keeps a natural pause, no clicks. Runs in your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/auto-cut-silence">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06e">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Auto-Cut Silence",
+  "url": "https://audiosaw.com/auto-cut-silence",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will it cut my words in half?","acceptedAnswer":{"@type":"Answer","text":"It is built not to. The detector needs sustained quiet before it accepts a phrase has ended, and it keeps 80 ms either side of every piece of speech. If it still clips a word, set sensitivity to cautious."}},{"@type":"Question","name":"Does it delete the pauses completely?","acceptedAnswer":{"@type":"Answer","text":"No, and that is deliberate. Pauses are shortened to the length you choose, never removed. Deleting them outright is what makes machine-edited speech sound rushed and inhuman."}},{"@type":"Question","name":"Will there be clicks where it cut?","acceptedAnswer":{"@type":"Answer","text":"No. Every join gets an 8 ms equal-power crossfade. The automated test asserts that the largest sample-to-sample step in the output never exceeds the input."}},{"@type":"Question","name":"What silence threshold should I set?","acceptedAnswer":{"@type":"Answer","text":"None — it measures your recording. The threshold is derived from the file’s own noise floor, and both numbers are shown in the report so you can see what it decided."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab, which matters when the file is an unaired interview."}},{"@type":"Question","name":"How is this different from the silence remover?","acceptedAnswer":{"@type":"Answer","text":"That one trims the start and end and leaves the middle untouched. This one shortens the pauses between phrases throughout."}},{"@type":"Question","name":"Can it remove \"um\" and \"you know\"?","acceptedAnswer":{"@type":"Answer","text":"No. Filler words are speech with normal energy, so finding them needs a language model rather than a level detector."}},{"@type":"Question","name":"It did not cut anything. Why?","acceptedAnswer":{"@type":"Answer","text":"Either no pause was longer than your minimum, or the room is noisier than the detector assumed so the gaps never fall below the threshold. Lower the minimum, or set sensitivity to aggressive."}},{"@type":"Question","name":"Should I do this before or after normalizing?","acceptedAnswer":{"@type":"Answer","text":"Before. Peak normalization is set by the single loudest sample, and a bump in a gap you were about to delete can decide the level for your whole file."}},{"@type":"Question","name":"Does it work on stereo?","acceptedAnswer":{"@type":"Answer","text":"Yes, and both channels are cut at exactly the same sample positions, so the stereo image cannot drift."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Cut, trim & arrange","item":"https://audiosaw.com/tools#edit"},{"@type":"ListItem","position":3,"name":"Auto-Cut Silence"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#edit">Cut, trim &amp; arrange</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Auto-Cut Silence</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Cut the <span class="ital">dead air</span> out of a recording</h1>
+    <p>Finds the pauses between phrases and shortens them, leaving a natural gap rather than deleting it. The threshold comes from your own recording's noise floor, so it works in a treated booth and in a kitchen. Nothing uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a podcast, voiceover or lecture here</p>
+      <p>or click to pick. Drop several and each is tightened on its own.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Sensitivity
+          <select id="sensitivity">
+            <option value="6">Cautious — only obvious silence</option>
+            <option value="9" selected>Balanced</option>
+            <option value="14">Aggressive — noisier rooms</option>
+          </select>
+        </label>
+        <label>Cut pauses longer than
+          <select id="minGap">
+            <option value="0.3">0.3 s — tight, conversational</option>
+            <option value="0.5" selected>0.5 s — balanced</option>
+            <option value="1">1 s — only long stalls</option>
+            <option value="2">2 s — just the big gaps</option>
+          </select>
+        </label>
+        <label>Leave a pause of
+          <select id="keepGap">
+            <option value="0.1">0.1 s — brisk</option>
+            <option value="0.2" selected>0.2 s — natural speech</option>
+            <option value="0.35">0.35 s — relaxed</option>
+            <option value="0.5">0.5 s — deliberate</option>
+          </select>
+        </label>
+        <label>Output
+          <select id="outFormat">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — lossless</option>
+          </select>
+        </label>
+        <label id="bitrateWrap">MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps — speech</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Cut the silence</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="gapReport" hidden>
+      <table class="spec-table">
+        <tr><th>Length before</th><td id="gapBefore">—</td></tr>
+        <tr><th>Length after</th><td id="gapAfter">—</td></tr>
+        <tr><th>Time removed</th><td id="gapSaved">—</td></tr>
+        <tr><th>Pauses shortened</th><td id="gapCuts">—</td></tr>
+        <tr><th>Measured noise floor</th><td id="gapFloor">—</td></tr>
+        <tr><th>Speech threshold used</th><td id="gapThreshold">—</td></tr>
+      </table>
+      <p class="control-note" id="gapNote" hidden></p>
+    </div>
+
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why this is harder than it sounds</h2>
+    <p>Removing pauses is a one-line idea — find the quiet parts, delete them — and doing it that way produces a recording nobody wants to listen to. Three things go wrong, and each has to be handled deliberately.</p>
+    <p><strong>Words get cut in half.</strong> Speech is full of brief quiet moments that are not pauses: the closure before a "p" or a "t", the gap between "back" and "to". A plain threshold sees those as silence. This detector uses hysteresis — it takes more level to decide speech has started than to decide it is still going — plus a hangover, meaning the quiet has to persist for the whole minimum gap before a cut is even considered.</p>
+    <p><strong>Every join clicks.</strong> Butting two pieces of audio together leaves a step in the waveform, and a step is a broadband transient: a click. Each seam here gets an eight-millisecond equal-power crossfade, which is short enough to be inaudible as a fade and long enough to remove the discontinuity. The automated check on this tool asserts that the largest sample-to-sample jump in the output never exceeds the largest one in the input.</p>
+    <p><strong>The result sounds rushed and inhuman.</strong> This is the big one, and it is why deleting pauses outright is the wrong goal. Listeners read gaps as punctuation — the beat before a punchline, the breath that starts a new sentence. Strip them all and the speaker sounds like they are being chased. So pauses here are <em>shortened to a floor</em>, never removed: a two-second stall becomes the 0.2 seconds you asked for, and the rhythm of speech survives.</p>
+
+    <h3>The threshold comes from your recording, not from a number</h3>
+    <p>Most tools ask you to set a silence threshold in dBFS, which assumes you know your own noise floor. Almost nobody does, and the right answer differs by thirty decibels between a treated booth and a laptop on a kitchen table.</p>
+    <p>Instead, this measures the file first. It takes the tenth percentile of short-frame energy across the whole recording — a robust estimate of the level the quiet parts actually sit at, which is not fooled by how much of the file is speech — and puts the threshold a fixed margin above that. The measured floor and the threshold used are both shown in the report, so you can see what it decided rather than guessing.</p>
+    <p>If it cuts into words, move sensitivity to cautious. If it misses obvious gaps, move it to aggressive: that usually means the room is noisier than the detector assumed.</p>
+
+    <h3>Which settings for which job</h3>
+    <ul>
+      <li><strong>Interview or two-hander:</strong> cut pauses over 0.5&nbsp;s, leave 0.2&nbsp;s. Tightens the turn-taking without making people sound like they are interrupting each other.</li>
+      <li><strong>Solo narration or an audiobook:</strong> cut over 1&nbsp;s, leave 0.35&nbsp;s. Narration needs its pauses; you are only removing the stalls where the reader lost their place.</li>
+      <li><strong>Lecture or conference recording:</strong> cut over 2&nbsp;s, leave 0.5&nbsp;s. There is usually a lot of dead time while someone changes a slide, and very little worth tightening otherwise.</li>
+      <li><strong>A take full of retries:</strong> cut over 0.3&nbsp;s, leave 0.1&nbsp;s, then listen right through. This is the aggressive setting and the one most likely to need a second pass by hand.</li>
+    </ul>
+
+    <h3>Do this before you normalize, and before you transcribe</h3>
+    <p>Order matters. <a href="/normalize-audio">Peak normalization</a> is decided by the single loudest sample, so a chair creak in a gap you were about to delete can set the level for the whole file. Cut first, then set levels — and if the destination is a streaming platform, the <a href="/loudness-normalizer">LUFS normalizer</a> is the one you want.</p>
+    <p>For transcription it matters for a different reason: Whisper and similar models sometimes invent text during long silences, a well-documented failure where a stray line appears out of nothing. Removing the dead air makes that less likely, and it is cheaper on any service that bills by the minute. <a href="/audio-for-whisper">Prep for Whisper</a> afterwards.</p>
+
+    <h3>What it will not do</h3>
+    <p>It does not remove filler words. "Um" and "you know" are speech, with the same energy as everything around them, and finding them needs a language model rather than a level detector — which is what Descript and its competitors are doing when they offer that.</p>
+    <p>It does not fix a bad recording. If two people are talking over each other, or the room has a strong echo, the gaps are not clean and the detector has nothing reliable to work with. It also cannot tell a meaningful dramatic pause from an accidental one; if the timing is doing creative work, cut it by hand in the <a href="/audio-cutter">cutter</a>.</p>
+    <p>And if all you need is to top and tail a file, <a href="/trim-silence-edges">trim silence at the edges</a> does that and leaves the middle completely alone.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Will it cut my words in half?</summary><p>It is built not to. The detector needs sustained quiet before it accepts a phrase has ended, and it keeps 80 ms either side of every piece of speech. If it still clips a word, set sensitivity to cautious.</p></details>
+      <details><summary>Does it delete the pauses completely?</summary><p>No, and that is deliberate. Pauses are shortened to the length you choose, never removed. Deleting them outright is what makes machine-edited speech sound rushed and inhuman.</p></details>
+      <details><summary>Will there be clicks where it cut?</summary><p>No. Every join gets an 8 ms equal-power crossfade. The automated test asserts that the largest sample-to-sample step in the output never exceeds the input.</p></details>
+      <details><summary>What silence threshold should I set?</summary><p>None — it measures your recording. The threshold is derived from the file’s own noise floor, and both numbers are shown in the report so you can see what it decided.</p></details>
+      <details><summary>Is my recording uploaded?</summary><p>No. Everything runs in your browser tab, which matters when the file is an unaired interview.</p></details>
+      <details><summary>How is this different from the silence remover?</summary><p>That one trims the start and end and leaves the middle untouched. This one shortens the pauses between phrases throughout.</p></details>
+      <details><summary>Can it remove "um" and "you know"?</summary><p>No. Filler words are speech with normal energy, so finding them needs a language model rather than a level detector.</p></details>
+      <details><summary>It did not cut anything. Why?</summary><p>Either no pause was longer than your minimum, or the room is noisier than the detector assumed so the gaps never fall below the threshold. Lower the minimum, or set sensitivity to aggressive.</p></details>
+      <details><summary>Should I do this before or after normalizing?</summary><p>Before. Peak normalization is set by the single loudest sample, and a bump in a gap you were about to delete can decide the level for your whole file.</p></details>
+      <details><summary>Does it work on stereo?</summary><p>Yes, and both channels are cut at exactly the same sample positions, so the stereo image cannot drift.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Set the level once the timing is right.</p></a>
+      <a class="card" href="/audio-for-whisper"><h3>Audio for Whisper</h3><p>Transcribe the tightened file.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Fix any pause the detector got wrong.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean the room tone the gaps revealed.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-06e"></script>
+<script src="/js/tool-graph.js?v=2026-09-06e"></script>
+<script src="/js/flow.js?v=2026-09-06e"></script>
+<script src="/js/audio-core.js?v=2026-09-06e"></script>
+<script src="/js/tool-shell.js?v=2026-09-06e"></script>
+<script src="/js/silence-gaps.js?v=2026-09-06e"></script>
+<script src="/js/silence-gaps-page.js?v=2026-09-06e"></script>
+<script src="/js/consent.js?v=2026-09-06e"></script>
+<script src="/js/pwa.js?v=2026-09-06e"></script>
+</body>
+</html>

@@ -138,6 +138,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [Audio Reverser](https://audiosaw.com/audio-reverser): Play a file backwards — for effects, or to hear what is buried.
 - [Fade in / fade out](https://audiosaw.com/fade-in-fade-out): Clean fades on both ends without opening an editor.
 - [Trim silence off the ends](https://audiosaw.com/trim-silence-edges): Top and tail a recording, leaving the middle untouched.
+- [Auto-Cut Silence](https://audiosaw.com/auto-cut-silence): Shorten the pauses between phrases, keeping speech natural.
 - [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
 
 ## Loudness & channels
