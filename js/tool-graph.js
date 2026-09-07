@@ -463,7 +463,8 @@
         ['normalize-audio', 'Bring the level back up properly'],
         ['audio-cutter', 'Trim to the section you actually need'],
         ['ogg-to-mp3', 'Convert an OGG export into something universal'],
-        ['audio-to-midi', 'Get the melody out as MIDI']
+        ['audio-to-midi', 'Get the melody out as MIDI'],
+        ['autotune', 'Tune the vocal once it is isolated']
       ]
     },
     'stem-splitter': {
@@ -475,7 +476,8 @@
         ['pitch-shifter', 'Move the finished instrumental into your key'],
         ['split-audio', 'Break a long track into parts first'],
         ['bpm-finder', 'Read the tempo off the isolated drums'],
-        ['audio-to-midi', 'Transcribe the part you just isolated']
+        ['audio-to-midi', 'Transcribe the part you just isolated'],
+        ['autotune', 'Tune the vocal stem you just separated']
       ]
     },
     'noise-reduction': {
@@ -500,6 +502,16 @@
         ['aac-to-mp3', 'Convert an AAC source before shaping it']
       ]
     },
+    'autotune': {
+      cat: 'repair', label: 'autotune', title: 'Autotune / Pitch Correction',
+      blurb: 'Snap a vocal to a key — subtle tuning or the hard-tuned effect.',
+      next: [
+        ['pitch-shifter', 'Move the whole take to another key instead'],
+        ['stem-splitter', 'Lift the vocal out of a mix before tuning it'],
+        ['auto-cut-silence', 'Remove breaths that read as stray notes'],
+        ['loudness-normalizer', 'Set the level once the tuning is right']
+      ]
+    },
     'pitch-shifter': {
       cat: 'repair', label: 'pitch / key', title: 'Pitch & key changer',
       blurb: 'Shift the key up or down by semitones without changing the tempo.',
@@ -509,7 +521,8 @@
         ['audio-cutter', 'Trim before shifting'],
         ['normalize-audio', 'Level the result'],
         ['bpm-finder', 'Check the tempo you are working against'],
-        ['audio-to-midi', 'Capture the line as notes instead of audio']
+        ['audio-to-midi', 'Capture the line as notes instead of audio'],
+        ['autotune', 'Correct the tuning rather than transpose it']
       ]
     },
 
@@ -521,7 +534,8 @@
         ['noise-reduction', 'Clean up the room tone you just recorded'],
         ['trim-silence-edges', 'Top and tail the recording'],
         ['normalize-audio', 'Bring it to a consistent level'],
-        ['audio-to-text-prep', 'Prep it for transcription']
+        ['audio-to-text-prep', 'Prep it for transcription'],
+        ['autotune', 'Tune the take you just recorded']
       ]
     },
     'audio-to-midi': {
@@ -531,7 +545,8 @@
         ['bpm-finder', 'Check the tempo written into the file'],
         ['stem-splitter', 'Isolate one part of a mix before transcribing it'],
         ['auto-cut-silence', 'Remove breaths that register as stray notes'],
-        ['pitch-shifter', 'Move the recording into a different key first']
+        ['pitch-shifter', 'Move the recording into a different key first'],
+        ['autotune', 'Fix the tuning before transcribing']
       ]
     },
     'bpm-finder': {

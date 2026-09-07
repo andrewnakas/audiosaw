@@ -157,6 +157,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [AI vocal remover / stem splitter](https://audiosaw.com/stem-splitter): Neural separation into a clean instrumental and acapella, running on your machine.
 - [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fan noise out of a recording with spectral gating.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
+- [Autotune / Pitch Correction](https://audiosaw.com/autotune): Snap a vocal to a key — subtle tuning or the hard-tuned effect.
 - [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.
 
 ## Record & tag

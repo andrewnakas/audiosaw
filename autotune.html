@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autotune Online — free pitch correction in your browser, no upload</title>
+<meta name="description" content="Snap a vocal or instrument to a key. Pick the scale, how hard it corrects and how fast it snaps — subtle tuning or the hard-tuned effect. Runs locally, nothing uploaded.">
+<meta name="keywords" content="autotune online, free autotune, pitch correction online, auto tune voice, vocal tuning, hard tune effect, t-pain effect">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/autotune">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Autotune Online — free pitch correction in your browser, no upload">
+<meta property="og:description" content="Snap a vocal or instrument to a key. Pick the scale, how hard it corrects and how fast it snaps — subtle tuning or the hard-tuned effect. Runs locally, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/autotune">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06h">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Autotune / Pitch Correction",
+  "url": "https://audiosaw.com/autotune",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this real autotune?","acceptedAnswer":{"@type":"Answer","text":"It is pitch correction working the same way: detect the pitch, snap it to the nearest note of a key, and move the audio there with PSOLA. It is not the Antares plugin, and it does not do note-by-note editing like Melodyne."}},{"@type":"Question","name":"How do I get the T-Pain sound?","acceptedAnswer":{"@type":"Answer","text":"Instant retune speed, 100% strength, and a pentatonic or minor scale. The hard-tuned effect comes from forbidding the glide between notes, so the pitch jumps in steps."}},{"@type":"Question","name":"How do I make it sound natural?","acceptedAnswer":{"@type":"Answer","text":"100% strength with a natural or slow retune. That fixes where notes settle while letting the singer scoop into them, which is what makes correction inaudible."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Pitch tracking and correction both run in your browser tab, which matters for an unreleased vocal."}},{"@type":"Question","name":"What if I do not know the key?","acceptedAnswer":{"@type":"Answer","text":"Use chromatic. It snaps to the nearest semitone without imposing a scale, so it fixes tuning without dragging notes somewhere the song never went."}},{"@type":"Question","name":"Will it make my voice sound like a chipmunk?","acceptedAnswer":{"@type":"Answer","text":"No. It moves pitch with PSOLA, which leaves the formants roughly in place. Resampling is what causes the chipmunk effect, and that is not what this does."}},{"@type":"Question","name":"Can I autotune a whole song?","acceptedAnswer":{"@type":"Answer","text":"Not a full mix — there is no single pitch to correct. Isolate the vocal with the stem splitter first."}},{"@type":"Question","name":"Does it change the timing or length?","acceptedAnswer":{"@type":"Answer","text":"No. The output is exactly the same length as the input, by construction."}},{"@type":"Question","name":"Why does my result sound processed?","acceptedAnswer":{"@type":"Answer","text":"Probably because the take was a long way out. Corrections beyond about a semitone stretch the grains far enough to hear. The report tells you how far out the median note was."}},{"@type":"Question","name":"Does it work on instruments?","acceptedAnswer":{"@type":"Answer","text":"Yes, on monophonic ones — a bassline, a lead synth, a flute, a single guitar line. Not on chords."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"Autotune / Pitch Correction"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Autotune / Pitch Correction</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Autotune a <span class="ital">vocal</span></h1>
+    <p>Pulls a sung or played line onto the notes of a key. Set it gentle and it is invisible tuning; set it instant and full and it is the hard-tuned effect. One voice or instrument at a time, and nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a vocal or instrument take here</p>
+      <p>or click to pick. A dry, solo recording works best — not a full mix.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label id="keyWrap">Key
+          <select id="key"><option value="0" selected>C</option><option value="1">C# / Db</option><option value="2">D</option><option value="3">D# / Eb</option><option value="4">E</option><option value="5">F</option><option value="6">F# / Gb</option><option value="7">G</option><option value="8">G# / Ab</option><option value="9">A</option><option value="10">A# / Bb</option><option value="11">B</option></select>
+        </label>
+        <label>Scale
+          <select id="scale">
+            <option value="major" selected>Major</option>
+            <option value="minor">Natural minor</option>
+            <option value="harmonicMinor">Harmonic minor</option>
+            <option value="pentatonicMajor">Major pentatonic</option>
+            <option value="pentatonicMinor">Minor pentatonic</option>
+            <option value="blues">Blues</option>
+            <option value="chromatic">Chromatic — nearest semitone</option>
+          </select>
+        </label>
+        <label>Strength
+          <select id="strength">
+            <option value="0.35">35% — nudge, keeps the performance</option>
+            <option value="0.6">60% — clearly tuned, still human</option>
+            <option value="1" selected>100% — fully on the note</option>
+          </select>
+        </label>
+        <label>Retune speed
+          <select id="retune">
+            <option value="0.001">Instant — the hard-tuned effect</option>
+            <option value="0.02" selected>Fast — modern pop vocal</option>
+            <option value="0.06">Natural — transparent correction</option>
+            <option value="0.15">Slow — keeps scoops and slides</option>
+          </select>
+        </label>
+        <label>Output
+          <select id="outFormat">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — lossless</option>
+          </select>
+        </label>
+        <label id="bitrateWrap">MP3 bitrate
+          <select id="bitrate">
+            <option value="192">192 kbps</option>
+            <option value="256" selected>256 kbps</option>
+            <option value="320">320 kbps</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Tune it</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="tuneReport" hidden>
+      <table class="spec-table">
+        <tr><th>Pitch found</th><td id="tuneFrames">—</td></tr>
+        <tr><th>How far out it was</th><td id="tuneOffset">—</td></tr>
+        <tr><th>Correction applied</th><td id="tuneAmount">—</td></tr>
+      </table>
+      <p class="control-note" id="tuneNote" hidden></p>
+    </div>
+
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>The two controls that decide how it sounds</h2>
+    <p>Everything people mean by "autotune" comes down to two numbers, and they do completely different things.</p>
+    <p><strong>Strength</strong> is how far toward the correct note each moment is pulled. At 100% every pitch lands exactly on a scale note. Below that the singer's own pitch is preserved proportionally, so 35% tidies a wobble without erasing the fact that a person sang it.</p>
+    <p><strong>Retune speed</strong> is how quickly the correction is allowed to move, and it is the one that creates the famous effect. Real singing slides between notes; every scoop into a note and every fall out of one is a glide. A slow retune lets those glides through and only fixes where a note settles, which is why it sounds like nothing was done. An instant retune forbids gliding entirely, so the pitch jumps from note to note in hard steps — that stepping <em>is</em> the hard-tuned sound, not a side effect of it.</p>
+    <p>For invisible tuning: 100% strength, natural or slow retune. For the effect: 100% strength, instant retune, and a pentatonic or minor scale so the jumps are wide enough to hear.</p>
+
+    <h3>Pick the right key, or do not bother</h3>
+    <p>Correcting to the wrong key is worse than not correcting. If a singer is slightly flat in G major and you tune them to C major, every note gets dragged to a pitch that was never in the song, and the result is confidently, precisely wrong.</p>
+    <p>If you do not know the key, use chromatic. It snaps to the nearest semitone regardless of key, which fixes tuning without imposing a scale, and it is the safe default for a part you did not write.</p>
+    <p>Fewer notes means a stronger effect. Chromatic barely moves anything; major moves more; pentatonic moves a lot, because whole notes are missing and anything landing on one gets pushed to a neighbour. That is exactly why pentatonic is the classic choice for the hard-tuned sound.</p>
+
+    <h3>How the pitch is moved</h3>
+    <p>Time-domain PSOLA. The recording is cut into short grains, each centred on one cycle of the waveform, and reassembled with the spacing between grains changed — closer together raises the pitch, further apart lowers it. The grains themselves are untouched, so the formants that make a voice recognisably that person mostly stay where they are.</p>
+    <p>The naive alternative is to resample, which moves everything including the formants and gives you the chipmunk effect. That is the difference between a tuned vocal and a sped-up one.</p>
+    <p>Grain placement is the part that decides whether this sounds clean or buzzy. Each grain has to be cut at the same point in every cycle, and picking the loudest sample does not achieve that on a bright voice, because there are several peaks inside one period. Marks here are placed on a low-passed copy where the fundamental has one clear peak per cycle. Getting that wrong was measurable: grain spacing wandered by 15% and the output dropped two octaves.</p>
+
+    <h3>What to feed it</h3>
+    <ul>
+      <li><strong>One voice, dry.</strong> Reverb and delay smear the pitch, and the tail of a reverb reads as a note that was never sung.</li>
+      <li><strong>No harmonies or doubles.</strong> Two pitches at once means there is no single pitch to correct, and the result will chase whichever is louder moment to moment.</li>
+      <li><strong>Not a full mix.</strong> Use the <a href="/stem-splitter">stem splitter</a> to lift the vocal out first if that is what you have.</li>
+      <li><strong>Trim the noise.</strong> Breaths and handling noise can read as very low, very quiet notes; <a href="/auto-cut-silence">cutting the dead air</a> first removes most of them.</li>
+    </ul>
+
+    <h3>What it is not</h3>
+    <p>This is pitch correction, not pitch <em>editing</em>. It moves notes onto a grid; it will not let you drag one note somewhere else, redraw a melody, or fix timing. That is a DAW job — Melodyne, Logic's Flex Pitch, Ableton's warping — and no browser page substitutes for it.</p>
+    <p>It also cannot rescue a take that is badly out. Correction of more than about a semitone starts to sound processed no matter how gently it is applied, because the grains are being stretched further than the format comfortably allows. If the report says the median note was more than 45 cents out, the honest fix is another take.</p>
+    <p>And if what you want is to move the whole recording to a different key rather than tune it, that is the <a href="/pitch-shifter">pitch shifter</a>.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this real autotune?</summary><p>It is pitch correction working the same way: detect the pitch, snap it to the nearest note of a key, and move the audio there with PSOLA. It is not the Antares plugin, and it does not do note-by-note editing like Melodyne.</p></details>
+      <details><summary>How do I get the T-Pain sound?</summary><p>Instant retune speed, 100% strength, and a pentatonic or minor scale. The hard-tuned effect comes from forbidding the glide between notes, so the pitch jumps in steps.</p></details>
+      <details><summary>How do I make it sound natural?</summary><p>100% strength with a natural or slow retune. That fixes where notes settle while letting the singer scoop into them, which is what makes correction inaudible.</p></details>
+      <details><summary>Is my recording uploaded?</summary><p>No. Pitch tracking and correction both run in your browser tab, which matters for an unreleased vocal.</p></details>
+      <details><summary>What if I do not know the key?</summary><p>Use chromatic. It snaps to the nearest semitone without imposing a scale, so it fixes tuning without dragging notes somewhere the song never went.</p></details>
+      <details><summary>Will it make my voice sound like a chipmunk?</summary><p>No. It moves pitch with PSOLA, which leaves the formants roughly in place. Resampling is what causes the chipmunk effect, and that is not what this does.</p></details>
+      <details><summary>Can I autotune a whole song?</summary><p>Not a full mix — there is no single pitch to correct. Isolate the vocal with the stem splitter first.</p></details>
+      <details><summary>Does it change the timing or length?</summary><p>No. The output is exactly the same length as the input, by construction.</p></details>
+      <details><summary>Why does my result sound processed?</summary><p>Probably because the take was a long way out. Corrections beyond about a semitone stretch the grains far enough to hear. The report tells you how far out the median note was.</p></details>
+      <details><summary>Does it work on instruments?</summary><p>Yes, on monophonic ones — a bassline, a lead synth, a flute, a single guitar line. Not on chords.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the whole take to another key instead.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Lift the vocal out of a mix before tuning it.</p></a>
+      <a class="card" href="/auto-cut-silence"><h3>Auto-Cut Silence</h3><p>Remove breaths that read as stray notes.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Set the level once the tuning is right.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-06h"></script>
+<script src="/js/tool-graph.js?v=2026-09-06h"></script>
+<script src="/js/flow.js?v=2026-09-06h"></script>
+<script src="/js/audio-core.js?v=2026-09-06h"></script>
+<script src="/js/tool-shell.js?v=2026-09-06h"></script>
+<script src="/js/silence-gaps.js?v=2026-09-06h"></script>
+<script src="/js/pitch-track.js?v=2026-09-06h"></script>
+<script src="/js/autotune.js?v=2026-09-06h"></script>
+<script src="/js/autotune-page.js?v=2026-09-06h"></script>
+<script src="/js/consent.js?v=2026-09-06h"></script>
+<script src="/js/pwa.js?v=2026-09-06h"></script>
+</body>
+</html>

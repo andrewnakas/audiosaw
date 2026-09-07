@@ -119,6 +119,16 @@ carrying a separate tone per channel, not because the coefficient tables say
   same octave trap the BPM detector hits — and the cumulative mean
   normalisation is specifically the fix. Take the *first* dip below threshold,
   never the deepest, or the octave error comes straight back.
+- `js/autotune.js` — PSOLA pitch correction behind `/autotune`, checked by
+  `node tools/check-autotune.js` (an off-pitch note must land on the target, a
+  note already in tune must be left alone, duration must not change, level must
+  hold within 3 dB).
+
+  **Pitch marks must be placed on a low-passed copy**, not the raw signal. On a
+  bright waveform there are several peaks inside one period, so peak-picking the
+  raw signal lands on a different feature each cycle. Measured: grain spacing
+  wandered by 15% and the output dropped *two octaves*. One clear peak per cycle
+  is the whole requirement.
 - `js/midi-write.js` — Standard MIDI File writer (type 0). MIDI has no forgiving
   parser: chunk lengths must match their contents and delta times are
   variable-length quantities. `node tools/check-midi.js` parses the output back
