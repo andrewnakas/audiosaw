@@ -462,7 +462,8 @@
         ['pitch-shifter', 'Move the karaoke track into your singing range'],
         ['normalize-audio', 'Bring the level back up properly'],
         ['audio-cutter', 'Trim to the section you actually need'],
-        ['ogg-to-mp3', 'Convert an OGG export into something universal']
+        ['ogg-to-mp3', 'Convert an OGG export into something universal'],
+        ['audio-to-midi', 'Get the melody out as MIDI']
       ]
     },
     'stem-splitter': {
@@ -473,7 +474,8 @@
         ['audio-cutter', 'Trim to the section you need before separating'],
         ['pitch-shifter', 'Move the finished instrumental into your key'],
         ['split-audio', 'Break a long track into parts first'],
-        ['bpm-finder', 'Read the tempo off the isolated drums']
+        ['bpm-finder', 'Read the tempo off the isolated drums'],
+        ['audio-to-midi', 'Transcribe the part you just isolated']
       ]
     },
     'noise-reduction': {
@@ -506,7 +508,8 @@
         ['vocal-remover', 'Make a karaoke track to transpose'],
         ['audio-cutter', 'Trim before shifting'],
         ['normalize-audio', 'Level the result'],
-        ['bpm-finder', 'Check the tempo you are working against']
+        ['bpm-finder', 'Check the tempo you are working against'],
+        ['audio-to-midi', 'Capture the line as notes instead of audio']
       ]
     },
 
@@ -521,6 +524,16 @@
         ['audio-to-text-prep', 'Prep it for transcription']
       ]
     },
+    'audio-to-midi': {
+      cat: 'create', label: 'audio → midi', title: 'Audio to MIDI',
+      blurb: 'Turn a hummed melody or bassline into a MIDI file.',
+      next: [
+        ['bpm-finder', 'Check the tempo written into the file'],
+        ['stem-splitter', 'Isolate one part of a mix before transcribing it'],
+        ['auto-cut-silence', 'Remove breaths that register as stray notes'],
+        ['pitch-shifter', 'Move the recording into a different key first']
+      ]
+    },
     'bpm-finder': {
       cat: 'create', label: 'bpm finder', title: 'BPM Finder',
       blurb: 'Detect the tempo of a track, with half and double time shown.',
@@ -528,7 +541,8 @@
         ['audio-speed', 'Stretch a sample to match another tempo'],
         ['audio-cutter', 'Trim a loop to a whole number of bars'],
         ['pitch-shifter', 'Change the key without moving the tempo'],
-        ['stem-splitter', 'Pull the drums out to hear the pulse alone']
+        ['stem-splitter', 'Pull the drums out to hear the pulse alone'],
+        ['audio-to-midi', 'Turn the same line into notes you can edit']
       ]
     },
     'split-audio': {
@@ -638,7 +652,8 @@
         ['audio-cutter', 'Chop a sample to length'],
         ['trim-silence-edges', 'Tighten the start so pads trigger instantly'],
         ['normalize-audio', 'Even out a kit of samples'],
-        ['bpm-finder', 'Get the tempo before chopping the sample']
+        ['bpm-finder', 'Get the tempo before chopping the sample'],
+        ['audio-to-midi', 'Transcribe a sample rather than chopping it']
       ]
     }
   };

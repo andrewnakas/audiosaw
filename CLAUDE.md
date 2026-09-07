@@ -113,6 +113,24 @@ carrying a separate tone per channel, not because the coefficient tables say
   tool, call those two functions and you get the next-step panel, the preview,
   error recovery and event tracking for free.
 - `js/tool-converter.js` — the shared driver for simple format conversions.
+- `js/pitch-track.js` — YIN pitch detection and note segmentation, shared by
+  `/audio-to-midi`. YIN rather than plain autocorrelation because
+  autocorrelation's strongest peak is routinely at twice the true period — the
+  same octave trap the BPM detector hits — and the cumulative mean
+  normalisation is specifically the fix. Take the *first* dip below threshold,
+  never the deepest, or the octave error comes straight back.
+- `js/midi-write.js` — Standard MIDI File writer (type 0). MIDI has no forgiving
+  parser: chunk lengths must match their contents and delta times are
+  variable-length quantities. `node tools/check-midi.js` parses the output back
+  with a reader written separately from the writer, so an error in one does not
+  cancel out in the other. It also asserts that a repeated note at the same
+  pitch emits its note-off before the next note-on, which is what stops a DAW
+  killing the second note on arrival.
+
+  Velocity is scaled against the loudest note in the file, not an absolute
+  level. An absolute mapping saturates: every note of a normalised recording
+  comes out at 127 and the dynamics are gone. That shipped in a first draft and
+  the check caught it.
 - `js/loudness.js` — ITU-R BS.1770-4 loudness and true peak, behind
   `/loudness-normalizer`. **Validated against ffmpeg's `ebur128` filter**, the
   reference implementation: `node tools/check-loudness.js` generates its own

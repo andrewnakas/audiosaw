@@ -182,10 +182,15 @@ That search produced a short list. The clearest was on `/normalize-audio`:
 paragraphs explaining why peak normalization is not what anyone publishing to
 Spotify wants. Built as `/loudness-normalizer`, and that sentence is now a link.
 
-Two built so far: `/loudness-normalizer` and, from the same list,
-`/auto-cut-silence` — the "we don't yet remove silence between phrases"
-admission on `silence-remover`. Both source pages now link to the new tool
-instead of apologising.
+Three built so far: `/loudness-normalizer`, `/auto-cut-silence` — the "we don't yet remove silence between phrases"
+admission on `silence-remover`. and `/audio-to-midi`. The source pages now link to
+the new tools instead of apologising.
+
+`/audio-to-midi` came from a different route — a direct request — but the same
+discipline applies: monophonic only, and the page says so in the first
+paragraph rather than letting people discover it by feeding it a mix.
+Polyphonic transcription is an open research problem and pretending otherwise
+would waste more of a user's time than declining does.
 
 Still open, roughly in order of demand:
 

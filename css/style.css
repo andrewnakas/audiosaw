@@ -1155,3 +1155,11 @@ select:focus-visible {
 .bpm-conf { color: var(--ink-soft); margin: 0 0 18px; }
 .bpm-alts { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; font-size: 0.86rem; color: var(--muted); font-family: var(--mono); }
 .bpm-detail { margin-top: 8px; }
+
+/* Audio-to-MIDI note preview. */
+.note-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.note-chip {
+  font-family: var(--mono); font-size: 0.76rem; padding: 4px 8px;
+  background: var(--paper-2); border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-soft);
+}
+.note-chip-more { background: transparent; border-style: dashed; color: var(--muted); }

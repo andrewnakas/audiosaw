@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio to MIDI — convert a melody or bassline to MIDI, free, no upload</title>
+<meta name="description" content="Convert a monophonic recording — a hummed melody, a bassline, a synth lead — into a MIDI file in your browser. Detects tempo, snaps to a grid. Nothing uploaded.">
+<meta name="keywords" content="audio to midi, wav to midi, mp3 to midi, convert audio to midi, melody to midi, hum to midi, bassline to midi, audio to midi converter online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-to-midi">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Audio to MIDI — convert a melody or bassline to MIDI, free, no upload">
+<meta property="og:description" content="Convert a monophonic recording — a hummed melody, a bassline, a synth lead — into a MIDI file in your browser. Detects tempo, snaps to a grid. Nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-to-midi">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-06g">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio to MIDI Converter",
+  "url": "https://audiosaw.com/audio-to-midi",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can it convert a full song to MIDI?","acceptedAnswer":{"@type":"Answer","text":"No. It follows one pitch at a time, so a mix or a chord has no single fundamental to track. Separate the part you want with the stem splitter first, then bring it here."}},{"@type":"Question","name":"Does it work on chords?","acceptedAnswer":{"@type":"Answer","text":"No. Polyphonic transcription is an open research problem, and a tool that claimed to do it in a browser would be guessing."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Pitch tracking and the MIDI file are both produced in your browser tab."}},{"@type":"Question","name":"How accurate is the pitch?","acceptedAnswer":{"@type":"Answer","text":"Within 0.7 cents on pure tones from A2 to A5 — about one hundredth of a semitone — and with no octave errors on harmonically rich sources, which is where simpler detectors usually fail."}},{"@type":"Question","name":"Why does my MIDI file play no sound?","acceptedAnswer":{"@type":"Answer","text":"Because MIDI holds notes, not audio. Load it into a DAW and assign an instrument; that is what makes it useful, since you can then change the sound or the notes."}},{"@type":"Question","name":"Should I turn on quantizing?","acceptedAnswer":{"@type":"Answer","text":"Only if it was played to a click and you want it tidy. Quantizing is easy to do later in any DAW and impossible to undo, so the default keeps your timing."}},{"@type":"Question","name":"It found notes I did not play. Why?","acceptedAnswer":{"@type":"Answer","text":"Usually reverb or delay on the recording, which smears the pitch at the end of each phrase. Record dry, and set the range to match your instrument."}},{"@type":"Question","name":"Can I hum a melody into it?","acceptedAnswer":{"@type":"Answer","text":"Yes, and that is one of the things it does best. A steady \"ooh\" tracks better than \"la la la\", because consonants interrupt the pitch."}},{"@type":"Question","name":"What tempo does it use?","acceptedAnswer":{"@type":"Answer","text":"It detects one and writes it into the file, so your DAW puts the notes on the right grid. You can also type a tempo if you already know it."}},{"@type":"Question","name":"Which programs open the file?","acceptedAnswer":{"@type":"Answer","text":"Any of them. It is a standard type 0 MIDI file: Ableton, Logic, FL Studio, Reaper, GarageBand, MuseScore and the rest."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Audio to MIDI"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio to MIDI</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio to <span class="ital">MIDI</span></h1>
+    <p>Hum a melody, play a bassline, record a synth line — get back a .mid file you can drop into any DAW and play with a different sound. One instrument or voice at a time; a full mix has no single pitch to follow. Nothing uploads.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a melody, bassline or vocal here</p>
+      <p>or click to pick. One instrument at a time — not a full mix.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>What is it
+          <select id="range">
+            <option value="65-1600" selected>Anything — full range</option>
+            <option value="40-400">Bass or low male voice</option>
+            <option value="130-1100">Vocal, lead or guitar</option>
+            <option value="200-2000">High voice, flute or whistle</option>
+          </select>
+        </label>
+        <label>Note detection
+          <select id="sensitivity">
+            <option value="strict">Strict — only very clear notes</option>
+            <option value="normal" selected>Normal</option>
+            <option value="loose">Loose — noisier recordings</option>
+          </select>
+        </label>
+        <label>Shortest note
+          <select id="minNote">
+            <option value="0.04">40 ms — fast runs</option>
+            <option value="0.08" selected>80 ms — normal playing</option>
+            <option value="0.15">150 ms — slow melody only</option>
+          </select>
+        </label>
+        <label>Snap to grid
+          <select id="quantize">
+            <option value="0" selected>No — keep the human timing</option>
+            <option value="2">1/8 notes</option>
+            <option value="4">1/16 notes</option>
+            <option value="8">1/32 notes</option>
+          </select>
+        </label>
+        <label>Tempo (blank = detect)
+          <input type="number" id="bpm" placeholder="detect" min="30" max="300" step="0.1">
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Convert to MIDI</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="midiReport" hidden>
+      <table class="spec-table">
+        <tr><th>Notes found</th><td id="midiNotes">—</td></tr>
+        <tr><th>Tempo written</th><td id="midiTempo">—</td></tr>
+        <tr><th>Range</th><td id="midiRange">—</td></tr>
+        <tr><th>Confidence</th><td id="midiConfidence">—</td></tr>
+      </table>
+      <div class="note-chips" id="noteList"></div>
+    </div>
+
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What it can and cannot hear</h2>
+    <p>This follows one pitch at a time. Give it a hummed melody, a bassline, a sung phrase, a flute or a monophonic synth lead and it will track the fundamental accurately. Give it a chord, a full mix or two instruments at once and it will return something confident and wrong, because there is no single fundamental to find.</p>
+    <p>That is not a rough edge to be fixed later. Polyphonic transcription — pulling four simultaneous notes out of a piano chord — is an open research problem, and the tools that attempt it are large neural networks with mixed results. A page that pretended otherwise would waste your time more expensively than one that says so.</p>
+    <p>If what you have is a full track and you want one part out of it, run it through the <a href="/stem-splitter">stem splitter</a> first, then bring the isolated part back here.</p>
+
+    <h3>How the pitch is found</h3>
+    <p>The detector is YIN, which is autocorrelation with the specific fix for its worst failure. Plain autocorrelation matches a signal against a delayed copy of itself, and a delay of two periods lines up just as well as one — so it routinely reports a note an octave too low. YIN normalises by a running mean of the difference function, which suppresses those multiples, and then takes the first dip below a threshold rather than the deepest one.</p>
+    <p>Measured against pure tones from A2 to A5, this implementation lands within 0.7 cents — under one hundredth of a semitone. Against harmonically rich sawtooth waves, which are the classic octave trap, it makes no octave errors at all.</p>
+
+    <h3>Turning pitches into notes</h3>
+    <p>A pitch reading every ten milliseconds is not a melody. A note ends when the pitch moves by about a semitone, when the level drops, or when the detector loses confidence, and anything shorter than your minimum is discarded as a wobble at a note transition rather than something you played.</p>
+    <p>The pitch of each note is the median of its frames, not the mean. Attacks are messy — the first few milliseconds of a plucked string or a sung consonant can read wildly — and a mean lets those drag the note off. A median ignores them.</p>
+    <p>Velocity is scaled against the loudest note in your recording rather than an absolute level, so the dynamics of the performance survive. An absolute mapping puts every note of a normalised recording at 127 and flattens the phrasing completely.</p>
+
+    <h3>Tempo and quantizing</h3>
+    <p>Leave the tempo blank and the file is analysed with the same detector behind the <a href="/bpm-finder">BPM finder</a>, and that tempo is written into the MIDI file so your DAW lays the notes on the right grid rather than assuming 120.</p>
+    <p>Snapping to a grid is off by default, and that is deliberate. Quantizing a hummed idea to sixteenths destroys the feel that made it worth recording, and it is trivial to quantize afterwards in any DAW but impossible to un-quantize. Turn it on when you are capturing something that was played to a click and you want it tidy.</p>
+
+    <h3>Getting a clean result</h3>
+    <ul>
+      <li><strong>Record dry.</strong> Reverb and delay smear the pitch and create phantom notes at the tail of every phrase. If the recording has heavy effects, this will find notes that were never played.</li>
+      <li><strong>One take, one part.</strong> No harmonies, no double-tracking, no chords.</li>
+      <li><strong>Pick the range.</strong> Telling it you are working on a bassline stops it hearing a harmonic as the fundamental — the single most common source of a stray note an octave up.</li>
+      <li><strong>Trim the silence.</strong> Breaths and handling noise can register as very short notes; <a href="/auto-cut-silence">cutting the dead air</a> first removes most of that.</li>
+      <li><strong>Humming works.</strong> A steady "ooh" or "ah" tracks better than "la la la", because consonants interrupt the pitch and produce extra note edges.</li>
+    </ul>
+
+    <h3>What the file contains</h3>
+    <p>A standard MIDI file, type 0, one track, with your tempo and a 4/4 time signature written in. Note pitches, start times, lengths and velocities. It opens in Ableton, Logic, FL Studio, Reaper, GarageBand, MuseScore and anything else that reads MIDI.</p>
+    <p>It contains no sound. MIDI is a description of what to play, not a recording, so it will be silent until you point an instrument at it — which is the entire point: swap the sound, change the notes, transpose the key, fix the one wrong note by dragging it.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Can it convert a full song to MIDI?</summary><p>No. It follows one pitch at a time, so a mix or a chord has no single fundamental to track. Separate the part you want with the stem splitter first, then bring it here.</p></details>
+      <details><summary>Does it work on chords?</summary><p>No. Polyphonic transcription is an open research problem, and a tool that claimed to do it in a browser would be guessing.</p></details>
+      <details><summary>Is my recording uploaded?</summary><p>No. Pitch tracking and the MIDI file are both produced in your browser tab.</p></details>
+      <details><summary>How accurate is the pitch?</summary><p>Within 0.7 cents on pure tones from A2 to A5 — about one hundredth of a semitone — and with no octave errors on harmonically rich sources, which is where simpler detectors usually fail.</p></details>
+      <details><summary>Why does my MIDI file play no sound?</summary><p>Because MIDI holds notes, not audio. Load it into a DAW and assign an instrument; that is what makes it useful, since you can then change the sound or the notes.</p></details>
+      <details><summary>Should I turn on quantizing?</summary><p>Only if it was played to a click and you want it tidy. Quantizing is easy to do later in any DAW and impossible to undo, so the default keeps your timing.</p></details>
+      <details><summary>It found notes I did not play. Why?</summary><p>Usually reverb or delay on the recording, which smears the pitch at the end of each phrase. Record dry, and set the range to match your instrument.</p></details>
+      <details><summary>Can I hum a melody into it?</summary><p>Yes, and that is one of the things it does best. A steady "ooh" tracks better than "la la la", because consonants interrupt the pitch.</p></details>
+      <details><summary>What tempo does it use?</summary><p>It detects one and writes it into the file, so your DAW puts the notes on the right grid. You can also type a tempo if you already know it.</p></details>
+      <details><summary>Which programs open the file?</summary><p>Any of them. It is a standard type 0 MIDI file: Ableton, Logic, FL Studio, Reaper, GarageBand, MuseScore and the rest.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Check the tempo written into the file.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Isolate one part of a mix before transcribing it.</p></a>
+      <a class="card" href="/auto-cut-silence"><h3>Auto-Cut Silence</h3><p>Remove breaths that register as stray notes.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the recording into a different key first.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-06g"></script>
+<script src="/js/tool-graph.js?v=2026-09-06g"></script>
+<script src="/js/flow.js?v=2026-09-06g"></script>
+<script src="/js/audio-core.js?v=2026-09-06g"></script>
+<script src="/js/silence-gaps.js?v=2026-09-06g"></script>
+<script src="/js/pitch-track.js?v=2026-09-06g"></script>
+<script src="/js/midi-write.js?v=2026-09-06g"></script>
+<script src="/js/bpm-detector.js?v=2026-09-06g"></script>
+<script src="/js/audio-to-midi-page.js?v=2026-09-06g"></script>
+<script src="/js/consent.js?v=2026-09-06g"></script>
+<script src="/js/pwa.js?v=2026-09-06g"></script>
+</body>
+</html>
