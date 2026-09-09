@@ -19,7 +19,17 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const NAMESPACES = ['CV', 'AudioSaw'];
+
+// Derived, not listed, so a new module's global is covered the day it lands.
+// Every namespace on the site is exported as `global.<name> = ...` from a file
+// in /js: CV, AudioSaw, and the AS* modules (ASBpm, ASLoudness, ASPitch, ...).
+// `AS_TOOL` is the one that travels the other way — a page sets it inline and
+// tool-converter.js reads it — and the same ordering rule catches that too.
+const JS_FILES = fs.readdirSync(path.join(ROOT, 'js')).filter((f) => f.endsWith('.js')).sort();
+const NAMESPACES = [...new Set(
+  JS_FILES.flatMap((f) => [...fs.readFileSync(path.join(ROOT, 'js', f), 'utf8')
+    .matchAll(/(?:global|window|self)\.([A-Za-z_$][\w$]*)\s*=/g)].map((m) => m[1]))
+)].filter((n) => /^(CV|AudioSaw|AS[A-Z_])/.test(n)).sort();
 
 // Comments and strings hold plenty of `CV.shell` prose ("Not built on CV.shell:
 // ...") that is not a call. Blank them out before any matching.
@@ -59,20 +69,46 @@ function definitions(src) {
         }
       }
     }
-    for (const m of code.matchAll(new RegExp('(?:^|[^.\\w$])' + ns + '\\.([A-Za-z_$][\\w$]*)\\s*=[^=]', 'g'))) {
+    for (const m of code.matchAll(new RegExp('(?:^|[^.\\w$])(?:(?:global|window|self)\\.)?' + ns + '\\.([A-Za-z_$][\\w$]*)\\s*=[^=]', 'g'))) {
       found.add(m[1]);
     }
+    // `global.CV = {...}` or `window.AS_TOOL = {...}` also defines the
+    // namespace itself, which is what a whole-object reference needs.
+    if (new RegExp('(?:global|window|self)\\.' + ns + '\\s*=').test(code)) found.add('*');
     if (found.size) out[ns] = found;
   }
   return out;
+}
+
+// Two kinds of reference, because two kinds of mistake. `CV.encodeBuffer` needs
+// that member; `window.AS_TOOL` is read as a whole object and only needs the
+// namespace to exist by then. A bare namespace use is reported as member '*'.
+// `if (global.CV && global.CV.track)` is pwa.js declaring CV optional on the
+// five pages that carry no other JavaScript. A feature-detected reference is
+// not a missing include, so don't report one.
+function guarded(code, ns, at, len) {
+  const after = code.slice(at + len, at + len + 8);
+  if (/^\s*(&&|\|\|)/.test(after)) return true;
+  const before = code.slice(Math.max(0, at - 90), at);
+  const g = '(?:(?:global|window|self)\\.)?' + ns;
+  return new RegExp(g + '\\s*&&').test(before) || new RegExp('typeof\\s+' + g).test(before);
 }
 
 function usages(src) {
   const code = strip(src);
   const out = [];
   for (const ns of NAMESPACES) {
-    for (const m of code.matchAll(new RegExp('(?:^|[^.\\w$])' + ns + '\\.([A-Za-z_$][\\w$]*)', 'g'))) {
-      out.push([ns, m[1]]);
+    // The `global.` prefix is not optional decoration: loudness-page.js says
+    // `global.ASLoudness.truePeak(...)`, and a pattern anchored on a bare `ns`
+    // matches none of it — the first cut of this check passed every page while
+    // seeing nothing at all.
+    for (const m of code.matchAll(new RegExp('(?:^|[^.\\w$])(?:(?:global|window|self)\\.)?' + ns + '\\.([A-Za-z_$][\\w$]*)', 'g'))) {
+      if (!guarded(code, ns, m.index, m[0].length)) out.push([ns, m[1]]);
+    }
+    // `window.AS_TOOL || {}` — the object itself, no member named. Skip the
+    // assignment that defines it, which is a definition and not a use.
+    for (const m of code.matchAll(new RegExp('(?:^|[^.\\w$])(?:(?:global|window|self)\\.)?' + ns + '(?![\\w$.])\\s*(=?)', 'g'))) {
+      if (m[1] !== '=' && !guarded(code, ns, m.index, m[0].length)) out.push([ns, '*']);
     }
   }
   return out;
@@ -117,8 +153,7 @@ const providers = new Map();
 function providerFor(ns, member) {
   const key = ns + '.' + member;
   if (providers.has(key)) return providers.get(key);
-  for (const f of fs.readdirSync(path.join(ROOT, 'js')).sort()) {
-    if (!f.endsWith('.js')) continue;
+  for (const f of JS_FILES) {
     const d = definitions(fs.readFileSync(path.join(ROOT, 'js', f), 'utf8'));
     if (d[ns] && d[ns].has(member)) {
       providers.set(key, '/js/' + f);
@@ -132,7 +167,7 @@ function providerFor(ns, member) {
 const problems = [];
 for (const page of fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort()) {
   const scripts = scriptsOf(fs.readFileSync(path.join(ROOT, page), 'utf8'));
-  const seen = { CV: new Set(), AudioSaw: new Set() };
+  const seen = Object.fromEntries(NAMESPACES.map((ns) => [ns, new Set()]));
   for (const script of scripts) {
     if (script.missing) {
       problems.push(`${page}: includes ${script.label}, which does not exist`);
@@ -147,12 +182,13 @@ for (const page of fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort(
       const later = scripts.slice(scripts.indexOf(script) + 1)
         .some((s) => (defsOf(s)[ns] || new Set()).has(member));
       const provider = providerFor(ns, member);
+      const what = member === '*' ? ns : `${ns}.${member}`;
       if (later) {
-        problems.push(`${page}: ${script.label} uses ${ns}.${member} before ${provider} loads`);
+        problems.push(`${page}: ${script.label} uses ${what} before ${provider} loads`);
       } else if (provider) {
-        problems.push(`${page}: ${script.label} uses ${ns}.${member}, but ${provider} is not included`);
+        problems.push(`${page}: ${script.label} uses ${what}, but ${provider} is not included`);
       } else {
-        problems.push(`${page}: ${script.label} uses ${ns}.${member}, which nothing in /js defines`);
+        problems.push(`${page}: ${script.label} uses ${what}, which nothing in /js defines`);
       }
       seen[ns].add(member); // one line per member, not one per call site
     }
