@@ -32,6 +32,13 @@ for months. Each inline block now starts with a guard that logs loudly if the
 order is wrong. On pages using `tool-converter.js`, the `window.AS_TOOL = {...}`
 config must still come before that file.
 
+`node tools/check-includes.js` now enforces both halves of this: it walks each
+page's `<script>` tags in document order and fails if a script uses a `CV.*` or
+`AudioSaw.*` member that no earlier script defines. That is the same fault one
+step later than the ordering bug — `/voice-recorder` shipped without
+`tool-shell.js` at all and threw "CV.encodeBuffer is not a function" only after
+the user had finished recording. It runs as part of `check-all.js`.
+
 Correct order:
 
 ```html
@@ -59,7 +66,8 @@ node tools/build-faq.js      # merges the visible FAQ with FAQPage schema
 node tools/build-dates.js    # dateModified in each SoftwareApplication block
 node tools/build-sitemap.js  # sitemap.xml with lastmod from git
 node tools/build-llms.js     # llms.txt
-node tools/check-all.js      # runs all of the above in --check mode; use before committing
+node tools/check-includes.js # every CV./AudioSaw. helper a page uses is on the page
+node tools/check-all.js      # runs all of the above; use before committing
 ```
 
 `build-dates.js` and `build-sitemap.js` both read the last git commit that

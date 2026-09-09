@@ -5,16 +5,27 @@
  * The generated blocks drift silently: two categories rendered a literal
  * "undefined" paragraph on /tools for months because nothing compared the
  * output to the source. This is the guard. Run it before every commit.
+ *
+ * check-includes.js is not a generator but belongs to the same class of silent
+ * drift: a hand-assembled <script> list that is missing a file, or has one in
+ * the wrong order, breaks a tool with nothing visible on the page.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
 
-const CHECKS = ['build-nav.js', 'build-faq.js', 'build-dates.js', 'build-sitemap.js', 'build-llms.js'];
+const CHECKS = [
+  ['build-nav.js', '--check'],
+  ['build-faq.js', '--check'],
+  ['build-dates.js', '--check'],
+  ['build-sitemap.js', '--check'],
+  ['build-llms.js', '--check'],
+  ['check-includes.js']
+];
 
 let failed = 0;
-for (const script of CHECKS) {
+for (const [script, ...args] of CHECKS) {
   try {
-    const out = execFileSync(process.execPath, [path.join(__dirname, script), '--check'], {
+    const out = execFileSync(process.execPath, [path.join(__dirname, script), ...args], {
       encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']
     });
     process.stdout.write(out);
@@ -25,7 +36,7 @@ for (const script of CHECKS) {
   }
 }
 if (failed) {
-  console.error(`\ncheck-all: ${failed} generator(s) out of date.`);
+  console.error(`\ncheck-all: ${failed} check(s) failed.`);
   process.exit(1);
 }
-console.log('\ncheck-all: all generated files are current.');
+console.log('\ncheck-all: all generated files are current and every page has its scripts.');
