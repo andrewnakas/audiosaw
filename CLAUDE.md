@@ -248,9 +248,20 @@ carry `?v=<library version>`. Bump those when upgrading a library.
 
 ## Analytics
 
-GA4 `G-5X9ERMVYXE`. Key events: `convert_success`, `next_step_click`,
-`chain_continue`. Never send filenames or raw exception strings — bucket sizes
-and enumerate error types (see `mbBucket` and `ERROR_KINDS` in `flow.js`).
+GA4 `G-5X9ERMVYXE` — property **"Audio Saw", 538578494**. The same Google
+account holds seven other properties (exebrowser is 539318036) and the picker
+opens on whichever was used last, so check the name before trusting a number.
+Key events: `convert_success`, `next_step_click`, `chain_continue`. Never send
+filenames or raw exception strings — bucket sizes and enumerate error types (see
+`mbBucket` and `ERROR_KINDS` in `flow.js`).
+
+**A parameter is invisible until it is a registered custom dimension**, and
+registration is not retroactive. Every parameter this site sends was being
+discarded by GA4 until 21 Sep 2026 — collection was fine, nothing had ever been
+promoted. `tool`, `error_type`, `placement`, `rail` and `to_tool` are registered;
+`file_ext`, `target_format`, `from_tool` and `pick_method` are not yet. If you
+add a parameter, register it the same day you ship it or the first weeks of its
+data do not exist.
 
 **There are no ads.** AdSense used to load on 55 pages with zero ad units ever
 placed, so it was cost without revenue; the script, the meta, the slot divs, the

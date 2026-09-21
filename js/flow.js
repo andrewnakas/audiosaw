@@ -327,6 +327,22 @@
 
     var kind = classifyError(rawMessage);
     if (kind.silent) return;
+
+    // wrong_type used to offer "/" — the homepage — which asks somebody whose
+    // file has just been refused to go and find the right tool themselves. We
+    // already know the extension they dropped, so name the page that takes it.
+    //
+    // Worth doing because of where the traffic comes from: two thirds of
+    // sessions arrive from an AI assistant, straight onto whichever tool page
+    // the assistant picked. When that pick is wrong for the file in hand, this
+    // panel is the only thing standing between the visitor and leaving.
+    var action = kind.action;
+    if (kind.id === 'wrong_type' && G.toolForExt) {
+      var alt = G.toolForExt(lastRejectedExt);
+      if (alt && alt !== slug && G.TOOLS[alt]) {
+        action = { href: '/' + alt, label: G.TOOLS[alt].title };
+      }
+    }
     var box = document.createElement('div');
     box.className = 'error-recovery';
     box.id = 'errorHelp';
@@ -339,13 +355,13 @@
 
     var row = document.createElement('div');
     row.className = 'next-steps-row';
-    if (kind.action) {
+    if (action) {
       var a = document.createElement('a');
       a.className = 'next-chip';
-      a.href = kind.action.href;
-      a.textContent = kind.action.label;
+      a.href = action.href;
+      a.textContent = action.label;
       a.addEventListener('click', function () {
-        track('next_step_click', { tool: slug, to_tool: kind.action.href.replace('/', ''), placement: 'error' });
+        track('next_step_click', { tool: slug, to_tool: action.href.replace('/', '') || 'index', placement: 'error' });
       });
       row.appendChild(a);
     }
@@ -367,6 +383,11 @@
 
   var seenOutputs = typeof WeakSet === 'function' ? new WeakSet() : null;
   var convertStartedAt = 0;
+
+  // The extension of the file that was last turned away. Set by the dropzone
+  // wrapper below and read by errorPanel, which otherwise only sees the message
+  // string and has to re-parse it to learn anything.
+  var lastRejectedExt = null;
 
   var _downloadBlob = CV.downloadBlob;
   CV.downloadBlob = function (blob, filename, opts) {
@@ -441,6 +462,7 @@
     // early, so dropping a .txt on a converter did nothing at all — no message,
     // no event, no way to know the site had seen the file.
     function rejected(files, acc) {
+      lastRejectedExt = files && files[0] ? extOf(files[0].name) : null;
       if (onRejected) return onRejected(files, acc);
       var statusEl = document.getElementById('status');
       if (!statusEl) return;

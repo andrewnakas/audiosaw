@@ -772,6 +772,40 @@
     }
   ];
 
+  // Which tool takes a given input extension. Used by flow.js when someone
+  // drops the wrong file on a tool: the rejection message already knows the
+  // real extension, so it can name the page that handles it instead of sending
+  // them back to the homepage to start the hunt over.
+  //
+  // Deliberately an explicit table rather than a pattern over the slugs.
+  // "<x>-to-<y>" also matches audio-to-midi, mono-to-stereo and
+  // stereo-to-mono, and offering somebody "/stereo-to-mono" because their
+  // filename ended in ".stereo" is worse than offering nothing at all.
+  //
+  // Where two pages take the same input (flac goes to both flac-to-mp3 and
+  // flac-to-wav) this names the MP3 one: it is the commoner intent, and the
+  // other is one click away in the related block on that page.
+  var EXT_TOOL = {
+    mp3: 'mp3-to-wav', wav: 'wav-to-mp3', m4a: 'm4a-to-mp3', m4r: 'm4a-to-mp3',
+    aac: 'aac-to-mp3', flac: 'flac-to-mp3', ogg: 'ogg-to-mp3', oga: 'ogg-to-mp3',
+    opus: 'opus-to-mp3', wma: 'wma-to-mp3', caf: 'caf-to-mp3', ac3: 'ac3-to-mp3',
+    aiff: 'aiff-to-mp3', aif: 'aiff-to-mp3', m4b: 'm4b-to-mp3',
+    mp4: 'mp4-to-mp3', mov: 'mov-to-mp3',
+    // Containers with no page of their own. The general extractor demuxes all
+    // of these, so it is a real answer rather than a shrug.
+    webm: 'extract-audio', mkv: 'extract-audio', avi: 'extract-audio',
+    m4v: 'extract-audio', '3gp': 'extract-audio', mpeg: 'extract-audio',
+    mpg: 'extract-audio', wmv: 'extract-audio', flv: 'extract-audio'
+  };
+
+  // Returns null rather than a guess for anything unrecognised — a wrong
+  // suggestion costs more than no suggestion, because the person has already
+  // had one thing not work.
+  function toolForExt(ext) {
+    var slug = EXT_TOOL[String(ext || '').toLowerCase().replace(/^\./, '')];
+    return slug && TOOLS[slug] ? slug : null;
+  }
+
   function bySlug(slug) { return TOOLS[slug] || null; }
 
   function inCategory(catId) {
@@ -793,6 +827,8 @@
     HOME_RAILS: HOME_RAILS,
     TOOLS: TOOLS,
     bySlug: bySlug,
+    EXT_TOOL: EXT_TOOL,
+    toolForExt: toolForExt,
     inCategory: inCategory,
     listFor: listFor,
     slugs: function () { return Object.keys(TOOLS); }

@@ -6,7 +6,7 @@ come from the fixes it lists; it came from getting indexed. What follows is the
 method applied to AudioSaw, with the parts that were already true here marked
 as such.
 
-## §1 — Verify the instruments (open: needs the GA4 console)
+## §1 — Verify the instruments (closed 21 Sep 2026)
 
 Two of the four faults **cannot occur here**, verified in the code:
 
@@ -49,7 +49,7 @@ the same way a heartbeat would.
 to watch: it is deliberately separated from `convert_success` so a user clicking
 "download again" five times cannot be read as five conversions.
 
-## §2 — Which engine are you on? (open: needs Bing Webmaster Tools)
+## §2 — Which engine are you on? (answered 21 Sep 2026 — see §9)
 
 audiosaw.com is already imported into the same Bing account as exebrowser.com.
 Open it next to Search Console and compare the query lists. The playbook expects
@@ -202,6 +202,154 @@ Still open, roughly in order of demand:
 | No key detection | `bpm-finder` | Declined deliberately — a confident wrong key is worse than none |
 | No reverb | `audio-reverser` | Declined deliberately — needs a mixing context |
 
+## §9 — What the consoles actually said (21 Sep 2026)
+
+§1 and §2 were both blocked on account access. Both are now done. The property
+is **"Audio Saw", 538578494** — note that the same Google account holds
+exebrowser (539318036) and six other properties, and the picker opens on
+whichever was used last, so check the name before reading a number.
+
+### The instruments were not recording
+
+Two configuration faults, both found and fixed:
+
+**Zero custom dimensions were registered.** Every parameter `flow.js` has been
+carefully attaching — `tool`, `error_type`, `to_tool`, `placement`, `from_tool`,
+`target_format`, `file_ext`, `pick_method`, the size buckets — was arriving at
+GA4 and being **discarded**. The dropdown in the custom-dimension dialog listed
+them all, which means collection was never the problem; nothing had ever been
+promoted to a reportable dimension. So "which tool fails most" and "why do
+conversions fail" were unanswerable, not merely unasked.
+
+Registered: `tool`, `error_type`, `placement`, `rail`, `to_tool`. Still worth
+adding when convenient: `file_ext`, `target_format`, `from_tool`, `pick_method`.
+
+**Custom dimensions are not retroactive.** The 1,996 errors below can never be
+broken down by type. Data starts from 21 Sep. This is the argument for
+registering a parameter the day you start sending it, not the day you need it.
+`rail` was registered *before* the homepage rails shipped, for that reason.
+
+**Key events were the three GA4 ships by default** — `purchase`, `qualify_lead`,
+`close_convert_lead` — all reading "No stream data detected", exactly the
+failure §1b predicted. Now starred: `convert_success`, `next_step_click`,
+`chain_continue`. `file_selected` deliberately left unstarred.
+
+### §1a, §1c — the checks that passed
+
+Window processing is fine: 5,560 `page_view` against 2,227 total users is 98.9%
+coverage, above the ~99% bar for a settled window. No per-user rate is anywhere
+near the ~10 that would indicate a loop; the highest is `convert_error` at 4.71,
+and that is a real number rather than an artefact.
+
+### The event table, 28 days (24 Aug – 20 Sep 2026)
+
+| Event | Count | Users | Per user |
+|---|---|---|---|
+| `page_view` | 5,560 | 2,203 | 2.53 |
+| `convert_start` | 3,445 | 1,207 | 2.85 |
+| `session_start` | 3,126 | 2,198 | 1.43 |
+| `file_selected` | 3,105 | 1,132 | 2.74 |
+| `user_engagement` | 3,065 | 1,347 | 2.30 |
+| `convert_success` | 2,925 | 876 | 3.34 |
+| `first_visit` | 2,163 | 2,161 | 1.00 |
+| `convert_error` | 1,996 | 424 | 4.71 |
+| `download_again` | 873 | 215 | 4.06 |
+| `preview_play` | 572 | 246 | 2.33 |
+| `next_step_click` | 446 | 278 | 1.60 |
+| `scroll` | 405 | 306 | 1.33 |
+| `chain_continue` | 58 | 43 | 1.35 |
+
+### Three things that fall out of it
+
+**1. A third of everyone who starts a conversion hits an error.** 424 of the
+1,207 users who fired `convert_start` also fired `convert_error`, and they
+averaged 4.71 errors each. By event count that is 1,996 failures against 2,925
+successes. This is the largest single number on the site and nobody had seen it,
+because without `error_type` registered there was nothing to look at.
+
+There is no retry loop — §1 verified that in the code — so 4.71 is 424 people
+trying again, by hand, five times. That is not a measurement artefact. It is the
+shape of somebody who wanted the thing to work.
+
+The first guess is `wrong_type`, for the reason in point 3, and the recovery for
+it has been improved (see below). The real distribution lands after a week of
+data. **Do not act further on this until `error_type` has a week behind it** —
+the fix for `decode` is nothing like the fix for `memory`.
+
+**2. Retention is approximately zero.** 2,161 of 2,227 users fired `first_visit`:
+**97% of everyone in the window was new.** `chain_continue`, the playbook's
+retention proxy, reached 43 users — 1.9%. The PWA work in §5 shipped 5 Sep and
+has produced 10 `pwa / standalone` sessions in the last 7 days.
+
+Read that as: the PWA is not the lever it was hoped to be *yet*, and §5's own
+honest failure mode ("installs happen and return visits do not follow") is the
+one that is happening. §5 said to give it a month before judging. That month is
+up on 5 Oct. Judge it then, on returning-user share, not on install count.
+
+**3. The channel expectation in §2 is inverted, and not in the predicted way.**
+§2 guessed this would invert *toward Google*, on the theory that Google ranks
+utilities. It did not. Sessions, last 7 days:
+
+| Channel | Sessions |
+|---|---|
+| `chatgpt.com / ai-assistant` | **819** |
+| `(direct) / (none)` | 198 |
+| `google / organic` | 91 |
+| `bing / organic` | 53 |
+| `pwa / standalone` | 10 |
+| `duckduckgo / organic` | 6 |
+
+ChatGPT alone sends **five times more traffic than every search engine
+combined**. The AI-assistant work in §3 — naming the retrieval agents in
+`robots.txt`, rewriting `llms.txt` to lead with liftable answers — is not a side
+bet on a speculative channel. It is the main channel, and the title work in §4 is
+optimising the small one.
+
+It also changes what the top pages are. Most-viewed, last 7 days: the homepage
+(412), then `/voice-recorder` (321), `/stem-splitter` (289), `/split-audio`
+(130), `/mp3-tag-editor` (94), `/noise-reduction` (72). **Not one format pair in
+the list.** Assistants recommend the distinctive tool, not the commodity
+conversion — which is the opposite of what the site's page count is weighted
+toward, and worth remembering before building the twenty-second `x-to-mp3` page.
+
+### What shipped off the back of this
+
+`wrong_type` used to offer "Use the universal converter", pointing at `/`. When
+two thirds of arrivals land on a page an assistant chose for them, the assistant
+choosing wrong is a common event, and answering it with "go back to the
+homepage" asks a person whose file was just refused to start the hunt over.
+
+`EXT_TOOL` in `js/tool-graph.js` now maps an input extension to the tool that
+takes it, and the error panel names that page: drop an `.m4a` on `/wav-to-mp3`
+and the first chip is "M4A to MP3". Unrecognised extensions still fall back to
+the universal converter rather than guessing — a wrong suggestion costs more than
+no suggestion when something has already failed. Clicks land on the existing
+`next_step_click` / `placement: error`, so the fix is measurable with no new
+event.
+
+### Bing Webmaster Tools, same day
+
+Two recommendations showing. "Some of your important new pages are missing from
+your sitemaps" is real and diagnosed: Bing last crawled `sitemap.xml` on 18 Aug
+and recorded 55 URLs; the live file has 63, and the eight new ones all shipped
+5–6 Sep. **IndexNow last ran 6 Sep.** Run `node tools/indexnow.js` after the next
+deploy and the gap closes.
+
+The second, "not enough inbound links from high quality domains", is off-site and
+has no repo-side fix.
+
+Also found, and not flagged by Bing: **`www.audiosaw.com` serves the whole site
+at HTTP 200 with no redirect to the apex**, and Bing is tracking a second sitemap
+there (45 URLs, last crawled 21 Jun). Canonicals on the www copy do point at the
+apex, so this is diluted crawl budget rather than duplicate content proper.
+`_redirects` cannot fix it — Cloudflare Pages matches paths, not hostnames — so
+it needs a Redirect Rule: match `http.host eq "www.audiosaw.com"`, 301 to
+`concat("https://audiosaw.com", http.request.uri.path)`, dynamic rather than
+static or every URL lands on the homepage.
+
+Site Scan has never been run on the property. Worth starting once the rails are
+live, so its first crawl sees the new homepage.
+
 ## §6 — Deploy traps
 
 AudioSaw deploys from a `main` push via Cloudflare Pages' git integration, so
@@ -220,8 +368,11 @@ curl -s -o /dev/null -w '%{http_code}\n' https://audiosaw.com/mp4-to-mp3
    **after** committing — both read each file's last git commit, so running them
    on a dirty tree writes the previous commit's date for pages you just changed.
    Commit that as a follow-up.
-4. `node tools/indexnow.js` once the deploy is live.
-4. Google gets nothing from IndexNow. For the retitled pages, the sitemap plus
+4. `node tools/indexnow.js` once the deploy is live. **Every deploy, not when
+   you remember** — it was last run on 6 Sep, and by 21 Sep that had become a
+   live error in Bing Webmaster Tools: eight pages shipped 5–6 Sep that Bing's
+   copy of the sitemap did not know about. The gap is silent; nothing warns you.
+5. Google gets nothing from IndexNow. For the retitled pages, the sitemap plus
    the `lastmod` bump is the mechanism; expect ~10 days before CTR moves.
 
 ## What is unproven

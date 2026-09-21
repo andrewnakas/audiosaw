@@ -377,6 +377,16 @@ ${rails}
     console.error('Add them to HOME_RAILS in js/tool-graph.js — the homepage is the strongest internal link a tool page gets.');
     process.exit(1);
   }
+
+  // EXT_TOOL is what the wrong-file-type panel offers instead of the homepage.
+  // A typo there fails open — toolForExt returns null and the visitor silently
+  // gets nothing — so catch it at build time instead.
+  for (const [ext, slug] of Object.entries(G.EXT_TOOL)) {
+    if (!G.TOOLS[slug]) {
+      console.error(`build-nav: EXT_TOOL maps .${ext} to "${slug}", which is not a tool.`);
+      process.exit(1);
+    }
+  }
 })();
 
 /* ----------------------------------------------------------- 6. PWA head */
