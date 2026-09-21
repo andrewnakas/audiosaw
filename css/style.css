@@ -304,6 +304,199 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 .card h3 { margin: 12px 0 8px; color: var(--ink); font-size: 1.25rem; }
 .card p  { margin: 0; color: var(--ink-soft); font-size: 0.94rem; }
 
+/* -------------------------------------------------------------------- Rails
+   The homepage tool directory. Replaces a flat grid of 39 equally-weighted
+   tiles that ran about 2,100px and buried "Why this site" underneath it: five
+   horizontal scrollers grouped by intent, generated from HOME_RAILS in
+   js/tool-graph.js.
+
+   Every tile is a plain <a> inside an overflow-x container. No carousel, no
+   virtualisation, nothing added by script — the whole reason the footer
+   directory exists is crawl discovery, and a link that only appears once JS has
+   run is a weaker signal. Horizontal scrolling here is CSS; the arrow buttons
+   only call scrollBy on a row that already scrolls without them. */
+.rails { margin-top: 10px; }
+.rails-intro {
+  color: var(--ink-soft);
+  max-width: 68ch;
+  margin: 0 0 30px;
+}
+
+.rail { margin-bottom: 34px; }
+.rail:last-child { margin-bottom: 8px; }
+
+.rail-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.rail-head h3 {
+  margin: 0;
+  font-size: 1.16rem;
+}
+.rail-head p {
+  margin: 3px 0 0;
+  font-size: 0.87rem;
+  color: var(--muted);
+}
+.rail-count {
+  font-family: var(--mono);
+  font-size: 0.66em;
+  font-weight: 500;
+  color: var(--amber);
+  vertical-align: 0.3em;
+  margin-left: 3px;
+}
+
+/* Arrows are a pointer affordance and nothing else: generated with aria-hidden
+   and tabindex="-1", because tabbing the links inside a row already scrolls it
+   and two extra stops per rail would buy a keyboard user nothing. Hidden until
+   the script confirms the row actually overflows, and hidden on touch, where
+   dragging is the obvious gesture. */
+.rail-arrows { display: none; flex: none; gap: 6px; }
+.rail.is-scrollable .rail-arrows { display: flex; }
+@media (hover: none) {
+  .rail-arrows, .rail.is-scrollable .rail-arrows { display: none; }
+}
+.rail-arrow {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--ink-soft);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+.rail-arrow:hover:not(:disabled) { border-color: var(--ink-soft); color: var(--ink); }
+.rail-arrow:disabled { opacity: 0.28; cursor: default; }
+
+/* The scroller. --fade-l / --fade-r are written by the generated script and are
+   0px at whichever end you have reached, so the mask is a no-op there rather
+   than dimming content that has nothing beyond it. The mask rather than a solid
+   gradient overlay because body carries a gradient background, so there is no
+   single colour an overlay could fade to. */
+.rail-row {
+  --fade-l: 0px;
+  --fade-r: 0px;
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  /* overflow-x: auto forces the used value of overflow-y to auto as well, so
+     this padding is what keeps the tiles' hover lift, shadow and focus ring
+     from being clipped off the top and bottom of the row. */
+  padding: 5px 2px 14px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  /* Must match the horizontal padding above. Without it the first tile's snap
+     position is 2px in rather than 0, so every row came to rest at scrollLeft 2
+     — which reads as "already scrolled": left fade on, back arrow enabled, and
+     nothing behind it to go back to. */
+  scroll-padding-inline: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.rail.is-scrollable .rail-row {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)), transparent 100%);
+}
+.rail-row::-webkit-scrollbar { height: 8px; }
+.rail-row::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+.rail-row::-webkit-scrollbar-track { background: transparent; }
+.rail-row > li { flex: none; display: flex; scroll-snap-align: start; }
+
+/* Functional tools keep their blurb — "Auto-Cut Silence" does not tell you what
+   it will do to the file, so the name alone is not enough. */
+.rail-row > li > a {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 234px;
+  padding: 15px 16px 16px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.16s ease, border-color 0.16s, box-shadow 0.16s;
+}
+.rail-row > li > a:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink-soft);
+  box-shadow: var(--shadow-md);
+}
+.rail-tile-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.rail-tile-blurb {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* Format pairs read as chips rather than tiles. "mp4 → mp3" is the entire
+   explanation; 22 full-size cards of them were most of what made the old
+   homepage scan as a directory listing instead of a set of tools. */
+.rail-is-chips .rail-row > li > a {
+  width: auto;
+  flex-direction: row;
+  align-items: center;
+  padding: 9px 15px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  border-radius: 2px;
+  box-shadow: none;
+  color: var(--ink-soft);
+}
+.rail-is-chips .rail-row > li > a:hover {
+  transform: none;
+  color: var(--ink);
+  background: var(--amber-soft);
+  border-color: var(--amber);
+  box-shadow: none;
+}
+
+/* "Why this site", moved above the rails. */
+.why-lead {
+  color: var(--ink-soft);
+  max-width: 68ch;
+  margin: 0;
+  font-size: 1.04rem;
+}
+.why .features { margin-top: 22px; }
+.why .badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+@media (max-width: 640px) {
+  .rail-row > li > a { width: 196px; }
+  .rail { margin-bottom: 28px; }
+  .rail-head { align-items: flex-start; }
+}
+
 /* Feature grid */
 .features {
   display: grid;
@@ -741,6 +934,8 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 .card:focus-visible,
 .dropzone:focus-visible,
 .task-picker-row a:focus-visible,
+.rail-row > li > a:focus-visible,
+.rail-arrow:focus-visible,
 .file-item .remove:focus-visible,
 .site-header nav a:focus-visible,
 .footer-directory a:focus-visible,

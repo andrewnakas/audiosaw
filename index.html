@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-06h">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-21">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -64,7 +64,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio actually stay on my device?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site."}},{"@type":"Question","name":"Why does my browser need a moment to \"warm up\" the first time?","acceptedAnswer":{"@type":"Answer","text":"For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all."}},{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions."}},{"@type":"Question","name":"What about DRM-protected files like Apple Music or Spotify?","acceptedAnswer":{"@type":"Answer","text":"Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version."}},{"@type":"Question","name":"How big can the file be?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory."}},{"@type":"Question","name":"Are you keeping any data?","acceptedAnswer":{"@type":"Answer","text":"An analytics ping: page views, which tool you used, whether it worked. No audio data, no filenames, no personal identifiers. No ads and no ad network. You can turn the analytics off from the cookie settings link in the footer."}},{"@type":"Question","name":"Why is this free?","acceptedAnswer":{"@type":"Answer","text":"The work happens on your computer, so there are no servers to pay for — the whole site is static files on a CDN. No accounts, no upsell, no Pro tier, and currently no ads."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test."}},{"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},{"@type":"Question","name":"What about file size limits?","acceptedAnswer":{"@type":"Answer","text":"Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my audio actually stay on my device?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open this page, switch to airplane mode, then drop a file. It still converts. That's the test, and the whole point of the site."}},{"@type":"Question","name":"Why does my browser need a moment to \"warm up\" the first time?","acceptedAnswer":{"@type":"Answer","text":"For most conversions we load a small WebAssembly module (around 3 MB) on first use. After that it's cached and instant. Simple MP3 encoding doesn't need it at all."}},{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"MP3, WAV, M4A, AAC, FLAC, OGG, OPUS, and audio extracted from MP4, MOV, WebM, MKV. Most common pairs go both directions."}},{"@type":"Question","name":"What about DRM-protected files like Apple Music or Spotify?","acceptedAnswer":{"@type":"Answer","text":"Those are encrypted and we can't decrypt them. That's a feature, not a bug. Use the original app to export, or buy the unprotected version."}},{"@type":"Question","name":"How big can the file be?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory."}},{"@type":"Question","name":"Are you keeping any data?","acceptedAnswer":{"@type":"Answer","text":"An analytics ping: page views, which tool you used, whether it worked. No audio data, no filenames, no personal identifiers. No ads and no ad network. You can turn the analytics off from the cookie settings link in the footer."}},{"@type":"Question","name":"Why is this free?","acceptedAnswer":{"@type":"Answer","text":"The work happens on your computer, so there are no servers to pay for — the whole site is static files on a CDN. No accounts, no upsell, no Pro tier, and currently no ads."}},{"@type":"Question","name":"Can I batch-convert a folder of files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that."}},{"@type":"Question","name":"Can I install this as an app?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Chrome or Edge there is an install icon in the address bar; on an iPhone use Share &rarr; Add to Home Screen. It then opens in its own window and keeps working with no connection at all, because the tools were never talking to a server. On Android you can also share a file straight into it from another app."}},{"@type":"Question","name":"Why is a converted MP3 sometimes a different length than the original?","acceptedAnswer":{"@type":"Answer","text":"MP3 encodes in frames of 1,152 samples, so the encoder pads the end out to a whole frame — usually a few tens of milliseconds. If you need a sample-exact length, convert to WAV or FLAC instead."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -150,205 +150,242 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="result-list" id="resultList"></div>
   </section>
 
+  <!-- Returning visitor first: #recentTools is populated by flow.js from
+       localStorage and stays hidden for everyone else, so it costs a new arrival
+       nothing to have it sit here. -->
+  <section class="task-picker" id="recentTools" hidden></section>
 
-  <!-- Below the dropzone, not above it. Most arrivals do land here rather than
-       on a tool page, but a row of eight links between someone and the tool they
-       came for is a toll booth, not a shortcut. -->
+  <!-- The job shortcuts sit below the dropzone, not above it. Most arrivals do
+       land here rather than on a tool page, but a row of links between someone
+       and the tool they came for is a toll booth, not a shortcut. -->
+<!-- AS:jobs -->
   <section class="task-picker">
     <h2 class="task-picker-label">Or jump straight to a job</h2>
     <div class="task-picker-row">
-      <a href="/m4a-to-mp3">voice memo → mp3</a>
-      <a href="/mp4-to-mp3">video → mp3</a>
-      <a href="/ringtone-maker">make a ringtone</a>
-      <a href="/discord-audio-compressor">shrink for Discord</a>
-      <a href="/audio-cutter">cut a clip</a>
-      <a href="/silence-remover">remove dead air</a>
-      <a href="/audio-for-whisper">prep for transcription</a>
-      <a href="/tools" class="task-picker-all">all 49 tools →</a>
+      <a href="/m4a-to-mp3" title="M4A to MP3">voice memo → mp3</a>
+      <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
+      <a href="/ringtone-maker" title="Ringtone Maker">make a ringtone</a>
+      <a href="/stem-splitter" title="AI vocal remover / stem splitter">separate the vocals</a>
+      <a href="/discord-audio-compressor" title="Compress audio for Discord">shrink for Discord</a>
+      <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
+      <a href="/silence-remover" title="Remove silence">remove dead air</a>
+      <a href="/audio-for-whisper" title="Audio for Whisper">prep for transcription</a>
+      <a href="/tools" class="task-picker-all">all 57 tools &rarr;</a>
     </div>
   </section>
+<!-- /AS:jobs -->
 
-  <section class="task-picker" id="recentTools" hidden></section>
-
-  <section class="hero-badges">
-    <div class="badges">
-      <span class="badge hot">no upload</span>
-      <span class="badge">mp3, wav, m4a, flac, ogg, aac</span>
-      <span class="badge">batch convert</span>
-      <span class="badge">cut · join · compress · normalize</span>
-      <span class="badge">ringtones · speed · reverse</span>
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="num">01.</span>Pick a focused tool</h2>
-    <div class="card-grid">
-      <a class="card" href="/mp4-to-mp3">
-        <h3>MP4 → MP3</h3>
-        <p>Pull the audio out of a video. Phone recordings, lectures, podcasts you saved as MP4.</p>
-      </a>
-      <a class="card" href="/m4a-to-mp3">
-        <h3>iPhone Voice Memo → MP3</h3>
-        <p>M4A voice memos converted for Android, email, transcription tools — no iTunes, no upload.</p>
-      </a>
-      <a class="card" href="/wav-to-mp3">
-        <h3>WAV → MP3 (320 kbps)</h3>
-        <p>Ableton / Logic / Reaper / FL Studio bounces compressed for SoundCloud, demos, distribution.</p>
-      </a>
-      <a class="card" href="/opus-to-mp3">
-        <h3>WhatsApp Voice Note → MP3</h3>
-        <p>Convert .opus voice messages from WhatsApp, Signal, Telegram, Discord into MP3. Batch a whole chat.</p>
-      </a>
-      <a class="card" href="/mp3-to-wav">
-        <h3>MP3 → WAV</h3>
-        <p>Decompress back to uncompressed PCM for editing, sampling, or DAW import.</p>
-      </a>
-      <a class="card" href="/flac-to-mp3">
-        <h3>FLAC → MP3</h3>
-        <p>Archive-quality FLAC down to portable MP3. Keep the original, generate a copy.</p>
-      </a>
-      <a class="card" href="/mov-to-mp3">
-        <h3>MOV → MP3</h3>
-        <p>QuickTime and iPhone .mov files stripped to clean audio. Same tool, different muxer.</p>
-      </a>
-      <a class="card" href="/audio-cutter">
-        <h3>Audio Cutter</h3>
-        <p>Trim the silence, grab a clip, set a ringtone. Visual waveform, drag the handles.</p>
-      </a>
-      <a class="card" href="/audio-joiner">
-        <h3>Audio Joiner</h3>
-        <p>Stitch multiple clips into one file. Reorder by drag. Crossfade if you want.</p>
-      </a>
-      <a class="card" href="/extract-audio">
-        <h3>Extract Audio</h3>
-        <p>Any video format in, audio out. MP4, MOV, WebM, MKV — pick your output codec.</p>
-      </a>
-      <a class="card" href="/wav-to-flac">
-        <h3>WAV → FLAC</h3>
-        <p>Lossless compression for archiving recordings. Same audio, smaller files.</p>
-      </a>
-      <a class="card" href="/mp3-to-m4a">
-        <h3>MP3 → M4A</h3>
-        <p>Apple-friendly AAC format for iTunes and iPhone workflows.</p>
-      </a>
-      <a class="card" href="/audio-compressor">
-        <h3>Audio Compressor</h3>
-        <p>Shrink an MP3 for Gmail's 25 MB cap, Discord's 10 MB free upload, or a WhatsApp send.</p>
-      </a>
-      <a class="card" href="/normalize-audio">
-        <h3>Normalize Audio</h3>
-        <p>Peak-normalize to a target dB so quiet voice memos and podcast cuts sit at the right level.</p>
-      </a>
-      <a class="card" href="/silence-remover">
-        <h3>Podcast Silence Remover</h3>
-        <p>Auto-trim dead air from podcasts, sermons, voice memos, voiceover takes.</p>
-      </a>
-      <a class="card" href="/ringtone-maker">
-        <h3>iPhone Ringtone Maker</h3>
-        <p>30-second .m4r or Android .mp3 from any song — no iTunes, no GarageBand needed.</p>
-      </a>
-      <a class="card" href="/audio-speed">
-        <h3>Slow Down / Speed Up</h3>
-        <p>Slow a guitar solo to learn it (pitch preserved). Speed a podcast to 1.5×. Same tool.</p>
-      </a>
-      <a class="card" href="/audio-reverser">
-        <h3>Audio Reverser</h3>
-        <p>Play any audio file in reverse. For build-ups, sample design, hidden-message hunts.</p>
-      </a>
-      <a class="card" href="/aiff-to-mp3">
-        <h3>AIFF → MP3</h3>
-        <p>Logic Pro and GarageBand AIFF bounces compressed to MP3 for sharing and uploads.</p>
-      </a>
-      <a class="card" href="/m4a-to-wav-for-audacity">
-        <h3>M4A → WAV (Audacity)</h3>
-        <p>Fix Audacity's "Advanced Audio Coding file" import error. No FFmpeg install needed.</p>
-      </a>
-      <a class="card" href="/audio-for-whisper">
-        <h3>Audio for Whisper</h3>
-        <p>Locked 16 kHz mono WAV — the format Whisper and whisper.cpp actually want.</p>
-      </a>
-      <a class="card" href="/stereo-to-mono">
-        <h3>Stereo → Mono</h3>
-        <p>Mix L+R to a single channel for podcasts, voicemails, transcripts. Halves the file size.</p>
-      </a>
-      <a class="card" href="/wav-for-sp404">
-        <h3>WAV for SP-404 / MPC</h3>
-        <p>Sample-ready WAV at the right rate for SP-404 MK2 (48 kHz), MPC (44.1 kHz), Splice uploads.</p>
-      </a>
-      <a class="card" href="/m4b-to-mp3">
-        <h3>M4B Audiobook → MP3</h3>
-        <p>DRM-free audiobook (.m4b) to MP3 for car stereos, Android, old MP3 players.</p>
-      </a>
-      <a class="card" href="/mp3-320kbps">
-        <h3>MP3 at 320 kbps</h3>
-        <p>Max-quality CBR MP3 for SoundCloud, label submissions, DJ libraries.</p>
-      </a>
-      <a class="card" href="/discord-audio-compressor">
-        <h3>Discord Audio Compressor</h3>
-        <p>Auto-fit under Discord's 10 MB / 50 MB / 500 MB upload cap — pick your tier.</p>
-      </a>
-      <a class="card" href="/audio-to-text-prep">
-        <h3>Audio for Otter / Rev / Notta</h3>
-        <p>Format your recording exactly how each transcription service wants it.</p>
-      </a>
-      <a class="card" href="/wav-44100-16bit">
-        <h3>WAV 44.1 kHz / 16-bit</h3>
-        <p>CD-spec WAV for Splice samples, sample packs, mastering deliverables.</p>
-      </a>
-      <a class="card" href="/fade-in-fade-out">
-        <h3>Fade In / Fade Out</h3>
-        <p>Smooth cosine fades on the ends of any audio file. No Audacity needed.</p>
-      </a>
-      <a class="card" href="/amplify-audio">
-        <h3>Amplify / Boost Audio</h3>
-        <p>Make a quiet voice memo or lecture audible. +3 to +20 dB with soft limiter.</p>
-      </a>
-      <a class="card" href="/wav-to-mp3-128kbps">
-        <h3>WAV → MP3 128 kbps</h3>
-        <p>Locked small-MP3 output for podcasts, web embeds, email attachments.</p>
-      </a>
-      <a class="card" href="/davinci-resolve-audio">
-        <h3>Audio for DaVinci Resolve</h3>
-        <p>48 kHz WAV that Resolve free always imports — fixes silent or rejected audio.</p>
-      </a>
-      <a class="card" href="/capcut-audio">
-        <h3>Audio for CapCut</h3>
-        <p>MP3 or WAV preset for CapCut mobile / desktop — fixes silent OPUS / M4A imports.</p>
-      </a>
-      <a class="card" href="/flac-to-wav">
-        <h3>FLAC → WAV</h3>
-        <p>Decompress lossless FLAC into editable WAV for DAWs and CD authoring.</p>
-      </a>
-      <a class="card" href="/change-sample-rate">
-        <h3>Change Sample Rate</h3>
-        <p>Resample to 44.1, 48, 96, 22.05, 16 kHz — match your DAW project or fix playback speed.</p>
-      </a>
-      <a class="card" href="/mono-to-stereo">
-        <h3>Mono → Stereo</h3>
-        <p>Duplicate mono into honest dual-mono. For tools that demand a stereo file.</p>
-      </a>
-      <a class="card" href="/trim-silence-edges">
-        <h3>Trim Silence (Top &amp; Tail)</h3>
-        <p>Cut just the leading and trailing silence. Pauses in the middle stay.</p>
-      </a>
-      <a class="card" href="/podcast-prep">
-        <h3>Podcast One-Click Prep</h3>
-        <p>Normalize + mono + MP3 in one step. Anchor / Buzzsprout / Spotify ready.</p>
-      </a>
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="num">02.</span>Why this site</h2>
-    <p style="color:var(--ink-soft);max-width:62ch">Most "online audio converter" sites want you to upload a file you wrote, or recorded, or paid for, to a server in someone else's country, wait in a queue, and then trust them to delete it. That's silly. Your browser can already decode and encode audio. We wrap Web Audio and a slim FFmpeg-WebAssembly build with a clean drop target, and that's the whole site.</p>
+  <!-- "Why this site" used to be section 02, underneath 39 tiles — roughly
+       2,100px down the page. It is the only part of the homepage that says what
+       is actually different here, and almost nobody scrolled to it. It goes
+       above the tool directory now, and the badges that used to sit in their own
+       band are folded in rather than forming a third thing to scroll past. -->
+  <section class="why">
+    <h2><span class="num">01.</span>Why this site</h2>
+    <p class="why-lead">Most "online audio converter" sites ask you to upload a file you wrote, recorded, or paid for to a server in someone else's country, wait in a queue, and then trust them to delete it. That is silly. Your browser can already decode and encode audio. We wrap Web&nbsp;Audio and a slim FFmpeg-WebAssembly build in a clean drop target, and that is the whole site — there is no upload endpoint to trust, because there is no upload.</p>
 
     <div class="features">
-      <div><h3>Local</h3><p>Your audio stays in the tab. Open the page, kill your wifi, the tools still work. Try it.</p></div>
-      <div><h3>Nothing to install</h3><p>No download, no signup, no daily quota. You're already where you need to be.</p></div>
-      <div><h3>Real controls</h3><p>Bitrate, sample rate, channels, LUFS target — actual values you can pick, not a "Pro" wall.</p></div>
-      <div><h3>Batch is normal</h3><p>Drop 40 voice memos, get 40 MP3s back as a zip. Not a feature we ration.</p></div>
+      <div><h3>Nothing leaves the tab</h3><p>Open this page, switch off your wifi, then drop a file. It still converts. That is the test, and you can run it right now.</p></div>
+      <div><h3>Nothing to install</h3><p>No download, no signup, no daily quota, no watermark on the way out. You are already where you need to be.</p></div>
+      <div><h3>Real controls</h3><p>Bitrate, sample rate, channel count, LUFS target — actual values you pick, not three presets and a "Pro" wall.</p></div>
+      <div><h3>Batch is normal</h3><p>Drop forty voice memos, get forty MP3s back as a zip. Not a feature we ration by the day.</p></div>
+    </div>
+
+    <div class="badges">
+      <span class="badge hot">no upload</span>
+      <span class="badge">mp3 · wav · m4a · flac · ogg · aac</span>
+      <span class="badge">batch convert</span>
+      <span class="badge">works offline</span>
+      <span class="badge">free, no signup</span>
     </div>
   </section>
+
+<!-- AS:home -->
+  <section class="rails">
+    <h2><span class="num">02.</span>Pick a tool</h2>
+    <p class="rails-intro">All 57, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+
+    <div class="rail rail-is-chips" data-rail="convert">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-convert">Convert a file <span class="rail-count">22</span></h3>
+          <p>Find the pair you have. Nothing is uploaded for any of them.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-convert">
+        <li><a href="/mp4-to-mp3" title="MP4 to MP3">mp4 → mp3</a></li>
+        <li><a href="/m4a-to-mp3" title="M4A to MP3">m4a → mp3</a></li>
+        <li><a href="/wav-to-mp3" title="WAV to MP3">wav → mp3</a></li>
+        <li><a href="/opus-to-mp3" title="Opus / WhatsApp voice note to MP3">opus → mp3</a></li>
+        <li><a href="/mp3-to-wav" title="MP3 to WAV">mp3 → wav</a></li>
+        <li><a href="/flac-to-mp3" title="FLAC to MP3">flac → mp3</a></li>
+        <li><a href="/extract-audio" title="Extract audio from video">video → audio</a></li>
+        <li><a href="/mov-to-mp3" title="MOV to MP3">mov → mp3</a></li>
+        <li><a href="/aac-to-mp3" title="AAC to MP3">aac → mp3</a></li>
+        <li><a href="/ogg-to-mp3" title="OGG to MP3">ogg → mp3</a></li>
+        <li><a href="/aiff-to-mp3" title="AIFF to MP3">aiff → mp3</a></li>
+        <li><a href="/wma-to-mp3" title="WMA to MP3">wma → mp3</a></li>
+        <li><a href="/m4b-to-mp3" title="M4B to MP3">m4b → mp3</a></li>
+        <li><a href="/caf-to-mp3" title="CAF to MP3">caf → mp3</a></li>
+        <li><a href="/ac3-to-mp3" title="AC3 / Dolby Digital to MP3">ac3 → mp3</a></li>
+        <li><a href="/mp3-to-m4a" title="MP3 to M4A">mp3 → m4a</a></li>
+        <li><a href="/mp3-to-aiff" title="MP3 to AIFF">mp3 → aiff</a></li>
+        <li><a href="/wav-to-flac" title="WAV to FLAC">wav → flac</a></li>
+        <li><a href="/flac-to-wav" title="FLAC to WAV">flac → wav</a></li>
+        <li><a href="/mp3-320kbps" title="MP3 at 320 kbps">mp3 320k</a></li>
+        <li><a href="/wav-to-mp3-128kbps" title="WAV to MP3 at 128 kbps">wav → mp3 128k</a></li>
+        <li><a href="/wav-44100-16bit" title="WAV at 44.1 kHz, 16-bit">wav 44.1/16</a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="trim">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-trim">Cut, trim &amp; arrange <span class="rail-count">9</span></h3>
+          <p>Change how long it is or what order it is in, not what format it is.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-trim">
+        <li><a href="/audio-cutter"><span class="rail-tile-title">Audio Cutter</span><span class="rail-tile-blurb">Drag handles on a waveform and keep only the part you want.</span></a></li>
+        <li><a href="/audio-joiner"><span class="rail-tile-title">Audio Joiner</span><span class="rail-tile-blurb">Concatenate several files into one, in the order you choose.</span></a></li>
+        <li><a href="/ringtone-maker"><span class="rail-tile-title">Ringtone Maker</span><span class="rail-tile-blurb">A 30-second clip from any song, in the format your phone wants.</span></a></li>
+        <li><a href="/auto-cut-silence"><span class="rail-tile-title">Auto-Cut Silence</span><span class="rail-tile-blurb">Shorten the pauses between phrases, keeping speech natural.</span></a></li>
+        <li><a href="/silence-remover"><span class="rail-tile-title">Remove silence</span><span class="rail-tile-blurb">Strip dead air out of a podcast, voice memo or voiceover.</span></a></li>
+        <li><a href="/trim-silence-edges"><span class="rail-tile-title">Trim silence off the ends</span><span class="rail-tile-blurb">Top and tail a recording, leaving the middle untouched.</span></a></li>
+        <li><a href="/audio-speed"><span class="rail-tile-title">Change audio speed</span><span class="rail-tile-blurb">Slow a song or speed a podcast without shifting the pitch.</span></a></li>
+        <li><a href="/fade-in-fade-out"><span class="rail-tile-title">Fade in / fade out</span><span class="rail-tile-blurb">Clean fades on both ends without opening an editor.</span></a></li>
+        <li><a href="/audio-reverser"><span class="rail-tile-title">Audio Reverser</span><span class="rail-tile-blurb">Play a file backwards — for effects, or to hear what is buried.</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="compress">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-compress">Compress &amp; clean up <span class="rail-count">9</span></h3>
+          <p>Too big to send, too quiet to hear, or too noisy to use.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-compress">
+        <li><a href="/audio-compressor"><span class="rail-tile-title">Compress an audio file</span><span class="rail-tile-blurb">Get a file under an email, Discord or upload size limit.</span></a></li>
+        <li><a href="/normalize-audio"><span class="rail-tile-title">Normalize Audio</span><span class="rail-tile-blurb">Bring files to a consistent level so nothing jumps out.</span></a></li>
+        <li><a href="/loudness-normalizer"><span class="rail-tile-title">LUFS Loudness Normalizer</span><span class="rail-tile-blurb">Match the loudness target Spotify, Apple or broadcast expects.</span></a></li>
+        <li><a href="/amplify-audio"><span class="rail-tile-title">Amplify quiet audio</span><span class="rail-tile-blurb">Make a too-quiet recording usable without driving it into distortion.</span></a></li>
+        <li><a href="/noise-reduction"><span class="rail-tile-title">Remove background noise</span><span class="rail-tile-blurb">Strip hiss, hum and fan noise out of a recording with spectral gating.</span></a></li>
+        <li><a href="/audio-eq"><span class="rail-tile-title">EQ &amp; bass booster</span><span class="rail-tile-blurb">Adjust bass, mids and treble, or boost the low end, baked into the file.</span></a></li>
+        <li><a href="/stereo-to-mono"><span class="rail-tile-title">Stereo to mono</span><span class="rail-tile-blurb">Fix one-sided recordings and halve the size of voice files.</span></a></li>
+        <li><a href="/mono-to-stereo"><span class="rail-tile-title">Mono to stereo</span><span class="rail-tile-blurb">Honest dual-mono for software that insists on two channels.</span></a></li>
+        <li><a href="/change-sample-rate"><span class="rail-tile-title">Change the sample rate</span><span class="rail-tile-blurb">Resample to match a project and stop import warnings.</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="music">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-music">Make music <span class="rail-count">9</span></h3>
+          <p>Pull a mix apart, fix the pitch, find the tempo, record a take.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-music">
+        <li><a href="/stem-splitter"><span class="rail-tile-title">AI vocal remover / stem splitter</span><span class="rail-tile-blurb">Neural separation into a clean instrumental and acapella, running on your machine.</span></a></li>
+        <li><a href="/vocal-remover"><span class="rail-tile-title">Vocal remover / karaoke</span><span class="rail-tile-blurb">Remove the vocal from a stereo song, or isolate it, by cancelling the centre.</span></a></li>
+        <li><a href="/autotune"><span class="rail-tile-title">Autotune / Pitch Correction</span><span class="rail-tile-blurb">Snap a vocal to a key — subtle tuning or the hard-tuned effect.</span></a></li>
+        <li><a href="/pitch-shifter"><span class="rail-tile-title">Pitch &amp; key changer</span><span class="rail-tile-blurb">Shift the key up or down by semitones without changing the tempo.</span></a></li>
+        <li><a href="/audio-to-midi"><span class="rail-tile-title">Audio to MIDI</span><span class="rail-tile-blurb">Turn a hummed melody or bassline into a MIDI file.</span></a></li>
+        <li><a href="/bpm-finder"><span class="rail-tile-title">BPM Finder</span><span class="rail-tile-blurb">Detect the tempo of a track, with half and double time shown.</span></a></li>
+        <li><a href="/voice-recorder"><span class="rail-tile-title">Voice recorder</span><span class="rail-tile-blurb">Record from your microphone in the browser — the audio never leaves your device.</span></a></li>
+        <li><a href="/split-audio"><span class="rail-tile-title">Split an audio file</span><span class="rail-tile-blurb">Cut one long recording into equal parts, fixed chunks, or at the silent gaps.</span></a></li>
+        <li><a href="/mp3-tag-editor"><span class="rail-tile-title">MP3 tag editor</span><span class="rail-tile-blurb">Edit title, artist, album and cover art without re-encoding the audio.</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="apps">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-apps">For a specific app or device <span class="rail-count">8</span></h3>
+          <p>One program, one spec, already filled in — so the import works first try.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-apps">
+        <li><a href="/audio-for-whisper"><span class="rail-tile-title">Audio for Whisper</span><span class="rail-tile-blurb">16 kHz mono WAV — exactly what Whisper wants, in one click.</span></a></li>
+        <li><a href="/podcast-prep"><span class="rail-tile-title">Podcast prep</span><span class="rail-tile-blurb">Normalize, mono mixdown and MP3 encode in a single pass.</span></a></li>
+        <li><a href="/discord-audio-compressor"><span class="rail-tile-title">Compress audio for Discord</span><span class="rail-tile-blurb">Fits under the upload limit without you doing the maths.</span></a></li>
+        <li><a href="/capcut-audio"><span class="rail-tile-title">Audio for CapCut</span><span class="rail-tile-blurb">The format CapCut imports without complaint.</span></a></li>
+        <li><a href="/davinci-resolve-audio"><span class="rail-tile-title">Audio for DaVinci Resolve</span><span class="rail-tile-blurb">The format Resolve always imports, no conform errors.</span></a></li>
+        <li><a href="/m4a-to-wav-for-audacity"><span class="rail-tile-title">M4A to WAV for Audacity</span><span class="rail-tile-blurb">Skip the FFmpeg install Audacity keeps asking you for.</span></a></li>
+        <li><a href="/audio-to-text-prep"><span class="rail-tile-title">Prep audio for transcription</span><span class="rail-tile-blurb">The format each transcription service actually wants.</span></a></li>
+        <li><a href="/wav-for-sp404"><span class="rail-tile-title">WAV for SP-404 / MPC</span><span class="rail-tile-blurb">The exact spec hardware samplers need, or they fail silently.</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <script>
+  /* Rail arrows. Progressive enhancement: with JS off the rows still scroll by
+     touch, trackpad and keyboard, so this only adds the buttons and the edge
+     fade that tells you there is more to the right. */
+  (function () {
+    var rails = document.querySelectorAll('.rail');
+    if (!rails.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var smooth = reduce ? 'auto' : 'smooth';
+    Array.prototype.forEach.call(rails, function (rail) {
+      var row = rail.querySelector('.rail-row');
+      var arrows = rail.querySelector('.rail-arrows');
+      function sync() {
+        // A rail that fits needs no arrows and no fade. Half a pixel of slack
+        // because scrollWidth and clientWidth disagree at some zoom levels and
+        // a permanently-lit right arrow that cannot move is worse than none.
+        var over = row.scrollWidth - row.clientWidth > 1;
+        rail.classList.toggle('is-scrollable', over);
+        if (!over) return;
+        // 2px of slack: scrollLeft is fractional at browser zoom levels other
+        // than 100%, and an end never quite reached leaves an arrow lit that
+        // cannot move.
+        var atStart = row.scrollLeft <= 2;
+        var atEnd = row.scrollLeft >= row.scrollWidth - row.clientWidth - 2;
+        row.style.setProperty('--fade-l', atStart ? '0px' : '30px');
+        row.style.setProperty('--fade-r', atEnd ? '0px' : '44px');
+        arrows.children[0].disabled = atStart;
+        arrows.children[1].disabled = atEnd;
+      }
+      Array.prototype.forEach.call(arrows.children, function (btn) {
+        btn.addEventListener('click', function () {
+          // 80% rather than a full page so the tile you were looking at stays
+          // partly visible and the row does not feel like it jumped.
+          row.scrollBy({ left: row.clientWidth * 0.8 * +btn.dataset.dir, behavior: smooth });
+        });
+      });
+      row.addEventListener('scroll', sync, { passive: true });
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(row);
+      sync();
+    });
+  })();
+  </script>
+<!-- /AS:home -->
+
+
+
+
+
 
   <section class="faq">
     <h2><span class="num">03.</span>FAQ</h2>
@@ -360,9 +397,9 @@ gtag('config', 'G-5X9ERMVYXE');
       <details><summary>How big can the file be?</summary><p>Around 500 MB is a safe ceiling on a modern laptop. We can sometimes handle more, but past 1 GB the browser starts running out of memory.</p></details>
       <details><summary>Are you keeping any data?</summary><p>An analytics ping: page views, which tool you used, whether it worked. No audio data, no filenames, no personal identifiers. No ads and no ad network. You can turn the analytics off from the cookie settings link in the footer.</p></details>
       <details><summary>Why is this free?</summary><p>The work happens on your computer, so there are no servers to pay for — the whole site is static files on a CDN. No accounts, no upsell, no Pro tier, and currently no ads.</p></details>
-      <details><summary>Does my audio file get uploaded?</summary><p>No. The conversion runs in your browser tab. Open the page, turn off your wifi, and the tools still work. That's the test.</p></details>
       <details><summary>Can I batch-convert a folder of files?</summary><p>Yes. Drop multiple files at once and you get a zip of all the outputs. Online converters that gatekeep batches behind a paywall — we don't do that.</p></details>
-      <details><summary>What about file size limits?</summary><p>Up to roughly 500 MB on a typical laptop. Above that, browser memory gets tight. We'll warn you and process in chunks where we can.</p></details>
+      <details><summary>Can I install this as an app?</summary><p>Yes. In Chrome or Edge there is an install icon in the address bar; on an iPhone use Share &rarr; Add to Home Screen. It then opens in its own window and keeps working with no connection at all, because the tools were never talking to a server. On Android you can also share a file straight into it from another app.</p></details>
+      <details><summary>Why is a converted MP3 sometimes a different length than the original?</summary><p>MP3 encodes in frames of 1,152 samples, so the encoder pads the end out to a whole frame — usually a few tens of milliseconds. If you need a sample-exact length, convert to WAV or FLAC instead.</p></details>
       <details><summary>Will it work on my phone?</summary><p>Yes, just slower because phone CPUs are slower at decoding. iOS has stricter memory caps, so very large files may fail on Safari.</p></details>
       <!-- /AS:faq -->
   </section>
@@ -461,12 +498,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-09-06h"></script>
-<script src="/js/tool-graph.js?v=2026-09-06h"></script>
-<script src="/js/flow.js?v=2026-09-06h"></script>
-<script src="/js/audio-core.js?v=2026-09-06h"></script>
-<script src="/js/universal-converter.js?v=2026-09-06h"></script>
-<script src="/js/consent.js?v=2026-09-06h"></script>
-<script src="/js/pwa.js?v=2026-09-06h"></script>
+<script src="/js/common.js?v=2026-09-21"></script>
+<script src="/js/tool-graph.js?v=2026-09-21"></script>
+<script src="/js/flow.js?v=2026-09-21"></script>
+<script src="/js/audio-core.js?v=2026-09-21"></script>
+<script src="/js/universal-converter.js?v=2026-09-21"></script>
+<script src="/js/consent.js?v=2026-09-21"></script>
+<script src="/js/pwa.js?v=2026-09-21"></script>
 </body>
 </html>

@@ -673,6 +673,105 @@
     }
   };
 
+  // The "jump straight to a job" row that sits above the rails. Phrased as the
+  // job, not the tool: someone holding an iPhone memo is not searching for
+  // "M4A". Kept short deliberately — this row is a shortcut past the rails, and
+  // a shortcut with thirty entries is just the rails again.
+  //
+  // It lives here rather than in index.html because the row used to end in a
+  // hardcoded "all 49 tools →" while the site had 57. Generated from the graph,
+  // that count cannot drift.
+  var HOME_JOBS = [
+    ['m4a-to-mp3', 'voice memo \u2192 mp3'],
+    ['mp4-to-mp3', 'video \u2192 mp3'],
+    ['ringtone-maker', 'make a ringtone'],
+    ['stem-splitter', 'separate the vocals'],
+    ['discord-audio-compressor', 'shrink for Discord'],
+    ['audio-cutter', 'cut a clip'],
+    ['silence-remover', 'remove dead air'],
+    ['audio-for-whisper', 'prep for transcription']
+  ];
+
+  // Homepage rails — a curation layer sitting on top of CATEGORIES.
+  //
+  // The homepage groups by what someone is trying to do, which is deliberately
+  // not the same cut as the breadcrumb category: the pitch shifter is filed
+  // under "clean up & separate" in the directory because that is where people
+  // hunt for it, but on the homepage it belongs beside autotune and the BPM
+  // finder under "make music". CATEGORIES stays canonical for breadcrumbs,
+  // /tools and the footer directory; HOME_RAILS only decides the homepage.
+  //
+  // Every tool must appear in exactly one rail. build-nav.js fails the build if
+  // one is missing or listed twice. The grid this replaced was hand-maintained
+  // HTML in index.html rather than generated from here, and had drifted to 39 of
+  // 57 tools — the homepage is the strongest internal link a tool page gets, and
+  // eighteen of them had silently lost it.
+  //
+  // style: 'chip' where the label is the whole explanation. A format pair reads
+  //        fine as "mp4 → mp3" and gains nothing from a blurb, and 22 full-size
+  //        tiles of them were most of what made the old homepage scan as a
+  //        directory listing rather than a set of tools.
+  //        'tile' where the blurb has to carry the meaning.
+  var HOME_RAILS = [
+    {
+      id: 'convert',
+      title: 'Convert a file',
+      note: 'Find the pair you have. Nothing is uploaded for any of them.',
+      style: 'chip',
+      tools: [
+        'mp4-to-mp3', 'm4a-to-mp3', 'wav-to-mp3', 'opus-to-mp3', 'mp3-to-wav',
+        'flac-to-mp3', 'extract-audio', 'mov-to-mp3', 'aac-to-mp3', 'ogg-to-mp3',
+        'aiff-to-mp3', 'wma-to-mp3', 'm4b-to-mp3', 'caf-to-mp3', 'ac3-to-mp3',
+        'mp3-to-m4a', 'mp3-to-aiff', 'wav-to-flac', 'flac-to-wav',
+        'mp3-320kbps', 'wav-to-mp3-128kbps', 'wav-44100-16bit'
+      ]
+    },
+    {
+      id: 'trim',
+      title: 'Cut, trim & arrange',
+      note: 'Change how long it is or what order it is in, not what format it is.',
+      style: 'tile',
+      tools: [
+        'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
+        'silence-remover', 'trim-silence-edges', 'audio-speed',
+        'fade-in-fade-out', 'audio-reverser'
+      ]
+    },
+    {
+      id: 'compress',
+      title: 'Compress & clean up',
+      note: 'Too big to send, too quiet to hear, or too noisy to use.',
+      style: 'tile',
+      tools: [
+        'audio-compressor', 'normalize-audio', 'loudness-normalizer',
+        'amplify-audio', 'noise-reduction', 'audio-eq', 'stereo-to-mono',
+        'mono-to-stereo', 'change-sample-rate'
+      ]
+    },
+    {
+      id: 'music',
+      title: 'Make music',
+      note: 'Pull a mix apart, fix the pitch, find the tempo, record a take.',
+      style: 'tile',
+      tools: [
+        'stem-splitter', 'vocal-remover', 'autotune', 'pitch-shifter',
+        'audio-to-midi', 'bpm-finder', 'voice-recorder', 'split-audio',
+        'mp3-tag-editor'
+      ]
+    },
+    {
+      id: 'apps',
+      title: 'For a specific app or device',
+      note: 'One program, one spec, already filled in — so the import works first try.',
+      style: 'tile',
+      tools: [
+        'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
+        'capcut-audio', 'davinci-resolve-audio', 'm4a-to-wav-for-audacity',
+        'audio-to-text-prep', 'wav-for-sp404'
+      ]
+    }
+  ];
+
   function bySlug(slug) { return TOOLS[slug] || null; }
 
   function inCategory(catId) {
@@ -690,6 +789,8 @@
 
   return {
     CATEGORIES: CATEGORIES,
+    HOME_JOBS: HOME_JOBS,
+    HOME_RAILS: HOME_RAILS,
     TOOLS: TOOLS,
     bySlug: bySlug,
     inCategory: inCategory,

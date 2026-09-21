@@ -554,16 +554,30 @@
     document.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('a[href^="/"]') : null;
       if (!a) return;
+      // #recentTools has to be tested before .task-picker: the recents row is
+      // rendered as a .task-picker-row inside it, and reading it as home_jobs
+      // would merge a returning visitor's shortcut with a new arrival's.
+      var rail = a.closest('.rail-row') ? a.closest('.rail') : null;
       var placement = a.closest('.related-tools') ? 'related'
         : a.closest('.footer-directory') ? 'footer_dir'
         : a.closest('#recentTools') ? 'recent'
+        : rail ? 'home_rail'
+        : a.closest('.task-picker') && currentTool() === 'index' ? 'home_jobs'
+        // Nothing on / matches .card-grid any more — the rails replaced it. Kept
+        // because reverting index.html is the rollback, and the control arm of
+        // the rails A/B has to keep reporting under its old placement name for
+        // the two numbers to be comparable at all.
         : a.closest('.card-grid') && currentTool() === 'index' ? 'home_grid'
         : null;
       if (placement) {
         track('next_step_click', {
           tool: currentTool(),
           to_tool: a.getAttribute('href').replace(/^\//, '') || 'index',
-          placement: placement
+          placement: placement,
+          // Which rail earned the click. The point of the rails is that a row
+          // nobody scrolls is a row of dead links, and placement alone cannot
+          // tell "the convert rail works" from "only its first three chips do".
+          rail: rail ? rail.getAttribute('data-rail') : undefined
         });
       }
     });

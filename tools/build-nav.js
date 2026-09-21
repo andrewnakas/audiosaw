@@ -14,6 +14,11 @@
  *   3. breadcrumb             — visible trail + matching BreadcrumbList JSON-LD.
  *   4. header link            — one "all tools" entry pointing at /tools.
  *   5. tools.html             — the hub page.
+ *   6. homepage rails         — the five intent-grouped scroll rows on / and the
+ *                               "jump straight to a job" shortcut above them.
+ *                               Generated because the 39-tile grid they replace was
+ *                               hand-written HTML in index.html and had drifted to
+ *                               18 tools short of the graph.
  *
  * These have to be real HTML rather than JS-injected: the problem being solved
  * is crawl discovery, and a renderer-dependent link is a weaker signal.
@@ -224,7 +229,157 @@ for (const cat of G.CATEGORIES) {
   }
 }
 
-/* ----------------------------------------------------------- 5. PWA head */
+/* ------------------------------------------------- 5. homepage jobs + rails */
+
+/*
+ * The homepage used to carry 39 hand-written <a class="card"> tiles in one flat
+ * grid — about 2,100px of identical-looking boxes, more than half of them format
+ * pairs, with "Why this site" stranded underneath all of it. Two costs: nobody
+ * scrolled far enough to read the one paragraph that says what is different
+ * about the site, and because the list was hand-maintained rather than generated
+ * from the graph, 18 of the 57 tools had no homepage link at all.
+ *
+ * Now: five horizontally scrolling rails grouped by intent, generated from
+ * G.HOME_RAILS. Every tool gets a link, the format pairs collapse to compact
+ * chips, and the whole set is shorter than the old grid.
+ *
+ * The rails are real anchors inside an overflow-x container, not a JS carousel.
+ * That is load-bearing — the reason the footer directory exists at all is crawl
+ * discovery, and a link that only exists after a script runs is a weaker signal.
+ * Horizontal scroll is pure CSS here; the arrow buttons only call scrollBy.
+ */
+
+function homeJobs() {
+  const links = G.HOME_JOBS.map(([slug, label]) => {
+    const t = G.TOOLS[slug];
+    if (!t) {
+      console.error(`build-nav: HOME_JOBS points at unknown tool "${slug}".`);
+      process.exit(1);
+    }
+    return `      <a href="/${slug}" title="${esc(t.title)}">${esc(label)}</a>`;
+  }).join('\n');
+
+  return `  <section class="task-picker">
+    <h2 class="task-picker-label">Or jump straight to a job</h2>
+    <div class="task-picker-row">
+${links}
+      <a href="/tools" class="task-picker-all">all ${G.slugs().length} tools &rarr;</a>
+    </div>
+  </section>`;
+}
+
+function homeRails() {
+  const rails = G.HOME_RAILS.map((rail) => {
+    const headingId = `rail-${rail.id}`;
+    const chips = rail.style === 'chip';
+
+    const items = rail.tools.map((slug) => {
+      const t = G.TOOLS[slug];
+      return chips
+        ? `        <li><a href="/${slug}" title="${esc(t.title)}">${esc(t.label)}</a></li>`
+        : `        <li><a href="/${slug}"><span class="rail-tile-title">${esc(t.title)}</span>` +
+          `<span class="rail-tile-blurb">${esc(t.blurb)}</span></a></li>`;
+    }).join('\n');
+
+    // The arrows are a pointer affordance only, hence aria-hidden and
+    // tabindex="-1": a keyboard user tabs the links themselves and the browser
+    // scrolls each one into view, so exposing the buttons would add two stops
+    // per rail that do nothing a keyboard user needs.
+    return `    <div class="rail${chips ? ' rail-is-chips' : ''}" data-rail="${rail.id}">
+      <div class="rail-head">
+        <div>
+          <h3 id="${headingId}">${esc(rail.title)} <span class="rail-count">${rail.tools.length}</span></h3>
+          <p>${esc(rail.note)}</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="${headingId}">
+${items}
+      </ul>
+    </div>`;
+  }).join('\n\n');
+
+  return `  <section class="rails">
+    <h2><span class="num">02.</span>Pick a tool</h2>
+    <p class="rails-intro">All ${G.slugs().length}, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+
+${rails}
+  </section>
+
+  <script>
+  /* Rail arrows. Progressive enhancement: with JS off the rows still scroll by
+     touch, trackpad and keyboard, so this only adds the buttons and the edge
+     fade that tells you there is more to the right. */
+  (function () {
+    var rails = document.querySelectorAll('.rail');
+    if (!rails.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var smooth = reduce ? 'auto' : 'smooth';
+    Array.prototype.forEach.call(rails, function (rail) {
+      var row = rail.querySelector('.rail-row');
+      var arrows = rail.querySelector('.rail-arrows');
+      function sync() {
+        // A rail that fits needs no arrows and no fade. Half a pixel of slack
+        // because scrollWidth and clientWidth disagree at some zoom levels and
+        // a permanently-lit right arrow that cannot move is worse than none.
+        var over = row.scrollWidth - row.clientWidth > 1;
+        rail.classList.toggle('is-scrollable', over);
+        if (!over) return;
+        // 2px of slack: scrollLeft is fractional at browser zoom levels other
+        // than 100%, and an end never quite reached leaves an arrow lit that
+        // cannot move.
+        var atStart = row.scrollLeft <= 2;
+        var atEnd = row.scrollLeft >= row.scrollWidth - row.clientWidth - 2;
+        row.style.setProperty('--fade-l', atStart ? '0px' : '30px');
+        row.style.setProperty('--fade-r', atEnd ? '0px' : '44px');
+        arrows.children[0].disabled = atStart;
+        arrows.children[1].disabled = atEnd;
+      }
+      Array.prototype.forEach.call(arrows.children, function (btn) {
+        btn.addEventListener('click', function () {
+          // 80% rather than a full page so the tile you were looking at stays
+          // partly visible and the row does not feel like it jumped.
+          row.scrollBy({ left: row.clientWidth * 0.8 * +btn.dataset.dir, behavior: smooth });
+        });
+      });
+      row.addEventListener('scroll', sync, { passive: true });
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(row);
+      sync();
+    });
+  })();
+  </script>`;
+}
+
+// Every tool must be reachable from the homepage, exactly once. The grid this
+// replaced was hand-maintained and had drifted 18 tools short without anything
+// noticing, so this is a build failure rather than a warning.
+(function validateRails() {
+  const seen = new Map();
+  for (const rail of G.HOME_RAILS) {
+    for (const slug of rail.tools) {
+      if (!G.TOOLS[slug]) {
+        console.error(`build-nav: rail "${rail.id}" lists unknown tool "${slug}".`);
+        process.exit(1);
+      }
+      if (seen.has(slug)) {
+        console.error(`build-nav: "${slug}" is in both the "${seen.get(slug)}" and "${rail.id}" rails. Pick one.`);
+        process.exit(1);
+      }
+      seen.set(slug, rail.id);
+    }
+  }
+  const missing = G.slugs().filter((s) => !seen.has(s));
+  if (missing.length) {
+    console.error(`build-nav: ${missing.length} tool(s) are in no homepage rail: ${missing.join(', ')}`);
+    console.error('Add them to HOME_RAILS in js/tool-graph.js — the homepage is the strongest internal link a tool page gets.');
+    process.exit(1);
+  }
+})();
+
+/* ----------------------------------------------------------- 6. PWA head */
 
 // Installability, the tab/theme colour, and the icons Safari and Android look
 // for. Injected from here because it belongs on all 56 pages, including the
@@ -361,6 +516,18 @@ for (const file of files) {
     }
   }
 
+  // ---- homepage: the job shortcut row and the tool rails ----------------
+  if (slug === 'index') {
+    for (const [name, content] of [['jobs', homeJobs()], ['home', homeRails()]]) {
+      const next = replaceBlock(html, name, content);
+      if (next === null) {
+        console.error(`build-nav: index.html has no <!-- AS:${name} --> markers. Add them before running.`);
+        process.exit(1);
+      }
+      html = next;
+    }
+  }
+
   // ---- legal pages + index also get flow.js (for tracking) --------------
   if ((LEGAL.has(slug) || slug === 'index') && !html.includes('/js/flow.js') && html.includes('/js/common.js')) {
     html = html.replace(
@@ -400,3 +567,4 @@ if (CHECK) {
 
 console.log(`build-nav: updated ${changed} files`);
 console.log(`  footer directory: ${G.slugs().length} tools x ${files.length + 1} pages`);
+console.log(`  homepage rails:   ${G.HOME_RAILS.length} rails covering all ${G.slugs().length} tools`);

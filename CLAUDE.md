@@ -58,7 +58,15 @@ Correct order:
    JS at all — set `window.AS_TOOL` and include `tool-converter.js`.
 2. Add an entry to `js/tool-graph.js`: `cat`, `label`, `title`, `blurb`, and
    `next` (related tools, each with the *reason* it is related).
-3. Run the generators:
+3. Add the slug to one — exactly one — rail in `HOME_RAILS`, in the same file.
+   `build-nav.js` refuses to build if a tool is in no rail or in two. That is
+   deliberate: the homepage is the strongest internal link a tool page gets, and
+   the hand-written 39-tile grid the rails replaced had quietly drifted to 18
+   tools short. `HOME_RAILS` groups by *intent* and `CATEGORIES` groups for the
+   breadcrumb and the footer directory; they are allowed to disagree, and do —
+   the pitch shifter is filed under "clean up & separate" but rails with
+   "make music".
+4. Run the generators:
 
 ```bash
 node tools/build-nav.js      # footer directory, related blocks, breadcrumbs, /tools, PWA head
@@ -270,6 +278,8 @@ New outcomes become new *values* on those events, never a ninth event:
 |---|---|---|
 | `convert_error` | `error_type: wrong_type` | a file the tool does not accept |
 | `next_step_click` | `placement: recent` | the recent-tools row |
+| `next_step_click` | `placement: home_rail` + `rail: <id>` | a homepage tool rail, and which one |
+| `next_step_click` | `placement: home_jobs` | the "jump straight to a job" row on / |
 | `next_step_click` | `to_tool: install` / `install_later` | the PWA install chip |
 | `chain_continue` | `from_tool: share` | arrived through the OS share sheet |
 
@@ -284,6 +294,12 @@ retry turns one failure into hundreds of events from one user.
 The one periodic thing that does exist is `CV.setProgress` mirroring the
 percentage into `document.title`. It is driven by conversion progress, not by a
 timer, and it sends nothing.
+
+`placement: home_rail` carries a `rail` parameter because the rails only work
+if people scroll them: placement alone cannot tell "the convert rail earns
+clicks" from "its first three chips do and the other nineteen are dead links".
+There is deliberately no impression event — a rail scrolling into view is not an
+outcome, and counting it would be the heartbeat this site does not have.
 
 `docs/growth-playbook.md` records what the growth work has and has not covered,
 including which GA4 key events to star and why `file_selected` must not be one.
