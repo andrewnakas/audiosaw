@@ -536,3 +536,64 @@ CTR at unchanged rank or it does nothing; the failure mode is a modifier that
 does not match intent. Give it ten days of Search Console data at the same
 average position before judging, and compare CTR rather than clicks — clicks
 will move for reasons that have nothing to do with the titles.
+
+## §10 — The 1,000-a-day plan (22 Sep 2026)
+
+Baseline, read from GA4 "Audio Saw" on 22 Sep (last 7 days = 15–21 Sep):
+
+| | |
+|---|---|
+| Users, last 7 days | ~800 (≈ **115 / day**) |
+| Active users, last 30 days | 2.3K, +620% on the previous 30 |
+| Sessions, last 7 days | 1,156 |
+| AI Assistant (chatgpt.com) | 719 sessions, **62%** |
+| Direct | 187 |
+| Organic search (google 81, bing 47, ddg 5) | 142 |
+| pwa / standalone | 8 |
+| Top pages | / 355, /voice-recorder 320, /stem-splitter 256, /split-audio 141, /mp3-tag-editor 87, /noise-reduction 71, /pitch-shifter 40 |
+
+Target is ~8.5×. That is new demand, not tuning. Three engines:
+
+| Engine | Lever | Who |
+|---|---|---|
+| **A. AI assistants** (62%) | more distinctive tools, each with a liftable `llms.txt` answer; presence in Perplexity / Claude (Brave) / Gemini (Google) / Copilot (Bing) indexes | repo |
+| **B. Get indexed** (2 of 63) | inbound links — public repo, Product Hunt, Show HN, Reddit, AlternativeTo; www→apex 301; Request Indexing; IndexNow every deploy | repo prepares, Andrew posts |
+| **C. Keep what arrives** | fix the top `error_type`s once data lands (~28 Sep); judge the PWA 5 Oct; the handoff chain | repo |
+
+Decisions taken 22 Sep: the repo goes public under **AGPL-3.0** (vendored
+libraries keep their own licences; the ffmpeg core is a GPL build because of
+libx264); Andrew posts the launches from a kit in `docs/launch/`; pushes and
+console actions (Request indexing, Bing Site Scan, GA4 dimensions) no longer
+wait for a go-ahead.
+
+Two things checked and dropped: `HowTo` schema on the 41 pages without it —
+Google retired HowTo rich results in 2023, so it is markup for nobody — and
+the §4 titles, closed above.
+
+### Milestones (users/day, 7-day average)
+
+| | Target | By | Disproved if |
+|---|---|---|---|
+| M1 | 200 | ~15 Oct | the new pages get no assistant referrals in their first 3 weeks (Landing page × session source) |
+| M2 | 400 | ~15 Nov | Search Console indexed count is still under 10 four weeks after the links exist |
+| M3 | 1,000 | no date | re-planned at M2 on real numbers; needs assistant referrals across ~10 distinctive tools *and* long-tail Google traffic to the converters |
+
+A launch day can spike 5–20K visitors. That is not the 1,000; the links it
+leaves behind are.
+
+### Build order
+
+1. `/slowed-reverb` + `/nightcore` (reuse `pitchShiftSpeed` from `audio-speed.js`; synthesised IR through a ConvolverNode, rendered offline).
+2. `/record-computer-audio` — `getDisplayMedia` tab audio; Chrome/Edge only and the page says so.
+3. `/8d-audio` + `/bass-booster` — the booster must differ in substance from `/audio-eq` (a limiter stage, not a fixed pull-down) or it is the duplicate-content failure again.
+4. `/audio-to-text` — Whisper via transformers.js on the `/stem-splitter` pattern. Spike first; go/no-go is ≥ 2× realtime on 7-thread WASM. This is the highest-ceiling page on the list: the site currently answers "transcribe without uploading" by sending people away.
+
+Every page: 800+ real words, `<details>` FAQ, graph entry, one rail, an
+`llms.txt` paragraph that states the limitation, `?v=` and `Q` bumped,
+`check-all.js` green, a real file through it in a browser before the push.
+
+### Weekly read
+
+GA4 Home cards (source/medium, pages), Search Console Pages (indexed count),
+Bing WMT (indexed count, Site Scan). Update the milestone table here. A bet
+that misses its "disproved if" line gets dropped, not defended.
