@@ -534,6 +534,7 @@
       blurb: 'Slow a song, drop the pitch with it, and put it in a room.',
       next: [
         ['nightcore', 'The same effect the other way — faster and brighter'],
+        ['8d-audio', 'Move it around your head instead'],
         ['stem-splitter', 'Slow the vocal or the instrumental alone'],
         ['audio-eq', 'Tame the low end if the slowed version came out muddy'],
         ['audio-speed', 'Change the tempo but keep the original pitch'],
@@ -542,11 +543,25 @@
         ['audio-cutter', 'Take a section before slowing it']
       ]
     },
+    '8d-audio': {
+      cat: 'fx', label: '8d audio', title: '8D Audio Maker',
+      blurb: 'Move a track slowly around your head — on headphones, it circles.',
+      next: [
+        ['stem-splitter', 'Move one stem and leave the rest still — a better edit'],
+        ['slowed-reverb', 'The other edit everyone asks for'],
+        ['nightcore', 'Speed it up instead'],
+        ['mono-to-stereo', 'Give a mono file two real channels first'],
+        ['audio-eq', 'Fix the tone after the room goes in'],
+        ['mp3-tag-editor', 'Put the title and artist back on the new file'],
+        ['audio-cutter', 'Take a section before processing it']
+      ]
+    },
     'nightcore': {
       cat: 'fx', label: 'nightcore', title: 'Nightcore Maker',
       blurb: 'Speed a song up and lift its pitch — nightcore and sped-up edits.',
       next: [
         ['slowed-reverb', 'The same effect the other way — slower and deeper'],
+        ['8d-audio', 'Move it around your head instead'],
         ['stem-splitter', 'Lift a vocal to lay over a faster instrumental'],
         ['bpm-finder', 'Check the tempo so the speed lands on a round number'],
         ['audio-speed', 'Speed it up without the pitch rising'],
@@ -809,8 +824,8 @@
       note: 'Change how a track moves rather than what format it is in.',
       style: 'tile',
       tools: [
-        'slowed-reverb', 'nightcore', 'audio-speed', 'pitch-shifter',
-        'audio-reverser'
+        'slowed-reverb', 'nightcore', '8d-audio', 'audio-speed',
+        'pitch-shifter', 'audio-reverser'
       ]
     },
     {

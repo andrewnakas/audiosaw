@@ -597,3 +597,39 @@ Every page: 800+ real words, `<details>` FAQ, graph entry, one rail, an
 GA4 Home cards (source/medium, pages), Search Console Pages (indexed count),
 Bing WMT (indexed count, Site Scan). Update the milestone table here. A bet
 that misses its "disproved if" line gets dropped, not defended.
+
+### What shipped, and the one that did not (22 Sep)
+
+`/slowed-reverb`, `/nightcore` and `/8d-audio`, plus an `fx` category and rail.
+All three are the same shape: a Web Audio graph rendered offline, no codec
+download, verified against measurement in a real browser before the copy was
+written.
+
+**`/bass-booster` was designed, built, measured and dropped.** The plan was a
+low shelf plus a limiter, on the theory that `audio-eq.js` compensates for a
+boost by pulling the whole signal down in proportion (`-maxBoost * 0.6 dB`), so
+a +12 dB bass boost there hands back a file 7 dB quieter and the user
+experiences it as "nothing happened". A limiter should have caught the peaks
+instead and left the average alone.
+
+It does not. Measured on a full-scale master, four limiter settings from gentle
+(-1 dBFS, 4:1, 3 ms) to harsh (-3 dBFS, 20:1, 1 ms):
+
+| Requested | 60 Hz | 1 kHz | bass-to-mid |
+|---|---|---|---|
+| +6 dB | +1.8 to +2.4 dB | −3.8 to −4.4 dB | **6.3 dB, every design** |
+| +12 dB | +2.9 to +3.7 dB | −7.3 to −8.1 dB | **11.0 dB, every design** |
+
+The bass-to-mid ratio is identical whatever the limiter does, because the work
+is being done by the peak scaling afterwards, not by the limiter. You cannot
+add 12 dB of bass to a full-scale master without either clipping or lowering
+everything else; that is arithmetic, not an implementation choice. A dedicated
+page would therefore have been `/audio-eq` with fewer controls, which is
+precisely the duplicate-content failure CLAUDE.md records from the eight
+templated pages Google indexed none of.
+
+The one real finding worth keeping: `audio-eq.js` scales **unconditionally**,
+so it quietens a file even when the boost would not have clipped. Conditional
+scaling — pull down only on overshoot — is strictly better and is what the
+three new pages do. Worth porting to `audio-eq.js` as a quality fix, not as a
+new page.

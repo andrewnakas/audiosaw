@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8D Audio Maker — free, in your browser, nothing uploaded</title>
+<meta name="description" content="Turn any song into 8D audio free in your browser. The sound circles your head on headphones. Pick the speed and width, download. Nothing uploads, no signup.">
+<meta name="keywords" content="8d audio maker, 8d audio converter, make 8d audio, 8d music generator, surround audio online, spatial audio maker, 8d song maker">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/8d-audio">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="8D Audio Maker">
+<meta property="og:description" content="Turn any song into 8D audio free in your browser. The sound circles your head on headphones. Pick the speed and width, download. Nothing uploads, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/8d-audio">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-22">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "8D Audio Maker",
+  "url": "https://audiosaw.com/8d-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-22"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does it sound normal on my speakers?","acceptedAnswer":{"@type":"Answer","text":"Because the effect is stereo panning, and on speakers the two channels mix in the air before they reach your ears. That collapses the movement into a slight volume change. It needs headphones or earbuds, and that is true of every 8D track, not just ones made here."}},{"@type":"Question","name":"Is 8D audio actually eight-dimensional?","acceptedAnswer":{"@type":"Answer","text":"No. It is automated panning plus reverb. The name refers to nothing in particular. The effect is real and pleasant; the marketing around it is not."}},{"@type":"Question","name":"Will it put sounds behind me?","acceptedAnswer":{"@type":"Answer","text":"No. Genuine front-to-back placement needs head-related transfer functions or an object-based format like Dolby Atmos. Panning moves a sound along the line between your ears, which your brain interprets as an arc around your head but not as a full circle."}},{"@type":"Question","name":"What speed should I use?","acceptedAnswer":{"@type":"Answer","text":"Ten seconds per circuit for most music. Faster than about six and it stops reading as movement and starts sounding like a tremolo pedal. Slower than about twenty and most listeners will not notice it at all."}},{"@type":"Question","name":"Does it work on a mono file?","acceptedAnswer":{"@type":"Answer","text":"Yes. The file is promoted to two channels first, which is necessary — panning a genuinely mono source with nothing in the other channel produces a volume wobble instead of movement. That is the usual reason a homemade 8D edit sounds wrong."}},{"@type":"Question","name":"Is anything uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The decode, the panning and the encode happen in this browser tab. There is no server involved, no account, and it keeps working with the network disconnected once the page has loaded."}},{"@type":"Question","name":"Why does my track sound worse afterwards?","acceptedAnswer":{"@type":"Answer","text":"Usually because it was already heavily compressed. Movement makes your ear follow the sound more closely, so artefacts that were easy to ignore in a static mix become obvious. Start from a lossless file and pick WAV output if you can."}},{"@type":"Question","name":"Can I make it slower and deeper too?","acceptedAnswer":{"@type":"Answer","text":"That is a different edit — see slowed + reverb, which drops speed and pitch together. The two stack if you run one and then the other, though each pass through an MP3 encoder costs a generation of quality, so use WAV in between."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Effects & remixes","item":"https://audiosaw.com/tools#fx"},{"@type":"ListItem","position":3,"name":"8D Audio Maker"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#fx">Effects &amp; remixes</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">8D Audio Maker</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>8D audio. The sound <span class="ital">circles</span> your head.</h1>
+    <p>Moves the track slowly between your ears with a room behind it, which on headphones reads as the music orbiting you. It renders in this tab, the file is never uploaded, and a four-minute song takes a few seconds.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>One full circle every
+          <select id="period">
+            <option value="6">6 seconds — fast</option>
+            <option value="8">8 seconds</option>
+            <option value="10" selected>10 seconds — the usual</option>
+            <option value="14">14 seconds — slow drift</option>
+            <option value="20">20 seconds — barely moving</option>
+          </select>
+        </label>
+        <label>How wide
+          <select id="depth">
+            <option value="0.6">Gentle — stays near the centre</option>
+            <option value="0.85" selected>Standard</option>
+            <option value="1">Full — all the way to each ear</option>
+          </select>
+        </label>
+        <label>Room
+          <select id="room">
+            <option value="0">None — dry panning only</option>
+            <option value="0.22" selected>A little — the usual</option>
+            <option value="0.4">More — bigger space</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Make it 8D</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>There is no eighth dimension</h2>
+    <p>It is worth saying plainly, because almost nothing written about this does. "8D audio" is automated panning. The track is moved slowly from one side of the stereo field to the other and back, and a small amount of reverb is added so the movement happens in a space rather than inside your skull. That is the whole technique. The number eight refers to nothing; it is a name that stuck.</p>
+    <p>That does not make the effect fake. It genuinely sounds like the music is circling you, the sensation is pleasant, and it is a real reason people listen to a song they already know. But it is not object-based spatial audio the way Dolby Atmos is, it is not binaural in the head-related-transfer-function sense, and it will not put a sound behind you. Anything claiming to add a dimension your speakers do not have is selling something.</p>
+    <p>Two consequences follow from that, and both matter more than any setting on this page.</p>
+    <p><strong>It only works on headphones.</strong> On speakers, the two channels mix in the air before they reach you, so the panning collapses into a mild volume wobble. This is not a limitation of this implementation — it is what panning is. Anyone you send the file to needs headphones or they will wonder what you are talking about.</p>
+    <p><strong>It works best on busy, wide tracks.</strong> A dense mix has things happening across the stereo field for the movement to carry. A sparse acoustic recording or a spoken-word file mostly sits in the middle, and moving the whole thing left and right reads as a fault rather than an effect.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>The three controls, and what they actually change</h2>
+    <p><strong>The period</strong> is how long one full circuit takes. Ten seconds is the common choice and is slow enough that your ear reads it as travel. The interesting threshold is at the fast end: somewhere below about five seconds per circuit the brain stops tracking a moving source and starts hearing an amplitude effect, and the result sounds like tremolo rather than motion. That is why the fastest option here is six seconds rather than two.</p>
+    <p><strong>The width</strong> is how far toward each ear the sound travels. Full width takes it all the way, which is more dramatic and also more tiring — at the extremes one ear is doing most of the work, and over a whole song that is noticeable. The standard setting stops short of the extremes for that reason.</p>
+    <p><strong>The room</strong> is the reverb behind the movement. Without it the sound moves along a line between your ears, inside your head. With it the movement appears to happen in a space around you, which is most of what makes the effect convincing. It is a convolution reverb built from a synthesised impulse, with independent noise for the two channels so the tail spreads rather than collapsing to the centre, a short pre-delay, and damping on the wet path so it darkens as it decays the way a real room does.</p>
+    <p>The panning is driven by an oscillator wired into the pan parameter, rather than by a series of scheduled value changes. That detail is invisible in the result when it is right and obvious when it is wrong: stepping between a handful of positions produces audible zipper artefacts on a sweep this slow.</p>
+    <p>A mono file is promoted to dual mono before anything else happens. Panning a mono source does move it, but with silence in the other channel the effect is a volume wobble rather than a rotation, which is the single most common way a homemade 8D edit comes out sounding broken.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Practical notes</h2>
+    <p><strong>Check it on headphones before you judge it.</strong> This sounds obvious and is the most common complaint about every tool that does this. On laptop speakers the effect is close to inaudible by design.</p>
+    <p><strong>Level is preserved, not normalised.</strong> Adding a room raises the peak, so the output is scaled back only if it would otherwise clip. A quiet recording comes back at its original level rather than being pushed up, which means a voice memo does not return with its noise floor raised.</p>
+    <p><strong>Start from the best source you have.</strong> The reverb and the panning both expose encoder artefacts that sat unnoticed in a static mix, because your ear tracks a moving source more closely than a stationary one. A 128 kbps MP3 will sound worse after this than it did before. If you have the lossless file, use it and choose WAV output.</p>
+    <p><strong>Stems give a much better result than a stereo mix.</strong> The convincing version of this effect moves the instruments independently rather than swinging the whole mix as one object. That is beyond a single-file tool, but <a href="/stem-splitter">the stem splitter</a> will separate vocal from instrumental locally, and running one part through here and leaving the other still is a noticeably better edit than moving everything together.</p>
+    <p><strong>Tags do not carry across.</strong> The output is a new file. <a href="/mp3-tag-editor">The tag editor</a> writes title and artist back without re-encoding.</p>
+    <p><strong>On uploading it.</strong> An 8D edit of a commercial track is still that track, and content matching identifies it — panning does not defeat fingerprinting. Expect a public upload to be claimed.</p>
+  </section>
+
+  <section class="faq">
+    <h2>Questions</h2>
+    <!-- AS:faq -->
+      <details><summary>Why does it sound normal on my speakers?</summary><p>Because the effect is stereo panning, and on speakers the two channels mix in the air before they reach your ears. That collapses the movement into a slight volume change. It needs headphones or earbuds, and that is true of every 8D track, not just ones made here.</p></details>
+      <details><summary>Is 8D audio actually eight-dimensional?</summary><p>No. It is automated panning plus reverb. The name refers to nothing in particular. The effect is real and pleasant; the marketing around it is not.</p></details>
+      <details><summary>Will it put sounds behind me?</summary><p>No. Genuine front-to-back placement needs head-related transfer functions or an object-based format like Dolby Atmos. Panning moves a sound along the line between your ears, which your brain interprets as an arc around your head but not as a full circle.</p></details>
+      <details><summary>What speed should I use?</summary><p>Ten seconds per circuit for most music. Faster than about six and it stops reading as movement and starts sounding like a tremolo pedal. Slower than about twenty and most listeners will not notice it at all.</p></details>
+      <details><summary>Does it work on a mono file?</summary><p>Yes. The file is promoted to two channels first, which is necessary — panning a genuinely mono source with nothing in the other channel produces a volume wobble instead of movement. That is the usual reason a homemade 8D edit sounds wrong.</p></details>
+      <details><summary>Is anything uploaded?</summary><p>No. The decode, the panning and the encode happen in this browser tab. There is no server involved, no account, and it keeps working with the network disconnected once the page has loaded.</p></details>
+      <details><summary>Why does my track sound worse afterwards?</summary><p>Usually because it was already heavily compressed. Movement makes your ear follow the sound more closely, so artefacts that were easy to ignore in a static mix become obvious. Start from a lossless file and pick WAV output if you can.</p></details>
+      <details><summary>Can I make it slower and deeper too?</summary><p>That is a different edit — see <a href="/slowed-reverb">slowed + reverb</a>, which drops speed and pitch together. The two stack if you run one and then the other, though each pass through an MP3 encoder costs a generation of quality, so use WAV in between.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Move one stem and leave the rest still — a better edit.</p></a>
+      <a class="card" href="/slowed-reverb"><h3>Slowed + Reverb Maker</h3><p>The other edit everyone asks for.</p></a>
+      <a class="card" href="/nightcore"><h3>Nightcore Maker</h3><p>Speed it up instead.</p></a>
+      <a class="card" href="/mono-to-stereo"><h3>Mono to stereo</h3><p>Give a mono file two real channels first.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Fix the tone after the room goes in.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Put the title and artist back on the new file.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Take a section before processing it.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-22"></script>
+<script src="/js/tool-graph.js?v=2026-09-22"></script>
+<script src="/js/flow.js?v=2026-09-22"></script>
+<script src="/js/audio-core.js?v=2026-09-22"></script>
+<script src="/js/tool-shell.js?v=2026-09-22"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-22"></script>
+<script src="/js/spatial-fx.js?v=2026-09-22"></script>
+<script src="/js/consent.js?v=2026-09-22"></script>
+<script src="/js/eight-d-page.js?v=2026-09-22"></script>
+<script src="/js/pwa.js?v=2026-09-22"></script>
+</body>
+</html>

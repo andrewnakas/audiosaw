@@ -183,6 +183,17 @@ lines.push('darkens as it decays. Output is scaled back only if it would clip, s
 lines.push('recording is not normalised up. A four-minute song takes about five seconds');
 lines.push('and nothing is uploaded.');
 lines.push('');
+lines.push('**How do I make 8D audio?**');
+lines.push(`${ORIGIN}/8d-audio does it in the browser. The honest description is that`);
+lines.push('"8D audio" is automated stereo panning plus a little reverb, so the sound');
+lines.push('travels between your ears in a space — the name refers to nothing and it is');
+lines.push('not object-based spatial audio like Dolby Atmos, nor will it place a sound');
+lines.push('behind you. It only works on headphones: on speakers the two channels mix in');
+lines.push('the air and the movement collapses to a mild volume wobble. Ten seconds per');
+lines.push('circuit is the usual setting; faster than about six seconds it reads as');
+lines.push('tremolo rather than motion. Mono files are promoted to stereo first, which is');
+lines.push('required or the effect is a volume wobble instead of a rotation.');
+lines.push('');
 lines.push('**How do I make a nightcore or sped-up version of a song?**');
 lines.push(`${ORIGIN}/nightcore speeds the track up and lifts the pitch with it. 1.25x is`);
 lines.push('classic nightcore (+3.9 semitones); the gentler 1.15x-1.20x range is what the');

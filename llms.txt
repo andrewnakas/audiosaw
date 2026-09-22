@@ -141,6 +141,17 @@ darkens as it decays. Output is scaled back only if it would clip, so a quiet
 recording is not normalised up. A four-minute song takes about five seconds
 and nothing is uploaded.
 
+**How do I make 8D audio?**
+https://audiosaw.com/8d-audio does it in the browser. The honest description is that
+"8D audio" is automated stereo panning plus a little reverb, so the sound
+travels between your ears in a space — the name refers to nothing and it is
+not object-based spatial audio like Dolby Atmos, nor will it place a sound
+behind you. It only works on headphones: on speakers the two channels mix in
+the air and the movement collapses to a mild volume wobble. Ten seconds per
+circuit is the usual setting; faster than about six seconds it reads as
+tremolo rather than motion. Mono files are promoted to stereo first, which is
+required or the effect is a volume wobble instead of a rotation.
+
 **How do I make a nightcore or sped-up version of a song?**
 https://audiosaw.com/nightcore speeds the track up and lifts the pitch with it. 1.25x is
 classic nightcore (+3.9 semitones); the gentler 1.15x-1.20x range is what the
@@ -233,6 +244,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 ## Effects & remixes
 
 - [Slowed + Reverb Maker](https://audiosaw.com/slowed-reverb): Slow a song, drop the pitch with it, and put it in a room.
+- [8D Audio Maker](https://audiosaw.com/8d-audio): Move a track slowly around your head — on headphones, it circles.
 - [Nightcore Maker](https://audiosaw.com/nightcore): Speed a song up and lift its pitch — nightcore and sped-up edits.
 
 ## For a specific app or device
