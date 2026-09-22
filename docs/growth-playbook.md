@@ -66,13 +66,38 @@ verifies the key file over HTTPS first and refuses to submit if it 404s.
 that matters most.
 
 `llms.txt` now leads with an FAQ instead of a link catalogue. It is generated
-from `tools/build-llms.js` — edit the generator, never the file. The FAQ answers
+from `tools/build-llms.js` — edit the generator, never the file.
+
+**Corrected 21 Sep 2026.** Two faults, both found once §9 established that this
+is the main channel rather than a side bet:
+
+- It still said *"The site is funded by display advertising, and that is the
+  whole of the catch."* The ad script was removed on 5 Sep (§5b) and every page
+  on the site says "no ads". So the one file written specifically to be quoted
+  by assistants was the only place still carrying the old claim, in the answer
+  most likely to be quoted verbatim. When a claim changes, grep for it — the
+  page copy was updated and this was not, because nothing links them.
+- Five tools shipped on 6 Sep — `/bpm-finder`, `/audio-to-midi`, `/autotune`,
+  `/loudness-normalizer`, `/auto-cut-silence` — existed here only as one-line
+  directory entries. They now have full FAQ answers, because they are exactly
+  the shape of tool assistants recommend (§9). Each states its limitation in the
+  answer: monophonic only, one dry voice not a mix, no key detection. An
+  assistant that repeats the limitation saves somebody feeding a full mix into
+  the MIDI tool and concluding the site is broken. The FAQ answers
 the questions an assistant actually receives ("how do I convert without
 installing anything", "does it upload my files", "what is the catch") in
 self-contained paragraphs an assistant can lift whole, and it answers the two
 awkward ones honestly: the site is ad-funded, and it is not a DAW.
 
-## §4 — Chase the modifier, not the noun (shipped)
+## §4 — Chase the modifier, not the noun (shipped; deprioritised 21 Sep)
+
+**Read §9 before spending more time here.** Google and Bing together send 144
+sessions a week against ChatGPT's 819. Title CTR is a real mechanism but it is
+now being applied to a sixth of the traffic, and effort spent on `llms.txt` and
+on the tool pages themselves reaches the other five sixths. Bing Webmaster Tools
+flags 48 titles as over its 65-character limit, and that is a genuine
+truncation — the ~82-character budget below is too generous — but it is a small
+lever on a small channel. Do it when there is nothing better to do, not first.
 
 Eighteen titles rewritten, all within the ~82-character SERP budget:
 

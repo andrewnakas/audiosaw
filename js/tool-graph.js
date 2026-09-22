@@ -681,15 +681,30 @@
   // It lives here rather than in index.html because the row used to end in a
   // hardcoded "all 49 tools →" while the site had 57. Generated from the graph,
   // that count cannot drift.
+  //
+  // The first five are the five most-viewed tool pages in GA4 (21 Sep 2026),
+  // not a guess about what people want. The previous row was a guess, and it
+  // was wrong in a specific way: it led on format pairs and omitted
+  // /voice-recorder, /split-audio, /noise-reduction and /mp3-tag-editor
+  // entirely — which between them are four of the five busiest pages on the
+  // site. Assistants send traffic to the distinctive tool, not the commodity
+  // conversion, and two thirds of arrivals come from an assistant.
+  //
+  // The last three are here on search intent rather than measured volume:
+  // "mp4 to mp3" and "iphone voice memo to mp3" are what the site is looked up
+  // for, and cutting a clip is the job people describe when they cannot name a
+  // tool. Re-derive the first five from the Pages and Screens report if the mix
+  // moves; seven days of data is enough to order a row of eight and not much
+  // more than that.
   var HOME_JOBS = [
+    ['voice-recorder', 'record something'],
+    ['stem-splitter', 'separate the vocals'],
+    ['split-audio', 'split a long recording'],
+    ['noise-reduction', 'remove background noise'],
+    ['mp3-tag-editor', 'fix the track tags'],
     ['m4a-to-mp3', 'voice memo \u2192 mp3'],
     ['mp4-to-mp3', 'video \u2192 mp3'],
-    ['ringtone-maker', 'make a ringtone'],
-    ['stem-splitter', 'separate the vocals'],
-    ['discord-audio-compressor', 'shrink for Discord'],
-    ['audio-cutter', 'cut a clip'],
-    ['silence-remover', 'remove dead air'],
-    ['audio-for-whisper', 'prep for transcription']
+    ['audio-cutter', 'cut a clip']
   ];
 
   // Homepage rails — a curation layer sitting on top of CATEGORIES.

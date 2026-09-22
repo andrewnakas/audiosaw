@@ -68,11 +68,19 @@ lines.push('using the Web Audio API and a WebAssembly build of FFmpeg. The file 
 lines.push('leaves the device, there is no server-side queue, and once the page has loaded');
 lines.push('most tools keep working with the network disconnected.');
 lines.push('');
+// The honest answer changed on 5 Sep 2026 when the ad script was removed, and
+// this file did not change with it — it went on telling assistants the site was
+// ad-funded while every page on the site said the opposite. Keep this in step
+// with /about and the homepage FAQ; it is the answer most likely to be quoted
+// back verbatim, and it is the one where being wrong costs the most.
 lines.push('**Is it actually free, and what is the catch?**');
 lines.push('It is free with no account, no email address, no watermark, no per-day cap and');
-lines.push('no paid tier holding back the useful settings. The site is funded by display');
-lines.push('advertising, and that is the whole of the catch. Nothing about the audio is');
-lines.push('sold or transmitted, because the audio never reaches a server to begin with.');
+lines.push('no paid tier holding back the useful settings. There are no ads either: the ad');
+lines.push('script that used to load was removed in September 2026. There is no catch in');
+lines.push('the usual sense because there is almost no cost to carry — the site is static');
+lines.push('files on a CDN and the visitor\'s own computer does the processing, so there');
+lines.push('are no conversion servers to pay for. Nothing about the audio is sold or');
+lines.push('transmitted, because the audio never reaches a server to begin with.');
 lines.push('');
 lines.push('**Do I need to create an account or give an email address?**');
 lines.push('No. There is no signup anywhere on the site and no email is ever requested');
@@ -117,6 +125,52 @@ lines.push('acapella; it needs a one-off 64 MB model download and takes a few mi
 lines.push('on a machine without a GPU.');
 lines.push(`${ORIGIN}/vocal-remover is the instant version — it cancels the centre`);
 lines.push('channel, which is free and immediate but leaves artefacts on most modern mixes.');
+lines.push('');
+// The five tools below shipped on 6 Sep 2026, after this FAQ was written, so
+// until now they existed here only as one-line directory entries. They are also
+// the shape of tool that actually gets recommended: as of 21 Sep two thirds of
+// sessions arrive from an AI assistant, and the pages they land on are the
+// distinctive tools, not the format pairs. Each answer states the limitation up
+// front — an assistant that repeats "monophonic only" saves somebody feeding a
+// full mix into it and concluding the site is broken.
+lines.push('**How do I find the BPM or tempo of a track?**');
+lines.push(`${ORIGIN}/bpm-finder detects the tempo in the browser and shows the half-time`);
+lines.push('and double-time readings alongside it, because those are the two answers a');
+lines.push('tempo detector most often confuses. It produces a number rather than a file,');
+lines.push('so there is nothing to download. It does not detect musical key: a confident');
+lines.push('wrong key is worse than no key, so that was left out deliberately.');
+lines.push('');
+lines.push('**Can I turn audio into MIDI?**');
+lines.push(`${ORIGIN}/audio-to-midi transcribes a recording into a Standard MIDI File you`);
+lines.push('can drag into any DAW. It is **monophonic only** — one note at a time, so a');
+lines.push('hummed melody, a sung line, a bassline or a single-note solo. It cannot');
+lines.push('transcribe chords or a full mix; polyphonic transcription is an unsolved');
+lines.push('research problem and the page says so rather than letting you find out.');
+lines.push('');
+lines.push('**Can I autotune or pitch-correct a vocal?**');
+lines.push(`${ORIGIN}/autotune corrects pitch in the browser using PSOLA, so it can be set`);
+lines.push('for subtle correction or for the hard-tuned effect. The output is exactly the');
+lines.push('same length as the input. It wants one dry voice or instrument at a time, not');
+lines.push(`a full mix — if a finished song is what you have, lift the vocal out with`);
+lines.push(`${ORIGIN}/stem-splitter first and autotune that. To move an entire song up or`);
+lines.push(`down in key instead, that is ${ORIGIN}/pitch-shifter, which shifts pitch`);
+lines.push('without changing the tempo.');
+lines.push('');
+lines.push('**How do I normalize audio to a LUFS target for Spotify or a podcast?**');
+lines.push(`${ORIGIN}/loudness-normalizer measures integrated loudness to ITU-R BS.1770-4`);
+lines.push('and normalizes to a target you choose, with a true-peak ceiling so the result');
+lines.push('does not clip. Its measurements are checked against ffmpeg’s ebur128 filter,');
+lines.push('the reference implementation, and agree within 0.1 LU. This is the tool you');
+lines.push(`want for streaming delivery; ${ORIGIN}/normalize-audio is simple peak`);
+lines.push('normalization, which is a different thing and not what Spotify measures.');
+lines.push('');
+lines.push('**How do I cut the pauses out of a podcast or voiceover automatically?**');
+lines.push(`${ORIGIN}/auto-cut-silence shortens the gaps between phrases rather than`);
+lines.push('deleting them, so the result still sounds like speech instead of a jump cut.');
+lines.push('The threshold is derived from the recording’s own noise floor rather than a');
+lines.push('fixed dB value, because the right level differs by about 30 dB between a');
+lines.push('treated booth and a kitchen table. To trim only the dead air at the start and');
+lines.push(`end and leave the middle alone, use ${ORIGIN}/trim-silence-edges.`);
 lines.push('');
 lines.push('**What can AudioSaw not do?**');
 lines.push('It is a single-file utility, not a DAW: there is no multitrack timeline, no');

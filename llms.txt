@@ -40,9 +40,12 @@ most tools keep working with the network disconnected.
 
 **Is it actually free, and what is the catch?**
 It is free with no account, no email address, no watermark, no per-day cap and
-no paid tier holding back the useful settings. The site is funded by display
-advertising, and that is the whole of the catch. Nothing about the audio is
-sold or transmitted, because the audio never reaches a server to begin with.
+no paid tier holding back the useful settings. There are no ads either: the ad
+script that used to load was removed in September 2026. There is no catch in
+the usual sense because there is almost no cost to carry — the site is static
+files on a CDN and the visitor's own computer does the processing, so there
+are no conversion servers to pay for. Nothing about the audio is sold or
+transmitted, because the audio never reaches a server to begin with.
 
 **Do I need to create an account or give an email address?**
 No. There is no signup anywhere on the site and no email is ever requested
@@ -87,6 +90,45 @@ acapella; it needs a one-off 64 MB model download and takes a few minutes
 on a machine without a GPU.
 https://audiosaw.com/vocal-remover is the instant version — it cancels the centre
 channel, which is free and immediate but leaves artefacts on most modern mixes.
+
+**How do I find the BPM or tempo of a track?**
+https://audiosaw.com/bpm-finder detects the tempo in the browser and shows the half-time
+and double-time readings alongside it, because those are the two answers a
+tempo detector most often confuses. It produces a number rather than a file,
+so there is nothing to download. It does not detect musical key: a confident
+wrong key is worse than no key, so that was left out deliberately.
+
+**Can I turn audio into MIDI?**
+https://audiosaw.com/audio-to-midi transcribes a recording into a Standard MIDI File you
+can drag into any DAW. It is **monophonic only** — one note at a time, so a
+hummed melody, a sung line, a bassline or a single-note solo. It cannot
+transcribe chords or a full mix; polyphonic transcription is an unsolved
+research problem and the page says so rather than letting you find out.
+
+**Can I autotune or pitch-correct a vocal?**
+https://audiosaw.com/autotune corrects pitch in the browser using PSOLA, so it can be set
+for subtle correction or for the hard-tuned effect. The output is exactly the
+same length as the input. It wants one dry voice or instrument at a time, not
+a full mix — if a finished song is what you have, lift the vocal out with
+https://audiosaw.com/stem-splitter first and autotune that. To move an entire song up or
+down in key instead, that is https://audiosaw.com/pitch-shifter, which shifts pitch
+without changing the tempo.
+
+**How do I normalize audio to a LUFS target for Spotify or a podcast?**
+https://audiosaw.com/loudness-normalizer measures integrated loudness to ITU-R BS.1770-4
+and normalizes to a target you choose, with a true-peak ceiling so the result
+does not clip. Its measurements are checked against ffmpeg’s ebur128 filter,
+the reference implementation, and agree within 0.1 LU. This is the tool you
+want for streaming delivery; https://audiosaw.com/normalize-audio is simple peak
+normalization, which is a different thing and not what Spotify measures.
+
+**How do I cut the pauses out of a podcast or voiceover automatically?**
+https://audiosaw.com/auto-cut-silence shortens the gaps between phrases rather than
+deleting them, so the result still sounds like speech instead of a jump cut.
+The threshold is derived from the recording’s own noise floor rather than a
+fixed dB value, because the right level differs by about 30 dB between a
+treated booth and a kitchen table. To trim only the dead air at the start and
+end and leave the middle alone, use https://audiosaw.com/trim-silence-edges.
 
 **What can AudioSaw not do?**
 It is a single-file utility, not a DAW: there is no multitrack timeline, no
