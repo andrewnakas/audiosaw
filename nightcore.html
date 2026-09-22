@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightcore Maker — speed up a song free in your browser, no upload</title>
+<meta name="description" content="Make a nightcore or sped-up version of any song free in your browser. Pick the speed, download the result. Nothing uploads, no signup, no watermark.">
+<meta name="keywords" content="nightcore maker, speed up song online, sped up audio, nightcore generator, make a song faster, sped up version maker, speed up mp3">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/nightcore">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Nightcore Maker">
+<meta property="og:description" content="Make a nightcore or sped-up version of any song free in your browser. Pick the speed, download the result. Nothing uploads, no signup, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/nightcore">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-22">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Nightcore Maker",
+  "url": "https://audiosaw.com/nightcore",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-22"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What speed is actual nightcore?","acceptedAnswer":{"@type":"Answer","text":"Traditionally 1.25×, sometimes up to 1.35×. The \"sped up\" edits that appear on streaming services are gentler, usually between 1.15× and 1.20×, which reads as energy rather than as an obvious transformation."}},{"@type":"Question","name":"Can I speed it up without the pitch going up?","acceptedAnswer":{"@type":"Answer","text":"Not here, and you would not want it here — the raised pitch is the effect. If you genuinely need the tempo to change while the pitch stays, that is change audio speed, which uses a time-stretch instead and is the right tool for a podcast or an audiobook."}},{"@type":"Question","name":"Why does the singer sound like a chipmunk?","acceptedAnswer":{"@type":"Answer","text":"Because formants rise along with the pitch. Those resonances signal the size of a person's vocal tract, and shifting the whole signal shifts them, so the voice sounds like it came from a smaller body. Around two or three semitones it reads as bright; by five it reads as a cartoon. Lowering the speed is the only fix from here."}},{"@type":"Question","name":"Is anything uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, the speed change and the encode all happen in this tab. There is no server involved and no account, and once the page has loaded it works with the network off."}},{"@type":"Question","name":"How short does the song get?","acceptedAnswer":{"@type":"Answer","text":"Divide by the speed. A 3:30 track at 1.25× is 2:48. Any reverb tail is added after the audio ends, so the file is a fraction longer than the arithmetic if you leave reverb on."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, though more slowly, and iOS Safari runs out of memory sooner than a laptop does. For a single song it is fine. For an album, use a computer or split the file first."}},{"@type":"Question","name":"Can I make the slowed version instead?","acceptedAnswer":{"@type":"Answer","text":"Yes — slowed + reverb is the same renderer aimed the other way, with a much longer tail because the slow tempo leaves room for it."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Effects & remixes","item":"https://audiosaw.com/tools#fx"},{"@type":"ListItem","position":3,"name":"Nightcore Maker"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#fx">Effects &amp; remixes</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Nightcore Maker</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Nightcore. And the <span class="ital">sped-up</span> version.</h1>
+    <p>Speeds a track up and lifts its pitch with it, which is the whole of the nightcore sound and the whole of what people mean by a "sped up" edit. It runs in this tab, the file is never uploaded, and a four-minute song takes a few seconds.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>How fast
+          <select id="speed">
+            <option value="1.15">1.15× — the TikTok sped-up sound, +2.4 semitones</option>
+            <option value="1.20">1.20× — faster, +3.2 semitones</option>
+            <option value="1.25" selected>1.25× — classic nightcore, +3.9 semitones</option>
+            <option value="1.30">1.30× — +4.5 semitones</option>
+            <option value="1.35">1.35× — hard nightcore, +5.2 semitones</option>
+          </select>
+        </label>
+        <label>Reverb
+          <select id="reverb">
+            <option value="0">None — dry, the usual choice</option>
+            <option value="0.18" selected>A touch — takes the edge off</option>
+            <option value="0.32">Noticeable</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Make it nightcore</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Nightcore and "sped up" are the same effect at different strengths</h2>
+    <p>Nightcore started as a pair of Norwegian DJs pitching trance up to make it harder and brighter, and the name stuck to the technique rather than the genre. What it does is simple and specific: play the track faster, and let the pitch rise with the speed, exactly as a record does. The vocal turns light and young, the hi-hats get glassy, and the energy goes up because everything is genuinely arriving sooner.</p>
+    <p>The wave of "sped up" edits on TikTok and streaming services is the same operation with the dial turned down. Around 1.15× to 1.20× the effect reads as energy rather than as a transformation, and it is quiet enough that many listeners never register it as an edit at all. Above about 1.30× nobody could miss it.</p>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <thead><tr><th>Speed</th><th>Pitch</th><th>A 3:30 song becomes</th><th>Reads as</th></tr></thead>
+        <tbody>
+          <tr><td>1.15×</td><td>+2.4 semitones</td><td>3:03</td><td>The streaming "sped up" sound</td></tr>
+          <tr><td>1.20×</td><td>+3.2 semitones</td><td>2:55</td><td>Clearly edited, still natural</td></tr>
+          <tr><td>1.25×</td><td>+3.9 semitones</td><td>2:48</td><td>Classic nightcore</td></tr>
+          <tr><td>1.30×</td><td>+4.5 semitones</td><td>2:42</td><td>Hard; vocal is unmistakably lifted</td></tr>
+          <tr><td>1.35×</td><td>+5.2 semitones</td><td>2:36</td><td>Close to a fourth up — cartoonish on most vocals</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The pitch column is not an estimate. It is twelve times the base-two logarithm of the speed, so 1.25× is 3.86 semitones — a little under a major third — and 1.335× would be exactly a fourth.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Why upward speed is less forgiving than downward</h2>
+    <p>A slowed edit hides its artefacts. A sped-up one advertises them, for two reasons.</p>
+    <p><strong>Formants move with the pitch.</strong> The resonances of a human vocal tract tell your ear roughly how big the speaker is, and they do not move when someone sings higher — they are a property of the body, not the note. Raising the whole signal raises them too, so the singer appears to shrink. Two or three semitones reads as bright; five semitones reads as a chipmunk. This is a real limitation of the technique rather than a fault in this implementation, and no amount of processing here can separate the two, which is why the speed list stops at 1.35×.</p>
+    <p><strong>Everything shifts up into the range your ear is most sensitive to.</strong> Sibilance that sat politely at 7 kHz lands near 9 kHz at 1.25×, where the ear is more critical. Harshness in the original comes back doubled. If the result is fatiguing rather than bright, a small cut around 8 kHz in <a href="/audio-eq">the EQ tool</a> does more for it than a lower speed would.</p>
+    <p>There is also a practical trap: the top end runs out. A 128 kbps MP3 is already cut off around 16 kHz, and speeding it up pushes that ceiling to about 20 kHz, which is fine — but the encoder's artefacts move up with it and become easier to hear. Starting from a lossless file and choosing WAV output avoids stacking a second generation of compression on top.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Reverb, sparingly</h2>
+    <p>The reverb here is a convolution reverb built from an impulse response the page synthesises: decaying noise, independent per channel so the tail spreads across the stereo image rather than collapsing to the middle, with a short pre-delay before the tail starts and a low-pass on the wet path so it darkens as it decays the way a real room does.</p>
+    <p>All of that matters much more on <a href="/slowed-reverb">the slowed page</a>, where the long tail is the point. On a fast track a long tail is just mud: the next transient arrives before the previous one has decayed, and the mix loses its edges. The default here is a short, quiet room that takes the hardness off a bright vocal, and "none" is a perfectly normal choice — most nightcore is dry.</p>
+    <p>Because the wet signal is added to the dry rather than crossfaded with it, the output peak sits above the input peak. On a mastered track the standard setting measured 1.05 before correction, which would clip. The render is scaled back when that happens and left untouched when it does not, so a quiet recording keeps its level instead of being normalised up.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Practical notes</h2>
+    <p><strong>The classic nightcore workflow is two steps.</strong> Traditionally the vocal is lifted from one track and laid over a faster instrumental. If that is what you are doing, <a href="/stem-splitter">the stem splitter</a> separates vocal from instrumental with a neural model running on your own machine, and <a href="/audio-joiner">the joiner</a> puts pieces back together.</p>
+    <p><strong>Tempo matters if you are mixing.</strong> Speeding a 128 BPM track to 1.25× gives 160 BPM exactly. If you are matching it to something else, <a href="/bpm-finder">the BPM finder</a> reads the tempo of the original so you can pick a speed that lands on a round number rather than discovering afterwards that you are at 159.4.</p>
+    <p><strong>Batch works.</strong> Several files at once come back as a zip, all treated identically. The effect itself is fast; the encode is the slow part.</p>
+    <p><strong>Tags do not survive.</strong> The output is a new file, so title and artist are not carried across. <a href="/mp3-tag-editor">The tag editor</a> writes them back without touching the audio, so it costs no extra compression.</p>
+    <p><strong>On posting the result.</strong> A sped-up edit of a commercial recording is still that recording, and content matching is not defeated by a speed change — it has not been for years. Expect a public upload to be identified. What that means for you depends on the platform and on whether money is involved; it is worth knowing before rather than after.</p>
+  </section>
+
+  <section class="faq">
+    <h2>Questions</h2>
+    <!-- AS:faq -->
+      <details><summary>What speed is actual nightcore?</summary><p>Traditionally 1.25×, sometimes up to 1.35×. The "sped up" edits that appear on streaming services are gentler, usually between 1.15× and 1.20×, which reads as energy rather than as an obvious transformation.</p></details>
+      <details><summary>Can I speed it up without the pitch going up?</summary><p>Not here, and you would not want it here — the raised pitch is the effect. If you genuinely need the tempo to change while the pitch stays, that is <a href="/audio-speed">change audio speed</a>, which uses a time-stretch instead and is the right tool for a podcast or an audiobook.</p></details>
+      <details><summary>Why does the singer sound like a chipmunk?</summary><p>Because formants rise along with the pitch. Those resonances signal the size of a person's vocal tract, and shifting the whole signal shifts them, so the voice sounds like it came from a smaller body. Around two or three semitones it reads as bright; by five it reads as a cartoon. Lowering the speed is the only fix from here.</p></details>
+      <details><summary>Is anything uploaded?</summary><p>No. Decoding, the speed change and the encode all happen in this tab. There is no server involved and no account, and once the page has loaded it works with the network off.</p></details>
+      <details><summary>How short does the song get?</summary><p>Divide by the speed. A 3:30 track at 1.25× is 2:48. Any reverb tail is added after the audio ends, so the file is a fraction longer than the arithmetic if you leave reverb on.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>Yes, though more slowly, and iOS Safari runs out of memory sooner than a laptop does. For a single song it is fine. For an album, use a computer or <a href="/split-audio">split the file</a> first.</p></details>
+      <details><summary>Can I make the slowed version instead?</summary><p>Yes — <a href="/slowed-reverb">slowed + reverb</a> is the same renderer aimed the other way, with a much longer tail because the slow tempo leaves room for it.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/slowed-reverb"><h3>Slowed + Reverb Maker</h3><p>The same effect the other way — slower and deeper.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Lift a vocal to lay over a faster instrumental.</p></a>
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Check the tempo so the speed lands on a round number.</p></a>
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Speed it up without the pitch rising.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Put the pieces of an edit together.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Put the title and artist back on the new file.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Cut the sibilance a speed-up brings forward.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-22"></script>
+<script src="/js/tool-graph.js?v=2026-09-22"></script>
+<script src="/js/flow.js?v=2026-09-22"></script>
+<script src="/js/audio-core.js?v=2026-09-22"></script>
+<script src="/js/tool-shell.js?v=2026-09-22"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-22"></script>
+<script src="/js/consent.js?v=2026-09-22"></script>
+<script>window.AS_FX = { suffix: 'nightcore', zipName: 'audiosaw-nightcore.zip', seconds: 1.2, damp: 6000, decay: 2.6, preDelay: 0.02 };</script>
+<script src="/js/fx-preset.js?v=2026-09-22"></script>
+<script src="/js/pwa.js?v=2026-09-22"></script>
+</body>
+</html>

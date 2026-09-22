@@ -30,6 +30,7 @@
     { id: 'levels',   title: 'Loudness & channels' },
     { id: 'repair',   title: 'Clean up & separate' },
     { id: 'create',   title: 'Record & tag' },
+    { id: 'fx',       title: 'Effects & remixes' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
 
@@ -516,6 +517,7 @@
       cat: 'repair', label: 'pitch / key', title: 'Pitch & key changer',
       blurb: 'Shift the key up or down by semitones without changing the tempo.',
       next: [
+        ['slowed-reverb', 'Move pitch and tempo together instead, with a room behind it'],
         ['audio-speed', 'The opposite — change tempo, keep the pitch'],
         ['vocal-remover', 'Make a karaoke track to transpose'],
         ['audio-cutter', 'Trim before shifting'],
@@ -523,6 +525,34 @@
         ['bpm-finder', 'Check the tempo you are working against'],
         ['audio-to-midi', 'Capture the line as notes instead of audio'],
         ['autotune', 'Correct the tuning rather than transpose it']
+      ]
+    },
+
+    // ---- Effects & remixes ----------------------------------------------
+    'slowed-reverb': {
+      cat: 'fx', label: 'slowed + reverb', title: 'Slowed + Reverb Maker',
+      blurb: 'Slow a song, drop the pitch with it, and put it in a room.',
+      next: [
+        ['nightcore', 'The same effect the other way — faster and brighter'],
+        ['stem-splitter', 'Slow the vocal or the instrumental alone'],
+        ['audio-eq', 'Tame the low end if the slowed version came out muddy'],
+        ['audio-speed', 'Change the tempo but keep the original pitch'],
+        ['pitch-shifter', 'Move the key without changing how long it runs'],
+        ['mp3-tag-editor', 'Put the title and artist back on the new file'],
+        ['audio-cutter', 'Take a section before slowing it']
+      ]
+    },
+    'nightcore': {
+      cat: 'fx', label: 'nightcore', title: 'Nightcore Maker',
+      blurb: 'Speed a song up and lift its pitch — nightcore and sped-up edits.',
+      next: [
+        ['slowed-reverb', 'The same effect the other way — slower and deeper'],
+        ['stem-splitter', 'Lift a vocal to lay over a faster instrumental'],
+        ['bpm-finder', 'Check the tempo so the speed lands on a round number'],
+        ['audio-speed', 'Speed it up without the pitch rising'],
+        ['audio-joiner', 'Put the pieces of an edit together'],
+        ['mp3-tag-editor', 'Put the title and artist back on the new file'],
+        ['audio-eq', 'Cut the sibilance a speed-up brings forward']
       ]
     },
 
@@ -704,7 +734,8 @@
     ['mp3-tag-editor', 'fix the track tags'],
     ['m4a-to-mp3', 'voice memo \u2192 mp3'],
     ['mp4-to-mp3', 'video \u2192 mp3'],
-    ['audio-cutter', 'cut a clip']
+    ['audio-cutter', 'cut a clip'],
+    ['slowed-reverb', 'slowed + reverb']
   ];
 
   // Homepage rails — a curation layer sitting on top of CATEGORIES.
@@ -748,8 +779,7 @@
       style: 'tile',
       tools: [
         'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
-        'silence-remover', 'trim-silence-edges', 'audio-speed',
-        'fade-in-fade-out', 'audio-reverser'
+        'silence-remover', 'trim-silence-edges', 'fade-in-fade-out'
       ]
     },
     {
@@ -769,9 +799,18 @@
       note: 'Pull a mix apart, fix the pitch, find the tempo, record a take.',
       style: 'tile',
       tools: [
-        'stem-splitter', 'vocal-remover', 'autotune', 'pitch-shifter',
-        'audio-to-midi', 'bpm-finder', 'voice-recorder', 'split-audio',
-        'mp3-tag-editor'
+        'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
+        'bpm-finder', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+      ]
+    },
+    {
+      id: 'fx',
+      title: 'Speed, pitch & effects',
+      note: 'Change how a track moves rather than what format it is in.',
+      style: 'tile',
+      tools: [
+        'slowed-reverb', 'nightcore', 'audio-speed', 'pitch-shifter',
+        'audio-reverser'
       ]
     },
     {

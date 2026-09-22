@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-21c">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-22">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -170,7 +170,8 @@ gtag('config', 'G-5X9ERMVYXE');
       <a href="/m4a-to-mp3" title="M4A to MP3">voice memo → mp3</a>
       <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
       <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
-      <a href="/tools" class="task-picker-all">all 57 tools &rarr;</a>
+      <a href="/slowed-reverb" title="Slowed + Reverb Maker">slowed + reverb</a>
+      <a href="/tools" class="task-picker-all">all 59 tools &rarr;</a>
     </div>
   </section>
 <!-- /AS:jobs -->
@@ -203,7 +204,7 @@ gtag('config', 'G-5X9ERMVYXE');
 <!-- AS:home -->
   <section class="rails">
     <h2><span class="num">02.</span>Pick a tool</h2>
-    <p class="rails-intro">All 57, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+    <p class="rails-intro">All 59, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
 
     <div class="rail rail-is-chips" data-rail="convert">
       <div class="rail-head">
@@ -245,7 +246,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="trim">
       <div class="rail-head">
         <div>
-          <h3 id="rail-trim">Cut, trim &amp; arrange <span class="rail-count">9</span></h3>
+          <h3 id="rail-trim">Cut, trim &amp; arrange <span class="rail-count">7</span></h3>
           <p>Change how long it is or what order it is in, not what format it is.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -260,9 +261,7 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/auto-cut-silence"><span class="rail-tile-title">Auto-Cut Silence</span><span class="rail-tile-blurb">Shorten the pauses between phrases, keeping speech natural.</span></a></li>
         <li><a href="/silence-remover"><span class="rail-tile-title">Remove silence</span><span class="rail-tile-blurb">Strip dead air out of a podcast, voice memo or voiceover.</span></a></li>
         <li><a href="/trim-silence-edges"><span class="rail-tile-title">Trim silence off the ends</span><span class="rail-tile-blurb">Top and tail a recording, leaving the middle untouched.</span></a></li>
-        <li><a href="/audio-speed"><span class="rail-tile-title">Change audio speed</span><span class="rail-tile-blurb">Slow a song or speed a podcast without shifting the pitch.</span></a></li>
         <li><a href="/fade-in-fade-out"><span class="rail-tile-title">Fade in / fade out</span><span class="rail-tile-blurb">Clean fades on both ends without opening an editor.</span></a></li>
-        <li><a href="/audio-reverser"><span class="rail-tile-title">Audio Reverser</span><span class="rail-tile-blurb">Play a file backwards — for effects, or to hear what is buried.</span></a></li>
       </ul>
     </div>
 
@@ -293,7 +292,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="music">
       <div class="rail-head">
         <div>
-          <h3 id="rail-music">Make music <span class="rail-count">9</span></h3>
+          <h3 id="rail-music">Make music <span class="rail-count">8</span></h3>
           <p>Pull a mix apart, fix the pitch, find the tempo, record a take.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -305,12 +304,31 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/stem-splitter"><span class="rail-tile-title">AI vocal remover / stem splitter</span><span class="rail-tile-blurb">Neural separation into a clean instrumental and acapella, running on your machine.</span></a></li>
         <li><a href="/vocal-remover"><span class="rail-tile-title">Vocal remover / karaoke</span><span class="rail-tile-blurb">Remove the vocal from a stereo song, or isolate it, by cancelling the centre.</span></a></li>
         <li><a href="/autotune"><span class="rail-tile-title">Autotune / Pitch Correction</span><span class="rail-tile-blurb">Snap a vocal to a key — subtle tuning or the hard-tuned effect.</span></a></li>
-        <li><a href="/pitch-shifter"><span class="rail-tile-title">Pitch &amp; key changer</span><span class="rail-tile-blurb">Shift the key up or down by semitones without changing the tempo.</span></a></li>
         <li><a href="/audio-to-midi"><span class="rail-tile-title">Audio to MIDI</span><span class="rail-tile-blurb">Turn a hummed melody or bassline into a MIDI file.</span></a></li>
         <li><a href="/bpm-finder"><span class="rail-tile-title">BPM Finder</span><span class="rail-tile-blurb">Detect the tempo of a track, with half and double time shown.</span></a></li>
         <li><a href="/voice-recorder"><span class="rail-tile-title">Voice recorder</span><span class="rail-tile-blurb">Record from your microphone in the browser — the audio never leaves your device.</span></a></li>
         <li><a href="/split-audio"><span class="rail-tile-title">Split an audio file</span><span class="rail-tile-blurb">Cut one long recording into equal parts, fixed chunks, or at the silent gaps.</span></a></li>
         <li><a href="/mp3-tag-editor"><span class="rail-tile-title">MP3 tag editor</span><span class="rail-tile-blurb">Edit title, artist, album and cover art without re-encoding the audio.</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="fx">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-fx">Speed, pitch &amp; effects <span class="rail-count">5</span></h3>
+          <p>Change how a track moves rather than what format it is in.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-fx">
+        <li><a href="/slowed-reverb"><span class="rail-tile-title">Slowed + Reverb Maker</span><span class="rail-tile-blurb">Slow a song, drop the pitch with it, and put it in a room.</span></a></li>
+        <li><a href="/nightcore"><span class="rail-tile-title">Nightcore Maker</span><span class="rail-tile-blurb">Speed a song up and lift its pitch — nightcore and sped-up edits.</span></a></li>
+        <li><a href="/audio-speed"><span class="rail-tile-title">Change audio speed</span><span class="rail-tile-blurb">Slow a song or speed a podcast without shifting the pitch.</span></a></li>
+        <li><a href="/pitch-shifter"><span class="rail-tile-title">Pitch &amp; key changer</span><span class="rail-tile-blurb">Shift the key up or down by semitones without changing the tempo.</span></a></li>
+        <li><a href="/audio-reverser"><span class="rail-tile-title">Audio Reverser</span><span class="rail-tile-blurb">Play a file backwards — for effects, or to hear what is buried.</span></a></li>
       </ul>
     </div>
 
@@ -482,6 +500,11 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/mp3-tag-editor">tag editor</a>
       </div>
       <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
         <h4>For a specific app or device</h4>
         <a href="/audio-for-whisper">for Whisper</a>
         <a href="/audio-to-text-prep">for transcription</a>
@@ -498,12 +521,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-09-21c"></script>
-<script src="/js/tool-graph.js?v=2026-09-21c"></script>
-<script src="/js/flow.js?v=2026-09-21c"></script>
-<script src="/js/audio-core.js?v=2026-09-21c"></script>
-<script src="/js/universal-converter.js?v=2026-09-21c"></script>
-<script src="/js/consent.js?v=2026-09-21c"></script>
-<script src="/js/pwa.js?v=2026-09-21c"></script>
+<script src="/js/common.js?v=2026-09-22"></script>
+<script src="/js/tool-graph.js?v=2026-09-22"></script>
+<script src="/js/flow.js?v=2026-09-22"></script>
+<script src="/js/audio-core.js?v=2026-09-22"></script>
+<script src="/js/universal-converter.js?v=2026-09-22"></script>
+<script src="/js/consent.js?v=2026-09-22"></script>
+<script src="/js/pwa.js?v=2026-09-22"></script>
 </body>
 </html>

@@ -217,6 +217,7 @@ const CATEGORY_INTRO = {
   'levels': 'Loudness and channel-count fixes. Most "this file sounds wrong" problems are one of these: it is too quiet, it is louder than everything around it, it is stuck in one ear, or the sample rate does not match the project it is going into.',
   'repair': 'Fixing what is wrong with a recording rather than converting it. Hiss, hum, dead air, a vocal you need isolated from the backing — these read the audio, decide what to keep, and write it back out. The separation tools run a neural network locally, which is slower than everything else here and still never uploads your file.',
   'create': 'Making a file rather than changing one. Record straight from a microphone, or fix the metadata that decides what your music player prints on screen.',
+  'fx': 'Changing how a track moves rather than what format it holds. Speed and pitch are locked together on the slowed and nightcore pages, because that coupling is the effect people mean by those words; the speed and pitch tools separate them, which is what you want for a podcast or a key change. All of them render locally, so a whole album can go through without anything being uploaded.',
   'apps': 'Presets for a specific destination. Each of these targets one program or device that is fussy about what it accepts, and applies the exact spec that program wants, so the import works the first time.'
 };
 

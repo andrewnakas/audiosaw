@@ -130,6 +130,26 @@ fixed dB value, because the right level differs by about 30 dB between a
 treated booth and a kitchen table. To trim only the dead air at the start and
 end and leave the middle alone, use https://audiosaw.com/trim-silence-edges.
 
+**How do I make a slowed + reverb version of a song?**
+https://audiosaw.com/slowed-reverb slows the track and lets the pitch fall with it,
+which is what the name means — it is the sound of a record played slowly,
+not a time-stretch that holds the pitch. 0.82x is the usual setting and puts
+everything 3.4 semitones down. The reverb is a convolution reverb built from
+a synthesised impulse, with independent noise per channel so the tail spreads
+across the stereo image, a 30 ms pre-delay, and damping on the wet path so it
+darkens as it decays. Output is scaled back only if it would clip, so a quiet
+recording is not normalised up. A four-minute song takes about five seconds
+and nothing is uploaded.
+
+**How do I make a nightcore or sped-up version of a song?**
+https://audiosaw.com/nightcore speeds the track up and lifts the pitch with it. 1.25x is
+classic nightcore (+3.9 semitones); the gentler 1.15x-1.20x range is what the
+streaming "sped up" edits use. The limitation worth knowing is that formants
+rise along with the pitch, so past about five semitones a voice sounds like a
+cartoon — that is inherent to the technique, not to this implementation, which
+is why the speeds stop at 1.35x. To speed audio up without the pitch rising,
+use https://audiosaw.com/audio-speed instead, which time-stretches.
+
 **What can AudioSaw not do?**
 It is a single-file utility, not a DAW: there is no multitrack timeline, no
 mixing, no plugins and no project that you save and reopen later. Nothing is
@@ -209,6 +229,11 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [BPM Finder](https://audiosaw.com/bpm-finder): Detect the tempo of a track, with half and double time shown.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
 - [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
+
+## Effects & remixes
+
+- [Slowed + Reverb Maker](https://audiosaw.com/slowed-reverb): Slow a song, drop the pitch with it, and put it in a room.
+- [Nightcore Maker](https://audiosaw.com/nightcore): Speed a song up and lift its pitch — nightcore and sped-up edits.
 
 ## For a specific app or device
 

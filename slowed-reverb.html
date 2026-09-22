@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slowed + Reverb Maker — free, in your browser, nothing uploaded</title>
+<meta name="description" content="Make a slowed + reverb version of any song free in your browser. Pick how slow, how much reverb, and download. Nothing uploads, no signup, no watermark.">
+<meta name="keywords" content="slowed and reverb, slowed reverb maker, slow down song with reverb, slowed audio online, reverb generator, slowed down music maker, lofi slowed">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/slowed-reverb">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Slowed + Reverb Maker">
+<meta property="og:description" content="Make a slowed + reverb version of any song free in your browser. Pick how slow, how much reverb, and download. Nothing uploads, no signup, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/slowed-reverb">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-22">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Slowed + Reverb Maker",
+  "url": "https://audiosaw.com/slowed-reverb",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-22"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does the song get longer?","acceptedAnswer":{"@type":"Answer","text":"Yes, in proportion to the speed. At 0.82× a three-and-a-half minute track becomes four minutes and sixteen seconds, plus a couple of seconds for the reverb tail to finish decaying after the music stops. That tail is included deliberately: cutting the file at the end of the audio chops the reverb off mid-decay, which is audible as an abrupt stop."}},{"@type":"Question","name":"Why does the pitch drop as well as the tempo?","acceptedAnswer":{"@type":"Answer","text":"Because that is what slowed and reverb means. It is the sound of a record played slowly, where tempo and pitch are locked together. Separating them is possible and this site does it on two other pages, but a slowed edit with the original pitch intact does not sound like the genre at all."}},{"@type":"Question","name":"Is my file uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The decode, the effect and the encode all happen in this browser tab. There is no server to send it to — the site is static files on a CDN and your own computer does the work. You can disconnect from the network after the page loads and it still runs."}},{"@type":"Question","name":"Which speed do most slowed uploads use?","acceptedAnswer":{"@type":"Answer","text":"Somewhere between 0.80× and 0.85×, with 0.82× the most common single value. Below 0.75× you are into chopped-and-screwed territory, which is a different and older style with its own conventions."}},{"@type":"Question","name":"Can I make it sound like it is playing in another room?","acceptedAnswer":{"@type":"Answer","text":"Partly. Heavy reverb plus the damping already applied gets some of the way there. The rest of that effect is a steep low-pass on the whole signal, not just the wet path, which is a job for the EQ tool after this one."}},{"@type":"Question","name":"Will it clip or distort?","acceptedAnswer":{"@type":"Answer","text":"No. Adding reverb on top of an untouched dry signal does push the peak up, and on a normal mastered track it would exceed full scale, so the output is scaled back down when that happens. Quiet recordings are left at their original level rather than being normalised up, so a voice memo does not come back with its noise floor raised."}},{"@type":"Question","name":"What is the largest file I can use?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB, bounded by how much memory the browser tab can hold rather than by any rule here. A long DJ set may be better split into pieces first. Phones hit that ceiling sooner than laptops do."}},{"@type":"Question","name":"Can I do the opposite — sped up?","acceptedAnswer":{"@type":"Answer","text":"Yes, that is the nightcore page, which is this same renderer pointed the other way: faster, brighter, and with much less reverb, because a long tail on a fast track just turns into mud."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Effects & remixes","item":"https://audiosaw.com/tools#fx"},{"@type":"ListItem","position":3,"name":"Slowed + Reverb Maker"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#fx">Effects &amp; remixes</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Slowed + Reverb Maker</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Slowed <span class="ital">+ reverb</span>. Without uploading the song.</h1>
+    <p>Slows a track down, drops its pitch with it, and puts it in a room. The whole thing runs inside this tab — the file is never sent anywhere, there is no account, no watermark and no render queue. A four-minute song takes about five seconds.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, AAC. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>How slow
+          <select id="speed">
+            <option value="0.90">0.90× — barely slowed, −1.8 semitones</option>
+            <option value="0.85">0.85× — the common one, −2.8 semitones</option>
+            <option value="0.82" selected>0.82× — classic slowed, −3.4 semitones</option>
+            <option value="0.75">0.75× — heavy, −5.0 semitones</option>
+            <option value="0.70">0.70× — screwed, −6.2 semitones</option>
+          </select>
+        </label>
+        <label>Reverb
+          <select id="reverb">
+            <option value="0.18">Subtle — a large room</option>
+            <option value="0.38" selected>Standard — the usual amount</option>
+            <option value="0.55">Heavy — cathedral</option>
+            <option value="0">None — slowed only</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — uncompressed</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Make it slowed</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What the slider actually does</h2>
+    <p>Slowed and reverb is not a "slow down" effect in the way a DAW means it. It is the sound of a record played at the wrong speed: the tempo drops and the pitch drops with it, locked together. That coupling is the entire genre. Pull a track to 0.82× and everything in it — the vocal, the snare, the bassline — arrives 3.4 semitones lower, which is most of a minor third. A three-and-a-half minute song becomes four minutes sixteen.</p>
+    <p>The table below is the exact relationship, because it is not a matter of taste. The pitch shift in semitones is twelve times the base-two logarithm of the speed, so 0.75× is almost exactly five semitones down — a fourth — and 0.70× is a hair past a tritone.</p>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <thead><tr><th>Speed</th><th>Pitch</th><th>A 3:30 song becomes</th><th>Reads as</th></tr></thead>
+        <tbody>
+          <tr><td>0.90×</td><td>−1.8 semitones</td><td>3:53</td><td>Slightly heavy, most people would not name it</td></tr>
+          <tr><td>0.85×</td><td>−2.8 semitones</td><td>4:07</td><td>Obviously slowed, vocal still clear</td></tr>
+          <tr><td>0.82×</td><td>−3.4 semitones</td><td>4:16</td><td>The default on most slowed uploads</td></tr>
+          <tr><td>0.75×</td><td>−5.0 semitones</td><td>4:40</td><td>Heavy; consonants start to blur</td></tr>
+          <tr><td>0.70×</td><td>−6.2 semitones</td><td>5:00</td><td>Chopped-and-screwed territory</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>If you want the tempo to drop and the pitch to stay where it is, this is the wrong tool and the result will not sound like the genre — use <a href="/audio-speed">change audio speed</a>, which preserves pitch with a time-stretch. If you want the pitch to move and the tempo to stay, that is <a href="/pitch-shifter">the pitch and key changer</a>. This page is deliberately the one that moves both, because that is the effect people are actually asking for.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>The reverb, and why it is not just "more"</h2>
+    <p>The reverb here is convolution reverb: the track is convolved with an impulse response, a recording of how a space answers a single sharp sound. The impulse is synthesised rather than sampled from a real hall, which keeps the page free of a download and makes the character adjustable, and it is built from decaying noise with three properties that matter more than the wet level.</p>
+    <p><strong>The two channels are independent noise.</strong> Using the same noise for left and right produces a tail that collapses to the centre of the stereo image — technically reverb, but it sits on top of the track like a mono wash rather than around it. Independent noise per channel measures near zero correlation between the two sides of the tail, which is what makes it sound like a space rather than an effect.</p>
+    <p><strong>There is a 30-millisecond pre-delay.</strong> In a real room the direct sound reaches you before the first reflection does. Without that gap the wet signal smears straight over the dry one and the vocal loses its edge; the result sounds washed out rather than spacious. Thirty milliseconds is short enough that you do not hear it as an echo and long enough that the vocal keeps its consonants.</p>
+    <p><strong>The wet path is low-passed at 3.8 kHz.</strong> Air and soft surfaces absorb treble faster than bass, so a real tail gets darker as it decays. An undamped tail keeps all its top end and sounds like a metal tank. This is the single setting most responsible for whether a slowed edit sounds warm or cheap.</p>
+    <p>The dry signal is left at full level and the wet is added on top, rather than crossfading between them. Crossfading is how a mixing desk thinks about a send, but it is wrong here: as you add reverb the vocal would recede, and the genre wants the vocal where it is with a room behind it. The consequence is that the output peak goes above the input peak, so the render is pulled back down when it would clip and left alone when it would not. On a commercially mastered file — which is everything you are likely to drop here — the standard setting measured a peak of 1.14 before that pull-back, and the heaviest settings 1.23. Both would have clipped.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>What you lose, and what to do about it</h2>
+    <p>Slowing a track exposes whatever the encoder threw away. An MP3 at 128 kbps already has a lid on it somewhere around 16 kHz, and playing it at 0.82× drags that lid down to about 13 kHz where you can hear it as a dullness in the cymbals. If you have a lossless copy, use it: drop the FLAC or WAV in here and choose WAV output, and the only generation of compression is the one you add at the end.</p>
+    <p>Editing an MP3 always costs one compression generation, because the audio has to be decoded and re-encoded. At 192 kbps and above that is not something most people can hear on a slowed edit, where the top end is already down. At 128 it stacks with the loss above. The bitrate control is there rather than fixed for that reason.</p>
+    <p>Low end is the other thing to watch. Dropping 3.4 semitones moves a bassline that sat at 60 Hz down to about 49 Hz, and moves a kick fundamental below what a phone speaker will reproduce at all. The track will sound thinner on a phone and heavier on headphones than the original did. If it comes out muddy rather than heavy, the fix is usually a small cut in the low mids rather than less reverb — <a href="/audio-eq">the EQ and bass tool</a> is next door.</p>
+    <p>Vocal intelligibility falls off a cliff somewhere below 0.75×. Consonants are short, high-frequency events, and stretching them while damping the top end takes away both of the things that make them legible. That is a feature at 0.70×, where nobody is listening for the words, and a problem at 0.75× if the song is wordy.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Practical notes</h2>
+    <p><strong>Working from a full song.</strong> If you want the slowed treatment on the vocal only, or an instrumental to slow without the vocal smearing, run the track through <a href="/stem-splitter">the stem splitter</a> first and bring the part you want back here. That is neural source separation running on your own machine, and it is the usual first step for a serious edit rather than a quick one.</p>
+    <p><strong>Length changes, so tags and playlists shift.</strong> The output is a new file with a new duration. Nothing carries the original's title and artist across, so if you are building a library, <a href="/mp3-tag-editor">the tag editor</a> writes those back without re-encoding the audio a second time.</p>
+    <p><strong>Batch works.</strong> Drop a folder's worth and every file gets the same treatment, returned as a zip. The render is fast enough that an album is a matter of a minute or two; the slow part is the encode, not the effect.</p>
+    <p><strong>On uploading the result.</strong> A slowed edit of someone else's recording is still their recording. Platforms match it — pitch and speed changes do not defeat content identification, and have not for years — so expect it to be claimed or muted if you post it publicly. Making one for yourself is a different matter from monetising one, and this page has no opinion about which you are doing; it is worth knowing which rules apply before you upload.</p>
+    <p><strong>It works offline.</strong> Nothing here needs the network after the page has loaded — the effect is Web Audio, which is built into the browser, and no codec is downloaded unless you feed it a format that needs one. Turn the wifi off and it still runs.</p>
+  </section>
+
+  <section class="faq">
+    <h2>Questions</h2>
+    <!-- AS:faq -->
+      <details><summary>Does the song get longer?</summary><p>Yes, in proportion to the speed. At 0.82× a three-and-a-half minute track becomes four minutes and sixteen seconds, plus a couple of seconds for the reverb tail to finish decaying after the music stops. That tail is included deliberately: cutting the file at the end of the audio chops the reverb off mid-decay, which is audible as an abrupt stop.</p></details>
+      <details><summary>Why does the pitch drop as well as the tempo?</summary><p>Because that is what slowed and reverb means. It is the sound of a record played slowly, where tempo and pitch are locked together. Separating them is possible and this site does it on two other pages, but a slowed edit with the original pitch intact does not sound like the genre at all.</p></details>
+      <details><summary>Is my file uploaded anywhere?</summary><p>No. The decode, the effect and the encode all happen in this browser tab. There is no server to send it to — the site is static files on a CDN and your own computer does the work. You can disconnect from the network after the page loads and it still runs.</p></details>
+      <details><summary>Which speed do most slowed uploads use?</summary><p>Somewhere between 0.80× and 0.85×, with 0.82× the most common single value. Below 0.75× you are into chopped-and-screwed territory, which is a different and older style with its own conventions.</p></details>
+      <details><summary>Can I make it sound like it is playing in another room?</summary><p>Partly. Heavy reverb plus the damping already applied gets some of the way there. The rest of that effect is a steep low-pass on the whole signal, not just the wet path, which is a job for <a href="/audio-eq">the EQ tool</a> after this one.</p></details>
+      <details><summary>Will it clip or distort?</summary><p>No. Adding reverb on top of an untouched dry signal does push the peak up, and on a normal mastered track it would exceed full scale, so the output is scaled back down when that happens. Quiet recordings are left at their original level rather than being normalised up, so a voice memo does not come back with its noise floor raised.</p></details>
+      <details><summary>What is the largest file I can use?</summary><p>Around 500 MB, bounded by how much memory the browser tab can hold rather than by any rule here. A long DJ set may be better <a href="/split-audio">split into pieces</a> first. Phones hit that ceiling sooner than laptops do.</p></details>
+      <details><summary>Can I do the opposite — sped up?</summary><p>Yes, that is <a href="/nightcore">the nightcore page</a>, which is this same renderer pointed the other way: faster, brighter, and with much less reverb, because a long tail on a fast track just turns into mud.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/nightcore"><h3>Nightcore Maker</h3><p>The same effect the other way — faster and brighter.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Slow the vocal or the instrumental alone.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Tame the low end if the slowed version came out muddy.</p></a>
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Change the tempo but keep the original pitch.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the key without changing how long it runs.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Put the title and artist back on the new file.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Take a section before slowing it.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-22"></script>
+<script src="/js/tool-graph.js?v=2026-09-22"></script>
+<script src="/js/flow.js?v=2026-09-22"></script>
+<script src="/js/audio-core.js?v=2026-09-22"></script>
+<script src="/js/tool-shell.js?v=2026-09-22"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-22"></script>
+<script src="/js/consent.js?v=2026-09-22"></script>
+<script>window.AS_FX = { suffix: 'slowed', zipName: 'audiosaw-slowed.zip', seconds: 2.6, damp: 3800, decay: 2.2, preDelay: 0.03 };</script>
+<script src="/js/fx-preset.js?v=2026-09-22"></script>
+<script src="/js/pwa.js?v=2026-09-22"></script>
+</body>
+</html>
