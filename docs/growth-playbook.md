@@ -89,7 +89,7 @@ installing anything", "does it upload my files", "what is the catch") in
 self-contained paragraphs an assistant can lift whole, and it answers the two
 awkward ones honestly: the site is ad-funded, and it is not a DAW.
 
-## §4 — Chase the modifier, not the noun (shipped; deprioritised 21 Sep)
+## §4 — Chase the modifier, not the noun (shipped; closed 22 Sep — see §9)
 
 **Read §9 before spending more time here.** Google and Bing together send 144
 sessions a week against ChatGPT's 819. Title CTR is a real mechanism but it is
@@ -398,6 +398,88 @@ starred key event, so declines are being counted as conversions, and `accepted`
 is not a registered custom dimension — so the two cannot be separated. Either
 register `accepted`, or stop firing the event on the decline branch. Until then
 read the 43 as "saw the chip and chose", not "continued the chain".
+
+### Search Console, 22 Sep — the CTR question answered by killing it
+
+Asked "what can we do to improve SEO and CTR". The console says: **nothing, on
+CTR.** Three months of data:
+
+| Metric | Value |
+|---|---|
+| Total clicks | 356 |
+| Total impressions | 544 |
+| Average CTR | 65.4% |
+| Average position | 10.3 |
+
+A 65.4% CTR looks like a triumph and is an artefact. Here is every query the
+site received in three months — all ten of them:
+
+| Query | Clicks | Impressions | CTR | Position |
+|---|---|---|---|---|
+| audiosaw | 296 | 351 | 84.3% | 1.0 |
+| audiosaw voice recorder | 8 | 13 | 61.5% | 1.2 |
+| audio saw | 2 | 2 | 100% | 1.0 |
+| audiosaw official website | 0 | 17 | 0% | 2.0 |
+| audioswap | 0 | 4 | 0% | 60.5 |
+| sound saver | 0 | 2 | 0% | 99.5 |
+| convert iphone voice memo to wav | 0 | 1 | 0% | 62.0 |
+| mp3 to earrape converter | 0 | 1 | 0% | 79.0 |
+| shorts to wav | 0 | 1 | 0% | 86.0 |
+| audio sha | 0 | 1 | 0% | 88.0 |
+
+**306 of 356 clicks — 86% — are people typing the brand name.** That is
+bookmark-replacement behaviour, not search performance. Every non-brand query
+sits at position 60 to 99: page six to page ten. The only non-brand terms with
+any impressions at all are adjacent brands and misspellings.
+
+`/mp4-to-mp3` showing 230 impressions at position 1.3 with 0.4% CTR is the same
+artefact one level down: it is appearing as a secondary result on *brand*
+searches, where the clicker takes the homepage.
+
+So there is no CTR to win. 84% on your own name is the ceiling, and no title
+rewrite improves on a result that is never shown for anything else.
+
+### Why: 61 of 63 pages are not indexed
+
+| | |
+|---|---|
+| Indexed | **2** |
+| Not indexed | **61** |
+| Reason, all 61 | **Discovered – currently not indexed** |
+
+The sitemap is healthy — submitted 14 Aug, last read 21 Sep, status Success, all
+63 URLs discovered. Google finds every page and declines to crawl them.
+
+Everything on-page has been audited and is clean: no duplicate titles or
+descriptions, every page canonical and `lang`-tagged, one `h1` each, no missing
+alt text, 700–1,200 unique words per page, FAQPage + BreadcrumbList +
+SoftwareApplication schema, robots.txt permissive and naming the agents
+explicitly. There is no technical fault left to find.
+
+"Discovered – currently not indexed" at this ratio, on a technically clean site,
+is Google saying the domain has not earned the crawl. **Bing said the same thing
+independently the day before**: "Your site does not have enough inbound links
+from high quality domains." Two engines, one diagnosis, and it is the one thing
+that cannot be fixed from inside the repo.
+
+The one technical item still outstanding that bears on it is the **www duplicate
+host** — every page currently exists on two hostnames with no redirect, which
+splits whatever crawl signal there is. It will not by itself index 61 pages, but
+it is the only remaining on-site contributor, and it is a five-minute Cloudflare
+rule.
+
+### What this settles
+
+**§4 is not deprioritised, it is closed.** The 48 over-length titles are a real
+truncation and it does not matter: you cannot improve the click-through rate of
+a result that is never served. Revisit only if indexing moves.
+
+**The AI-assistant channel is not a side bet or a hedge — it is the business.**
+Google sends about 30 clicks a week, 86% of them from people who already knew
+the name. ChatGPT sends 819 sessions a week to people who did not. The channel
+that works is precisely the one that does not need Google's index, because
+assistants crawl directly and read `llms.txt` rather than waiting to be ranked.
+That is why §3 deserves the effort §4 was getting.
 
 ### Bing Webmaster Tools, same day
 
