@@ -633,3 +633,62 @@ so it quietens a file even when the boost would not have clipped. Conditional
 scaling — pull down only on overshoot — is strictly better and is what the
 three new pages do. Worth porting to `audio-eq.js` as a quality fix, not as a
 new page.
+
+## §11 — The Whisper spike (22 Sep 2026): go, with a pinned version
+
+`/audio-to-text` is the highest-ceiling page on the list — "transcribe audio
+free without uploading" is a question assistants field constantly, and the site
+currently answers it by sending people *away*, to `/audio-for-whisper` and
+`/audio-to-text-prep`, which only prepare a file for somebody else's tool.
+
+Spiked before writing anything, on this machine (Apple GPU, 8 cores), against a
+33.9 s speech clip with known ground truth. **It works, and comfortably.**
+
+| Path | dtype | Time for 33.9 s | vs realtime |
+|---|---|---|---|
+| WebGPU | fp32 encoder + q4 decoder | 5.4 s | **0.16x** |
+| WASM, 7 threads | q4 | 9.8 s | **0.29x** |
+
+Both are several times faster than realtime, so a podcast episode is minutes
+rather than an afternoon. Accuracy on the test clip was effectively perfect,
+including "MDX-Net" and "ITU recommendation BS.1770". `return_timestamps` gives
+per-chunk timings, so SRT and VTT are straightforward.
+
+Unknowns that are now known:
+
+- Cross-origin isolation, a module worker under COEP, and fetching the model
+  from huggingface.co under `require-corp` **all work**. Model load is a one-off
+  ~28 s cold and cached afterwards, the same deal as the 64 MB stem model.
+- Threads work with the existing `/vendor/ort/*` COEP header pattern.
+
+### The version pin, which is the whole finding
+
+**transformers.js 4.3.0 cannot be hosted on Cloudflare Pages.** It requires
+`ort-wasm-simd-threaded.asyncify.wasm` from ORT 1.31-dev, which is **26,861,777
+bytes — over the 25 MiB per-file limit**. Removing it does not fall back to the
+smaller JSPI build; the session fails outright.
+
+Serving that one file from a CDN, the way `ffmpeg-core.wasm` already is, **does
+not work here**: the page is cross-origin isolated, and jsDelivr's response is
+rejected under `require-corp` with a bare network error. The ffmpeg precedent
+does not transfer, because that core is loaded from pages that are *not*
+isolated.
+
+**Pin transformers.js 4.2.0**, which uses ORT 1.26-dev, where every file fits:
+
+| File | Bytes | |
+|---|---|---|
+| `ort-wasm-simd-threaded.wasm` | 12,942,611 | fits |
+| `ort-wasm-simd-threaded.jspi.wasm` | 14,555,814 | fits |
+| `ort-wasm-simd-threaded.asyncify.wasm` | 23,567,050 | fits |
+| `ort-wasm-simd-threaded.jsep.wasm` | 26,101,073 | fits, by 113 KB |
+
+One catch found by testing rather than by reading: on 4.2.0 the **CPU path
+fails on `q8`, `int8` and `fp16`** with `TransposeDQWeightsForMatMulNBits
+Missing required scale` — an ORT 1.26 regression on that decoder export. `q4`
+works. So the dtypes are not a preference: **q4 on WASM, fp32 encoder + q4
+decoder on WebGPU.** Re-test both if the version is ever bumped.
+
+Cost to carry: about 60 MB of vendored runtime, alongside the existing ORT 1.22
+that `/stem-splitter` uses. They are different major versions and cannot be
+shared.
