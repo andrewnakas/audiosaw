@@ -352,6 +352,53 @@ no suggestion when something has already failed. Clicks land on the existing
 `next_step_click` / `placement: error`, so the fix is measurable with no new
 event.
 
+### The chain was dead-ending, and the metric could not see it
+
+Tested end to end in a browser for the first time on 21 Sep, with a real WAV
+rather than a stub. The sequence `/wav-to-mp3` → convert → "MP3 at 320 kbps" →
+"continue with tone.mp3" → **"Wrong file type: .mp3"**. The tool that had just
+invited you in refused the file it was handed.
+
+`nextStepsPanel` carried the output to every suggested tool, but **26 of the
+graph's `next` edges point at a tool that cannot accept the source tool's
+output**. Most of those are good links with the wrong file behind them —
+`/mp4-to-mp3` suggesting `/mov-to-mp3` as "same job for a .mov" is sound advice
+you follow with a *different* file. Carrying the MP3 there was never right.
+
+Two consequences worth keeping in mind when reading old numbers:
+
+- It burned the strongest retention moment on the site. The panel appears
+  immediately after a success, which is the one instant somebody is definitely
+  still there and definitely pleased.
+- It fed the error rate. Every dead-ended chain produced a `wrong_type`
+  `convert_error`, so some unknown share of the 1,996 errors in the table above
+  was the site tripping its own users.
+
+Fixed on the **receiving** side, in `offerHandoff`: the landing page checks the
+carried file against its own accept list and simply does not offer the chip if
+it will not take it. That side is the only one that reliably knows the answer —
+the accept list lives in each page's `AS_TOOL` config or in the argument a
+bespoke tool passes to `CV.bindDropzone`, and never reached the graph. The
+pending record is left in place, so a tool further along the chain can still
+offer it.
+
+Verified both directions: `/mp3-320kbps` (refuses mp3) now shows no chip;
+`/normalize-audio` (accepts it) still runs the full chain —
+`convert_success → next_step_click → chain_continue → convert_start →
+convert_success`, ending "+7.7 dB applied".
+
+Eight `next` reasons were also rewritten. They pointed at a different bitrate
+preset with copy like "Lock the bitrate to 320 kbps for the best quality",
+which you cannot reach by re-encoding the MP3 you just made — you have to run
+the original again. They now say "again".
+
+**One thing this does not fix.** `chain_continue` fires on *both* buttons: "use
+it" sends `accepted: true`, "start fresh" sends `accepted: false`. It is now a
+starred key event, so declines are being counted as conversions, and `accepted`
+is not a registered custom dimension — so the two cannot be separated. Either
+register `accepted`, or stop firing the event on the decline branch. Until then
+read the 43 as "saw the chip and chose", not "continued the chain".
+
 ### Bing Webmaster Tools, same day
 
 Two recommendations showing. "Some of your important new pages are missing from

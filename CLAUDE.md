@@ -293,6 +293,7 @@ New outcomes become new *values* on those events, never a ninth event:
 | `next_step_click` | `placement: home_jobs` | the "jump straight to a job" row on / |
 | `next_step_click` | `to_tool: install` / `install_later` | the PWA install chip |
 | `chain_continue` | `from_tool: share` | arrived through the OS share sheet |
+| `chain_continue` | `accepted: false` | the file was offered and taken, but injection failed |
 
 A `validation` error kind exists for UI hints like "Selection too short" and is
 deliberately **silent** — it fires no event and shows no recovery panel. Those
@@ -305,6 +306,20 @@ retry turns one failure into hundreds of events from one user.
 The one periodic thing that does exist is `CV.setProgress` mirroring the
 percentage into `document.title`. It is driven by conversion progress, not by a
 timer, and it sends nothing.
+
+`chain_continue` fires **only when the carried file is actually taken**. The
+"start fresh" button fires nothing. It used to fire `chain_continue` with
+`accepted: false`, which was harmless until the event was starred as a key
+event — at which point every decline was being counted as a conversion, and
+`accepted` is not a registered dimension, so nothing could separate them. The
+event is named for what it measures.
+
+The handoff chip is only offered when the landing page's own accept list
+contains the carried file's extension. 26 of the graph's `next` edges point at
+a tool that cannot take the source tool's output — most of them good links you
+follow with a *different* file — and carrying the output to all of them
+produced a success, a suggestion, and then "Wrong file type" from the tool that
+had just invited you in.
 
 `placement: home_rail` carries a `rail` parameter because the rails only work
 if people scroll them: placement alone cannot tell "the convert rail earns

@@ -193,6 +193,21 @@
 
     peekHandoff().then(function (payload) {
       if (!payload || !payload.blob) return;
+
+      // Do not offer a file this tool is going to turn away. Most "next" edges
+      // are a good link with the wrong file behind them — /mp4-to-mp3 suggests
+      // /mov-to-mp3 as "same job for a .mov", which is sound advice you follow
+      // with a different file, not with the MP3 you just made. Carrying the
+      // output there regardless produced the worst sequence on the site: a
+      // success, a suggestion, a chip saying "continue with tone.mp3", and then
+      // "Wrong file type: .mp3" from the tool that had just invited you in.
+      //
+      // Checked here rather than where the chip is created because this is the
+      // only side that knows the answer: the accept list belongs to the landing
+      // page. The pending record is deliberately left in place — a tool further
+      // along the chain may well accept it.
+      if (pageAccept && pageAccept.indexOf(extOf(payload.name)) === -1) return;
+
       var fromTool = payload.from === 'share'
         ? 'your share sheet'
         : ((G.TOOLS[payload.from] || {}).title || payload.from);
@@ -214,12 +229,21 @@
       chip.addEventListener('click', function (e) {
         var act = e.target.getAttribute('data-act');
         if (!act) return;
+        // Only "use it" is a chain continuation. "start fresh" used to fire
+        // chain_continue too, with accepted:false — which was harmless while
+        // nothing read the event, and stopped being harmless the moment it was
+        // starred as a GA4 key event: every decline was being counted as a
+        // conversion, and `accepted` is not a registered custom dimension, so
+        // the two could not be told apart in any report.
+        //
+        // The event is named for what it measures. A decline is not a chain
+        // continuing, so it does not fire one. `accepted` stays on the accept
+        // branch because injectFile can still genuinely fail, and that is worth
+        // seeing — it just no longer doubles as "the user said no".
         if (act === 'use') {
           var file = new File([payload.blob], payload.name, { type: payload.blob.type || 'application/octet-stream' });
           var ok = injectFile(file);
           track('chain_continue', { from_tool: payload.from, to_tool: currentTool(), accepted: ok });
-        } else {
-          track('chain_continue', { from_tool: payload.from, to_tool: currentTool(), accepted: false });
         }
         dropHandoff().catch(function () {});
         chip.remove();
@@ -453,8 +477,19 @@
     return accept.map(function (e) { return e.replace(/^\./, '').toUpperCase(); }).join(', ');
   }
 
+  // What this page will actually take. Captured here because the accept list
+  // lives in each page's own config (AS_TOOL, or the argument a bespoke tool
+  // passes) and never reached the graph — so the only place that reliably knows
+  // it is the page itself, at the moment it binds.
+  var pageAccept = null;
+
   var _bindDropzone = CV.bindDropzone;
   CV.bindDropzone = function (dropzoneEl, fileInputEl, onFiles, accept, onRejected) {
+    if (accept && accept.length) {
+      pageAccept = accept.map(function (e) {
+        return String(e).replace(/^\./, '').toLowerCase();
+      });
+    }
     var seenDrop = false;
     dropzoneEl.addEventListener('drop', function () { seenDrop = true; }, true);
 

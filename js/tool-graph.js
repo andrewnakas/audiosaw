@@ -65,8 +65,8 @@
       cat: 'to-mp3', label: 'wav → mp3', title: 'WAV to MP3',
       blurb: 'Compress a DAW bounce or recording to a shareable MP3.',
       next: [
-        ['mp3-320kbps', 'Lock the bitrate to 320 kbps for the best quality'],
-        ['wav-to-mp3-128kbps', 'Go the other way — smallest usable file'],
+        ['mp3-320kbps', 'Run the same WAV again, locked to 320 kbps'],
+        ['wav-to-mp3-128kbps', 'Run the same WAV again at 128 kbps for the smallest usable file'],
         ['normalize-audio', 'Match the level to other tracks first'],
         ['fade-in-fade-out', 'Add a clean fade before you send it out']
       ]
@@ -75,7 +75,7 @@
       cat: 'to-mp3', label: 'flac → mp3', title: 'FLAC to MP3',
       blurb: 'Turn a lossless archive into something a phone or car will play.',
       next: [
-        ['mp3-320kbps', 'Keep as much of the FLAC quality as MP3 allows'],
+        ['mp3-320kbps', 'Run the FLAC again at 320 kbps to keep more of it'],
         ['mp3-tag-editor', 'Put the tags back — conversion drops them'],
         ['flac-to-wav', 'Decompress to WAV instead of going lossy'],
         ['audio-compressor', 'Get the whole album under a size limit']
@@ -86,7 +86,7 @@
       blurb: 'For players and car stereos that never learned to read AAC.',
       next: [
         ['m4a-to-mp3', 'Same codec, .m4a container — start here instead'],
-        ['mp3-320kbps', 'Minimise what the second encode costs you'],
+        ['mp3-320kbps', 'Run the original again at 320 kbps — a second encode costs less from high'],
         ['audio-cutter', 'Trim before converting so you re-encode less'],
         ['normalize-audio', 'Match levels across a mixed library']
       ]
@@ -118,7 +118,7 @@
         ['mp3-tag-editor', 'WMA tags do not survive the conversion — put them back'],
         ['audio-compressor', 'Shrink a large library further'],
         ['normalize-audio', 'Even out levels across a mixed rip'],
-        ['mp3-320kbps', 'Re-encode at a fixed high bitrate']
+        ['mp3-320kbps', 'Run the WMA again, locked to 320 kbps']
       ]
     },
     'caf-to-mp3': {
@@ -155,7 +155,7 @@
       cat: 'to-mp3', label: 'aiff → mp3', title: 'AIFF to MP3',
       blurb: 'Logic and GarageBand bounces compressed for sharing.',
       next: [
-        ['mp3-320kbps', 'Preserve as much of the master as MP3 can hold'],
+        ['mp3-320kbps', 'Run the AIFF again at 320 kbps to hold more of the master'],
         ['mp3-to-aiff', 'Going the other direction'],
         ['normalize-audio', 'Match the level to a reference track'],
         ['fade-in-fade-out', 'Top and tail the bounce cleanly']
@@ -167,7 +167,7 @@
       next: [
         ['split-audio', 'Split a long book into chapter-sized files automatically'],
         ['audio-speed', 'Speed up narration without chipmunking it'],
-        ['wav-to-mp3-128kbps', 'Spoken word does not need a high bitrate'],
+        ['wav-to-mp3-128kbps', 'Run the audiobook again at 128 kbps — speech does not need more'],
         ['stereo-to-mono', 'Halve the size of a mono narration']
       ]
     },
@@ -241,7 +241,7 @@
         ['stereo-to-mono', 'Halve it again for spoken word'],
         ['podcast-prep', 'Normalize, mono and encode in one pass'],
         ['audio-compressor', 'Hit a specific size target'],
-        ['mp3-320kbps', 'Go the other way for music']
+        ['mp3-320kbps', 'Run the same source again at 320 kbps if it is music']
       ]
     },
     'mp3-320kbps': {
