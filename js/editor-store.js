@@ -225,6 +225,6 @@
 
   global.ASEditStore = {
     save: save, peek: peek, load: load, clear: clear,
-    exportProject: exportProject, importProject: importProject, floatWav: floatWav
+    exportProject: exportProject, importProject: importProject, floatWav: floatWav, readZip: readZip
   };
 })(window);

@@ -16,6 +16,10 @@
  *   6. a same-length tool that outputs MP3 (/noise-reduction) comes back lined
  *      up: lamejs's encoder delay is measured and trimmed, so the result
  *      correlates with what was sent at zero lag
+ *   6b. stems come back as a zip: the first replaces the clip, the other goes
+ *      on a new track below at the same start, and one undo removes both
+ *   6c. a second editor tab does not autosave, and "use this tab instead"
+ *      moves ownership across
  *   7. a clip edited while the tool was open is not silently replaced: the
  *      editor asks
  *
@@ -80,7 +84,7 @@ server.listen(0, '127.0.0.1', async () => {
       console.error('check-project-link: ' + fails.length + ' failure(s).');
     } else {
       notes.forEach((n) => console.log('  ' + n));
-      console.log('check-project-link: editor -> tool -> editor round trip holds (replace, undo, ripple, encoder-delay alignment, stale clip).');
+      console.log('check-project-link: editor -> tool -> editor round trip holds (replace, undo, ripple, encoder-delay alignment, stems, one owner across tabs, stale clip).');
       code = 0;
     }
     cdp.close();
@@ -134,7 +138,8 @@ async function scenario(r) {
   ok(corr > 0.99, 'the returned audio is the reversed original (correlation ' + corr.toFixed(4) + ')');
   notes.push('reverser round trip: correlation with the reversed original ' + corr.toFixed(4));
   ok(await r.eval('ASLink.peekReturn().then(function (x) { return !x; })'), 'the return record is consumed');
-  ok(await r.eval('!(ASLink.flag() || {}).target'), 'tool pages stop offering the clip once it came back');
+  ok(await r.eval(`ASLink.getTarget().then(function (t) { return !!t && t.ref.clipId === ${JSON.stringify(c1)} && t.id === (ASLink.flag() || {}).target && t.fp.indexOf(${JSON.stringify(f && f.sourceId)}) > 0; })`),
+    'the returned clip becomes what tool pages offer next, so the project keeps following you');
 
   // 4. Undo.
   await r.eval('document.getElementById("edUndo").click()');
@@ -178,6 +183,42 @@ async function scenario(r) {
   ok(lag0 > 0.9, 'the aligned MP3 result lines up with the original at zero lag (correlation ' + lag0.toFixed(3) + ')');
   notes.push('noise-reduction MP3 round trip: ' + (msg.match(/Lined up \d+ ms/) || ['no shift'])[0] + ', zero-lag correlation ' + lag0.toFixed(3));
   await r.eval('document.getElementById("edUndo").click()');
+  await r.waitSaved();
+
+  // 6b. Stems come back as a zip: the first file replaces the clip, the rest
+  // land on new tracks below it at the same time. The zip is written by hand
+  // here rather than by running the 64 MB separation model.
+  const tracksBefore = p.tracks.length;
+  await r.eval(`ASEditLink.send('stem-splitter', ${JSON.stringify(c1)})`);
+  await r.waitFor('location.pathname === "/stem-splitter" && !!document.getElementById("projectBar")');
+  await r.eval(`(${inPage.writeStemsReturn})()`);
+  await r.waitFor('location.pathname === "/audio-editor" && /result applied/.test(document.getElementById("status").textContent)', 20000);
+  await r.waitSaved();
+  p = await r.project();
+  f = find(p, c1);
+  ok(p.tracks.length === tracksBefore + 1, 'a two-stem return adds exactly one track (' + tracksBefore + ' -> ' + p.tracks.length + ')');
+  ok(f && /instrumental/.test(f.name), 'the clip is named for the stem that replaced it (' + (f && f.name) + ')');
+  const stemTrack = p.tracks[1];
+  ok(stemTrack && stemTrack.name === 'Acapella' && stemTrack.clips.length === 1 && Math.abs(stemTrack.clips[0].start - f.start) < 1e-6,
+    'the other stem sits on a new track directly below, starting with the clip');
+  await r.eval('document.getElementById("edUndo").click()');
+  await r.waitSaved();
+  p = await r.project();
+  ok(p.tracks.length === tracksBefore, 'one undo takes the whole stems return off again');
+
+  // 6c. A second editor tab does not save over the first: it says so, and
+  // taking over moves the lock (the first tab stops saving).
+  const second = await r.newTab('/audio-editor');
+  await second.waitFor('!!document.querySelector(".ed-lockbar")');
+  ok(await second.eval('document.getElementById("edSaved").dataset.state === "blocked"'), 'a second editor tab does not autosave');
+  await second.eval('document.querySelector(".ed-lockbar button").click()');
+  await second.waitFor('!document.querySelector(".ed-lockbar")');
+  await r.waitFor('!!document.querySelector(".ed-lockbar")');
+  ok(true, 'taking over moves the lock to the new tab');
+  await second.eval('document.querySelector(".ed-lockbar") || 0');
+  await second.close();
+  await r.eval('document.querySelector(".ed-lockbar button").click()');
+  await r.waitFor('!document.querySelector(".ed-lockbar")');
   await r.waitSaved();
 
   // 7. Edit the clip while the tool is open: the editor must ask.
@@ -267,6 +308,16 @@ const inPage = {
     return s / Math.sqrt(ea * eb);
   },
 
+  writeStemsReturn: async function () {
+    var t = await ASLink.getTarget();
+    var zip = await AudioSaw.zipBlobs([
+      { name: 'chirp-instrumental.wav', blob: t.blob },
+      { name: 'chirp-acapella.wav', blob: t.blob }
+    ]);
+    await ASLink.putReturn({ v: 1, id: 'rtest', targetId: t.id, projectId: t.projectId, tool: 'stem-splitter', name: 'chirp-separated.zip', blob: zip, createdAt: Date.now() });
+    location.href = '/audio-editor?return=rtest';
+  },
+
   // Simulate an edit made in another tab while the tool page was open.
   trimStoredClip: function (clipId) {
     return new Promise(function (res, rej) {
@@ -316,7 +367,15 @@ function makeRunner(cdp, origin) {
       await sleep(200);
       await waitFor('document.getElementById("edSaved").dataset.state === "saved"', 15000);
     },
-    project: async () => JSON.parse(await evaluate(`(${inPage.readProject})()`))
+    project: async () => JSON.parse(await evaluate(`(${inPage.readProject})()`)),
+    newTab: async (p) => {
+      const t = await cdp.send('Target.createTarget', { url: origin + p });
+      const targetId = t.result.targetId;
+      const other = await attach(cdp.port, targetId);
+      const r2 = makeRunner(other, origin);
+      r2.close = async () => { other.close(); await cdp.send('Target.closeTarget', { targetId }); };
+      return r2;
+    }
   };
 }
 
@@ -326,18 +385,24 @@ async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
   for (let i = 0; i < 100 && !fs.existsSync(f); i++) await sleep(100);
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
+  return attach(port, null);
+}
+
+async function attach(port, targetId) {
+  const pick = (list) => list.find((t) => t.type === 'page' && (!targetId || t.id === targetId));
   let list = [];
-  for (let i = 0; i < 50 && !list.some((t) => t.type === 'page'); i++) {
+  for (let i = 0; i < 50 && !pick(list); i++) {
     list = await (await fetch('http://127.0.0.1:' + port + '/json/list')).json();
-    if (!list.some((t) => t.type === 'page')) await sleep(100);
+    if (!pick(list)) await sleep(100);
   }
-  const ws = new WebSocket(list.find((t) => t.type === 'page').webSocketDebuggerUrl);
+  const ws = new WebSocket(pick(list).webSocketDebuggerUrl);
   await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
   let id = 0;
   const pending = new Map();
   ws.onmessage = (m) => { const d = JSON.parse(m.data); if (pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } };
   return {
     send: (method, params) => new Promise((r) => { const n = ++id; pending.set(n, r); ws.send(JSON.stringify({ id: n, method, params })); }),
-    close: () => ws.close()
+    close: () => ws.close(),
+    port
   };
 }

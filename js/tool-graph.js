@@ -292,6 +292,7 @@
     'audio-cutter': {
       cat: 'edit', label: 'cut', title: 'Audio Cutter',
       blurb: 'Drag handles on a waveform and keep only the part you want.',
+      project: 'len',
       next: [
         ['audio-editor', 'Cut out the middle and keep both ends, with undo'],
         ['audio-joiner', 'Stitch the pieces back together'],
@@ -351,6 +352,7 @@
     'fade-in-fade-out': {
       cat: 'edit', label: 'fade', title: 'Fade in / fade out',
       blurb: 'Clean fades on both ends without opening an editor.',
+      project: 'same',
       next: [
         ['audio-editor', 'Fade several clips and mix them together in one place'],
         ['trim-silence-edges', 'Tighten the ends first'],
@@ -363,6 +365,7 @@
     'trim-silence-edges': {
       cat: 'edit', label: 'top & tail', title: 'Trim silence off the ends',
       blurb: 'Top and tail a recording, leaving the middle untouched.',
+      project: 'len',
       next: [
         ['silence-remover', 'Also cut the pauses in the middle'],
         ['fade-in-fade-out', 'Soften the newly tight ends'],
@@ -375,6 +378,7 @@
     'auto-cut-silence': {
       cat: 'edit', label: 'auto-cut silence', title: 'Auto-Cut Silence',
       blurb: 'Shorten the pauses between phrases, keeping speech natural.',
+      project: 'len',
       next: [
         ['loudness-normalizer', 'Set the level once the timing is right'],
         ['audio-for-whisper', 'Transcribe the tightened file'],
@@ -385,6 +389,7 @@
     'silence-remover': {
       cat: 'edit', label: 'cut silence', title: 'Remove silence',
       blurb: 'Strip dead air out of a podcast, voice memo or voiceover.',
+      project: 'len',
       next: [
         ['trim-silence-edges', 'Only trim the ends instead'],
         ['normalize-audio', 'Even out what is left'],
@@ -399,6 +404,7 @@
     'loudness-normalizer': {
       cat: 'levels', label: 'lufs normalize', title: 'LUFS Loudness Normalizer',
       blurb: 'Match the loudness target Spotify, Apple or broadcast expects.',
+      project: 'same',
       next: [
         ['audio-compressor', 'Reduce dynamic range when the target will not fit'],
         ['normalize-audio', 'Set a peak ceiling instead of a loudness target'],
@@ -409,6 +415,7 @@
     'normalize-audio': {
       cat: 'levels', label: 'normalize', title: 'Normalize Audio',
       blurb: 'Bring files to a consistent level so nothing jumps out.',
+      project: 'same',
       next: [
         ['amplify-audio', 'Push a very quiet file harder'],
         ['audio-compressor', 'Shrink the file after levelling'],
@@ -421,6 +428,7 @@
     'amplify-audio': {
       cat: 'levels', label: 'amplify', title: 'Amplify quiet audio',
       blurb: 'Make a too-quiet recording usable without driving it into distortion.',
+      project: 'same',
       next: [
         ['normalize-audio', 'Target a consistent level instead of a gain amount'],
         ['noise-reduction', 'Amplifying a quiet file raises its hiss as well'],
@@ -445,6 +453,7 @@
     'stereo-to-mono': {
       cat: 'levels', label: 'stereo → mono', title: 'Stereo to mono',
       blurb: 'Fix one-sided recordings and halve the size of voice files.',
+      project: 'same',
       next: [
         ['mono-to-stereo', 'Going the other direction'],
         ['normalize-audio', 'Level the mixdown'],
@@ -455,6 +464,7 @@
     'mono-to-stereo': {
       cat: 'levels', label: 'mono → stereo', title: 'Mono to stereo',
       blurb: 'Honest dual-mono for software that insists on two channels.',
+      project: 'same',
       next: [
         ['stereo-to-mono', 'Going the other direction'],
         ['change-sample-rate', 'Match the rest of the project spec'],
@@ -510,6 +520,7 @@
     'stem-splitter': {
       cat: 'repair', label: 'ai vocal remover', title: 'AI vocal remover / stem splitter',
       blurb: 'Neural separation into a clean instrumental and acapella, running on your machine.',
+      project: 'stems',
       next: [
         ['stemflipper', 'Stems plus MIDI, in your browser or on a GPU'],
         ['audio-editor', 'Put the stems on separate tracks and remix them'],
@@ -537,6 +548,7 @@
     'audio-eq': {
       cat: 'repair', label: 'eq / bass boost', title: 'EQ & bass booster',
       blurb: 'Adjust bass, mids and treble, or boost the low end, baked into the file.',
+      project: 'same',
       next: [
         ['noise-reduction', 'EQ is the wrong tool for hum — this is the right one'],
         ['normalize-audio', 'Level it after changing the tone'],
@@ -559,6 +571,7 @@
     'pitch-shifter': {
       cat: 'repair', label: 'pitch / key', title: 'Pitch & key changer',
       blurb: 'Shift the key up or down by semitones without changing the tempo.',
+      project: 'same',
       next: [
         ['slowed-reverb', 'Move pitch and tempo together instead, with a room behind it'],
         ['audio-speed', 'The opposite — change tempo, keep the pitch'],
@@ -575,6 +588,7 @@
     'slowed-reverb': {
       cat: 'fx', label: 'slowed + reverb', title: 'Slowed + Reverb Maker',
       blurb: 'Slow a song, drop the pitch with it, and put it in a room.',
+      project: 'len',
       next: [
         ['nightcore', 'The same effect the other way — faster and brighter'],
         ['8d-audio', 'Move it around your head instead'],
@@ -589,6 +603,7 @@
     '8d-audio': {
       cat: 'fx', label: '8d audio', title: '8D Audio Maker',
       blurb: 'Move a track slowly around your head — on headphones, it circles.',
+      project: 'len',
       next: [
         ['stem-splitter', 'Move one stem and leave the rest still — a better edit'],
         ['slowed-reverb', 'The other edit everyone asks for'],
@@ -602,6 +617,7 @@
     'nightcore': {
       cat: 'fx', label: 'nightcore', title: 'Nightcore Maker',
       blurb: 'Speed a song up and lift its pitch — nightcore and sped-up edits.',
+      project: 'len',
       next: [
         ['slowed-reverb', 'The same effect the other way — slower and deeper'],
         ['8d-audio', 'Move it around your head instead'],

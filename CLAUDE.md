@@ -295,6 +295,24 @@ carrying a separate tone per channel, not because the coefficient tables say
   editor asks instead of replacing. The same goes for a result whose project id
   is not the saved project.
 
+  Once a result is applied, that clip becomes the new target, so the bar keeps
+  offering the current audio on every eligible tool page. Stems come back as
+  a zip: the first file replaces the clip, the rest go on new tracks below it,
+  and they share one alignment shift, because lining each one up separately
+  could leave them apart by exactly the encoder delay.
+
+  **Only one editor tab saves.** `editor-link.js` holds a Web Lock
+  (`audiosaw-editor-project`) for the tab's lifetime. A second tab keeps
+  working but does not autosave, and shows "Use this tab instead". That button
+  steals the lock and reloads the latest save. Before the lock, two tabs were
+  last-write-wins, and one tab's source clean-up could delete audio the other
+  still pointed at. A tab without the lock also ignores the channel, so it can
+  never be the one that takes a result.
+
+  The per-row "download" buttons on multi-file tools pass `{ again: true }`
+  to `CV.downloadBlob`. Without it, each click counted as another
+  `convert_success` and rebuilt the next-steps panel around a single file.
+
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not

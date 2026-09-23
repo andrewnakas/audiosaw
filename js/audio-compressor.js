@@ -103,7 +103,7 @@
         row.appendChild(label);
         var btn = document.createElement('button');
         btn.className = 'btn btn-small'; btn.textContent = 'download';
-        btn.onclick = function () { CV.downloadBlob(o.blob, o.name); };
+        btn.onclick = function () { CV.downloadBlob(o.blob, o.name, { again: true }); };
         row.appendChild(btn);
         resultList.appendChild(row);
       });

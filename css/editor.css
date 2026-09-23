@@ -182,6 +182,10 @@
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; font-size: 0.86rem;
 }
 .ed-restore span { color: var(--ink-soft); }
+.ed-lockbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px;
+  background: var(--amber-soft); border-bottom: 1px solid var(--amber-line); font-size: 0.86rem; color: var(--ink-soft);
+}
 
 /* --------------------------------------------------------- tools + info */
 

@@ -205,11 +205,11 @@
     api.getTarget().then(function (target) {
       if (!target || !target.blob || target.id !== f.target) return;
       if (Date.now() - target.createdAt > MAX_AGE) return;
-      render(slug, dropzone, target);
+      render(slug, info, dropzone, target);
     }).catch(function () { /* the bar is an extra; never block the tool */ });
   }
 
-  function render(slug, dropzone, target) {
+  function render(slug, info, dropzone, target) {
     var fromEditor = new URLSearchParams(global.location.search).get('from') === 'project';
     var usedKey = 'as_link_used';
     var used = null;
@@ -278,12 +278,16 @@
 
     document.addEventListener('as:converted', function (e) {
       var d = e.detail || {};
-      if (!used || !d.blob || !d.panel || !CV.isAudio(d.name)) return;
-      offerReturn(slug, target, d);
+      if (!used || !d.blob || !d.panel) return;
+      // Stems arrive zipped; any other tool's zip means several input files,
+      // and only one of them was the project's.
+      var many = /\.zip$/i.test(d.name);
+      if (many ? info.project !== 'stems' : !CV.isAudio(d.name)) return;
+      offerReturn(slug, target, d, many);
     });
   }
 
-  function offerReturn(slug, target, out) {
+  function offerReturn(slug, target, out, many) {
     var row = document.createElement('div');
     row.className = 'next-steps-row project-return';
     var a = document.createElement('a');
@@ -291,7 +295,9 @@
     a.href = '/audio-editor';
     a.innerHTML = '<span class="next-chip-label"></span><span class="next-chip-why"></span>';
     a.querySelector('.next-chip-label').textContent = 'Send back to “' + (target.projectName || 'your project') + '”';
-    a.querySelector('.next-chip-why').textContent = 'Replaces the clip in the editor. Undo takes it off again.';
+    a.querySelector('.next-chip-why').textContent = many
+      ? 'The first file replaces the clip, the others go on new tracks below it. Undo takes it all off again.'
+      : 'Replaces the clip in the editor. Undo takes it off again.';
     row.appendChild(a);
     out.panel.insertBefore(row, out.panel.firstChild);
 

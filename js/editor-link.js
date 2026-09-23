@@ -13,7 +13,7 @@
  *   - An encoder adds silence at the front. lamejs adds 25 ms (measured by
  *     tools/check-project-link.js through /noise-reduction), which on a clip
  *     layered against other tracks is an audible flam. For a
- *     tool that keeps the length, align() finds that offset by
+ *     tool that keeps the length, measureLag() finds that offset by
  *     cross-correlating against what was sent, and trims it. When the result
  *     does not correlate with the original (a reverser, a pitch shift), the
  *     offset cannot be measured and the result is only cut or padded to length.
@@ -86,15 +86,8 @@
     var win = inNewTab ? global.open('', '_blank') : null;
 
     var seg = ctx.slice(src, c.offset, c.duration);
-    var wav = global.AudioSaw.audioBufferToWav(seg);
-    var rec = {
-      v: 1, id: L.uid('k'), projectId: p.id, projectName: p.name || 'Untitled project',
-      kind: 'clip', ref: { clipId: clipId, trackId: f.track.id },
-      fp: M.targetPrint(p, { clipId: clipId }), tool: slug,
-      name: (c.name || 'clip') + '.wav', blob: wav,
-      duration: seg.duration, channels: seg.numberOfChannels, sampleRate: seg.sampleRate,
-      peaks: L.peaksOf(seg), createdAt: Date.now()
-    };
+    var rec = targetRecord(p, f, seg, slug);
+    var wav = rec.blob;
     ctx.setBusy(true);
     ctx.status('info', 'Handing “' + c.name + '” to ' + G.TOOLS[slug].title + '…');
 
@@ -115,6 +108,18 @@
     }).then(function () { ctx.setBusy(false); });
   }
 
+  function targetRecord(p, f, seg, slug) {
+    var c = f.clip;
+    return {
+      v: 1, id: L.uid('k'), projectId: p.id, projectName: p.name || 'Untitled project',
+      kind: 'clip', ref: { clipId: c.id, trackId: f.track.id },
+      fp: M.targetPrint(p, { clipId: c.id }), tool: slug,
+      name: (c.name || 'clip') + '.wav', blob: global.AudioSaw.audioBufferToWav(seg),
+      duration: seg.duration, channels: seg.numberOfChannels, sampleRate: seg.sampleRate,
+      peaks: L.peaksOf(seg), createdAt: Date.now()
+    };
+  }
+
   // The target, the return and the derived source the editor then stores are
   // each about this size. Refuse up front rather than fail half-way.
   function roomFor(bytes) {
@@ -133,7 +138,10 @@
   // apply it. Resolves true when it took over from the usual restore banner.
   function checkReturn() {
     L.purge();
-    return L.peekReturn().then(function (ret) {
+    return lockReady.then(function () {
+      // A tab that does not own the project must not apply a result to it.
+      return owner ? L.peekReturn() : null;
+    }).then(function (ret) {
       if (!ret || !ret.blob) return false;
       return global.ASEditStore.peek().then(function (info) {
         if (info && info.project.id === ret.projectId) {
@@ -181,23 +189,52 @@
     });
   }
 
+  // A tool may send back one file or, for stems, a zip of several. The first
+  // takes the clip's place; the rest go on new tracks below it.
+  function unpack(ret) {
+    if (!/\.zip$/i.test(ret.name)) return Promise.resolve([new File([ret.blob], ret.name, { type: ret.blob.type || '' })]);
+    return ret.blob.arrayBuffer().then(function (ab) {
+      var z = global.ASEditStore.readZip(ab);
+      var names = Object.keys(z).filter(function (n) { return CV.isAudio(n); });
+      if (!names.length) throw new Error('the zip held no audio');
+      return names.map(function (n) { return new File([z[n]], n); });
+    });
+  }
+
   function apply(ret, target) {
     var mode = (G.TOOLS[ret.tool] || {}).project || 'len';
     var title = (G.TOOLS[ret.tool] || {}).title || ret.tool;
     ctx.setBusy(true);
     ctx.status('info', 'Bringing back the result from ' + title + '…');
-    var file = new File([ret.blob], ret.name, { type: ret.blob.type || '' });
     var sent = target && target.blob ? global.AudioSaw.decodeToAudioBuffer(target.blob).catch(function () { return null; }) : Promise.resolve(null);
-    return Promise.all([ctx.decodeFile(file, function (m) { ctx.status('info', m); }), sent]).then(function (r) {
-      ctx.setBusy(false);
-      var out = r[0], orig = r[1];
-      var note = '';
-      if (mode === 'same' && orig && Math.abs(out.duration - orig.duration) < 0.25) {
-        var al = align(orig, out);
-        out = al.buf;
-        if (al.shift) note = ' Lined up ' + (al.shift / out.sampleRate * 1000).toFixed(0) + ' ms of encoder delay.';
+    var outs = [];
+    return Promise.all([unpack(ret), sent]).then(function (r) {
+      var list = r[0], orig = r[1], i = 0;
+      function next() {
+        if (i >= list.length) return Promise.resolve();
+        var f = list[i++];
+        return ctx.decodeFile(f, function (m) { ctx.status('info', m); }).then(function (b) {
+          outs.push({ name: f.name, buf: b });
+        }).then(next);
       }
-      place(ret, target, out, mode, title, note);
+      return next().then(function () { return orig; });
+    }).then(function (orig) {
+      ctx.setBusy(false);
+      var note = '';
+      if ((mode === 'same' || mode === 'stems') && orig) {
+        // One shift for every file: stems come out of the same encoder, and
+        // lining them up separately could leave them apart by exactly the
+        // delay this is meant to remove.
+        var close = outs.filter(function (o) { return Math.abs(o.buf.duration - orig.duration) < 0.25; });
+        if (close.length === outs.length) {
+          var best = { lag: 0, r: 0 };
+          outs.forEach(function (o) { var m = measureLag(orig, o.buf); if (m.r > best.r) best = m; });
+          var shift = best.r > 0.6 ? best.lag : 0;
+          outs.forEach(function (o) { o.buf = fit(o.buf, orig.duration, shift); });
+          if (shift) note = ' Lined up ' + (shift / outs[0].buf.sampleRate * 1000).toFixed(0) + ' ms of encoder delay.';
+        }
+      }
+      place(ret, target, outs, mode, title, note);
     }).catch(function (err) {
       ctx.setBusy(false);
       ctx.status('error', 'Could not open the result from ' + title + ': ' + ((err && err.message) || 'unsupported file') + '.');
@@ -205,13 +242,13 @@
     });
   }
 
-  function place(ret, target, out, mode, title, note) {
+  function place(ret, target, outs, mode, title, note) {
     var p = ctx.S.project;
     var state = !target ? 'gone' : M.targetPrint(p, target.ref) === target.fp ? 'fresh' : M.findClip(p, target.ref.clipId) ? 'changed' : 'gone';
-    if (state === 'fresh') { commit('replace', ret, target, out, mode, title, note); return; }
+    if (state === 'fresh') { commit('replace', ret, target, outs, mode, title, note); return; }
     var items = [];
     if (state === 'changed') items.push({ v: 'replace', label: 'Replace the clip anyway', hint: 'It has been edited since you sent it' });
-    items.push({ v: 'track', label: 'Put it on a new track', hint: target ? 'Where the clip was' : 'At the playhead' });
+    items.push({ v: 'track', label: outs.length > 1 ? 'Put them on new tracks' : 'Put it on a new track', hint: target && state === 'changed' ? 'Where the clip is' : 'At the playhead' });
     items.push({ v: 'drop', label: 'Discard it', danger: true });
     ctx.openSheet('The result from ' + title + ' is back',
       '<p class="ed-sheet-note">' + (state === 'changed'
@@ -219,43 +256,74 @@
         : 'The clip you sent is no longer in the project.') + '</p>' + ctx.menuHtml(items), function (v) {
         ctx.closeSheet();
         if (v === 'drop') { finish(target); ctx.status('info', 'Discarded the result from ' + title + '.'); return; }
-        commit(v, ret, target, out, mode, title, note);
+        commit(v, ret, target, outs, mode, title, note);
       });
   }
 
-  function commit(how, ret, target, out, mode, title, note) {
-    var sid = null, clipId = null;
+  function partName(fileName, fallback) {
+    var n = String(fileName || '').replace(/\.[^.]+$/, '');
+    var tail = n.split(/[-_ ]/).pop();
+    return tail && tail !== n ? tail.charAt(0).toUpperCase() + tail.slice(1) : (n || fallback);
+  }
+
+  function commit(how, ret, target, outs, mode, title, note) {
+    var clipId = null;
     ctx.edit(function (p) {
-      var name = target ? target.name.replace(/\.wav$/i, '') : ret.name.replace(/\.[^.]+$/, '');
-      sid = M.addSource(p, {
-        name: name, duration: out.duration, channels: out.numberOfChannels, sampleRate: out.sampleRate, kind: 'derived'
+      var base = target ? target.name.replace(/\.wav$/i, '') : ret.name.replace(/\.[^.]+$/, '');
+      var sids = outs.map(function (o, i) {
+        var sid = M.addSource(p, {
+          name: outs.length > 1 ? base + ' ' + partName(o.name, String(i + 1)).toLowerCase() : base,
+          duration: o.buf.duration, channels: o.buf.numberOfChannels, sampleRate: o.buf.sampleRate, kind: 'derived'
+        });
+        ctx.buffers.set(sid, o.buf);
+        V.buildPeaks(sid, o.buf);
+        return sid;
       });
-      ctx.buffers.set(sid, out);
-      V.buildPeaks(sid, out);
       var f = target && M.findClip(p, target.ref.clipId);
+      var ti, start;
       if (how === 'replace' && f) {
         // A same-length tool keeps everything after it where it was; one that
         // changes the length (speed, silence cutting) moves it, as Process does.
-        var ripple = !(mode === 'same' && Math.abs(out.duration - f.clip.duration) < 0.05);
-        M.replaceClipAudio(p, f.clip.id, sid, out.duration, ripple);
+        var d0 = outs[0].buf.duration;
+        var ripple = !((mode === 'same' || mode === 'stems') && Math.abs(d0 - f.clip.duration) < 0.05);
+        M.replaceClipAudio(p, f.clip.id, sids[0], d0, ripple);
+        if (outs.length > 1) M.setClip(p, f.clip.id, { name: f.clip.name + ' · ' + partName(outs[0].name, '1').toLowerCase() });
         clipId = f.clip.id;
+        ti = f.ti + 1; start = f.clip.start;
       } else {
-        var ti = f ? f.ti + 1 : p.tracks.length;
-        var start = f ? f.clip.start : ctx.S.playhead;
-        clipId = M.placeOnNewTrack(p, ti, sid, start, title);
+        ti = f ? f.ti + 1 : p.tracks.length;
+        start = f ? f.clip.start : ctx.S.playhead;
+        clipId = M.placeOnNewTrack(p, ti, sids[0], start, outs.length > 1 ? partName(outs[0].name, title) : title);
+        ti++;
       }
+      for (var i = 1; i < sids.length; i++) M.placeOnNewTrack(p, ti + i - 1, sids[i], start, partName(outs[i].name, String(i + 1)));
     });
     ctx.S.sel = {};
     if (clipId) ctx.S.sel[clipId] = true;
     ctx.S.range = null;
     ctx.refresh();
-    finish(target);
-    ctx.status('success', title + ' result applied.' + note + ' Undo takes it off again.');
+    var extra = outs.length > 1 ? ' The other ' + (outs.length - 1 === 1 ? 'file is' : (outs.length - 1) + ' files are') + ' on new tracks below.' : '';
+    ctx.status('success', title + ' result applied.' + note + extra + ' Undo takes it off again.');
     CV.track('chain_continue', { from_tool: ret.tool, to_tool: 'audio-editor', placement: 'project', accepted: true });
+    retarget(clipId, target);
   }
 
-  // The round trip is over: the target's audio is no use any more, and tool
-  // pages stop offering it.
+  // The clip that just came back becomes what tool pages offer next, so the
+  // project keeps following you: open another tool and it has the new audio,
+  // not the audio from before.
+  function retarget(clipId, old) {
+    var p = ctx.S.project, f = clipId && M.findClip(p, clipId);
+    var buf = f && ctx.buffers.get(f.clip.sourceId);
+    if (!buf) { finish(old); return; }
+    var seg = ctx.slice(buf, f.clip.offset, f.clip.duration);
+    var rec = targetRecord(p, f, seg, null);
+    L.putTarget(rec).then(function () {
+      L.setFlag({ id: p.id, name: rec.projectName, at: Date.now(), target: rec.id });
+    }).catch(function () { finish(old); });
+    try { global.history.replaceState(null, '', global.location.pathname); } catch (e) {}
+  }
+
+  // The round trip is over and nothing replaces it: tool pages stop offering it.
   function finish(target) {
     if (target) L.dropTarget().catch(function () {});
     L.setFlag({ target: null });
@@ -264,39 +332,35 @@
 
   /* ----------------------------------------------------------------- align */
 
-  // Find how far `out` lags `orig` (up to 4096 samples) by cross-correlating a mono
-  // window at the loudest part, drop that lead-in, and cut or pad to the exact
-  // original length. Only trusted when the match is strong: a correlation
-  // below 0.6 means the tool changed the waveform too much to measure, and a
+  // How far `out` lags `orig` (up to 4096 samples), by cross-correlating a
+  // mono window at the loudest part. `r` is the normalised correlation at that
+  // lag: below 0.6 the tool changed the waveform too much to measure, and a
   // guessed shift would be worse than none.
-  function align(orig, out) {
-    var n = Math.round(orig.duration * out.sampleRate);
-    var shift = 0;
-    if (orig.sampleRate === out.sampleRate) {
-      var a = mono(orig), b = mono(out);
-      var W = Math.min(16384, a.length >> 1), maxLag = Math.min(4096, b.length - W);
-      if (W > 1024 && maxLag > 0) {
-        var at = loudest(a, W);
-        var ea = 0;
-        for (var i = 0; i < W; i++) ea += a[at + i] * a[at + i];
-        var best = -Infinity, bestLag = 0;
-        for (var lag = 0; lag <= maxLag && at + lag + W <= b.length; lag++) {
-          var s = 0;
-          for (var j = 0; j < W; j++) s += a[at + j] * b[at + lag + j];
-          if (s > best) { best = s; bestLag = lag; }
-        }
-        var eb = 0;
-        for (var k = 0; k < W; k++) eb += b[at + bestLag + k] * b[at + bestLag + k];
-        var r = ea > 0 && eb > 0 ? best / Math.sqrt(ea * eb) : 0;
-        if (r > 0.6) shift = bestLag;
-      }
+  function measureLag(orig, out) {
+    if (orig.sampleRate !== out.sampleRate) return { lag: 0, r: 0 };
+    var a = mono(orig), b = mono(out);
+    var W = Math.min(16384, a.length >> 1), maxLag = Math.min(4096, b.length - W);
+    if (W <= 1024 || maxLag <= 0) return { lag: 0, r: 0 };
+    var at = loudest(a, W);
+    var ea = 0;
+    for (var i = 0; i < W; i++) ea += a[at + i] * a[at + i];
+    var best = -Infinity, bestLag = 0;
+    for (var lag = 0; lag <= maxLag && at + lag + W <= b.length; lag++) {
+      var s = 0;
+      for (var j = 0; j < W; j++) s += a[at + j] * b[at + lag + j];
+      if (s > best) { best = s; bestLag = lag; }
     }
-    var buf = E.createBuffer(out.numberOfChannels, Math.max(1, n), out.sampleRate);
-    for (var c = 0; c < out.numberOfChannels; c++) {
-      var d = out.getChannelData(c).subarray(shift, shift + n);
-      buf.copyToChannel(d, c);
-    }
-    return { buf: buf, shift: shift };
+    var eb = 0;
+    for (var k = 0; k < W; k++) eb += b[at + bestLag + k] * b[at + bestLag + k];
+    return { lag: bestLag, r: ea > 0 && eb > 0 ? best / Math.sqrt(ea * eb) : 0 };
+  }
+
+  // Drop `shift` samples from the front and cut or pad to exactly `dur`.
+  function fit(out, dur, shift) {
+    var n = Math.max(1, Math.round(dur * out.sampleRate));
+    var buf = E.createBuffer(out.numberOfChannels, n, out.sampleRate);
+    for (var c = 0; c < out.numberOfChannels; c++) buf.copyToChannel(out.getChannelData(c).subarray(shift, shift + n), c);
+    return buf;
   }
 
   function mono(buf) {
@@ -318,12 +382,65 @@
 
   /* ------------------------------------------------------------------ init */
 
+  /* ------------------------------------------------------------ one owner */
+
+  // Only one editor tab autosaves. The first to open takes a Web Lock and
+  // holds it for its lifetime; any other tab keeps working but does not save,
+  // and says so, with a button to take over. Taking over steals the lock (the
+  // old tab is told, and stops saving) and loads the latest save, so what the
+  // other tab did is not thrown away.
+  var owner = true, lockReady = Promise.resolve(), lockBar = null;
+  var LOCK = 'audiosaw-editor-project';
+
+  function holdLock(steal) {
+    var locks = global.navigator.locks;
+    if (!locks || !locks.request) return Promise.resolve();
+    return new Promise(function (ready) {
+      locks.request(LOCK, steal ? { steal: true } : { ifAvailable: true }, function (lock) {
+        if (!lock) { setOwner(false); ready(); return null; }
+        setOwner(true);
+        ready();
+        return new Promise(function () {});        // held until the tab closes, or is stolen
+      }).catch(function () {
+        // Stolen by a tab that took over.
+        setOwner(false, true);
+        ready();
+      });
+    });
+  }
+
+  function setOwner(yes, stolen) {
+    owner = yes;
+    ctx.setSaveBlocked(!yes);
+    if (yes) { if (lockBar) { lockBar.remove(); lockBar = null; } return; }
+    if (lockBar) return;
+    lockBar = document.createElement('div');
+    lockBar.className = 'ed-lockbar';
+    lockBar.setAttribute('role', 'status');
+    lockBar.innerHTML = '<span></span> <button type="button" class="ed-btn ed-btn-primary">Use this tab instead</button>';
+    lockBar.querySelector('span').textContent = stolen
+      ? 'This project was opened in another tab, which is saving it now. Changes here are not saved.'
+      : 'This project is open in another tab. Changes here are not saved.';
+    lockBar.querySelector('button').addEventListener('click', function () {
+      holdLock(true).then(function () {
+        if (!owner) return;
+        return ctx.restore().then(function (ok) {
+          ctx.status(ok ? 'success' : 'info', ok ? 'This tab has the project now, with the latest changes from the other one.' : 'This tab has the project now.');
+        });
+      });
+    });
+    var ed = document.getElementById('ed');
+    if (ed) ed.insertBefore(lockBar, ed.firstChild);
+  }
+
   function init(c) {
     ctx = c;
+    lockReady = holdLock(false);
     var ch = L.channel();
     if (ch) {
       ch.addEventListener('message', function (e) {
         var d = e.data || {};
+        if (!owner) return;
         if (d.t === 'ping') ch.postMessage({ t: 'pong', projectId: ctx.S.project.id });
         if (d.t === 'return') takeAndApply();
       });
@@ -332,6 +449,6 @@
 
   global.ASEditLink = {
     init: init, toolSheet: toolSheet, send: send, checkReturn: checkReturn,
-    projectTools: projectTools, align: align
+    projectTools: projectTools, measureLag: measureLag
   };
 })(window);

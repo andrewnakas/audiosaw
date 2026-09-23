@@ -2251,15 +2251,20 @@
   /* -------------------------------------------------------------- autosave */
 
   var saveTimer = 0, saving = false, saveAgain = false, saveDisabled = false;
+  // Another tab owns the project (editor-link.js holds a Web Lock). Two tabs
+  // saving one project is last-write-wins at best, and at worst one tab's
+  // clean-up deletes audio the other still points at.
+  var saveBlocked = false;
   var saveWaiters = [];      // flushSave() callers, settled when the last queued save lands
   function scheduleSave() {
-    if (saveDisabled) return;
+    if (saveDisabled || saveBlocked) return;
     clearTimeout(saveTimer);
     setSaved('pending');
     saveTimer = setTimeout(doSave, 1200);
   }
   function doSave() {
     saveTimer = 0;
+    if (saveBlocked) return;
     if (saving) { saveAgain = true; return; }
     saving = true;
     setSaved('saving');
@@ -2287,6 +2292,7 @@
   // live to finish, and a tool round trip needs the project to be there.
   function flushSave() {
     if (saveDisabled) return Promise.reject(new Error('autosave is off for this project'));
+    if (saveBlocked) return Promise.reject(new Error('this project is open in another tab'));
     clearTimeout(saveTimer);
     return new Promise(function (resolve, reject) {
       saveWaiters.push({ resolve: resolve, reject: reject });
@@ -2296,7 +2302,7 @@
   function setSaved(state) {
     if (!el.saved) return;
     el.saved.dataset.state = state;
-    el.saved.textContent = { pending: 'Unsaved changes', saving: 'Saving…', saved: 'Saved in this browser', failed: 'Not saved' }[state] || '';
+    el.saved.textContent = { pending: 'Unsaved changes', saving: 'Saving…', saved: 'Saved in this browser', failed: 'Not saved', blocked: 'Not saving: open in another tab' }[state] || '';
   }
 
   // Resolves true once the stored project is loaded.
@@ -2352,6 +2358,12 @@
     decodeFile: decodeFile, importFiles: importFiles, flushSave: flushSave, restore: restoreSession,
     isBusy: function () { return busy; }, setBusy: function (b) { busy = b; },
     saveDisabled: function () { return saveDisabled; },
+    setSaveBlocked: function (b) {
+      saveBlocked = b;
+      if (b) { clearTimeout(saveTimer); saveTimer = 0; setSaved('blocked'); }
+      else if (el.saved && el.saved.dataset.state === 'blocked') setSaved('');
+    },
+    hasClips: hasClips,
     stopPlayback: function () { if (E.isPlaying()) togglePlay(); }
   });
 
