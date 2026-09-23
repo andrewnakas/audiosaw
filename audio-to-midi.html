@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23l">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23m">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -58,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can it convert a full song to MIDI?","acceptedAnswer":{"@type":"Answer","text":"No. It follows one pitch at a time, so a mix or a chord has no single fundamental to track. Separate the part you want with the stem splitter first, then bring it here."}},{"@type":"Question","name":"Does it work on chords?","acceptedAnswer":{"@type":"Answer","text":"No. Polyphonic transcription is an open research problem, and a tool that claimed to do it in a browser would be guessing."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Pitch tracking and the MIDI file are both produced in your browser tab."}},{"@type":"Question","name":"How accurate is the pitch?","acceptedAnswer":{"@type":"Answer","text":"Within 0.7 cents on pure tones from A2 to A5 — about one hundredth of a semitone — and with no octave errors on harmonically rich sources, which is where simpler detectors usually fail."}},{"@type":"Question","name":"Why does my MIDI file play no sound?","acceptedAnswer":{"@type":"Answer","text":"Because MIDI holds notes, not audio. Load it into a DAW and assign an instrument; that is what makes it useful, since you can then change the sound or the notes."}},{"@type":"Question","name":"Should I turn on quantizing?","acceptedAnswer":{"@type":"Answer","text":"Only if it was played to a click and you want it tidy. Quantizing is easy to do later in any DAW and impossible to undo, so the default keeps your timing."}},{"@type":"Question","name":"It found notes I did not play. Why?","acceptedAnswer":{"@type":"Answer","text":"Usually reverb or delay on the recording, which smears the pitch at the end of each phrase. Record dry, and set the range to match your instrument."}},{"@type":"Question","name":"Can I hum a melody into it?","acceptedAnswer":{"@type":"Answer","text":"Yes, and that is one of the things it does best. A steady \"ooh\" tracks better than \"la la la\", because consonants interrupt the pitch."}},{"@type":"Question","name":"What tempo does it use?","acceptedAnswer":{"@type":"Answer","text":"It detects one and writes it into the file, so your DAW puts the notes on the right grid. You can also type a tempo if you already know it."}},{"@type":"Question","name":"Which programs open the file?","acceptedAnswer":{"@type":"Answer","text":"Any of them. It is a standard type 0 MIDI file: Ableton, Logic, FL Studio, Reaper, GarageBand, MuseScore and the rest."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can it convert a full song to MIDI?","acceptedAnswer":{"@type":"Answer","text":"No. It follows one pitch at a time, so a mix or a chord has no single fundamental to track. Separate the part you want with the stem splitter first, then bring it here."}},{"@type":"Question","name":"Does it work on chords?","acceptedAnswer":{"@type":"Answer","text":"No. Polyphonic transcription is an open research problem, and a tool that claimed to do it in a browser would be guessing."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Pitch tracking and the MIDI file are both produced in your browser tab."}},{"@type":"Question","name":"How accurate is the pitch?","acceptedAnswer":{"@type":"Answer","text":"Within 0.7 cents on pure tones from A2 to A5 — about one hundredth of a semitone — and with no octave errors on harmonically rich sources, which is where simpler detectors usually fail."}},{"@type":"Question","name":"Can I edit the notes before downloading?","acceptedAnswer":{"@type":"Answer","text":"Yes. The notes appear on a piano roll where you can move, lengthen, add and delete them, play them back alone or against the recording, and undo. The download is what is on the roll."}},{"@type":"Question","name":"Why does my MIDI file play no sound?","acceptedAnswer":{"@type":"Answer","text":"Because MIDI holds notes, not audio. Load it into a DAW and assign an instrument; that is what makes it useful, since you can then change the sound or the notes."}},{"@type":"Question","name":"Should I turn on quantizing?","acceptedAnswer":{"@type":"Answer","text":"Only if it was played to a click and you want it tidy. Quantizing is easy to do later in any DAW and impossible to undo, so the default keeps your timing."}},{"@type":"Question","name":"It found notes I did not play. Why?","acceptedAnswer":{"@type":"Answer","text":"Usually reverb or delay on the recording, which smears the pitch at the end of each phrase. Record dry, and set the range to match your instrument."}},{"@type":"Question","name":"Can I hum a melody into it?","acceptedAnswer":{"@type":"Answer","text":"Yes, and that is one of the things it does best. A steady \"ooh\" tracks better than \"la la la\", because consonants interrupt the pitch."}},{"@type":"Question","name":"What tempo does it use?","acceptedAnswer":{"@type":"Answer","text":"It detects one and writes it into the file, so your DAW puts the notes on the right grid. You can also type a tempo if you already know it."}},{"@type":"Question","name":"Which programs open the file?","acceptedAnswer":{"@type":"Answer","text":"Any of them. It is a standard type 0 MIDI file: Ableton, Logic, FL Studio, Reaper, GarageBand, MuseScore and the rest."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -93,7 +93,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>Audio to <span class="ital">MIDI</span></h1>
-    <p>Hum a melody, play a bassline, record a synth line — get back a .mid file you can drop into any DAW and play with a different sound. One instrument or voice at a time; a full mix has no single pitch to follow. Nothing uploads.</p>
+    <p>Hum a melody, play a bassline, record a synth line — get back the notes on a piano roll you can play back and fix, then a .mid file you can drop into any DAW and play with a different sound. One instrument or voice at a time; a full mix has no single pitch to follow. Nothing uploads.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -161,6 +161,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <tr><th>Confidence</th><td id="midiConfidence">—</td></tr>
       </table>
       <div class="note-chips" id="noteList"></div>
+      <div class="roll-bar">
+        <button type="button" class="btn btn-small" id="rollPlay">Play notes</button>
+        <button type="button" class="btn btn-small btn-secondary" id="rollBoth">Play with the recording</button>
+        <button type="button" class="btn btn-small btn-secondary" id="rollQuant">Snap to grid</button>
+        <button type="button" class="btn btn-small btn-secondary" id="rollUndo">Undo</button>
+      </div>
+      <canvas id="pianoRoll" class="piano-roll" aria-label="Piano roll of the transcribed notes: drag to move, drag a note's end to change its length, double-click to add or delete"></canvas>
+      <p class="key-shift-note">Drag a note to move it, drag its right end to change its length, double-click to add or delete one. Arrow keys move the selected note by a semitone, with Shift by an octave; Delete removes it; ⌘Z or Ctrl+Z undoes.</p>
+      <div class="actions"><button class="btn" id="midiDownload" type="button">Download .mid</button></div>
     </div>
 
     <div class="result-list" id="resultList"></div>
@@ -180,6 +189,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>A pitch reading every ten milliseconds is not a melody. A note ends when the pitch moves by about a semitone, when the level drops, or when the detector loses confidence, and anything shorter than your minimum is discarded as a wobble at a note transition rather than something you played.</p>
     <p>The pitch of each note is the median of its frames, not the mean. Attacks are messy — the first few milliseconds of a plucked string or a sung consonant can read wildly — and a mean lets those drag the note off. A median ignores them.</p>
     <p>Velocity is scaled against the loudest note in your recording rather than an absolute level, so the dynamics of the performance survive. An absolute mapping puts every note of a normalised recording at 127 and flattens the phrasing completely.</p>
+
+    <h3>Check and fix the notes before you download</h3>
+    <p>The notes appear on a piano roll first, not straight in a file. A pitch tracker makes a few typical mistakes: a stray blip on a breath, one long note split in two by vibrato, a note that slipped an octave on a thin or breathy sound. Each takes a second to spot on a roll and far longer to hunt down in a DAW. Press <em>Play notes</em> to hear the transcription on a plain synth. <em>Play with the recording</em> plays both together, so a wrong note sticks out against the original.</p>
+    <p>Drag a note to move it in time or pitch, and drag its right end to change its length. Double-click empty space to add a note one beat long, and double-click a note to delete it. With a note selected, the arrow keys move it a semitone, or an octave with Shift, which is the quick fix for an octave slip. <em>Snap to grid</em> pulls every note onto the grid in one go, and <em>Undo</em> steps back through every change. The file you download is exactly what is on the roll.</p>
 
     <h3>Tempo and quantizing</h3>
     <p>Leave the tempo blank and the file is analysed with the same detector behind the <a href="/bpm-finder">BPM finder</a>, and that tempo is written into the MIDI file so your DAW lays the notes on the right grid rather than assuming 120.</p>
@@ -206,6 +219,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Does it work on chords?</summary><p>No. Polyphonic transcription is an open research problem, and a tool that claimed to do it in a browser would be guessing.</p></details>
       <details><summary>Is my recording uploaded?</summary><p>No. Pitch tracking and the MIDI file are both produced in your browser tab.</p></details>
       <details><summary>How accurate is the pitch?</summary><p>Within 0.7 cents on pure tones from A2 to A5 — about one hundredth of a semitone — and with no octave errors on harmonically rich sources, which is where simpler detectors usually fail.</p></details>
+      <details><summary>Can I edit the notes before downloading?</summary><p>Yes. The notes appear on a piano roll where you can move, lengthen, add and delete them, play them back alone or against the recording, and undo. The download is what is on the roll.</p></details>
       <details><summary>Why does my MIDI file play no sound?</summary><p>Because MIDI holds notes, not audio. Load it into a DAW and assign an instrument; that is what makes it useful, since you can then change the sound or the notes.</p></details>
       <details><summary>Should I turn on quantizing?</summary><p>Only if it was played to a click and you want it tidy. Quantizing is easy to do later in any DAW and impossible to undo, so the default keeps your timing.</p></details>
       <details><summary>It found notes I did not play. Why?</summary><p>Usually reverb or delay on the recording, which smears the pitch at the end of each phrase. Record dry, and set the range to match your instrument.</p></details>
@@ -336,16 +350,17 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23l"></script>
-<script src="/js/tool-graph.js?v=2026-09-23l"></script>
-<script src="/js/flow.js?v=2026-09-23l"></script>
-<script src="/js/audio-core.js?v=2026-09-23l"></script>
-<script src="/js/silence-gaps.js?v=2026-09-23l"></script>
-<script src="/js/pitch-track.js?v=2026-09-23l"></script>
-<script src="/js/midi-write.js?v=2026-09-23l"></script>
-<script src="/js/bpm-detector.js?v=2026-09-23l"></script>
-<script src="/js/audio-to-midi-page.js?v=2026-09-23l"></script>
-<script src="/js/consent.js?v=2026-09-23l"></script>
-<script src="/js/pwa.js?v=2026-09-23l"></script>
+<script src="/js/common.js?v=2026-09-23m"></script>
+<script src="/js/tool-graph.js?v=2026-09-23m"></script>
+<script src="/js/flow.js?v=2026-09-23m"></script>
+<script src="/js/audio-core.js?v=2026-09-23m"></script>
+<script src="/js/silence-gaps.js?v=2026-09-23m"></script>
+<script src="/js/pitch-track.js?v=2026-09-23m"></script>
+<script src="/js/midi-write.js?v=2026-09-23m"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23m"></script>
+<script src="/js/piano-roll.js?v=2026-09-23m"></script>
+<script src="/js/audio-to-midi-page.js?v=2026-09-23m"></script>
+<script src="/js/consent.js?v=2026-09-23m"></script>
+<script src="/js/pwa.js?v=2026-09-23m"></script>
 </body>
 </html>

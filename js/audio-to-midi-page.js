@@ -20,10 +20,79 @@
   var ACCEPT = ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus',
     '.aif', '.aiff', '.m4b', '.wma', '.mp4', '.mov', '.webm', '.mkv'];
 
-  var file = null;
+  var file = null, buffer = null, bpm = 120, base = 'melody';
+
+  /* ------------------------------------------------ piano roll and synth */
+
+  // The transcription is shown for checking before it is written: the
+  // download is the roll's notes, not the tracker's raw output.
+  var roll = global.ASPianoRoll ? new global.ASPianoRoll($('#pianoRoll'), {
+    onChange: function (notes) { $('#midiNotes').textContent = String(notes.length); },
+    onKey: function (m, dur) { blip(m, dur || 0.25); }
+  }) : null;
+  var ctx = null, voices = [], raf = 0;
+  function audio() {
+    if (!ctx) { var C = global.AudioContext || global.webkitAudioContext; ctx = new C(); }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  // A plain triangle voice with a short attack and release: enough to hear
+  // wrong notes, which is all it is for.
+  function voice(c, m, when, dur, vel) {
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle';
+    o.frequency.value = 440 * Math.pow(2, (m - 69) / 12);
+    var peak = 0.25 * (vel || 96) / 127, end = when + Math.max(0.05, dur);
+    g.gain.setValueAtTime(0, when);
+    g.gain.linearRampToValueAtTime(peak, when + 0.008);
+    g.gain.setValueAtTime(peak, end - 0.03);
+    g.gain.linearRampToValueAtTime(0, end);
+    o.connect(g); g.connect(c.destination);
+    o.start(when); o.stop(end + 0.02);
+    voices.push(o);
+  }
+  function blip(m, dur) { var c = audio(); voice(c, m, c.currentTime + 0.01, Math.min(0.5, dur), 96); }
+  function stopPlay() {
+    voices.forEach(function (o) { try { o.stop(); } catch (e) {} });
+    voices = [];
+    cancelAnimationFrame(raf); raf = 0;
+    if (roll) { roll.playhead = null; roll.draw(); }
+    $('#rollPlay').textContent = 'Play notes';
+    $('#rollBoth').textContent = 'Play with the recording';
+  }
+  function play(withOriginal) {
+    if (voices.length) { stopPlay(); return; }
+    var c = audio(), t0 = c.currentTime + 0.1, notes = roll.notes(), end = 0;
+    notes.forEach(function (n) { voice(c, n.midi, t0 + n.start, n.duration, n.velocity); end = Math.max(end, n.start + n.duration); });
+    if (withOriginal && buffer) {
+      var src = c.createBufferSource(), g = c.createGain();
+      src.buffer = buffer; g.gain.value = 0.6; src.connect(g); g.connect(c.destination);
+      src.start(t0); voices.push(src); end = Math.max(end, buffer.duration);
+    }
+    (withOriginal ? $('#rollBoth') : $('#rollPlay')).textContent = 'Stop';
+    (function tick() {
+      var t = c.currentTime - t0;
+      if (t > end + 0.2 || !voices.length) { stopPlay(); return; }
+      roll.playhead = Math.max(0, t); roll.draw();
+      raf = requestAnimationFrame(tick);
+    })();
+  }
+  if (roll) {
+    $('#rollPlay').addEventListener('click', function () { play(false); });
+    $('#rollBoth').addEventListener('click', function () { play(true); });
+    $('#rollQuant').addEventListener('click', function () { roll.quantize(); });
+    $('#rollUndo').addEventListener('click', function () { roll.undo(); });
+    $('#midiDownload').addEventListener('click', function () {
+      var notes = roll.notes();
+      if (!notes.length) { CV.setStatus(statusEl, 'warn', 'There are no notes left to write.'); return; }
+      CV.downloadBlob(global.ASMidi.blob(notes, { bpm: bpm, trackName: base }), base + '.mid');
+      CV.setStatus(statusEl, 'success', notes.length + ' notes written to ' + base + '.mid');
+    });
+  }
 
   function reset() {
-    file = null;
+    file = null; buffer = null;
+    if (roll) stopPlay();
     fileList.innerHTML = '';
     controls.style.display = 'none';
     goBtn.disabled = true;
@@ -65,7 +134,7 @@
     CV.setProgress(progressBar, 0);
     try {
       CV.setStatus(statusEl, 'info', 'Decoding…');
-      var buffer = await AudioSaw.decodeToAudioBuffer(file, function (pct) {
+      buffer = await AudioSaw.decodeToAudioBuffer(file, function (pct) {
         CV.setProgress(progressBar, Math.min(20, pct * 0.2));
       });
 
@@ -99,7 +168,7 @@
       }
 
       // Tempo: detected, or whatever the user typed.
-      var bpm = parseFloat($('#bpm').value);
+      bpm = parseFloat($('#bpm').value);
       var detected = null;
       if (!bpm || bpm <= 0) {
         CV.setStatus(statusEl, 'info', 'Detecting tempo…');
@@ -116,8 +185,7 @@
       var outNotes = division ? quantize(notes, bpm, division) : notes;
 
       CV.setProgress(progressBar, 90);
-      var base = file.name.replace(/\.[^.]+$/, '');
-      var midi = global.ASMidi.blob(outNotes, { bpm: bpm, trackName: base });
+      base = file.name.replace(/\.[^.]+$/, '');
 
       // Report before the download, so the numbers are on screen either way.
       $('#midiNotes').textContent = String(outNotes.length);
@@ -146,8 +214,15 @@
       }
       if (report) report.hidden = false;
 
-      CV.downloadBlob(midi, base + '.mid');
-      CV.setStatus(statusEl, 'success', 'Done — ' + outNotes.length + ' notes written to ' + base + '.mid');
+      if (roll) {
+        // Check and fix the notes, then download from the button.
+        roll.setBpm(bpm, division || 4);
+        roll.setNotes(outNotes);
+        CV.setStatus(statusEl, 'success', outNotes.length + ' notes found. Play them back, fix anything that is wrong, then download the .mid.');
+      } else {
+        CV.downloadBlob(global.ASMidi.blob(outNotes, { bpm: bpm, trackName: base }), base + '.mid');
+        CV.setStatus(statusEl, 'success', 'Done — ' + outNotes.length + ' notes written to ' + base + '.mid');
+      }
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not transcribe that file. ' + (e.message || e));
     } finally {

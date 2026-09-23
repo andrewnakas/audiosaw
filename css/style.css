@@ -1473,3 +1473,8 @@ select:focus-visible {
 /* A long option label must never push a select past its card on a phone. */
 .controls label { max-width: 100%; }
 .controls select { max-width: 100%; }
+
+/* piano roll on /audio-to-midi */
+.roll-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+.piano-roll { display: block; width: 100%; height: 300px; border: 1px solid var(--rule); border-radius: 8px; touch-action: none; outline: none; }
+.piano-roll:focus-visible { box-shadow: 0 0 0 2px var(--amber); }

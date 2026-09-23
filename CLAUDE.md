@@ -198,6 +198,11 @@ carrying a separate tone per channel, not because the coefficient tables say
     That became true once YIN's parabolic refinement moved from the
     normalised curve (4.5 cents off at 1.3 kHz) to the raw difference
     (0.25 cents).
+- `js/piano-roll.js` (`ASPianoRoll`): the note editor on `/audio-to-midi`.
+  Transcriptions land on the roll, and the .mid is written from the roll's
+  notes when "Download .mid" is pressed. `convert_success` therefore fires on
+  that click, not on the transcription. It plays back on a triangle voice
+  from the page, alone or against the recording.
 - `js/midi-write.js` — Standard MIDI File writer (type 0). MIDI has no forgiving
   parser: chunk lengths must match their contents and delta times are
   variable-length quantities. `node tools/check-midi.js` parses the output back
