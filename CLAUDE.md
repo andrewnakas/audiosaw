@@ -393,8 +393,9 @@ filenames or raw exception strings — bucket sizes and enumerate error types (s
 **A parameter is invisible until it is a registered custom dimension**, and
 registration is not retroactive. Every parameter this site sends was being
 discarded by GA4 until 21 Sep 2026 — collection was fine, nothing had ever been
-promoted. `tool`, `error_type`, `placement`, `rail` and `to_tool` are registered;
-`file_ext`, `target_format`, `from_tool` and `pick_method` are not yet. If you
+promoted. `tool`, `error_type`, `placement`, `rail` and `to_tool` are registered, and
+`from_tool` since 23 Sep 2026 (it tells tools apart on the project link's
+`chain_continue`); `file_ext`, `target_format` and `pick_method` are not yet. If you
 add a parameter, register it the same day you ship it or the first weeks of its
 data do not exist.
 
