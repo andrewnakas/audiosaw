@@ -235,7 +235,7 @@ function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
 async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
-  for (let i = 0; i < 100 && !fs.existsSync(f); i++) await sleep(100);
+  for (let i = 0; i < 300 && !fs.existsSync(f); i++) await sleep(100);
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
   return attach(port, null);
 }
