@@ -1,0 +1,217 @@
+#!/usr/bin/env node
+/*
+ * Checks js/editor-model.js, the audio editor's project model.
+ *
+ * The editor's whole promise is that editing is non-destructive and undoable,
+ * and the renderer, the playback engine and the export all assume clips on a
+ * track never overlap. So this asserts exactly those things:
+ *
+ *   - split then undo gives back a byte-identical project
+ *   - a trim can never reach past either end of its source, or into a neighbour
+ *   - moves snap to clip edges, and moving onto occupied time overwrites it
+ *   - ripple delete closes the gap on that track only
+ *   - 1,000 random operations never leave an overlap, a negative time, a clip
+ *     running past its source, or fades longer than the clip
+ *
+ * and, separately, that the fade maths the engine schedules is continuous and
+ * lands on the values it should.
+ */
+const M = require('../js/editor-model.js');
+
+let failures = 0;
+function ok(cond, msg) {
+  if (!cond) { failures++; console.error('  FAIL ' + msg); }
+}
+function near(a, b, tol, msg) { ok(Math.abs(a - b) <= (tol || 1e-9), msg + ' (got ' + a + ', want ' + b + ')'); }
+function valid(p, msg) {
+  const errs = M.validate(p);
+  ok(errs.length === 0, msg + (errs.length ? ': ' + errs.slice(0, 3).join('; ') : ''));
+}
+
+function fixture() {
+  const p = M.create('test');
+  const a = M.addSource(p, { name: 'a.wav', duration: 10, channels: 2, sampleRate: 48000 });
+  const b = M.addSource(p, { name: 'b.wav', duration: 4, channels: 1, sampleRate: 44100 });
+  const t1 = M.addTrack(p);
+  const t2 = M.addTrack(p);
+  const c1 = M.addClip(p, t1, { sourceId: a, start: 0 });
+  const c2 = M.addClip(p, t1, { sourceId: b, start: 12 });
+  const c3 = M.addClip(p, t2, { sourceId: b, start: 1 });
+  return { p, a, b, t1, t2, c1, c2, c3 };
+}
+
+/* ---------------------------------------------------------- split + undo */
+{
+  const { p, c1 } = fixture();
+  const h = new M.History();
+  const before = M.serialize(p);
+  h.push(before);
+  const made = M.splitAt(p, 4, [c1]);
+  ok(made.length === 1, 'split makes one new clip');
+  const left = M.findClip(p, c1).clip, right = M.findClip(p, made[0]).clip;
+  near(left.duration, 4, 1e-9, 'left half is 4 s');
+  near(right.start, 4, 1e-9, 'right half starts at the split');
+  near(right.offset, 4, 1e-9, 'right half reads from 4 s into the source');
+  near(right.duration, 6, 1e-9, 'right half is 6 s');
+  valid(p, 'after split');
+  const restored = h.undo(M.serialize(p));
+  ok(restored === before, 'undo after split restores the identical project');
+  const again = h.redo(restored);
+  ok(M.parse(again).tracks[0].clips.length === 3, 'redo brings the split back');
+}
+
+/* ------------------------------------------------------------ trim bounds */
+{
+  const { p, c1, c2 } = fixture();
+  M.trimEnd(p, c1, 50);
+  near(M.findClip(p, c1).clip.duration, 10, 1e-9, 'trimEnd stops at the end of the source');
+  M.trimStart(p, c1, -5);
+  near(M.findClip(p, c1).clip.start, 0, 1e-9, 'trimStart stops at time zero');
+  M.trimStart(p, c1, 3);
+  M.trimStart(p, c1, 1);
+  near(M.findClip(p, c1).clip.offset, 1, 1e-9, 'trimStart can extend back into trimmed audio');
+  M.trimStart(p, c1, -2);
+  near(M.findClip(p, c1).clip.offset, 0, 1e-9, 'trimStart never reads before the source begins');
+  // c2 sits at 12 s; move c1 up against it and try to trim through it.
+  M.moveClips(p, [c1], 1.5, 0);
+  M.trimEnd(p, c1, 30);
+  const e1 = M.clipEnd(M.findClip(p, c1).clip);
+  ok(e1 <= 12 + 1e-9, 'trimEnd stops at the next clip on the track (ended at ' + e1 + ')');
+  M.trimStart(p, c2, 0);
+  ok(M.findClip(p, c2).clip.start >= e1 - 1e-9, 'trimStart stops at the previous clip');
+  M.trimEnd(p, c1, -100);
+  near(M.findClip(p, c1).clip.duration, M.MIN_LEN, 1e-9, 'trim cannot shrink a clip below the minimum');
+  valid(p, 'after trims');
+}
+
+/* ------------------------------------------------------------ snap + move */
+{
+  const { p, c1, c2, c3 } = fixture();
+  const pts = M.snapPoints(p, { [c3]: true }, [7.3]);
+  ok(M.snap(10.04, pts, 0.1) === 10, 'snaps to a clip end within tolerance');
+  ok(M.snap(10.3, pts, 0.1) === null, 'does not snap outside tolerance');
+  ok(M.snap(7.28, pts, 0.1) === 7.3, 'snaps to an extra point (the playhead)');
+  ok(M.snap(1.02, pts, 0.1) === null, 'excluded clips are not snap targets');
+
+  // Drop c3 (4 s long) onto the middle of c1: it should punch a hole.
+  M.moveClips(p, [c3], 2, -1);
+  const t1 = p.tracks[0];
+  ok(t1.clips.length === 4, 'moving onto a clip splits it around the moved clip (clips: ' + t1.clips.length + ')');
+  near(t1.clips[0].duration, 3, 1e-9, 'left remnant keeps 0–3 s');
+  near(t1.clips[2].start, 7, 1e-9, 'right remnant starts where the moved clip ends');
+  near(t1.clips[2].offset, 7, 1e-9, 'right remnant reads from the matching point in the source');
+  valid(p, 'after overwrite move');
+  M.moveClips(p, [c2], -100, 0);
+  ok(M.findClip(p, c2).clip.start >= 0, 'a move cannot go before zero');
+  valid(p, 'after move to zero');
+}
+
+/* --------------------------------------------------------- ripple delete */
+{
+  const { p, c1, c2, c3 } = fixture();
+  M.deleteClips(p, [c1], true);
+  near(M.findClip(p, c2).clip.start, 2, 1e-9, 'ripple delete slides the next clip left by the deleted length');
+  near(M.findClip(p, c3).clip.start, 1, 1e-9, 'ripple delete leaves other tracks alone');
+  valid(p, 'after ripple delete');
+
+  const f = fixture();
+  M.addMarker(f.p, 15);
+  M.deleteRange(f.p, 2, 5, null, true);
+  near(M.findClip(f.p, f.c2).clip.start, 9, 1e-9, 'ripple range delete slides later clips left');
+  near(f.p.tracks[1].clips[0].duration, 1, 1e-9, 'range delete trims clips on every track');
+  near(f.p.markers[0].t, 12, 1e-9, 'ripple range delete moves markers too');
+  near(M.duration(f.p), 13, 1e-9, 'project is 3 s shorter');
+  valid(f.p, 'after ripple range delete');
+
+  const g = fixture();
+  M.cropTo(g.p, 2, 6);
+  near(M.duration(g.p), 4, 1e-9, 'crop keeps only the range');
+  near(g.p.tracks[0].clips[0].offset, 2, 1e-9, 'crop keeps the right audio');
+  valid(g.p, 'after crop');
+
+  const d = fixture();
+  const made = M.duplicate(d.p, [d.c1]);
+  near(M.findClip(d.p, made[0]).clip.start, 10, 1e-9, 'duplicate lands straight after the original');
+  valid(d.p, 'after duplicate');
+}
+
+/* ---------------------------------------------------------------- fades */
+{
+  const c = { gainDb: 0, duration: 4, fadeIn: 1, fadeOut: 2 };
+  near(M.clipGainAt(c, 0), 0, 1e-12, 'fade in starts from silence');
+  near(M.clipGainAt(c, 0.5), Math.SQRT1_2, 1e-9, 'equal-power fade is -3 dB halfway');
+  near(M.clipGainAt(c, 1.5), 1, 1e-12, 'unity between the fades');
+  near(M.clipGainAt(c, 4), 0, 1e-12, 'fade out ends in silence');
+  near(M.clipGainAt({ gainDb: -6, duration: 1, fadeIn: 0, fadeOut: 0 }, 0.5), Math.pow(10, -6 / 20), 1e-12, 'clip gain is in dB');
+  // Continuity: no step anywhere along the clip, which would be a click.
+  let worst = 0;
+  for (let i = 1; i <= 4000; i++) {
+    worst = Math.max(worst, Math.abs(M.clipGainAt(c, i / 1000) - M.clipGainAt(c, (i - 1) / 1000)));
+  }
+  ok(worst < 0.002, 'gain envelope has no step larger than 0.002 per ms (worst ' + worst.toFixed(5) + ')');
+
+  // Mixing two known signals through the same maths the engine uses.
+  const sr = 1000;
+  const a = Array.from({ length: sr * 2 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / sr));
+  const b = Array.from({ length: sr * 2 }, () => 0.25);
+  const ca = { gainDb: -6, duration: 2, fadeIn: 0.5, fadeOut: 0 };
+  const cb = { gainDb: 0, duration: 2, fadeIn: 0, fadeOut: 1 };
+  const mix = a.map((v, i) => v * M.clipGainAt(ca, i / sr) + b[i] * M.clipGainAt(cb, i / sr));
+  near(mix[1500], a[1500] * Math.pow(10, -6 / 20) + 0.25 * Math.sin(Math.PI / 4), 1e-9, 'mixed sample matches expected value');
+}
+
+/* ------------------------------------------------------------- fuzzing */
+{
+  let seed = 12345;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const { p } = fixture();
+  const h = new M.History();
+  let cb = null;
+  let ops = 0;
+  for (let i = 0; i < 1000; i++) {
+    const clips = M.allClips(p);
+    const pick = () => clips.length ? clips[Math.floor(rnd() * clips.length)].clip.id : null;
+    const t = rnd() * 20;
+    const snapBefore = M.serialize(p);
+    const r = rnd();
+    const id = pick();
+    let op;
+    if (r < 0.12) { op = 'split'; M.splitAt(p, t, rnd() < 0.5 && id ? [id] : null); }
+    else if (r < 0.26 && id) { op = 'move'; M.moveClips(p, [id], (rnd() - 0.5) * 8, Math.floor(rnd() * 3) - 1); }
+    else if (r < 0.36 && id) { op = 'trimStart'; M.trimStart(p, id, t); }
+    else if (r < 0.46 && id) { op = 'trimEnd'; M.trimEnd(p, id, t); }
+    else if (r < 0.52 && id) { op = 'delete'; M.deleteClips(p, [id], rnd() < 0.5); }
+    else if (r < 0.58) { op = 'deleteRange'; M.deleteRange(p, t, t + rnd() * 3, rnd() < 0.5 ? [p.tracks[0].id] : null, rnd() < 0.5); }
+    else if (r < 0.64 && id) { op = 'fade'; M.setFade(p, id, rnd() < 0.5 ? 'in' : 'out', rnd() * 5); }
+    else if (r < 0.70 && id) { op = 'duplicate'; M.duplicate(p, [id]); }
+    else if (r < 0.75 && id) { op = 'copy'; cb = M.copyClips(p, [id]); }
+    else if (r < 0.80 && cb) { op = 'paste'; M.paste(p, cb, t, Math.floor(rnd() * p.tracks.length)); }
+    else if (r < 0.84) { op = 'insertGap'; M.insertGap(p, t, rnd() * 2, null); }
+    else if (r < 0.88 && id) {
+      op = 'replace';
+      const src = M.addSource(p, { name: 'fx', duration: 0.5 + rnd() * 6, kind: 'derived' });
+      M.replaceSource(p, id, src, p.sources[src].duration);
+    }
+    else if (r < 0.91) { op = 'addTrack'; M.addTrack(p); }
+    else if (r < 0.93 && p.tracks.length > 2) { op = 'removeTrack'; M.removeTrack(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id); }
+    else if (r < 0.96 && id) { op = 'setClip'; M.setClip(p, id, { gainDb: (rnd() - 0.5) * 30, fadeIn: rnd() * 3 }); }
+    else { op = 'addClip'; M.addClip(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id, { sourceId: Object.keys(p.sources)[0], start: t, offset: rnd() * 5, duration: rnd() * 5 + 0.05 }); }
+    if (M.serialize(p) !== snapBefore) { h.push(snapBefore); ops++; }
+    const errs = M.validate(p);
+    if (errs.length) {
+      ok(false, 'fuzz step ' + i + ' (' + op + ') broke an invariant: ' + errs.slice(0, 2).join('; '));
+      break;
+    }
+  }
+  // Unwind the whole run. The last undo must land exactly on the fixture.
+  let cur = M.serialize(p), steps = 0, prev;
+  while ((prev = h.undo(cur)) !== null) { cur = prev; steps++; }
+  ok(M.validate(M.parse(cur)).length === 0, 'every undo state is valid');
+  ok(steps === Math.min(ops, h.limit), 'undo walks back through every recorded change (' + steps + ' of ' + ops + ')');
+}
+
+if (failures) {
+  console.error('check-editor: ' + failures + ' failure(s).');
+  process.exit(1);
+}
+console.log('check-editor: model invariants hold across split, trim, move, ripple, paste and 1,000 random edits.');

@@ -273,10 +273,22 @@
     },
 
     // ---- Cut, trim & arrange ---------------------------------------------
+    'audio-editor': {
+      cat: 'edit', label: 'editor', title: 'Audio Editor',
+      blurb: 'A multitrack timeline: cut, move, fade, mix, record and export, on a phone or a laptop.',
+      next: [
+        ['loudness-normalizer', 'Check the finished mix hits a streaming loudness target'],
+        ['mp3-tag-editor', 'Add a title, artist and cover art to the export'],
+        ['stem-splitter', 'Split a song into vocals and instrumental, then edit them as tracks'],
+        ['voice-recorder', 'Record a quick take on its own, without the timeline'],
+        ['audio-compressor', 'Shrink the export if it is too big to send']
+      ]
+    },
     'audio-cutter': {
       cat: 'edit', label: 'cut', title: 'Audio Cutter',
       blurb: 'Drag handles on a waveform and keep only the part you want.',
       next: [
+        ['audio-editor', 'Cut out the middle and keep both ends, with undo'],
         ['audio-joiner', 'Stitch the pieces back together'],
         ['fade-in-fade-out', 'Soften the new in and out points'],
         ['ringtone-maker', 'Turn the selection into a ringtone'],
@@ -288,6 +300,7 @@
       cat: 'edit', label: 'join', title: 'Audio Joiner',
       blurb: 'Concatenate several files into one, in the order you choose.',
       next: [
+        ['audio-editor', 'Arrange, layer and fade the pieces on a timeline instead'],
         ['normalize-audio', 'Match levels so the seams do not jump'],
         ['fade-in-fade-out', 'Fade the ends of the finished piece'],
         ['audio-cutter', 'Trim each part before joining'],
@@ -332,6 +345,7 @@
       cat: 'edit', label: 'fade', title: 'Fade in / fade out',
       blurb: 'Clean fades on both ends without opening an editor.',
       next: [
+        ['audio-editor', 'Fade several clips and mix them together in one place'],
         ['trim-silence-edges', 'Tighten the ends first'],
         ['audio-cutter', 'Set the exact in and out points'],
         ['normalize-audio', 'Level before fading'],
@@ -490,6 +504,7 @@
       blurb: 'Neural separation into a clean instrumental and acapella, running on your machine.',
       next: [
         ['stemflipper', 'Stems plus MIDI, in your browser or on a GPU'],
+        ['audio-editor', 'Put the stems on separate tracks and remix them'],
         ['vocal-remover', 'The instant version, when centre cancellation is enough'],
         ['audio-cutter', 'Trim to the section you need before separating'],
         ['pitch-shifter', 'Move the finished instrumental into your key'],
@@ -594,6 +609,7 @@
       cat: 'create', label: 'voice recorder', title: 'Voice recorder',
       blurb: 'Record from your microphone in the browser — the audio never leaves your device.',
       next: [
+        ['audio-editor', 'Record over a backing track and edit the takes'],
         ['noise-reduction', 'Clean up the room tone you just recorded'],
         ['trim-silence-edges', 'Top and tail the recording'],
         ['normalize-audio', 'Bring it to a consistent level'],
@@ -811,7 +827,7 @@
       note: 'Change how long it is or what order it is in, not what format it is.',
       style: 'tile',
       tools: [
-        'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
+        'audio-editor', 'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
         'silence-remover', 'trim-silence-edges', 'fade-in-fade-out'
       ]
     },

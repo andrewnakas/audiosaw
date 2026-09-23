@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Free Online Audio Editor — multitrack, no upload, works on your phone</title>
+<meta name="description" content="A free multitrack audio editor in your browser. Cut, split, move, fade and mix clips, record over a backing track, add effects, export MP3 or WAV. Nothing uploads, no signup, works on mobile.">
+<meta name="keywords" content="online audio editor, free audio editor, multitrack audio editor, audio editor no upload, edit mp3 online, audio editor for phone, browser daw, audacity alternative online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-editor">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Free Online Audio Editor — multitrack, no upload, works on your phone">
+<meta property="og:description" content="Cut, move, fade, mix and record on a multitrack timeline in your browser. Nothing uploads.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-editor">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23">
+<link rel="stylesheet" href="/css/editor.css?v=2026-09-23">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Editor",
+  "url": "https://audiosaw.com/audio-editor",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out."}},{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source."}},{"@type":"Question","name":"Does it work on iPhone and Android?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record."}},{"@type":"Question","name":"Will I lose my work if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file."}},{"@type":"Question","name":"How many tracks can I have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded."}},{"@type":"Question","name":"Can I undo an effect?","acceptedAnswer":{"@type":"Answer","text":"Yes. Effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original."}},{"@type":"Question","name":"Why does my recording sound late against the backing track?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one."}},{"@type":"Question","name":"Can I open the project in Audacity or another editor?","acceptedAnswer":{"@type":"Answer","text":"Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Cut, trim & arrange","item":"https://audiosaw.com/tools#edit"},{"@type":"ListItem","position":3,"name":"Audio Editor"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#edit">Cut, trim &amp; arrange</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio Editor</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio <span class="ital">Editor</span></h1>
+    <p>A multitrack editor that runs in this tab. Drop in songs, voice memos or the sound from a video, then cut, move, fade, mix, record and export. Nothing is uploaded, there is no account, and it works with a finger as well as a mouse.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">The editor needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app ed-wrap" aria-label="Audio editor">
+    <div class="ed is-empty" id="ed">
+      <div class="ed-bar ed-bar-top">
+        <div class="ed-group">
+          <button type="button" class="ed-btn ed-btn-primary" id="edAdd" title="Add audio files">＋ <span>Add<span class="ed-hide-sm"> audio</span></span></button>
+          <button type="button" class="ed-btn ed-rec" id="edRec" title="Record from the microphone (R)"><span>Record</span></button>
+        </div>
+        <div class="ed-transport">
+          <button type="button" class="ed-icon" id="edHome" title="Back to the start (Home)" aria-label="Back to the start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5L9 12l10 7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="ed-btn ed-play" id="edPlay" title="Play / pause (Space)" aria-label="Play"></button>
+          <div class="ed-clock"><span class="ed-time" id="edTime">0:00.00</span><span class="ed-total" id="edTotal">0:00</span></div>
+          <div class="ed-meter" aria-hidden="true"><span><i id="edMeterL"></i></span><span><i id="edMeterR"></i></span></div>
+          <button type="button" class="ed-icon ed-loop" id="edLoop" aria-pressed="false" title="Loop the selection (L)" aria-label="Loop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a6 6 0 0 1 6-6h8l-3-3M20 12a6 6 0 0 1-6 6H6l3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="ed-group ed-right">
+          <span class="ed-saved ed-hide-sm" id="edSaved" aria-live="polite"></span>
+          <button type="button" class="ed-icon" id="edUndo" title="Undo (⌘Z)" aria-label="Undo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="ed-icon" id="edRedo" title="Redo (⇧⌘Z)" aria-label="Redo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5M20 9H10a6 6 0 0 0 0 12h3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="ed-icon" id="edFull" aria-pressed="false" title="Full screen editor" aria-label="Full screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
+          <button type="button" class="ed-icon" id="edMore" title="Project menu" aria-label="Project menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg></button>
+          <button type="button" class="ed-btn ed-btn-primary" id="edExport">Export</button>
+        </div>
+      </div>
+
+      <div class="ed-stage" id="edStage">
+        <div class="ed-ruler-row"><div class="ed-corner" aria-hidden="true">time</div><canvas id="edRuler" aria-label="Timeline ruler: tap to move the playhead, drag to select a range"></canvas></div>
+        <div class="ed-scroll" id="edScroll">
+          <div class="ed-inner">
+            <div class="ed-heads" id="edHeads"></div>
+            <canvas id="edLanes" aria-label="Tracks and clips"></canvas>
+          </div>
+        </div>
+        <div class="ed-hbar" id="edHbar" hidden><div class="ed-thumb" id="edThumb"></div></div>
+
+        <div class="dropzone ed-empty" id="dropzone">
+          <span class="icon" aria-hidden="true">＋</span>
+          <p class="big">drop audio here to start editing</p>
+          <p>MP3, WAV, M4A, FLAC, OGG and more, or the sound from a video. Several files at once is fine.</p>
+          <div class="ed-empty-actions">
+            <button type="button" class="ed-btn" data-empty="record">Record instead</button>
+            <button type="button" class="ed-btn" data-empty="demo">Try it with a demo</button>
+          </div>
+          <div class="ed-restore" id="edRestore" hidden>
+            <span data-restore-text></span>
+            <button type="button" class="ed-btn ed-btn-primary" data-empty="restore">Pick up where you left off</button>
+          </div>
+          <input type="file" id="fileInput" accept="audio/*,video/*,.audiosaw" multiple>
+        </div>
+        <div class="ed-count" id="edCount" hidden aria-live="assertive"></div>
+      </div>
+
+      <div class="ed-tools" id="edTools" role="toolbar" aria-label="Edit tools"></div>
+      <div class="ed-inspector" id="edInspector" hidden></div>
+      <div class="ed-status-row">
+        <div class="status hidden" id="status"></div>
+        <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <div class="ed-toast" id="edToast" role="status" aria-live="polite"></div>
+      <input type="file" id="edProjectInput" accept=".audiosaw" hidden>
+    </div>
+
+    <div class="ed-sheet" id="edSheet" hidden>
+      <div class="ed-sheet-card" role="dialog" aria-modal="true" aria-labelledby="edSheetTitle">
+        <div class="ed-sheet-top"><h3 id="edSheetTitle"></h3><button type="button" class="ed-icon" data-close aria-label="Close">✕</button></div>
+        <div id="edSheetBody"></div>
+      </div>
+    </div>
+
+    <div class="ed-sheet" id="edExportSheet" hidden>
+      <div class="ed-sheet-card" role="dialog" aria-modal="true" aria-labelledby="edExTitle">
+        <div class="ed-sheet-top"><h3 id="edExTitle">Export</h3><button type="button" class="ed-icon" data-close aria-label="Close">✕</button></div>
+        <div class="ed-form">
+          <label>What
+            <select id="edExWhat">
+              <option value="mix">The whole mix</option>
+              <option value="range">Only the selected range</option>
+              <option value="clip">Only the selected clip</option>
+              <option value="stems">Each track as its own file (stems, zipped)</option>
+              <option value="markers">Split at the markers (zipped)</option>
+            </select>
+          </label>
+          <label>Format
+            <select id="edExFmt">
+              <option value="mp3" selected>MP3</option>
+              <option value="wav">WAV · 16-bit</option>
+              <option value="wav32">WAV · 32-bit float (for more editing)</option>
+              <option value="m4a">M4A / AAC</option>
+              <option value="flac">FLAC (lossless, smaller)</option>
+              <option value="ogg">OGG Vorbis</option>
+            </select>
+          </label>
+          <label id="edExBitrateWrap">Bitrate
+            <select id="bitrate">
+              <option value="128">128 kbps · speech</option>
+              <option value="192" selected>192 kbps</option>
+              <option value="256">256 kbps</option>
+              <option value="320">320 kbps · highest</option>
+            </select>
+          </label>
+          <label>Sample rate
+            <select id="edExRate">
+              <option value="44100" selected>44.1 kHz · music, most uses</option>
+              <option value="48000">48 kHz · video</option>
+            </select>
+          </label>
+          <label>File name <input type="text" id="edExName" maxlength="80" autocomplete="off"></label>
+          <label class="ed-check"><input type="checkbox" id="edExProtect" checked> Stop the mix clipping (turns it down to peak at -1 dB, only if it would clip)</label>
+          <label class="ed-check"><input type="checkbox" id="edExMono"> Mono</label>
+        </div>
+        <div class="ed-sheet-actions">
+          <button type="button" class="ed-btn" data-close>Cancel</button>
+          <button type="button" class="ed-btn ed-btn-primary" id="edExGo" data-track="convert">Export</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>Every file you add becomes a <em>clip</em> on a <em>track</em>. A clip is a window onto the original audio, not a copy of it: when you trim, split or move one, only its start and length change, and the samples underneath stay exactly as they arrived. That is what "non-destructive" means, and it is why a trim can be pulled back out again later and why undo goes back two hundred steps without eating memory.</p>
+    <p>Effects are the one thing that makes new audio. Applying noise removal or a loudness target writes a processed copy and points the clip at it, so undo still takes the effect off. The project saves itself in your browser as you work; close the tab, come back tomorrow, and the editor offers to pick up where you left off. To move a project to another computer, the project menu saves it as a single <code>.audiosaw</code> file, which is an ordinary zip of your audio and a JSON description of the timeline.</p>
+
+    <h3>Jobs it is good at</h3>
+    <ul>
+      <li><strong>Cutting a section out of the middle.</strong> Drag along the ruler over the part you do not want and press Delete. The gap closes up, the way deleting a sentence does. The single-purpose <a href="/audio-cutter">audio cutter</a> cannot do this; it keeps one region.</li>
+      <li><strong>A podcast or voice-over with music.</strong> Voice on one track, the music bed on another, a fade on the music where the talking starts. Run <em>Loudness → -16 LUFS</em> on the voice clips and export as MP3.</li>
+      <li><strong>Recording over a backing track.</strong> Press Record and the other tracks play while you sing or talk; the take lands on its own track, lined up. Record several takes and keep the best bits of each.</li>
+      <li><strong>Mashups, edits and ringtones.</strong> Line up two songs, split at the beat, duplicate a chorus, loop a section to check the join, then export just the selected range.</li>
+    </ul>
+
+    <h3>Recording and keeping it in time</h3>
+    <p>Most browser recorders use MediaRecorder, which hands back a compressed file with no timing information, so a take recorded over a backing track has to be lined up by eye. Here the microphone is read sample by sample on the same audio clock the playback runs on, and the delay through your speakers and microphone, as the browser reports it, is taken off when the take is placed. Two things still matter. Wear headphones, or the backing track bleeds into the microphone and ends up in the take. And Bluetooth headphones add a delay that browsers do not always report accurately; if a take sounds late, select it and press ← a few times. Each press moves it 10 ms.</p>
+    <p>Echo cancellation, noise suppression and automatic gain are switched off for recording. They are built for video calls and damage music: automatic gain pumps the level up and down, and noise suppression treats a held note as noise.</p>
+
+    <h3>The effects are the site's own tools</h3>
+    <p>Each effect runs the same code as the matching single-purpose page, so it sounds identical: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a>, <a href="/auto-cut-silence">pause shortening</a>, <a href="/slowed-reverb">reverb</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
+
+    <h3>Exporting</h3>
+    <p>Export mixes every audible track together at 44.1 or 48 kHz and writes MP3, 16-bit or 32-bit WAV, M4A, FLAC or OGG. You can export the whole mix, the selected range, one clip, every track as a separate stem, or the timeline split at its markers, which is how you turn one long recording into numbered files. If the mix would clip, it is turned down so its loudest peak sits at -1 dB; if it would not, it is left exactly as you heard it. For a file going back into another editor, choose 32-bit WAV, which keeps levels above 0 dB intact instead of flattening them.</p>
+
+    <h3>On a phone</h3>
+    <p>Tap a clip to select it, then drag it to move it or drag its edges to trim. An unselected clip scrolls the timeline instead, because on a small screen one clip is often all you can see. Pinch to zoom, drag along the ruler to select a range, and press and hold a clip for its menu. The full-screen button gives the timeline the whole screen. Decoded audio is held in memory, so phones run out sooner than laptops; iPhones limit a tab's memory most tightly.</p>
+
+    <h3>What it does not do</h3>
+    <p>There is no volume automation: a clip has one gain and two fades, not a line you can draw. There is no MIDI, no plugin support and no video output. Two clips on the same track cannot overlap, so a crossfade is two tracks with a fade on each. If you need automation, plugins or a mixing desk, <a href="https://www.reaper.fm/" rel="noopener">Reaper</a>, Audacity, GarageBand or the Fairlight page in DaVinci Resolve are the next step up. They all open the WAV files this exports.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my audio uploaded anywhere?</summary><p>No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out.</p></details>
+      <details><summary>Is it really free?</summary><p>Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source.</p></details>
+      <details><summary>Does it work on iPhone and Android?</summary><p>Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record.</p></details>
+      <details><summary>Will I lose my work if I close the tab?</summary><p>Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file.</p></details>
+      <details><summary>How many tracks can I have?</summary><p>There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded.</p></details>
+      <details><summary>Can I undo an effect?</summary><p>Yes. Effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original.</p></details>
+      <details><summary>Why does my recording sound late against the backing track?</summary><p>Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one.</p></details>
+      <details><summary>Can I open the project in Audacity or another editor?</summary><p>Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Check the finished mix hits a streaming loudness target.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Add a title, artist and cover art to the export.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Split a song into vocals and instrumental, then edit them as tracks.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record a quick take on its own, without the timeline.</p></a>
+      <a class="card" href="/audio-compressor"><h3>Compress an audio file</h3><p>Shrink the export if it is too big to send.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23"></script>
+<script src="/js/tool-graph.js?v=2026-09-23"></script>
+<script src="/js/flow.js?v=2026-09-23"></script>
+<script src="/js/audio-core.js?v=2026-09-23"></script>
+<script src="/js/tool-shell.js?v=2026-09-23"></script>
+<script src="/js/loudness.js?v=2026-09-23"></script>
+<script src="/js/silence-gaps.js?v=2026-09-23"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-23"></script>
+<script src="/js/noise-reduction.js?v=2026-09-23"></script>
+<script src="/js/editor-model.js?v=2026-09-23"></script>
+<script src="/js/editor-engine.js?v=2026-09-23"></script>
+<script src="/js/editor-view.js?v=2026-09-23"></script>
+<script src="/js/editor-fx.js?v=2026-09-23"></script>
+<script src="/js/editor-store.js?v=2026-09-23"></script>
+<script src="/js/editor-ui.js?v=2026-09-23"></script>
+<script src="/js/consent.js?v=2026-09-23"></script>
+<script src="/js/pwa.js?v=2026-09-23"></script>
+</body>
+</html>

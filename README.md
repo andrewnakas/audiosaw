@@ -1,10 +1,11 @@
 # AudioSaw
 
-Free audio tools that run entirely in your browser. Convert, cut, join,
-normalise, transcribe pitch to MIDI, split stems with a neural network, record
-from a microphone — with no upload, no account, no watermark and no queue.
+Free audio tools that run entirely in your browser. A multitrack audio editor,
+plus single-purpose tools to convert, cut, join, normalise, transcribe pitch to
+MIDI, split stems with a neural network and record from a microphone — with no
+upload, no account, no watermark and no queue.
 
-**[audiosaw.com](https://audiosaw.com)** · 59 tools · no ads · works offline
+**[audiosaw.com](https://audiosaw.com)** · 61 tools · no ads · works offline
 
 The file never leaves your machine. There is no server to send it to: the site
 is static files on a CDN, and every byte of processing happens in the tab using
@@ -24,10 +25,11 @@ nothing to run — no conversion servers exist to pay for.
 
 ## What is actually interesting in here
 
-Most of the 59 pages are ordinary format conversions. These are not:
+Most of the 61 pages are ordinary format conversions. These are not:
 
 | | |
 |---|---|
+| [`js/editor-*.js`](js/editor-ui.js) | [/audio-editor](https://audiosaw.com/audio-editor): a non-destructive multitrack editor that works with touch and mouse. Clips are windows onto immutable sources, so undo is a stack of small JSON snapshots; playback and export build the same Web Audio graph, so the file matches what you heard; recording goes through an AudioWorklet on the playback clock and is placed using the latency the browser reports. The model is pure and runs in Node against a thousand random edits. |
 | [`js/stem-separator.js`](js/stem-separator.js), [`js/stem-worker.js`](js/stem-worker.js) | Neural source separation (MDX-Net) via ONNX Runtime Web, WebGPU with a threaded WASM fallback. ~2.9 s per 5.9 s chunk on an Apple GPU; 45 s on seven CPU threads. |
 | [`js/spectral.js`](js/spectral.js) | The STFT the model needs — n_fft 6144, so a radix-3 stage over the radix-2 kernel. Validated against a NumPy implementation of the same pipeline to six decimal places. |
 | [`js/loudness.js`](js/loudness.js) | ITU-R BS.1770-4 integrated loudness and true peak, checked against FFmpeg's `ebur128` filter and required to agree within 0.1 LU. |
@@ -47,6 +49,7 @@ node tools/check-loudness.js   # against ffmpeg ebur128, within 0.1 LU
 node tools/check-midi.js       # round-trips MIDI through an independent parser
 node tools/check-autotune.js   # off-pitch note lands on target, in-tune note untouched
 node tools/check-silence.js    # no speech truncated, no clicks at the joins
+node tools/check-editor.js     # editor model: undo exact, no overlaps after 1,000 random edits
 node tools/check-all.js        # generated files current, every page has its scripts
 ```
 

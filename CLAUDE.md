@@ -75,6 +75,7 @@ node tools/build-dates.js    # dateModified in each SoftwareApplication block
 node tools/build-sitemap.js  # sitemap.xml with lastmod from git
 node tools/build-llms.js     # llms.txt
 node tools/check-includes.js # every CV./AudioSaw. helper a page uses is on the page
+node tools/check-editor.js   # the audio editor's model invariants
 node tools/check-all.js      # runs all of the above; use before committing
 ```
 
@@ -188,6 +189,36 @@ carrying a separate tone per channel, not because the coefficient tables say
   `CV.downloadBlob`, so it fires `convert_start` (via `data-track="convert"`)
   and no `convert_success`. That is correct — nothing was converted — but it
   means the tool is invisible in the `convert_success` metric by design.
+- `js/editor-*.js` — `/audio-editor`, the multitrack editor. Five files with one
+  job each: `editor-model.js` (pure project model, UMD, runs in Node),
+  `editor-engine.js` (Web Audio playback, offline export, AudioWorklet
+  recording), `editor-view.js` (canvas timeline and hit testing),
+  `editor-fx.js` (effects, which reuse loudness.js, silence-gaps.js,
+  slowed-reverb.js, the denoiser that noise-reduction.js now exports as
+  `ASDenoise`, and ffmpeg's atempo) and `editor-ui.js` (gestures, menus,
+  import/export, autosave). `node tools/check-editor.js` checks the model: exact
+  undo, trim bounds, overwrite-on-move, ripple, and no overlapping clips after
+  1,000 random edits. It runs in `check-all.js`.
+
+  **Clips on a track never overlap.** Everything that places audio carves the
+  space first (`carve()` in the model). The engine and the renderer assume it;
+  do not add an operation that skips it.
+
+  **Sources are immutable.** An effect writes a new source and repoints the
+  clip; it never edits a buffer in place, because undo snapshots still point at
+  the old one. `editor-fx.js` copies channels before touching them for that
+  reason.
+
+  Autosave uses its own IndexedDB database, `audiosaw-editor`, deliberately not
+  the `audiosaw` one shared by flow.js and sw.js (see the share-target section).
+  Imported files are stored as the original file and re-decoded on restore;
+  effect outputs and recordings are stored as Float32 samples.
+
+  Touch and mouse differ in one deliberate place: a finger on an *unselected*
+  clip pans the timeline, because on a phone one clip often fills the screen.
+  Tap selects, then drag moves. Playback end and looping are checked from a
+  timer as well as the animation loop, because a background tab gets no
+  animation frames.
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not

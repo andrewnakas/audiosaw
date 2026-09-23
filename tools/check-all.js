@@ -19,7 +19,8 @@ const CHECKS = [
   ['build-dates.js', '--check'],
   ['build-sitemap.js', '--check'],
   ['build-llms.js', '--check'],
-  ['check-includes.js']
+  ['check-includes.js'],
+  ['check-editor.js']
 ];
 
 let failed = 0;
