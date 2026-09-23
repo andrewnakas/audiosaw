@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "description": "Only /stemflipper* runs a Function; everything else is served straight from static assets.",
+  "include": ["/stemflipper", "/stemflipper/*"],
+  "exclude": []
+}

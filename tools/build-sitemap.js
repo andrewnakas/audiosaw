@@ -25,6 +25,14 @@ const ORIGIN = 'https://audiosaw.com';
 // offline.html is the service worker's fallback, not a destination.
 const EXCLUDE = new Set(['404.html', 'offline.html']);
 
+// Real pages that are not .html files in this repo. /stemflipper is served by
+// functions/stemflipper/ from another repo's build, so there is nothing here to walk —
+// but it is a destination and belongs in the sitemap like any other tool. lastmod tracks
+// the mount, which is the only date this repo actually knows about.
+const EXTRA = [
+  { loc: '/stemflipper', source: 'functions/stemflipper', priority: 0.9, changefreq: 'monthly' },
+];
+
 // Priority tiers. Anything unlisted falls through to DEFAULT_PRIORITY.
 const PRIORITY = {
   'index.html': 1.0,
@@ -80,11 +88,26 @@ const files = fs.readdirSync(ROOT)
     return a.localeCompare(b);
   });
 
-const body = files.map((f) => {
-  return `  <url><loc>${urlFor(f)}</loc><lastmod>${lastmod(f)}</lastmod>` +
-         `<changefreq>${changefreqFor(f)}</changefreq>` +
-         `<priority>${priorityFor(f).toFixed(1)}</priority></url>`;
-}).join('\n');
+const entries = [
+  ...files.map((f) => ({
+    loc: urlFor(f),
+    lastmod: lastmod(f),
+    changefreq: changefreqFor(f),
+    priority: priorityFor(f),
+  })),
+  ...EXTRA.map((e) => ({
+    loc: ORIGIN + e.loc,
+    lastmod: lastmod(e.source),
+    changefreq: e.changefreq,
+    priority: e.priority,
+  })),
+].sort((a, b) => (a.priority !== b.priority ? b.priority - a.priority : a.loc.localeCompare(b.loc)));
+
+const body = entries.map((e) =>
+  `  <url><loc>${e.loc}</loc><lastmod>${e.lastmod}</lastmod>` +
+  `<changefreq>${e.changefreq}</changefreq>` +
+  `<priority>${e.priority.toFixed(1)}</priority></url>`
+).join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -103,4 +126,4 @@ if (process.argv.includes('--check')) {
   process.exit(0);
 }
 fs.writeFileSync(OUT, xml);
-console.log(`sitemap.xml: ${files.length} URLs`);
+console.log(`sitemap.xml: ${entries.length} URLs`);

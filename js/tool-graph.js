@@ -468,10 +468,28 @@
         ['autotune', 'Tune the vocal once it is isolated']
       ]
     },
+    // Not a page in this repo: /stemflipper is proxied to its own app by
+    // functions/stemflipper/. It is listed here so it appears in the rails, the footer
+    // directory and llms.txt like any other tool.
+    'stemflipper': {
+      cat: 'repair', label: 'stems, MIDI & samples', title: 'StemFlipper — stems, MIDI and playable instruments',
+      external: true,
+      blurb: 'Split a song into stems, transcribe each one to MIDI, and cut it into samples and instruments for a DAW. Uses a free GPU, so this one uploads your file.',
+      next: [
+        ['stem-splitter', 'Separate vocals from the instrumental in your browser instead'],
+        ['audio-to-midi', 'Just the melody as MIDI, with nothing uploaded'],
+        ['bpm-finder', 'Read the tempo without separating anything'],
+        ['audio-cutter', 'Trim to the section you want before uploading'],
+        ['audio-compressor', 'Get a long track under the upload limit'],
+        ['autotune', 'Tune a vocal once it is isolated'],
+        ['pitch-shifter', 'Move a stem into another key']
+      ]
+    },
     'stem-splitter': {
       cat: 'repair', label: 'ai vocal remover', title: 'AI vocal remover / stem splitter',
       blurb: 'Neural separation into a clean instrumental and acapella, running on your machine.',
       next: [
+        ['stemflipper', 'Four stems plus MIDI and samples, on a GPU'],
         ['vocal-remover', 'The instant version, when centre cancellation is enough'],
         ['audio-cutter', 'Trim to the section you need before separating'],
         ['pitch-shifter', 'Move the finished instrumental into your key'],
@@ -814,7 +832,7 @@
       note: 'Pull a mix apart, fix the pitch, find the tempo, record a take.',
       style: 'tile',
       tools: [
-        'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
+        'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
         'bpm-finder', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
       ]
     },

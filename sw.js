@@ -51,7 +51,10 @@ var PRECACHE = [
 ];
 
 var STATIC_PATHS = /^\/(css|js|vendor|assets)\//;
-var BYPASS = /^\/(stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/)/;
+// /stemflipper is a separate single-page app proxied in by functions/stemflipper/. It
+// owns its own routing and its own asset versioning, so this worker must stay out of the
+// way entirely — caching its HTML here would pin visitors to a stale build.
+var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/)/;
 
 // Where a shared file should land. Anything unlisted goes to the homepage,
 // whose converter accepts everything and picks a target.
