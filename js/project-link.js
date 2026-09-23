@@ -159,6 +159,8 @@
     }
   }
 
+  function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
   function fmtTime(t) {
     t = Math.max(0, t || 0);
     var m = Math.floor(t / 60), s = Math.round(t - m * 60);
@@ -233,7 +235,7 @@
       '</div>';
     bar.querySelector('strong').textContent = '“' + (target.projectName || 'Untitled') + '”';
     bar.querySelector('.project-bar-meta').textContent =
-      'Clip · ' + target.name.replace(/\.wav$/i, '') + ' · ' + fmtTime(target.duration);
+      (target.kind === 'range' ? capital(target.label || 'selection') : 'Clip · ' + target.name.replace(/\.wav$/i, '')) + ' · ' + fmtTime(target.duration);
     dropzone.parentNode.insertBefore(bar, dropzone);
     var wave = bar.querySelector('.project-bar-wave');
     drawPeaks(wave, target.peaks);
@@ -295,9 +297,10 @@
     a.href = '/audio-editor';
     a.innerHTML = '<span class="next-chip-label"></span><span class="next-chip-why"></span>';
     a.querySelector('.next-chip-label').textContent = 'Send back to “' + (target.projectName || 'your project') + '”';
+    var what = target.kind !== 'range' ? 'the clip' : target.ref && target.ref.bounce ? 'the tracks you sent, as one new track,' : 'that part of the track';
     a.querySelector('.next-chip-why').textContent = many
-      ? 'The first file replaces the clip, the others go on new tracks below it. Undo takes it all off again.'
-      : 'Replaces the clip in the editor. Undo takes it off again.';
+      ? 'The first file replaces ' + what + ' and the others go on new tracks below. Undo takes it all off again.'
+      : 'Replaces ' + what + ' in the editor. Undo takes it off again.';
     row.appendChild(a);
     out.panel.insertBefore(row, out.panel.firstChild);
 

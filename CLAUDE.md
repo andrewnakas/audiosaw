@@ -295,6 +295,16 @@ carrying a separate tone per channel, not because the coefficient tables say
   editor asks instead of replacing. The same goes for a result whose project id
   is not the saved project.
 
+  Three things can be sent: a clip, a range, or the whole mix (Project menu).
+  - **A range on one track** goes out dry. Clip gains and fades are baked in,
+    the track's own effects stay live, and the result goes back into exactly
+    that range (`M.replaceRange`).
+  - **A range over several tracks, or the mix,** is bounced wet, through the
+    track effects, sends and automation but not the master. The result comes
+    back as one new "bounce" track, and the range is cleared on the originals.
+  - **Muted tracks are left out of a bounce.** They are neither rendered nor
+    cleared.
+
   Once a result is applied, that clip becomes the new target, so the bar keeps
   offering the current audio on every eligible tool page. Stems come back as
   a zip: the first file replaces the clip, the rest go on new tracks below it,

@@ -331,6 +331,57 @@ function fixture() {
   M.deleteClips(f.p, [f.c1]);
   ok(M.targetPrint(f.p, ref) === 'gone', 'deleting it reads as gone');
 
+  // A range on one track, same length: split around it, nothing moves.
+  f = fixture();
+  s = M.addSource(f.p, { name: 'range', duration: 2, kind: 'derived' });
+  before = M.serialize(f.p);
+  let rid = M.replaceRange(f.p, [f.t1], 3, 5, s, 2, { ripple: false });
+  let tr = f.p.tracks[0].clips;
+  ok(tr.length === 4, 'a range inside a clip leaves left part, new clip, right part and the next clip (' + tr.length + ')');
+  near(M.findClip(f.p, rid).clip.start, 3, 1e-9, 'the returned range starts where it was cut');
+  near(tr[2].start, 5, 1e-9, 'the right part resumes after it');
+  near(tr[2].offset, 5, 1e-9, 'reading from the right place');
+  near(M.findClip(f.p, f.c3).clip.start, 1, 1e-9, 'other tracks are untouched');
+  valid(f.p, 'after a same-length range return');
+  const h2 = new M.History(); h2.push(before);
+  ok(h2.undo(M.serialize(f.p)) === before, 'undo after a range return is exact');
+
+  // Longer, ripple: everything after the range on that track moves, and its automation with it.
+  f = fixture();
+  M.setAutoPoints(f.p, f.t1, 'vol', [[8, -6], [14, 0]]);
+  s = M.addSource(f.p, { name: 'range', duration: 3, kind: 'derived' });
+  M.replaceRange(f.p, [f.t1], 3, 5, s, 3, { ripple: true });
+  tr = f.p.tracks[0].clips;
+  near(tr[2].start, 6, 1e-9, 'with ripple the right part moves by the extra second');
+  near(M.findClip(f.p, f.c2).clip.start, 13, 1e-9, 'and so does the next clip');
+  near(M.autoValueAt(f.p.tracks[0].auto.vol, 9), -6, 1e-9, 'and the track automation after the range (the -6 dB point moves 8 -> 9 s)');
+  near(M.autoValueAt(f.p.tracks[0].auto.vol, 15), 0, 1e-9, 'all of it');
+  near(M.findClip(f.p, f.c3).clip.start, 1, 1e-9, 'other tracks do not ripple');
+  valid(f.p, 'after a longer rippled range return');
+
+  // All tracks, bounced onto a new track: the range is empty on every source track.
+  f = fixture();
+  M.addMarker(f.p, 13, 'late');
+  s = M.addSource(f.p, { name: 'bounce', duration: 1, kind: 'derived' });
+  rid = M.replaceRange(f.p, null, 1.5, 3.5, s, 1, { ripple: true, newTrack: { index: 0, name: 'Bounce' } });
+  ok(f.p.tracks.length === 3 && f.p.tracks[0].name === 'Bounce', 'a bounce goes on a new track at the index');
+  ok(M.findClip(f.p, rid).ti === 0, 'holding the returned clip');
+  ok(f.p.tracks.slice(1).every(function (t) { return t.clips.every(function (c) { return c.start >= 2.5 - 1e-9 || M.clipEnd(c) <= 1.5 + 1e-9; }); }),
+    'the covered range is empty on every source track');
+  near(f.p.markers[0].t, 12, 1e-9, 'markers ripple when every track was covered');
+  valid(f.p, 'after a bounce');
+
+  // The range fingerprint notices edits inside the range and ignores them outside.
+  f = fixture();
+  const rref = { kind: 'range', trackIds: [f.t1], t0: 2, t1: 6 };
+  const rfp = M.targetPrint(f.p, rref);
+  M.setClip(f.p, f.c2, { gainDb: -3 });
+  ok(M.targetPrint(f.p, rref) === rfp, 'an edit outside the range does not make it stale');
+  M.setClip(f.p, f.c1, { gainDb: -3 });
+  ok(M.targetPrint(f.p, rref) !== rfp, 'an edit inside it does');
+  M.removeTrack(f.p, f.t1);
+  ok(M.targetPrint(f.p, rref) === 'gone', 'removing the track reads as gone');
+
   // Identity.
   const p1 = M.create('a'), p2 = M.create('b');
   ok(p1.id && p1.id !== p2.id, 'every project gets its own id');
@@ -369,6 +420,13 @@ function fixture() {
       const src = M.addSource(p, { name: 'fx', duration: 0.5 + rnd() * 6, kind: 'derived' });
       if (rnd() < 0.5) M.replaceSource(p, id, src, p.sources[src].duration);
       else M.replaceClipAudio(p, id, src, p.sources[src].duration, rnd() < 0.5);
+    }
+    else if (r < 0.895) {
+      op = 'replaceRange';
+      const src = M.addSource(p, { name: 'range', duration: 0.3 + rnd() * 4, kind: 'derived' });
+      const tids = rnd() < 0.4 ? null : [p.tracks[Math.floor(rnd() * p.tracks.length)].id];
+      M.replaceRange(p, tids, t, t + 0.1 + rnd() * 4, src, p.sources[src].duration,
+        { ripple: rnd() < 0.5, newTrack: tids ? null : { index: Math.floor(rnd() * p.tracks.length), name: 'Bounce' } });
     }
     else if (r < 0.91) { op = 'addTrack'; M.addTrack(p); }
     else if (r < 0.93 && p.tracks.length > 2) { op = 'removeTrack'; M.removeTrack(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id); }

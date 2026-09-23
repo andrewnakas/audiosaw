@@ -20,6 +20,9 @@
  *      on a new track below at the same start, and one undo removes both
  *   6c. a second editor tab does not autosave, and "use this tab instead"
  *      moves ownership across
+ *   6d. a range on one track comes back into exactly that range
+ *   6e. the whole mix comes back as one bounce track, the originals cleared
+ *      in that range, and one undo restores them
  *   7. a clip edited while the tool was open is not silently replaced: the
  *      editor asks
  *
@@ -84,7 +87,7 @@ server.listen(0, '127.0.0.1', async () => {
       console.error('check-project-link: ' + fails.length + ' failure(s).');
     } else {
       notes.forEach((n) => console.log('  ' + n));
-      console.log('check-project-link: editor -> tool -> editor round trip holds (replace, undo, ripple, encoder-delay alignment, stems, one owner across tabs, stale clip).');
+      console.log('check-project-link: editor -> tool -> editor round trip holds (replace, undo, ripple, encoder-delay alignment, stems, one owner across tabs, ranges, mix bounce, stale clip).');
       code = 0;
     }
     cdp.close();
@@ -221,6 +224,52 @@ async function scenario(r) {
   await r.waitFor('!document.querySelector(".ed-lockbar")');
   await r.waitSaved();
 
+  // 6d. A range on one track goes out dry and comes back into that range only:
+  // the chirp is split around it and the reversed middle sits between.
+  p = await r.project();
+  const t1 = p.tracks[0].id, nTracks = p.tracks.length;
+  await r.eval(`ASEditLink.send('audio-reverser', { kind: 'range', t0: 0.5, t1: 1.5, trackIds: [${JSON.stringify(t1)}], bounce: false, label: 'test range' })`);
+  await r.waitFor('location.pathname === "/audio-reverser" && !!document.getElementById("projectBar")');
+  ok(/test range/i.test(await r.eval('document.querySelector(".project-bar-meta").textContent')), 'the bar names the range it was sent');
+  await r.eval('document.getElementById("outFmt").value = "wav"; document.querySelector(\'#projectBar [data-act="use"]\').click()');
+  await r.waitFor('!document.getElementById("convertBtn").disabled');
+  await r.eval('document.getElementById("convertBtn").click()');
+  await r.waitFor('!!document.querySelector("#nextSteps .project-return a")');
+  await r.eval('document.querySelector("#nextSteps .project-return a").click()');
+  await r.waitFor('location.pathname === "/audio-editor" && /result applied/.test(document.getElementById("status").textContent)', 20000);
+  await r.waitSaved();
+  p = await r.project();
+  let cs = p.tracks[0].clips.map((c) => [c.start, c.duration, p.sources[c.sourceId].kind]);
+  ok(cs.length === 4 && Math.abs(cs[1][0] - 0.5) < 1e-3 && Math.abs(cs[1][1] - 1) < 2e-3 && cs[1][2] === 'derived' &&
+    Math.abs(cs[2][0] - 1.5) < 1e-3 && Math.abs(cs[3][0] - c2Start) < 1e-6,
+    'a one-track range comes back into exactly that range (' + JSON.stringify(cs.map((x) => [+x[0].toFixed(3), +x[1].toFixed(3), x[2]])) + ')');
+  const rc = await r.eval(`(${inPage.rangeReversedCorrelation})(${orig}, ${JSON.stringify(p.tracks[0].clips[1].sourceId)}, 0.5, 1.5)`);
+  ok(rc > 0.99, 'and it is the reversed middle of the chirp (correlation ' + rc.toFixed(4) + ')');
+  notes.push('one-track range round trip: correlation with the reversed range ' + rc.toFixed(4));
+  await r.eval('document.getElementById("edUndo").click()');
+  await r.waitSaved();
+
+  // 6e. The whole mix is bounced wet onto one new track, and cleared on the originals.
+  const dur = c2Start + 1;
+  await r.eval(`ASEditLink.send('audio-reverser', { kind: 'range', t0: 0, t1: ${dur}, trackIds: [${JSON.stringify(t1)}], bounce: true, label: 'The whole mix' })`);
+  await r.waitFor('location.pathname === "/audio-reverser" && !!document.getElementById("projectBar")');
+  await r.eval('document.getElementById("outFmt").value = "wav"; document.querySelector(\'#projectBar [data-act="use"]\').click()');
+  await r.waitFor('!document.getElementById("convertBtn").disabled');
+  await r.eval('document.getElementById("convertBtn").click()');
+  await r.waitFor('!!document.querySelector("#nextSteps .project-return a")');
+  await r.eval('document.querySelector("#nextSteps .project-return a").click()');
+  await r.waitFor('location.pathname === "/audio-editor" && /result applied/.test(document.getElementById("status").textContent)', 20000);
+  await r.waitSaved();
+  p = await r.project();
+  const bounce = p.tracks[0];
+  ok(p.tracks.length === nTracks + 1 && /bounce/.test(bounce.name) && bounce.clips.length === 1 && Math.abs(bounce.clips[0].duration - dur) < 2e-3,
+    'a mix comes back as one bounce track (' + p.tracks.map((t) => t.name + ':' + t.clips.length).join(', ') + ')');
+  ok(p.tracks[1].clips.length === 0, 'and the original track is cleared in that range');
+  await r.eval('document.getElementById("edUndo").click()');
+  await r.waitSaved();
+  p = await r.project();
+  ok(p.tracks.length === nTracks && p.tracks[0].clips.length === 2, 'one undo restores the tracks the bounce replaced');
+
   // 7. Edit the clip while the tool is open: the editor must ask.
   await r.eval(`ASEditLink.send('audio-reverser', ${JSON.stringify(c1)})`);
   await r.waitFor('location.pathname === "/audio-reverser" && !!document.getElementById("projectBar")');
@@ -297,6 +346,14 @@ const inPage = {
     var b = await window.__load(outId);
     var n = Math.min(a.length, b.length), s = 0, ea = 0, eb = 0;
     for (var i = 0; i < n; i++) { var x = a[a.length - 1 - i], y = b[i]; s += x * y; ea += x * x; eb += y * y; }
+    return s / Math.sqrt(ea * eb);
+  },
+
+  rangeReversedCorrelation: async function (a, outId, t0, t1) {
+    var b = await window.__load(outId);
+    var i0 = Math.round(t0 * b.length / (t1 - t0)), n = b.length, s = 0, ea = 0, eb = 0;
+    // Stereo render of a stereo clip at centre is unity on the left channel.
+    for (var i = 0; i < n; i++) { var x = a[i0 + n - 1 - i], y = b[i]; s += x * y; ea += x * x; eb += y * y; }
     return s / Math.sqrt(ea * eb);
   },
 

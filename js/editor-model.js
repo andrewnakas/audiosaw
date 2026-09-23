@@ -246,7 +246,11 @@
     if (!f) return;
     var c = f.clip, nb = neighbours(f.track, c);
     var lo = Math.max(c.start - c.offset, nb.prevEnd, 0);
-    var hi = clipEnd(c) - MIN_LEN;
+    // carve() can leave a sliver shorter than MIN_LEN. Such a clip may grow
+    // but not shrink; forcing it up to MIN_LEN here used to pull its start
+    // back into the clip before it.
+    var hi = Math.max(clipEnd(c) - MIN_LEN, c.start);
+    if (hi < lo) return;
     t = clamp(t, lo, hi);
     var d = t - c.start;
     c.start = t; c.offset += d; c.duration -= d;
@@ -259,7 +263,8 @@
     if (!f) return;
     var c = f.clip, nb = neighbours(f.track, c);
     var hi = Math.min(c.start + (sourceLen(p, c) - c.offset), nb.nextStart);
-    var lo = c.start + MIN_LEN;
+    var lo = Math.min(c.start + MIN_LEN, clipEnd(c));   // see trimStart
+    if (lo > hi) return;
     c.duration = clamp(t, lo, hi) - c.start;
     fixFadesKeeping(c, 'out');
   }
@@ -508,6 +513,30 @@
     carve(f.track, f.clip.start, clipEnd(f.clip), keep);
   }
 
+  // Replace [t0, t1) on the given tracks with one clip of `sourceId`, `dur`
+  // long. With ripple the range becomes exactly `dur` long on those tracks
+  // (later clips, automation, and markers when every track is covered, move
+  // by the difference); without it the range is cleared and the new clip
+  // overwrites whatever it runs over. opts.newTrack {index, name} puts the
+  // clip on a new track instead of the first one covered: a bounce of several
+  // tracks into one. Returns the new clip's id.
+  function replaceRange(p, trackIds, t0, t1, sourceId, dur, opts) {
+    opts = opts || {};
+    if (t1 < t0) { var x = t0; t0 = t1; t1 = x; }
+    var ids = (trackIds && trackIds.length ? trackIds : p.tracks.map(function (t) { return t.id; }))
+      .filter(function (id) { return trackIndex(p, id) >= 0; });
+    if (!ids.length && !opts.newTrack) return null;
+    var all = ids.length === p.tracks.length;
+    if (opts.ripple && Math.abs(dur - (t1 - t0)) > EPS) {
+      deleteRange(p, t0, t1, all ? null : ids, true);
+      insertGap(p, t0, dur, all ? null : ids);
+    } else {
+      ids.forEach(function (id) { carve(p.tracks[trackIndex(p, id)], t0, t1); });
+    }
+    var dest = opts.newTrack ? addTrack(p, { index: opts.newTrack.index, name: opts.newTrack.name }) : ids[0];
+    return addClip(p, dest, { sourceId: sourceId, start: t0, duration: dur, name: opts.name });
+  }
+
   // A new track at `index` holding one clip of the whole source. Returns the
   // clip id. Used for the extra outputs of a tool that returns several files.
   function placeOnNewTrack(p, index, sourceId, start, name) {
@@ -518,7 +547,24 @@
   // What a tool page was handed, reduced to the numbers that decide whether
   // its result still fits. Position is left out on purpose: moving a clip
   // after sending it does not make the result wrong.
+  //
+  // For a range it is every clip that overlaps it on the tracks it covered,
+  // position included, since there the position is the content.
   function targetPrint(p, ref) {
+    if (ref && ref.kind === 'range') {
+      var parts = [], alive = 0;
+      (ref.trackIds || []).forEach(function (id) {
+        var i = trackIndex(p, id);
+        if (i < 0) return;
+        alive++;
+        p.tracks[i].clips.forEach(function (c) {
+          if (c.start >= ref.t1 - EPS || clipEnd(c) <= ref.t0 + EPS) return;
+          parts.push([id, c.id, c.sourceId, c.start.toFixed(6), c.offset.toFixed(6), c.duration.toFixed(6),
+            c.gainDb || 0, c.fadeIn || 0, c.fadeOut || 0].join(','));
+        });
+      });
+      return alive ? 'r|' + parts.join(';') : 'gone';
+    }
     var f = findClip(p, ref && ref.clipId);
     if (!f) return 'gone';
     var c = f.clip;
@@ -969,7 +1015,7 @@
     moveClips: moveClips, splitAt: splitAt, deleteClips: deleteClips, deleteRange: deleteRange,
     cropTo: cropTo, insertGap: insertGap, duplicate: duplicate, copyClips: copyClips, paste: paste,
     replaceSource: replaceSource, usedSources: usedSources, carve: carve,
-    replaceClipAudio: replaceClipAudio, placeOnNewTrack: placeOnNewTrack, targetPrint: targetPrint,
+    replaceClipAudio: replaceClipAudio, replaceRange: replaceRange, placeOnNewTrack: placeOnNewTrack, targetPrint: targetPrint,
     addMarker: addMarker, removeMarker: removeMarker,
     snapPoints: snapPoints, snap: snap,
     fadeShape: fadeShape, clipGainAt: clipGainAt, audibleTracks: audibleTracks,

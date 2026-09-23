@@ -48,32 +48,99 @@
 
   /* ------------------------------------------------------------------ send */
 
-  function toolSheet() {
-    var ids = ctx.selIds();
-    if (ids.length !== 1) { ctx.status('warn', 'Select one clip to send to a tool.'); return; }
-    var c = M.findClip(ctx.S.project, ids[0]).clip;
-    var slugs = projectTools();
-    var html = '<p class="ed-sheet-note">Opens the tool with this clip loaded. When it is done, its result comes back here and replaces the clip, as one change you can undo.</p>' +
-      '<div class="ed-fx-grid">' + slugs.map(function (s) {
+  // What is being sent. A clip goes as it is. A range on one track is
+  // flattened dry (clip gains and fades baked in, the track's own effects
+  // left live, since the result goes back onto that track). A range over
+  // several tracks, or the whole mix, is bounced wet: effects, sends and
+  // automation included, since the result replaces all of them with one track.
+  function currentSpec(kind) {
+    var S = ctx.S, p = S.project;
+    if (kind === 'mix') {
+      var ids = audibleIds(p, null);
+      return ids.length ? { kind: 'range', t0: 0, t1: M.duration(p), trackIds: ids, bounce: true, label: 'the whole mix' } : null;
+    }
+    if (kind === 'range' && S.range) {
+      var r = ctx.loopRange();
+      var tids = audibleIds(p, S.range.tracks);
+      if (!tids.length || r[1] - r[0] < 0.05) return null;
+      var one = tids.length === 1;
+      return {
+        kind: 'range', t0: r[0], t1: r[1], trackIds: tids, bounce: !one,
+        label: one ? p.tracks[M.trackIndex(p, tids[0])].name + ', ' + L.fmtTime(r[0]) + '–' + L.fmtTime(r[1]) : 'the selection, ' + tids.length + ' tracks'
+      };
+    }
+    var sel = ctx.selIds();
+    if (sel.length !== 1) return null;
+    return { kind: 'clip', clipId: sel[0], label: '“' + M.findClip(p, sel[0]).clip.name + '”' };
+  }
+
+  // Muted tracks stay out of a bounce: they are not heard, so they are not
+  // rendered, and so they are not cleared either.
+  function audibleIds(p, only) {
+    var aud = M.audibleTracks(p);
+    return p.tracks.filter(function (t) {
+      return aud[t.id] && (!only || only.indexOf(t.id) !== -1) && t.clips.length;
+    }).map(function (t) { return t.id; });
+  }
+
+  function toolSheet(kind) {
+    var spec = currentSpec(kind || (ctx.S.range ? 'range' : 'clip'));
+    if (!spec) {
+      ctx.status('warn', kind === 'mix' ? 'There is nothing audible to send.' : kind === 'range' ? 'The selection has no audible audio in it.' : 'Select one clip, or a range, to send to a tool.');
+      return;
+    }
+    var how = spec.kind === 'clip'
+      ? 'Its result comes back here and replaces the clip'
+      : spec.bounce
+        ? 'The tracks it covers are mixed with their effects into one new track, and that range is cleared on the originals'
+        : 'Its result comes back here and replaces that part of the track';
+    var html = '<p class="ed-sheet-note">Opens the tool with this audio loaded. ' + how + ', as one change you can undo.</p>' +
+      '<div class="ed-fx-grid">' + projectTools().map(function (s) {
         var t = G.TOOLS[s];
         return '<button type="button" class="ed-fx" data-v="' + s + '"><strong>' + ctx.esc(t.title) + '</strong><small>' + ctx.esc(t.blurb) + '</small></button>';
       }).join('') + '</div>';
-    ctx.openSheet('Send “' + c.name + '” to a tool', html, function (v) {
+    ctx.openSheet('Send ' + spec.label + ' to a tool', html, function (v) {
       ctx.closeSheet();
-      if (G.TOOLS[v]) send(v, ids[0]);
+      if (G.TOOLS[v]) send(v, spec);
     });
   }
 
-  function send(slug, clipId) {
-    if (ctx.isBusy()) return;
+  function highestRate(p, trackIds) {
+    var sr = 0;
+    p.tracks.forEach(function (t) {
+      if (trackIds.indexOf(t.id) === -1) return;
+      t.clips.forEach(function (c) { var s = p.sources[c.sourceId]; if (s && s.sampleRate > sr) sr = s.sampleRate; });
+    });
+    return Math.min(96000, Math.max(22050, sr || 44100));
+  }
+
+  function render(spec) {
     var p = ctx.S.project;
-    var f = M.findClip(p, clipId);
-    if (!f) return;
-    var c = f.clip, src = ctx.buffers.get(c.sourceId);
-    if (!src) { ctx.status('error', 'That clip’s audio is not loaded.'); return; }
+    if (spec.kind === 'clip') {
+      var f = M.findClip(p, spec.clipId), src = f && ctx.buffers.get(f.clip.sourceId);
+      if (!src) return Promise.reject(new Error('that clip’s audio is not loaded'));
+      return Promise.resolve(ctx.slice(src, f.clip.offset, f.clip.duration));
+    }
+    var pc = M.copy(p);
+    pc.tracks = pc.tracks.filter(function (t) { return spec.trackIds.indexOf(t.id) !== -1; });
+    pc.tracks.forEach(function (t) {
+      t.mute = false; t.solo = false;
+      if (!spec.bounce) { t.fx = []; t.sends = {}; t.auto = {}; t.volDb = 0; t.pan = 0; }
+    });
+    return E.render(pc, spec.t0, spec.t1, {
+      sampleRate: highestRate(p, spec.trackIds), channels: 2, protect: false, tails: false, noMaster: true
+    }).then(function (res) { return res.buffer; });
+  }
+
+  function send(slug, spec) {
+    if (ctx.isBusy()) return;
+    if (typeof spec === 'string') spec = { kind: 'clip', clipId: spec };
+    var p = ctx.S.project;
+    if (spec.kind === 'clip' && !M.findClip(p, spec.clipId)) return;
+    var dur = spec.kind === 'clip' ? M.findClip(p, spec.clipId).clip.duration : spec.t1 - spec.t0;
     var cap = maxSeconds();
-    if (c.duration > cap) {
-      ctx.status('warn', 'That clip is ' + L.fmtTime(c.duration) + ' long. Tools can take up to ' + (cap / 60) + ' minutes from here: split it, or export it and open the tool directly.');
+    if (dur > cap) {
+      ctx.status('warn', 'That is ' + L.fmtTime(dur) + ' of audio. Tools can take up to ' + (cap / 60) + ' minutes from here: send a shorter part, or export it and open the tool directly.');
       return;
     }
     ctx.stopPlayback();
@@ -84,14 +151,15 @@
     // inside the click, or a popup blocker eats it.
     var inNewTab = ctx.saveDisabled();
     var win = inNewTab ? global.open('', '_blank') : null;
-
-    var seg = ctx.slice(src, c.offset, c.duration);
-    var rec = targetRecord(p, f, seg, slug);
-    var wav = rec.blob;
+    var title = G.TOOLS[slug].title;
+    var rec = null;
     ctx.setBusy(true);
-    ctx.status('info', 'Handing “' + c.name + '” to ' + G.TOOLS[slug].title + '…');
+    ctx.status('info', (spec.kind === 'clip' ? 'Handing it' : 'Mixing it down for') + ' to ' + title + '…');
 
-    roomFor(wav.size).then(function () {
+    render(spec).then(function (buf) {
+      rec = targetRecord(p, spec, buf, slug);
+      return roomFor(rec.blob.size);
+    }).then(function () {
       return L.putTarget(rec);
     }).then(function () {
       L.persist();
@@ -100,21 +168,29 @@
       L.setFlag({ id: p.id, name: rec.projectName, at: Date.now(), target: rec.id });
       CV.track('next_step_click', { tool: 'audio-editor', to_tool: slug, placement: 'project' });
       var url = '/' + slug + '?from=project';
-      if (win) { win.location.href = url; ctx.status('success', 'Opened ' + G.TOOLS[slug].title + ' in a new tab. Its result will come back here.'); }
+      if (win) { win.location.href = url; ctx.status('success', 'Opened ' + title + ' in a new tab. Its result will come back here.'); }
       else global.location.href = url;
     }).catch(function (err) {
       if (win) try { win.close(); } catch (e) {}
-      ctx.status('error', 'Could not hand the clip over: ' + ((err && err.message) || 'storage refused it') + '. Export the clip and open the tool directly instead.');
+      ctx.status('error', 'Could not hand it over: ' + ((err && err.message) || 'storage refused it') + '. Export it and open the tool directly instead.');
     }).then(function () { ctx.setBusy(false); });
   }
 
-  function targetRecord(p, f, seg, slug) {
-    var c = f.clip;
+  function targetRecord(p, spec, seg, slug) {
+    var ref, name;
+    if (spec.kind === 'clip') {
+      var f = M.findClip(p, spec.clipId);
+      ref = { clipId: spec.clipId, trackId: f.track.id };
+      name = f.clip.name || 'clip';
+    } else {
+      ref = { kind: 'range', t0: spec.t0, t1: spec.t1, trackIds: spec.trackIds.slice(), bounce: !!spec.bounce };
+      name = spec.bounce ? (p.name || 'mix') + ' ' + (spec.t0 === 0 && spec.t1 >= M.duration(p) - 1e-6 ? 'mix' : 'bounce')
+        : p.tracks[M.trackIndex(p, spec.trackIds[0])].name + ' ' + L.fmtTime(spec.t0).replace(':', '.') + '-' + L.fmtTime(spec.t1).replace(':', '.');
+    }
     return {
       v: 1, id: L.uid('k'), projectId: p.id, projectName: p.name || 'Untitled project',
-      kind: 'clip', ref: { clipId: c.id, trackId: f.track.id },
-      fp: M.targetPrint(p, { clipId: c.id }), tool: slug,
-      name: (c.name || 'clip') + '.wav', blob: global.AudioSaw.audioBufferToWav(seg),
+      kind: spec.kind, label: spec.label || null, ref: ref, fp: M.targetPrint(p, ref), tool: slug,
+      name: name + '.wav', blob: global.AudioSaw.audioBufferToWav(seg),
       duration: seg.duration, channels: seg.numberOfChannels, sampleRate: seg.sampleRate,
       peaks: L.peaksOf(seg), createdAt: Date.now()
     };
@@ -244,16 +320,18 @@
 
   function place(ret, target, outs, mode, title, note) {
     var p = ctx.S.project;
-    var state = !target ? 'gone' : M.targetPrint(p, target.ref) === target.fp ? 'fresh' : M.findClip(p, target.ref.clipId) ? 'changed' : 'gone';
+    var now = target ? M.targetPrint(p, target.ref) : 'gone';
+    var state = now === 'gone' ? 'gone' : now === target.fp ? 'fresh' : 'changed';
+    var range = target && target.ref.kind === 'range';
     if (state === 'fresh') { commit('replace', ret, target, outs, mode, title, note); return; }
     var items = [];
-    if (state === 'changed') items.push({ v: 'replace', label: 'Replace the clip anyway', hint: 'It has been edited since you sent it' });
-    items.push({ v: 'track', label: outs.length > 1 ? 'Put them on new tracks' : 'Put it on a new track', hint: target && state === 'changed' ? 'Where the clip is' : 'At the playhead' });
+    if (state === 'changed') items.push({ v: 'replace', label: range ? 'Replace that part anyway' : 'Replace the clip anyway', hint: 'It has been edited since you sent it' });
+    items.push({ v: 'track', label: outs.length > 1 ? 'Put them on new tracks' : 'Put it on a new track', hint: target && state === 'changed' ? 'At the same time' : 'At the playhead' });
     items.push({ v: 'drop', label: 'Discard it', danger: true });
     ctx.openSheet('The result from ' + title + ' is back',
       '<p class="ed-sheet-note">' + (state === 'changed'
-        ? 'The clip you sent was edited while the tool was open, so replacing it would undo those edits.'
-        : 'The clip you sent is no longer in the project.') + '</p>' + ctx.menuHtml(items), function (v) {
+        ? (range ? 'That part of the project' : 'The clip you sent') + ' was edited while the tool was open, so replacing it would undo those edits.'
+        : (range ? 'The tracks you sent from are' : 'The clip you sent is') + ' no longer in the project.') + '</p>' + ctx.menuHtml(items), function (v) {
         ctx.closeSheet();
         if (v === 'drop') { finish(target); ctx.status('info', 'Discarded the result from ' + title + '.'); return; }
         commit(v, ret, target, outs, mode, title, note);
@@ -279,9 +357,28 @@
         V.buildPeaks(sid, o.buf);
         return sid;
       });
-      var f = target && M.findClip(p, target.ref.clipId);
+      var ref = target && target.ref;
+      var f = ref && ref.kind !== 'range' && M.findClip(p, ref.clipId);
       var ti, start;
-      if (how === 'replace' && f) {
+      if (ref && ref.kind === 'range' && M.targetPrint(p, ref) !== 'gone') {
+        var covered = ref.trackIds.map(function (id) { return M.trackIndex(p, id); }).filter(function (i) { return i >= 0; });
+        var first = Math.min.apply(null, covered), last = Math.max.apply(null, covered);
+        var r0 = outs[0].buf.duration;
+        var nm = outs.length > 1 ? partName(outs[0].name, title) : (ref.bounce ? title : p.tracks[first].name);
+        start = ref.t0;
+        if (how === 'replace') {
+          var rip = !((mode === 'same' || mode === 'stems') && Math.abs(r0 - (ref.t1 - ref.t0)) < 0.05);
+          clipId = M.replaceRange(p, ref.trackIds, ref.t0, ref.t1, sids[0], r0, {
+            ripple: rip, name: nm, newTrack: ref.bounce ? { index: first, name: title + ' bounce' } : null
+          });
+          ti = M.findClip(p, clipId).ti + 1;
+          if (!ref.bounce) ti = Math.max(ti, last + 1);
+        } else {
+          ti = last + 1;
+          clipId = M.placeOnNewTrack(p, ti, sids[0], start, nm);
+          ti++;
+        }
+      } else if (how === 'replace' && f) {
         // A same-length tool keeps everything after it where it was; one that
         // changes the length (speed, silence cutting) moves it, as Process does.
         var d0 = outs[0].buf.duration;
@@ -316,7 +413,7 @@
     var buf = f && ctx.buffers.get(f.clip.sourceId);
     if (!buf) { finish(old); return; }
     var seg = ctx.slice(buf, f.clip.offset, f.clip.duration);
-    var rec = targetRecord(p, f, seg, null);
+    var rec = targetRecord(p, { kind: 'clip', clipId: clipId }, seg, null);
     L.putTarget(rec).then(function () {
       L.setFlag({ id: p.id, name: rec.projectName, at: Date.now(), target: rec.id });
     }).catch(function () { finish(old); });

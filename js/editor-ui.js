@@ -812,6 +812,7 @@
         '<button type="button" class="ed-btn" data-i="rangeSplit">Split at edges</button>' +
         '<button type="button" class="ed-btn" data-i="rangeSilence">Insert silence here</button>' +
         '<button type="button" class="ed-btn" data-i="fx" title="Render an effect into this part of the audio">Process…</button>' +
+        '<button type="button" class="ed-btn" data-i="tool" title="Open one of the site’s tools with this part of the audio, and bring the result back">Send to a tool…</button>' +
         '<button type="button" class="ed-btn" data-i="rangeExport">Export selection</button>' +
         '<button type="button" class="ed-btn ed-btn-ghost" data-i="clear">Clear</button>' +
         '</div>';
@@ -870,7 +871,7 @@
       case 'rangeExport': openExport('range'); break;
       case 'clipExport': openExport('clip'); break;
       case 'fx': fxSheet(); break;
-      case 'tool': LINK.toolSheet(); break;
+      case 'tool': LINK.toolSheet(S.range ? 'range' : 'clip'); break;
       case 'trackfx': { var ff = M.findClip(S.project, ids[0]); if (ff) FXUI.open(ff.track.id); break; }
       case 'clear': clearSelection(); break;
       case 'rippleDelete': doDelete(true); break;
@@ -977,7 +978,7 @@
       if (v === 'copy') doCopy();
       if (v === 'cut') doCopy(true);
       if (v === 'fx') fxSheet();
-      if (v === 'tool') LINK.toolSheet();
+      if (v === 'tool') LINK.toolSheet('clip');
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -2102,6 +2103,7 @@
       { v: 'countin', label: (countIn ? '✓ ' : '') + 'Count in before recording', hint: '3, 2, 1' },
       { v: 'tempo', label: 'Tempo…', hint: S.project.bpm + ' BPM' },
       { v: 'mixer', label: 'Mixer and master effects', hint: 'F' },
+      { v: 'mixtool', label: 'Send the whole mix to a tool…', hint: 'and back', disabled: !hasClips() },
       { v: 'keys', label: 'Keyboard shortcuts', hint: '?' },
       '-',
       { v: 'new', label: 'New project', hint: 'Clears the timeline — undo still works', danger: true }
@@ -2116,6 +2118,7 @@
       if (v === 'keys') keysSheet();
       if (v === 'tempo') tempoSheet();
       if (v === 'mixer') FXUI.open('master');
+      if (v === 'mixtool') LINK.toolSheet('mix');
       if (v === 'new') {
         if (E.isPlaying()) togglePlay();
         // A new identity too, so a tool result meant for the old project is
@@ -2356,7 +2359,7 @@
     S: S, buffers: buffers, esc: esc, edit: edit, refresh: refresh, status: status,
     openSheet: openSheet, closeSheet: closeSheet, menuHtml: menuHtml, selIds: selIds, slice: slice,
     decodeFile: decodeFile, importFiles: importFiles, flushSave: flushSave, restore: restoreSession,
-    isBusy: function () { return busy; }, setBusy: function (b) { busy = b; },
+    isBusy: function () { return busy; }, setBusy: function (b) { busy = b; }, loopRange: loopRange,
     saveDisabled: function () { return saveDisabled; },
     setSaveBlocked: function (b) {
       saveBlocked = b;
