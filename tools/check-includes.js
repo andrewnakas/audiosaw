@@ -195,6 +195,19 @@ for (const page of fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort(
   }
 }
 
+// A tool marked `project` in the graph is offered in the editor's "Send to a
+// tool" picker. Without project-link.js the page opens with nothing to take and
+// no way back, and nothing on the page says why.
+const G = require('../js/tool-graph.js');
+for (const slug of Object.keys(G.TOOLS).filter((s) => G.TOOLS[s].project)) {
+  const page = slug + '.html';
+  if (!fs.existsSync(path.join(ROOT, page))) { problems.push(`tool-graph.js: '${slug}' is marked project but ${page} does not exist`); continue; }
+  const labels = scriptsOf(fs.readFileSync(path.join(ROOT, page), 'utf8')).map((s) => s.label);
+  const at = labels.indexOf('/js/project-link.js');
+  if (at < 0) problems.push(`${page}: marked project in tool-graph.js but does not include /js/project-link.js`);
+  else if (at < labels.indexOf('/js/flow.js')) problems.push(`${page}: /js/project-link.js must load after /js/flow.js`);
+}
+
 if (problems.length) {
   for (const p of problems) console.error(p);
   console.error(`\ncheck-includes: ${problems.length} problem(s).`);

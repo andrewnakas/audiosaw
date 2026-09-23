@@ -12,6 +12,8 @@
  *   - ripple delete closes the gap on that track only
  *   - effect chains, sends and automation undo exactly, automation follows
  *     ripple edits, and every preset and patch names real parameters in range
+ *   - a result coming back from a tool page replaces its clip exactly, ripples
+ *     or carves as asked, and undoes byte-for-byte
  *   - 1,000 random operations never leave an overlap, a negative time, a clip
  *     running past its source, or fades longer than the clip
  *
@@ -274,6 +276,67 @@ function fixture() {
   ok(ir1 === ir2 || ir1.every((v, i) => v === ir2[i]), 'the reverb impulse is deterministic');
 }
 
+/* ------------------------------------------- results from a tool page */
+{
+  // Same length: nothing else moves.
+  let f = fixture();
+  let before = M.serialize(f.p);
+  let s = M.addSource(f.p, { name: 'nr', duration: 10, kind: 'derived' });
+  M.replaceClipAudio(f.p, f.c1, s, 10, false);
+  ok(M.findClip(f.p, f.c1).clip.sourceId === s, 'the clip points at the returned audio');
+  near(M.findClip(f.p, f.c2).clip.start, 12, 1e-9, 'a same-length return leaves the next clip alone');
+  valid(f.p, 'after a same-length return');
+  const h = new M.History(); h.push(before);
+  ok(h.undo(M.serialize(f.p)) === before, 'undo after a return restores the identical project');
+
+  // Longer, ripple: the next clip on that track moves by the difference, the other track does not.
+  f = fixture();
+  s = M.addSource(f.p, { name: 'slow', duration: 13, kind: 'derived' });
+  M.replaceClipAudio(f.p, f.c1, s, 13, true);
+  near(M.findClip(f.p, f.c2).clip.start, 15, 1e-9, 'a longer return ripples the next clip');
+  near(M.findClip(f.p, f.c3).clip.start, 1, 1e-9, 'ripple stays on its own track');
+  valid(f.p, 'after a longer rippled return');
+
+  // Shorter, ripple.
+  f = fixture();
+  s = M.addSource(f.p, { name: 'fast', duration: 6, kind: 'derived' });
+  M.replaceClipAudio(f.p, f.c1, s, 6, true);
+  near(M.findClip(f.p, f.c2).clip.start, 8, 1e-9, 'a shorter return pulls the next clip in');
+
+  // Longer, no ripple: the overlap is carved out of the next clip, never left.
+  f = fixture();
+  s = M.addSource(f.p, { name: 'long', duration: 14, kind: 'derived' });
+  M.replaceClipAudio(f.p, f.c1, s, 14, false);
+  const n = M.findClip(f.p, f.c2).clip;
+  near(n.start, 14, 1e-9, 'without ripple the next clip is carved to start where the return ends');
+  near(n.offset, 2, 1e-9, 'and reads from the right place in its source');
+  valid(f.p, 'after a longer return without ripple');
+
+  // Extra outputs go on a new track below.
+  f = fixture();
+  s = M.addSource(f.p, { name: 'inst', duration: 10, kind: 'derived' });
+  const cid = M.placeOnNewTrack(f.p, 1, s, 0, 'Instrumental');
+  ok(f.p.tracks.length === 3 && f.p.tracks[1].name === 'Instrumental', 'placeOnNewTrack inserts at the index');
+  ok(M.findClip(f.p, cid).ti === 1, 'and the clip lands on it');
+  valid(f.p, 'after placeOnNewTrack');
+
+  // The staleness fingerprint ignores position but not content.
+  f = fixture();
+  const ref = { clipId: f.c1 };
+  const fp = M.targetPrint(f.p, ref);
+  M.moveClips(f.p, [f.c1], 0.5, 0);
+  ok(M.targetPrint(f.p, ref) === fp, 'moving the clip does not make a sent target stale');
+  M.trimEnd(f.p, f.c1, 5);
+  ok(M.targetPrint(f.p, ref) !== fp, 'trimming it does');
+  M.deleteClips(f.p, [f.c1]);
+  ok(M.targetPrint(f.p, ref) === 'gone', 'deleting it reads as gone');
+
+  // Identity.
+  const p1 = M.create('a'), p2 = M.create('b');
+  ok(p1.id && p1.id !== p2.id, 'every project gets its own id');
+  ok(M.normalize(p1).id === p1.id, 'normalize keeps an existing id');
+}
+
 /* ------------------------------------------------------------- fuzzing */
 {
   let seed = 12345;
@@ -304,7 +367,8 @@ function fixture() {
     else if (r < 0.88 && id) {
       op = 'replace';
       const src = M.addSource(p, { name: 'fx', duration: 0.5 + rnd() * 6, kind: 'derived' });
-      M.replaceSource(p, id, src, p.sources[src].duration);
+      if (rnd() < 0.5) M.replaceSource(p, id, src, p.sources[src].duration);
+      else M.replaceClipAudio(p, id, src, p.sources[src].duration, rnd() < 0.5);
     }
     else if (r < 0.91) { op = 'addTrack'; M.addTrack(p); }
     else if (r < 0.93 && p.tracks.length > 2) { op = 'removeTrack'; M.removeTrack(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id); }

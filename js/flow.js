@@ -175,9 +175,14 @@
   // Drive the page's own intake path rather than reimplementing it: every tool
   // binds fileInput's change event through CV.bindDropzone, so setting .files
   // and dispatching change works everywhere, bespoke pages included.
-  function injectFile(file) {
+  //
+  // `via` says who carried it ('handoff' or 'project'), for file_selected's
+  // pick_method: without it every injected file was reported as a browse.
+  var injectedVia = null;
+  function injectFile(file, via) {
     var input = document.getElementById('fileInput');
     if (!input || !canInjectFiles()) return false;
+    injectedVia = via || 'handoff';
     var dt = new DataTransfer();
     dt.items.add(file);
     input.files = dt.files;
@@ -189,7 +194,9 @@
     var dropzone = document.getElementById('dropzone');
     if (!dropzone || !canInjectFiles()) return;
     var from = new URLSearchParams(global.location.search).get('from');
-    if (!from) return;
+    // A visit from the audio editor is project-link.js's to handle. A leftover
+    // pending file from some earlier chain must not compete with it.
+    if (!from || from === 'project') return;
 
     peekHandoff().then(function (payload) {
       if (!payload || !payload.blob) return;
@@ -242,7 +249,7 @@
         // seeing — it just no longer doubles as "the user said no".
         if (act === 'use') {
           var file = new File([payload.blob], payload.name, { type: payload.blob.type || 'application/octet-stream' });
-          var ok = injectFile(file);
+          var ok = injectFile(file, 'handoff');
           track('chain_continue', { from_tool: payload.from, to_tool: currentTool(), accepted: ok });
         }
         dropHandoff().catch(function () {});
@@ -337,8 +344,14 @@
 
     host.parentNode.insertBefore(sec, host.nextSibling);
 
-    // Let pwa.js decide whether this is a moment to offer the install.
-    try { document.dispatchEvent(new CustomEvent('as:converted', { detail: { tool: slug } })); } catch (e) {}
+    // Let pwa.js decide whether this is a moment to offer the install, and
+    // project-link.js offer to send the result back to the editor. The panel
+    // is passed so a listener can add to it without flow.js knowing about it.
+    try {
+      document.dispatchEvent(new CustomEvent('as:converted', {
+        detail: { tool: slug, name: output && output.name, blob: output && output.blob, panel: sec }
+      }));
+    } catch (e) {}
   }
 
   function errorPanel(rawMessage) {
@@ -514,9 +527,10 @@
           file_ext: extOf(files[0].name),
           file_mb: mbBucket(files[0].size),
           file_count: files.length,
-          pick_method: seenDrop ? 'drop' : 'browse'
+          pick_method: injectedVia || (seenDrop ? 'drop' : 'browse')
         });
         seenDrop = false;
+        injectedVia = null;
         var old = document.getElementById('nextSteps');
         if (old) old.remove();
         var oldErr = document.getElementById('errorHelp');
@@ -653,6 +667,10 @@
     tool: currentTool,
     related: related,
     offerHandoff: offerHandoff,
+    inject: injectFile,
+    accepts: function (ext) {
+      return !pageAccept || pageAccept.indexOf(String(ext).replace(/^\./, '').toLowerCase()) !== -1;
+    },
     done: function (o) { nextStepsPanel(o && o.outputs ? o.outputs[0] : o); },
     fail: function (o) { errorPanel(o && o.error); }
   };

@@ -257,6 +257,44 @@ carrying a separate tone per channel, not because the coefficient tables say
   (0.707 per side at centre, unity hard-panned). Do not swap it for
   StereoPannerNode on a stereo signal: that folds and is +3 dB hard-panned.
 
+- `js/project-link.js` + `js/editor-link.js` — the project that follows you
+  onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a
+  tool page. The page shows a project bar ("Use project audio"), and after the
+  tool runs, a "Send back" chip. The result replaces the clip as one undoable
+  edit, the same way a Process effect does. `node tools/check-project-link.js`
+  drives the whole round trip through the real pages in headless Chrome, and it
+  runs in `check-all.js`.
+
+  **Tool pages never write the project.** They use a third database,
+  `audiosaw-link` (store `records`), with two keys and one writer each:
+  - `target`, written by the editor: the clip as a 16-bit WAV, plus peaks and a
+    fingerprint;
+  - `return`, written by the tool page: exactly the blob `CV.downloadBlob` got.
+
+  It is not `audiosaw`, because that one's version is pinned by `sw.js`. It is
+  not `audiosaw-editor` either: a tool page opening that before the editor ever
+  had would create it empty at v1, and the editor's upgrade handler would never
+  run. The localStorage key `as_project` says whether a target exists, so a
+  tool page with nothing to offer does no IndexedDB work at all.
+
+  A tool opts in with `project` in `tool-graph.js`:
+  - `'same'`: same length, so the result is aligned and nothing moves;
+  - `'len'`: the length changes, so later clips ripple;
+  - `'stems'`: several files come back.
+
+  `check-includes.js` fails if a `project` tool's page lacks `project-link.js`
+  after `flow.js`.
+
+  **Encoder delay is real and is trimmed.** lamejs puts 25 ms of silence at the
+  front, measured through `/noise-reduction`. For `'same'` tools, `align()`
+  cross-correlates the result against what was sent and drops the lead-in. When
+  the correlation is under 0.6 (a reverser, a pitch shift) there is no reliable
+  measurement, so it only cuts or pads to length.
+
+  If the clip was edited while the tool was open (`M.targetPrint` differs), the
+  editor asks instead of replacing. The same goes for a result whose project id
+  is not the saved project.
+
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not
@@ -363,6 +401,10 @@ New outcomes become new *values* on those events, never a ninth event:
 | `next_step_click` | `to_tool: install` / `install_later` | the PWA install chip |
 | `chain_continue` | `from_tool: share` | arrived through the OS share sheet |
 | `chain_continue` | `accepted: false` | the file was offered and taken, but injection failed |
+| `next_step_click` | `placement: project` | a clip sent from the editor to a tool (`tool: audio-editor`) |
+| `chain_continue` | `placement: project`, `from_tool: audio-editor` | "Use project audio" taken on the tool page |
+| `next_step_click` | `placement: project_return` | "Send back" clicked on the tool page |
+| `chain_continue` | `placement: project`, `to_tool: audio-editor` | the editor actually applied a tool's result |
 
 A `validation` error kind exists for UI hints like "Selection too short" and is
 deliberately **silent** — it fires no event and shows no recovery panel. Those

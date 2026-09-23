@@ -11,7 +11,9 @@
  * the wrong order, breaks a tool with nothing visible on the page.
  *
  * check-fx.js renders every audio-editor effect in headless Chrome, which
- * takes about twenty seconds. It skips itself on a machine without Chrome.
+ * takes about twenty seconds. check-project-link.js drives an editor -> tool ->
+ * editor round trip through the real pages, about fifteen more. Both skip
+ * themselves on a machine without Chrome.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
@@ -24,7 +26,8 @@ const CHECKS = [
   ['build-llms.js', '--check'],
   ['check-includes.js'],
   ['check-editor.js'],
-  ['check-fx.js']
+  ['check-fx.js'],
+  ['check-project-link.js']
 ];
 
 let failed = 0;

@@ -16,8 +16,8 @@
 
   var CV = global.CV, M = global.ASEditModel, E = global.ASEditEngine;
   var V = global.ASEditView, FX = global.ASEditFx, ST = global.ASEditStore;
-  var D = global.ASEditDsp, FXUI = global.ASEditFxUI;
-  if (!CV || !M || !E || !V || !FX || !ST || !D || !FXUI) {
+  var D = global.ASEditDsp, FXUI = global.ASEditFxUI, LINK = global.ASEditLink, L = global.ASLink;
+  if (!CV || !M || !E || !V || !FX || !ST || !D || !FXUI || !LINK || !L) {
     console.error('[audio-editor] a script is missing or loaded out of order; the editor cannot start.');
     return;
   }
@@ -830,6 +830,7 @@
         '<div class="ed-insp-btns">' +
         '<button type="button" class="ed-btn" data-i="trackfx" title="Live effects on the whole track: adjustable any time">Track effects</button>' +
         '<button type="button" class="ed-btn" data-i="fx" title="Render an effect into this clip">Process…</button>' +
+        '<button type="button" class="ed-btn" data-i="tool" title="Open one of the site’s tools with this clip, and bring the result back">Send to a tool…</button>' +
         '<button type="button" class="ed-btn" data-i="rippleDelete">Delete (close gap)</button>' +
         '<button type="button" class="ed-btn" data-i="newTrack">Move to new track</button>' +
         '<button type="button" class="ed-btn" data-i="clipExport">Export this clip</button>' +
@@ -869,6 +870,7 @@
       case 'rangeExport': openExport('range'); break;
       case 'clipExport': openExport('clip'); break;
       case 'fx': fxSheet(); break;
+      case 'tool': LINK.toolSheet(); break;
       case 'trackfx': { var ff = M.findClip(S.project, ids[0]); if (ff) FXUI.open(ff.track.id); break; }
       case 'clear': clearSelection(); break;
       case 'rippleDelete': doDelete(true); break;
@@ -961,6 +963,7 @@
       { v: 'cut', label: 'Cut', hint: '⌘X' },
       { v: 'trackfx', label: 'Track effects…', hint: 'live' },
       { v: 'fx', label: 'Process…', hint: 'renders' },
+      { v: 'tool', label: 'Send to a tool…', hint: 'and back' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
       { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
       { v: 'export', label: 'Export this clip' },
@@ -974,6 +977,7 @@
       if (v === 'copy') doCopy();
       if (v === 'cut') doCopy(true);
       if (v === 'fx') fxSheet();
+      if (v === 'tool') LINK.toolSheet();
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -2114,7 +2118,9 @@
       if (v === 'mixer') FXUI.open('master');
       if (v === 'new') {
         if (E.isPlaying()) togglePlay();
-        edit(function (p) { p.tracks = []; p.markers = []; p.name = 'Untitled project'; });
+        // A new identity too, so a tool result meant for the old project is
+        // not applied to this one.
+        edit(function (p) { p.tracks = []; p.markers = []; p.name = 'Untitled project'; p.id = M.uid('p'); });
         S.sel = {}; S.range = null; S.playhead = 0; S.scrollT = 0; S.pps = 40;
         refresh();
         toast('New project — undo brings the old one back');
@@ -2245,6 +2251,7 @@
   /* -------------------------------------------------------------- autosave */
 
   var saveTimer = 0, saving = false, saveAgain = false, saveDisabled = false;
+  var saveWaiters = [];      // flushSave() callers, settled when the last queued save lands
   function scheduleSave() {
     if (saveDisabled) return;
     clearTimeout(saveTimer);
@@ -2252,12 +2259,17 @@
     saveTimer = setTimeout(doSave, 1200);
   }
   function doSave() {
+    saveTimer = 0;
     if (saving) { saveAgain = true; return; }
     saving = true;
     setSaved('saving');
+    var failure = null;
     ST.save(S.project, buffers, files).then(function () {
       setSaved('saved');
+      // Tell tool pages there is a project, without them opening its database.
+      if (hasClips()) L.setFlag({ id: S.project.id, name: S.project.name, at: Date.now() });
     }).catch(function (err) {
+      failure = err || new Error('not saved');
       setSaved('failed');
       if (err && /quota/i.test(err.name + ' ' + err.message)) {
         saveDisabled = true;
@@ -2265,7 +2277,20 @@
       }
     }).then(function () {
       saving = false;
-      if (saveAgain) { saveAgain = false; doSave(); }
+      if (saveAgain) { saveAgain = false; doSave(); return; }
+      var w = saveWaiters; saveWaiters = [];
+      w.forEach(function (x) { if (failure) x.reject(failure); else x.resolve(); });
+    });
+  }
+  // Save now and resolve once it is on disk. The pagehide flush cannot be
+  // relied on before a navigation: it starts IndexedDB work the page may not
+  // live to finish, and a tool round trip needs the project to be there.
+  function flushSave() {
+    if (saveDisabled) return Promise.reject(new Error('autosave is off for this project'));
+    clearTimeout(saveTimer);
+    return new Promise(function (resolve, reject) {
+      saveWaiters.push({ resolve: resolve, reject: reject });
+      doSave();
     });
   }
   function setSaved(state) {
@@ -2274,29 +2299,32 @@
     el.saved.textContent = { pending: 'Unsaved changes', saving: 'Saving…', saved: 'Saved in this browser', failed: 'Not saved' }[state] || '';
   }
 
+  // Resolves true once the stored project is loaded.
   function restoreSession() {
-    if (busy) return;
+    if (busy) return Promise.resolve(false);
     busy = true;
     status('info', 'Restoring your last session…');
     progress(5);
-    ST.load(function (i, n) { progress(i / n * 100); }).then(function (res) {
-      if (!res) { status('warn', 'Nothing to restore.'); return; }
+    return ST.load(function (i, n) { progress(i / n * 100); }).then(function (res) {
+      if (!res) { status('warn', 'Nothing to restore.'); return false; }
       adopt(res);
       el.restore.hidden = true;
       status('success', 'Restored — everything is where you left it.');
+      return true;
     }).catch(function (err) {
       status('error', 'Could not restore the last session: ' + err.message);
-    }).then(function () { progress(null); busy = false; });
+      return false;
+    }).then(function (ok) { progress(null); busy = false; return ok; });
   }
 
-  ST.peek().then(function (info) {
+  function offerRestore(info) {
     if (!info || hasClips() || !el.restore) return;
     var ago = info.savedAt ? Math.round((Date.now() - info.savedAt) / 60000) : null;
     var when = ago == null ? '' : ago < 2 ? 'just now' : ago < 90 ? ago + ' min ago' : ago < 60 * 36 ? Math.round(ago / 60) + ' h ago' : Math.round(ago / 1440) + ' days ago';
     el.restore.querySelector('[data-restore-text]').textContent =
       '“' + (info.project.name || 'Untitled') + '” · ' + info.clips + ' clip' + (info.clips > 1 ? 's' : '') + (when ? ' · ' + when : '');
     el.restore.hidden = false;
-  });
+  }
 
   /* ------------------------------------------------------------ layout */
 
@@ -2317,6 +2345,30 @@
     menuHtml: menuHtml, isTouchUI: isTouchUI, layout: applyLayout, tempoSheet: tempoSheet
   });
   $('#edMixerBtn').addEventListener('click', function () { if (FXUI.isOpen()) FXUI.close(); else FXUI.open(S.selTrack); });
+
+  LINK.init({
+    S: S, buffers: buffers, esc: esc, edit: edit, refresh: refresh, status: status,
+    openSheet: openSheet, closeSheet: closeSheet, menuHtml: menuHtml, selIds: selIds, slice: slice,
+    decodeFile: decodeFile, importFiles: importFiles, flushSave: flushSave, restore: restoreSession,
+    isBusy: function () { return busy; }, setBusy: function (b) { busy = b; },
+    saveDisabled: function () { return saveDisabled; },
+    stopPlayback: function () { if (E.isPlaying()) togglePlay(); }
+  });
+
+  // A tool's result waiting to come back takes precedence over the restore
+  // banner: it restores the project itself. "Back to the editor" from a tool
+  // page (?resume=1) restores without asking, since that is what it said.
+  LINK.checkReturn().then(function (handled) {
+    if (handled) return;
+    return ST.peek().then(function (info) {
+      if (info && !hasClips() && /[?&]resume=1/.test(global.location.search)) {
+        restoreSession();
+        try { global.history.replaceState(null, '', global.location.pathname); } catch (e) {}
+        return;
+      }
+      offerRestore(info);
+    });
+  });
 
   applyLayout();
   updateTransport();

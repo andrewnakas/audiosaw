@@ -34,6 +34,11 @@
     { id: 'apps',     title: 'For a specific app or device' }
   ];
 
+  // project — set on tools that can work on a clip sent from /audio-editor and
+  //          send the result back (project-link.js). 'same': the result is
+  //          the same length, so it is lined up and nothing after it moves.
+  //          'len': the length changes, so later clips on the track ripple.
+  //          'stems': several files come back; the first replaces the clip.
   // label  — short form, used in the footer directory
   // title  — card heading
   // blurb  — one line of card copy; says what it's for, not just what it is
@@ -322,6 +327,7 @@
     'audio-speed': {
       cat: 'edit', label: 'speed', title: 'Change audio speed',
       blurb: 'Slow a song or speed a podcast without shifting the pitch.',
+      project: 'len',
       next: [
         ['silence-remover', 'Cut the pauses as well as speeding it up'],
         ['audio-reverser', 'The other way to make a file unrecognisable'],
@@ -334,6 +340,7 @@
     'audio-reverser': {
       cat: 'edit', label: 'reverse', title: 'Audio Reverser',
       blurb: 'Play a file backwards — for effects, or to hear what is buried.',
+      project: 'same',
       next: [
         ['audio-cutter', 'Reverse just a section'],
         ['fade-in-fade-out', 'Shape the reversed tail'],
@@ -472,6 +479,7 @@
     'vocal-remover': {
       cat: 'repair', label: 'vocal remover', title: 'Vocal remover / karaoke',
       blurb: 'Remove the vocal from a stereo song, or isolate it, by cancelling the centre.',
+      project: 'same',
       next: [
         ['stem-splitter', 'The AI version — works on mono and off-centre vocals'],
         ['pitch-shifter', 'Move the karaoke track into your singing range'],
@@ -517,6 +525,7 @@
     'noise-reduction': {
       cat: 'repair', label: 'remove noise', title: 'Remove background noise',
       blurb: 'Strip hiss, hum and fan noise out of a recording with spectral gating.',
+      project: 'same',
       next: [
         ['normalize-audio', 'Denoising lowers the level — put it back'],
         ['audio-eq', 'Clear up what is left with a little EQ'],
@@ -539,6 +548,7 @@
     'autotune': {
       cat: 'repair', label: 'autotune', title: 'Autotune / Pitch Correction',
       blurb: 'Snap a vocal to a key — subtle tuning or the hard-tuned effect.',
+      project: 'same',
       next: [
         ['pitch-shifter', 'Move the whole take to another key instead'],
         ['stem-splitter', 'Lift the vocal out of a mix before tuning it'],

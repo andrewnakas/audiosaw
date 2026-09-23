@@ -494,6 +494,37 @@
     }
   }
 
+  // The same, for audio coming back from a tool page. That result has no
+  // fitTail to keep it inside the gap, so when the caller asks not to ripple
+  // (a same-length tool whose output ran a few ms long) whatever it now
+  // overlaps is carved rather than left overlapping.
+  function replaceClipAudio(p, clipId, sourceId, newDuration, ripple) {
+    replaceSource(p, clipId, sourceId, newDuration, ripple);
+    if (ripple !== false) return;
+    var f = findClip(p, clipId);
+    if (!f) return;
+    var keep = {};
+    keep[clipId] = true;
+    carve(f.track, f.clip.start, clipEnd(f.clip), keep);
+  }
+
+  // A new track at `index` holding one clip of the whole source. Returns the
+  // clip id. Used for the extra outputs of a tool that returns several files.
+  function placeOnNewTrack(p, index, sourceId, start, name) {
+    var tid = addTrack(p, { index: index, name: name });
+    return addClip(p, tid, { sourceId: sourceId, start: start, name: name });
+  }
+
+  // What a tool page was handed, reduced to the numbers that decide whether
+  // its result still fits. Position is left out on purpose: moving a clip
+  // after sending it does not make the result wrong.
+  function targetPrint(p, ref) {
+    var f = findClip(p, ref && ref.clipId);
+    if (!f) return 'gone';
+    var c = f.clip;
+    return 'c|' + c.sourceId + '|' + c.offset.toFixed(6) + '|' + c.duration.toFixed(6);
+  }
+
   // Unused sources are dropped when the project is stored, not here: an undo
   // snapshot may still point at one.
   function usedSources(p) {
@@ -589,6 +620,9 @@
   // Fill in what an older project (or one from before this code) is missing.
   // Idempotent: normalize(normalize(p)) is normalize(p).
   function normalize(p) {
+    // An identity, so a result coming back from a tool page can tell whether
+    // the project it was cut from is the one that is open.
+    if (!p.id) p.id = uid('p');
     p.tracks = p.tracks || [];
     p.sources = p.sources || {};
     p.markers = p.markers || [];
@@ -935,6 +969,7 @@
     moveClips: moveClips, splitAt: splitAt, deleteClips: deleteClips, deleteRange: deleteRange,
     cropTo: cropTo, insertGap: insertGap, duplicate: duplicate, copyClips: copyClips, paste: paste,
     replaceSource: replaceSource, usedSources: usedSources, carve: carve,
+    replaceClipAudio: replaceClipAudio, placeOnNewTrack: placeOnNewTrack, targetPrint: targetPrint,
     addMarker: addMarker, removeMarker: removeMarker,
     snapPoints: snapPoints, snap: snap,
     fadeShape: fadeShape, clipGainAt: clipGainAt, audibleTracks: audibleTracks,
