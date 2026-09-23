@@ -27,7 +27,8 @@ const CHECKS = [
   ['check-includes.js'],
   ['check-editor.js'],
   ['check-fx.js'],
-  ['check-project-link.js']
+  ['check-project-link.js'],
+  ['check-grid.js']
 ];
 
 let failed = 0;

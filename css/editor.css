@@ -86,6 +86,7 @@
 .ed-time { font: 600 1.15rem/1.1 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
 .ed-total { font: 0.72rem/1.2 var(--mono); color: var(--muted); }
 .ed-total::before { content: 'of '; }
+.ed-total.is-now::before { content: ''; }
 .ed-loop.on, .ed-icon[aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); color: #7c2d12; }
 
 .ed-meter { display: flex; flex-direction: column; gap: 3px; width: 56px; }
@@ -108,7 +109,9 @@
   width: var(--ed-head); flex: none; border-right: 1px solid var(--rule);
   font: 0.7rem/30px var(--mono); color: var(--muted); padding-left: 10px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  border-top: 0; border-bottom: 0; border-left: 0; background: none; text-align: left; cursor: pointer;
 }
+.ed-corner:hover, .ed-corner:focus-visible { color: var(--amber); }
 .ed-ruler-row canvas { display: block; flex: 1; min-width: 0; height: 30px; touch-action: none; cursor: col-resize; }
 .ed-scroll {
   max-height: min(58vh, 520px);

@@ -257,6 +257,19 @@ carrying a separate tone per channel, not because the coefficient tables say
   (0.707 per side at centre, unity hard-panned). Do not swap it for
   StereoPannerNode on a stereo signal: that folds and is +3 dB hard-panned.
 
+  **The grid and the metronome.** The project has `bpm`, `sig` ([num, den]),
+  `gridOffset` (bar 1's time, wrapped into one bar) and `ruler`
+  (`'time'|'bars'`). The tempo always counts quarter notes; a beat is the
+  denominator's note. All the grid maths (`gridLines`, `nearestGrid`,
+  `clickTimes`) lives in the model, so check-editor tests it in Node. The click
+  is scheduled ~150 ms ahead on the context clock and goes to
+  `ctx.destination`, never `master`. That keeps it out of the meters and out of
+  `render()`, and `node tools/check-grid.js` asserts that an export with the
+  click on is exactly silent. A count-in is a `countIn` delay on `E.play()`, so
+  `t0` moves and take placement needs no special case. The take is clamped to
+  start at the playhead, so count-in audio never carves the track before it.
+  Recording always runs the timeline now, even over an empty project.
+
 - `js/project-link.js` + `js/editor-link.js` — the project that follows you
   onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a
   tool page. The page shows a project bar ("Use project audio"), and after the

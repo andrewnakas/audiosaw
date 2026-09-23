@@ -353,18 +353,93 @@
     });
   }
 
+  /* ------------------------------------------------------------ metronome */
+
+  // The click goes straight to the speakers, past the master chain and the
+  // meters. Only live playback schedules it: render() builds its own offline
+  // context and never comes here, so a click cannot end up in an export.
+  // Clicks are scheduled ~150 ms ahead on the context clock, the clock the
+  // clips play on, so they stay sample-locked however late the timer fires.
+  var click = { on: false, vol: 0.6, gain: null, bufs: null, timer: 0, nodes: [], log: [] };
+
+  function clickBufs() {
+    if (click.bufs) return click.bufs;
+    var sr = ctx.sampleRate;
+    // Beat, group (the 4 of 6/8) and downbeat.
+    click.bufs = [1000, 1400, 2000].map(function (hz) {
+      var n = Math.round(sr * 0.04), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0);
+      for (var i = 0; i < n; i++) {
+        var t = i / sr;
+        d[i] = 0.8 * Math.sin(2 * Math.PI * hz * t) * Math.exp(-t / 0.008) * Math.min(1, t / 0.0005);
+      }
+      return b;
+    });
+    click.gain = ctx.createGain();
+    click.gain.gain.value = click.vol;
+    click.gain.connect(ctx.destination);
+    return click.bufs;
+  }
+
+  function clickAt(when, accent) {
+    if (when < ctx.currentTime) return;
+    var s = ctx.createBufferSource();
+    s.buffer = clickBufs()[accent || 0];
+    s.connect(click.gain);
+    s.start(when);
+    click.nodes.push(s);
+    s.onended = function () { var i = click.nodes.indexOf(s); if (i >= 0) click.nodes.splice(i, 1); try { s.disconnect(); } catch (e) {} };
+    click.log.push({ when: when, accent: accent || 0 });
+    if (click.log.length > 256) click.log.shift();
+  }
+
+  function scheduleClicks() {
+    if (!playing || !click.on) return;
+    var p = playing, now = ctx.currentTime;
+    // Never behind "now": switching the click on mid-song must not fire a
+    // burst of every beat it missed.
+    var fromT = Math.max(p.clickT, p.from + (now - p.t0));
+    var toT = Math.min(p.to, p.from + (now + 0.15 - p.t0));
+    if (toT <= fromT) return;
+    M.clickTimes(p.project, fromT, toT).forEach(function (c) { clickAt(p.t0 + c.t - p.from, c.accent); });
+    p.clickT = toT;
+  }
+
+  function silenceClicks() {
+    click.nodes.forEach(function (n) { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+    click.nodes = [];
+    // The log is of clicks heard, so drop the ones just cancelled.
+    if (ctx) click.log = click.log.filter(function (c) { return c.when <= ctx.currentTime; });
+  }
+
+  function setClick(o) {
+    if (o.vol != null) { click.vol = Math.max(0, Math.min(1, +o.vol)); if (click.gain) click.gain.gain.value = click.vol; }
+    if (o.on != null) {
+      click.on = !!o.on;
+      if (!click.on) silenceClicks();
+      else if (playing) { playing.clickT = playing.from + Math.max(0, ctx.currentTime - playing.t0); scheduleClicks(); }
+    }
+  }
+  function clickState() { return { on: click.on, vol: click.vol, log: click.log.slice() }; }
+
   /* ------------------------------------------------------------- playback */
 
   var ticker = 0;
+  // opts.countIn: seconds of count-in clicks before `from` starts sounding.
+  // The timeline mapping simply starts that much later, so everything keyed
+  // off t0 (the playhead, recording placement) needs no special case.
   function play(project, from, opts) {
     opts = opts || {};
     ensureCtx();
     stop();
     var to = opts.to != null ? opts.to : M.duration(project);
     if (to - from < 0.01) return false;
-    var when = ctx.currentTime + 0.06;
+    var pre = opts.countIn > 0 ? opts.countIn : 0;
+    var when = ctx.currentTime + 0.06 + pre;
     var G = build(ctx, master, project, from, to, when);
-    playing = { from: from, to: to, t0: when, G: G, project: project };
+    playing = { from: from, to: to, t0: when, G: G, project: project, clickT: from };
+    if (pre) M.clickTimes(project, from - pre, from).forEach(function (c) { clickAt(when + c.t - from, c.accent); });
+    scheduleClicks();
+    click.timer = setInterval(scheduleClicks, 25);
     if (G.fxLanes.length) {
       ticker = setInterval(function () {
         if (!playing) return;
@@ -384,6 +459,8 @@
 
   function stop() {
     clearInterval(ticker); ticker = 0;
+    clearInterval(click.timer); click.timer = 0;
+    silenceClicks();
     if (!playing) return;
     var G = playing.G;
     G.nodes.forEach(function (n) { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
@@ -790,7 +867,7 @@
     unlock: unlock,
     play: play, stop: stop, isPlaying: isPlaying, position: position, playEnd: playEnd, playInfo: playInfo,
     updateTracks: updateTracks, syncFx: syncFx, relane: relane, hold: hold, probe: probe, trackPeak: trackPeak, meter: meter, audition: audition,
-    render: render, tailOf: tailOf,
+    render: render, tailOf: tailOf, setClick: setClick, clickState: clickState,
     startRecording: startRecording, stopRecording: stopRecording, isRecording: isRecording,
     timelineAt: timelineAt, now: now, sampleRate: sampleRate, createBuffer: createBuffer
   };

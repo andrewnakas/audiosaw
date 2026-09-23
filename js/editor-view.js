@@ -96,6 +96,28 @@
     return 3600;
   }
 
+  // The same idea in beats, for the bars ruler: a labelled step (a
+  // sixteenth up to many bars) at least ~60 px apart, and the finer division
+  // drawn between labels and used for snapping. The finer division is the
+  // largest musical unit below the label step, so four-bar labels get bar
+  // lines and one-bar labels get beat lines.
+  function barSteps(pps, p) {
+    var num = p.sig[0], beatPx = M.beatSec(p) * pps;
+    var C = [0.25, 0.5, 1, num, 2 * num, 4 * num, 8 * num, 16 * num, 32 * num, 64 * num, 128 * num];
+    var label = C[C.length - 1];
+    for (var i = 0; i < C.length; i++) if (C[i] * beatPx >= 60) { label = C[i]; break; }
+    var minor = label;
+    [0.25, 0.5, 1, num].forEach(function (d) {
+      var k = label / d;
+      if (d < label && d * beatPx >= 10 && Math.abs(k - Math.round(k)) < 1e-9) minor = d;
+    });
+    return { label: label, minor: minor };
+  }
+  function onStep(p, t, div) {
+    var k = (t - p.gridOffset) / M.beatSec(p) / div;
+    return Math.abs(k - Math.round(k)) < 1e-6;
+  }
+
   function fmtRuler(t, step) {
     var m = Math.floor(t / 60), s = t - m * 60;
     var dec = step < 0.01 ? 3 : step < 0.1 ? 2 : step < 1 ? 1 : 0;
@@ -116,6 +138,21 @@
     var tEnd = this.t(w);
     g.font = '11px ' + css.mono;
     g.textBaseline = 'top';
+    if (st.project.ruler === 'bars') {
+      var p = st.project, bs = barSteps(st.pps, p);
+      M.gridLines(p, Math.max(0, st.scrollT - 1), tEnd, bs.minor).forEach(function (l) {
+        if (l.t < 0) return;
+        var x = Math.round(this.x(l.t)) + 0.5;
+        g.fillStyle = css.muted;
+        if (onStep(p, l.t, bs.label)) {
+          g.fillRect(x, h - 10, 1, 9);
+          g.fillText(M.fmtBars(p, l.t, bs.label), x + 3, 4);
+        } else {
+          g.fillRect(x, h - (l.level === 2 ? 8 : 5), 1, l.level === 2 ? 7 : 4);
+        }
+      }, this);
+      t0 = tEnd + 1;   // skip the seconds ticks
+    }
     for (var t = t0; t <= tEnd; t += step) {
       var x = Math.round(this.x(t)) + 0.5;
       g.fillStyle = css.muted;
@@ -176,6 +213,11 @@
     var audible = M.audibleTracks(st.project);
     var step = pickStep(st.pps);
     var t0 = Math.floor(st.scrollT / step) * step, tEnd = this.t(w);
+    // In bars mode the lane grid is the musical one: bar lines stronger than
+    // the beats between them, the way a DAW draws it.
+    var bars = st.project.ruler === 'bars'
+      ? M.gridLines(st.project, Math.max(0, st.scrollT - 1), tEnd, barSteps(st.pps, st.project).minor).filter(function (l) { return l.t >= 0; })
+      : null;
 
     st.project.tracks.forEach(function (track, ti) {
       var y = ti * th;
@@ -185,7 +227,14 @@
       g.fillRect(0, y, w, th);
       // Faint grid.
       g.fillStyle = css.grid;
-      for (var t = t0; t <= tEnd; t += step) g.fillRect(Math.round(this.x(t)), y, 1, th);
+      if (bars) {
+        bars.forEach(function (l) {
+          g.fillStyle = l.level === 2 ? css.gridBar : css.grid;
+          g.fillRect(Math.round(this.x(l.t)), y, 1, th);
+        }, this);
+      } else {
+        for (var t = t0; t <= tEnd; t += step) g.fillRect(Math.round(this.x(t)), y, 1, th);
+      }
       g.fillStyle = css.rule; g.fillRect(0, y + th - 1, w, 1);
 
       var dim = !audible[track.id];
@@ -426,7 +475,7 @@
       amber: v('--amber', '#c2410c'), ink: v('--ink', '#1a1814'),
       mono: v('--mono', 'monospace'), sans: v('--sans', 'sans-serif'),
       lane: '#fbf6ed', laneAlt: '#f7f0e4', laneSel: '#fcefdc',
-      grid: 'rgba(122,112,95,0.10)',
+      grid: 'rgba(122,112,95,0.10)', gridBar: 'rgba(122,112,95,0.30)',
       clip: '#f1e2c8', clipSel: '#fde8ce', clipDim: '#ece6dc', clipEdge: 'rgba(122,112,95,0.55)',
       wave: '#6b5a3f', waveSel: '#9a3412', waveDim: '#b8ad9b',
       label: '#4a4338', labelSel: '#7c2d12',
@@ -479,5 +528,5 @@
     return res;
   };
 
-  global.ASEditView = { View: View, buildPeaks: buildPeaks, peaks: peaks, fmtRuler: fmtRuler, gridStep: pickStep };
+  global.ASEditView = { View: View, buildPeaks: buildPeaks, peaks: peaks, fmtRuler: fmtRuler, gridStep: pickStep, barSteps: barSteps };
 })(window);

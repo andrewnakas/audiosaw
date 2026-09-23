@@ -694,6 +694,9 @@
       if (typeof b.volDb !== 'number') b.volDb = 0;
     });
     if (!(p.bpm > 0)) p.bpm = 120;
+    if (!validSig(p.sig)) p.sig = [4, 4];
+    if (!(typeof p.gridOffset === 'number' && isFinite(p.gridOffset))) p.gridOffset = 0;
+    if (p.ruler !== 'bars') p.ruler = 'time';
     return p;
   }
 
@@ -831,6 +834,89 @@
   function setBpm(p, bpm) {
     bpm = +bpm;
     if (bpm >= 20 && bpm <= 400) p.bpm = Math.round(bpm * 100) / 100;
+    if (validSig(p.sig)) setGridOffset(p, p.gridOffset || 0);
+  }
+
+  /* ---------------------------------------------------------- bars, beats */
+
+  // The tempo counts quarter notes whatever the metre, the way every DAW
+  // does, so a beat is the denominator's note: in 6/8 at 120 a beat is an
+  // eighth, 0.25 s. Bar 1 starts at gridOffset, which is how a grid is lined
+  // up with a recording that does not begin on the downbeat at 0:00.
+  var DENS = [2, 4, 8, 16];
+  function validSig(s) {
+    return Array.isArray(s) && s.length === 2 && s[0] === Math.round(s[0]) && s[0] >= 1 && s[0] <= 15 && DENS.indexOf(s[1]) >= 0;
+  }
+  function setSig(p, num, den) {
+    num = Math.round(+num); den = +den;
+    if (validSig([num, den])) p.sig = [num, den];
+    setGridOffset(p, p.gridOffset || 0);
+  }
+  function setGridOffset(p, t) {
+    t = +t;
+    if (!isFinite(t)) return;
+    // Only the phase matters, so keep it inside one bar: an offset of 7.3 s
+    // and one of 7.3 s less a whole number of bars draw the same grid.
+    var bar = barSec(p);
+    p.gridOffset = Math.round((((t % bar) + bar) % bar) * 1e6) / 1e6;
+    if (p.gridOffset > bar - 1e-6) p.gridOffset = 0;
+  }
+  function setRuler(p, mode) { p.ruler = mode === 'bars' ? 'bars' : 'time'; }
+
+  function beatSec(p) { return 60 / p.bpm * 4 / p.sig[1]; }
+  function barSec(p) { return beatSec(p) * p.sig[0]; }
+
+  // Where a count of beats from bar 1 falls in the bar. Rounding first keeps
+  // 3.9999999 from reading as beat 3 of the previous bar.
+  function beatPos(p, beats) {
+    var num = p.sig[0], b = Math.round(beats * 1e6) / 1e6;
+    var bar = Math.floor(b / num), inBar = b - bar * num, beat = Math.floor(inBar + 1e-6);
+    return { bar: bar + 1, beat: beat + 1, sub: Math.max(0, inBar - beat) };
+  }
+
+  // Accent a click the way it is counted: the downbeat highest, and in a
+  // compound metre (6/8, 9/8, 12/8) the start of each group of three.
+  function accentOf(p, beat) {
+    if (beat === 1) return 2;
+    var num = p.sig[0];
+    return p.sig[1] >= 8 && num > 3 && num % 3 === 0 && (beat - 1) % 3 === 0 ? 1 : 0;
+  }
+
+  // Grid lines every `div` beats in [t0, t1]: {t, bar, beat, sub, level},
+  // level 2 on a bar line, 1 on a beat, 0 between.
+  function gridLines(p, t0, t1, div) {
+    var step = beatSec(p) * div, off = p.gridOffset, out = [];
+    if (!(step > 0) || t1 < t0) return out;
+    var k0 = Math.ceil((t0 - off) / step - 1e-9), k1 = Math.floor((t1 - off) / step + 1e-9);
+    if (k1 - k0 > 20000) k1 = k0 + 20000;
+    for (var k = k0; k <= k1; k++) {
+      var pos = beatPos(p, k * div);
+      pos.t = off + k * step;
+      pos.level = pos.sub > 1e-6 ? 0 : pos.beat === 1 ? 2 : 1;
+      out.push(pos);
+    }
+    return out;
+  }
+
+  function nearestGrid(p, t, div) {
+    var step = beatSec(p) * div, off = p.gridOffset;
+    return off + Math.round((t - off) / step) * step;
+  }
+
+  // "5.3" (bar 5, beat 3), with a sixteenth-style third field only when the
+  // grid is finer than a beat: "5.3.2".
+  function fmtBars(p, t, div) {
+    var pos = beatPos(p, (t - p.gridOffset) / beatSec(p));
+    if (div != null && div >= p.sig[0] && pos.beat === 1 && pos.sub < 1e-6) return String(pos.bar);
+    if (div != null && div >= 1) return pos.bar + '.' + pos.beat;
+    return pos.bar + '.' + pos.beat + '.' + (Math.floor(pos.sub * 4 + 1e-6) + 1);
+  }
+
+  // Metronome clicks in [from, to): {t, accent}. The engine only turns these
+  // into context times, so the maths is here where Node can check it.
+  function clickTimes(p, from, to) {
+    return gridLines(p, from, to, 1).filter(function (g) { return g.t < to - 1e-9; })
+      .map(function (g) { return { t: g.t, accent: accentOf(p, g.beat) }; });
   }
 
   /* ----------------------------------------------------------- automation */
@@ -964,6 +1050,9 @@
         if (!(p.buses || []).some(function (x) { return x.id === b; })) errs.push('track ' + ti + ': send to a missing bus ' + b);
       });
     });
+    if (!(p.bpm >= 20 && p.bpm <= 400)) errs.push('tempo out of range: ' + p.bpm);
+    if (!validSig(p.sig)) errs.push('bad time signature ' + JSON.stringify(p.sig));
+    else if (!(p.gridOffset >= 0 && p.gridOffset < barSec(p) + EPS)) errs.push('grid offset outside one bar: ' + p.gridOffset);
     if (p.master) Object.keys(p.master.auto || {}).forEach(function (path) { autoErrs(p.master.auto[path], 'master lane ' + path, errs); });
     return errs;
   }
@@ -1022,6 +1111,8 @@
     normalize: normalize, owner: owner, chainOf: chainOf, findFx: findFx,
     addFx: addFx, removeFx: removeFx, moveFx: moveFx, setFx: setFx, setChain: setChain,
     setSend: setSend, addBus: addBus, removeBus: removeBus, setBus: setBus, setMaster: setMaster, setBpm: setBpm,
+    setSig: setSig, setGridOffset: setGridOffset, setRuler: setRuler, beatSec: beatSec, barSec: barSec,
+    gridLines: gridLines, nearestGrid: nearestGrid, fmtBars: fmtBars, clickTimes: clickTimes,
     setAutoPoints: setAutoPoints, clearAuto: clearAuto, autoValueAt: autoValueAt, thinPoints: thinPoints,
     validate: validate, History: History
   };

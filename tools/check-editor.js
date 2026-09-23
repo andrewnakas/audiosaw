@@ -456,8 +456,53 @@ function fixture() {
   ok(steps === Math.min(ops, h.limit), 'undo walks back through every recorded change (' + steps + ' of ' + ops + ')');
 }
 
+/* ---------------------------------------------------------- tempo grid */
+{
+  const { p } = fixture();
+  ok(p.sig[0] === 4 && p.sig[1] === 4 && p.gridOffset === 0 && p.ruler === 'time', 'a new project is 4/4, bar 1 at zero, ruler in time');
+  const old = JSON.parse(M.serialize(p));
+  delete old.sig; delete old.gridOffset; delete old.ruler;
+  M.normalize(old);
+  ok(old.sig.join('/') === '4/4' && old.gridOffset === 0 && old.ruler === 'time', 'normalize gives an older project a grid');
+  const once = M.serialize(old); M.normalize(old);
+  ok(M.serialize(old) === once, 'normalize is idempotent with the grid');
+
+  M.setSig(p, 7, 5); M.setSig(p, 0, 4); M.setSig(p, 16, 4); M.setSig(p, 3.5, 4);
+  ok(p.sig.join('/') === '4/4', 'impossible time signatures are refused');
+  M.setRuler(p, 'nonsense'); ok(p.ruler === 'time', 'unknown ruler mode falls back to time');
+
+  // 4/4 at 120: a beat is 0.5 s, a bar 2 s.
+  near(M.beatSec(p), 0.5, 1e-12, '4/4 at 120: beat 0.5 s');
+  let g = M.gridLines(p, 0, 4, 1);
+  ok(g.length === 9 && g[4].bar === 2 && g[4].beat === 1 && g[4].level === 2 && g[5].level === 1, '4/4 lines: a bar line every fourth beat');
+
+  // 3/4 with bar 1 at 0.3 s.
+  M.setSig(p, 3, 4); M.setGridOffset(p, 0.3);
+  near(M.barSec(p), 1.5, 1e-12, '3/4 at 120: bar 1.5 s');
+  g = M.gridLines(p, 0.3, 3.3, 1);
+  ok(g[0].t === 0.3 && g[3].bar === 2 && g[3].beat === 1 && g[6].bar === 3, '3/4 with an offset: bars at 0.3, 1.8, 3.3');
+  near(M.nearestGrid(p, 1.1, 1), 1.3, 1e-9, 'snaps to the nearest beat of an offset grid');
+  near(M.nearestGrid(p, 1.04, 0.25), 1.05, 1e-9, 'snaps to a sixteenth');
+  ok(M.fmtBars(p, 1.8, 3) === '2' && M.fmtBars(p, 2.3, 1) === '2.2' && M.fmtBars(p, 2.425, 0.25) === '2.2.2', 'bar.beat labels');
+
+  // An offset is only a phase: it is kept inside one bar, even when the
+  // tempo change makes the bar shorter than the offset.
+  M.setGridOffset(p, 7.3); near(p.gridOffset, 1.3, 1e-9, 'an offset past one bar wraps into it');
+  M.setGridOffset(p, -0.2); near(p.gridOffset, 1.3, 1e-9, 'a negative offset wraps too');
+  M.setBpm(p, 240); ok(p.gridOffset < M.barSec(p), 'a faster tempo re-wraps the offset');
+  valid(p, 'project after grid edits');
+
+  // 6/8: six eighth-note clicks per bar, accents on 1 and 4.
+  M.setBpm(p, 120); M.setSig(p, 6, 8); M.setGridOffset(p, 0);
+  const c = M.clickTimes(p, 0, 3);
+  ok(c.length === 12 && c.map((x) => x.accent).join('') === '200100200100', '6/8 clicks: downbeat, then the second group of three');
+  ok(M.clickTimes(p, 0, 0.25).length === 1, 'the click at the end of the window belongs to the next window');
+  M.setSig(p, 4, 4);
+  ok(M.clickTimes(p, 0, 2).map((x) => x.accent).join('') === '2000', '4/4 accents only the downbeat');
+}
+
 if (failures) {
   console.error('check-editor: ' + failures + ' failure(s).');
   process.exit(1);
 }
-console.log('check-editor: model invariants hold across split, trim, move, ripple, paste, effects, automation and 1,000 random edits; ' + D.ORDER.length + ' plugins and ' + D.PATCHES.length + ' patches check out.');
+console.log('check-editor: model invariants hold across split, trim, move, ripple, paste, effects, automation and 1,000 random edits, and the tempo grid holds in 4/4, 3/4 and 6/8; ' + D.ORDER.length + ' plugins and ' + D.PATCHES.length + ' patches check out.');

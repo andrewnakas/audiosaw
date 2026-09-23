@@ -53,7 +53,7 @@
 
   var el = {
     ed: $('#ed'), stage: $('#edStage'), scroll: $('#edScroll'), heads: $('#edHeads'),
-    ruler: $('#edRuler'), lanes: $('#edLanes'), empty: $('#dropzone'), fileInput: $('#fileInput'),
+    ruler: $('#edRuler'), corner: $('#edCorner'), lanes: $('#edLanes'), empty: $('#dropzone'), fileInput: $('#fileInput'),
     play: $('#edPlay'), time: $('#edTime'), total: $('#edTotal'), rec: $('#edRec'),
     undo: $('#edUndo'), redo: $('#edRedo'), loop: $('#edLoop'), tools: $('#edTools'),
     insp: $('#edInspector'), status: $('#status'), progWrap: $('#progressWrap'), prog: $('#progressBar'),
@@ -216,10 +216,19 @@
     if (x > w * 0.9 || x < 0) { S.scrollT = Math.max(0, S.playhead - (w * 0.1) / S.pps); updateHbar(); }
   }
 
+  // In bars mode the big readout is bar.beat.sixteenth and the small one is
+  // the same moment in minutes and seconds.
   function updateTime() {
-    el.time.textContent = fmt(S.playhead);
+    var bars = S.project.ruler === 'bars';
+    el.time.textContent = bars ? M.fmtBars(S.project, S.playhead) : fmt(S.playhead);
     var d = M.duration(S.project);
-    if (el.total) el.total.textContent = fmt(d, false);
+    if (el.total) {
+      el.total.textContent = bars ? fmt(S.playhead) : fmt(d, false);
+      el.total.classList.toggle('is-now', bars);
+    }
+    // The ruler's corner names what the ruler counts and opens the tempo sheet.
+    var corner = (bars ? '' : 'time · ') + S.project.bpm + ' BPM · ' + S.project.sig.join('/');
+    if (el.corner && el.corner.textContent !== corner) el.corner.textContent = corner;
   }
 
   function refresh() {
@@ -491,10 +500,10 @@
     return [0, M.duration(S.project)];
   }
 
-  function startPlayback(from, to) {
+  function startPlayback(from, to, opts) {
     E.unlock();
     playStart = from;
-    var ok = E.play(S.project, from, { to: to });
+    var ok = E.play(S.project, from, { to: to, countIn: opts && opts.countIn });
     S.playhead = from;
     clearTimeout(endTimer);
     if (ok && isFinite(to)) endTimer = setTimeout(function tick() {
@@ -582,6 +591,7 @@
     zout: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M15.5 15.5L21 21M7.5 10.5h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     fit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
     mixer: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M12 3v18M18 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".5"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg>',
+    click: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8l-3-17h-2zM12 14l6-8" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     snap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v8a6 6 0 0 0 12 0V3M6 7h4M14 7h4" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
     cut: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 16L19 4M16 16L5 4" stroke="currentColor" stroke-width="2"/></svg>'
   };
@@ -600,7 +610,8 @@
     { id: 'zoomout', label: 'Zoom out', icon: 'zout', key: '−' },
     { id: 'zoomin', label: 'Zoom in', icon: 'zin', key: '+' },
     { id: 'fit', label: 'Fit', icon: 'fit', key: '0' },
-    { id: 'snap', label: 'Snap', icon: 'snap', key: 'N', toggle: true }
+    { id: 'snap', label: 'Snap', icon: 'snap', key: 'N', toggle: true },
+    { id: 'click', label: 'Click', icon: 'click', key: 'K', toggle: true }
   ];
 
   el.tools.innerHTML = TOOLS.map(function (t) {
@@ -630,6 +641,7 @@
       case 'zoomout': zoomAt(1 / 1.6, view.x(S.playhead) >= 0 && view.x(S.playhead) <= lanesWidth() ? view.x(S.playhead) : lanesWidth() / 2); break;
       case 'fit': zoomFit(); break;
       case 'snap': S.snap = !S.snap; updateToolbar(); toast(S.snap ? 'Snapping on' : 'Snapping off'); break;
+      case 'click': setClick(!clickOn); toast(clickOn ? 'Metronome on — ' + S.project.bpm + ' BPM, ' + S.project.sig.join('/') : 'Metronome off'); break;
     }
   }
 
@@ -649,12 +661,13 @@
       fx: ids.length > 0 || !!S.range,
       mixer: S.project.tracks.length > 0,
       marker: any,
-      zoomin: any, zoomout: any, fit: any, snap: true
+      zoomin: any, zoomout: any, fit: any, snap: true, click: true
     };
     Array.prototype.forEach.call(el.tools.querySelectorAll('[data-tool]'), function (b) {
       var id = b.getAttribute('data-tool');
       b.disabled = !can[id];
       if (id === 'snap') b.setAttribute('aria-pressed', String(S.snap));
+      if (id === 'click') b.setAttribute('aria-pressed', String(clickOn));
     });
   }
 
@@ -1043,8 +1056,8 @@
       ['Space', 'Play / pause'], ['S or ⌘B', 'Split at the playhead'], ['Delete', 'Delete (a range closes up)'],
       ['⇧ Delete', 'Delete clips and close the gap'], ['⌘Z / ⇧⌘Z', 'Undo / redo'], ['⌘C ⌘X ⌘V', 'Copy, cut, paste at the playhead'],
       ['⌘D', 'Duplicate'], ['⌘A', 'Select every clip'], ['Esc', 'Clear the selection'], ['← →', 'Nudge clips 10 ms (⇧ for 1 s), or move the playhead'],
-      ['+ / −  or ⌘ wheel', 'Zoom'], ['0', 'Zoom to fit'], ['M', 'Add a marker'], ['L', 'Loop on / off'], ['R', 'Record'], ['N', 'Snap on / off'],
-      ['Home / End', 'Jump to start / end'], ['Alt while dragging', 'Drag without snapping'],
+      ['+ / −  or ⌘ wheel', 'Zoom'], ['0', 'Zoom to fit'], ['M', 'Add a marker'], ['L', 'Loop on / off'], ['R', 'Record'], ['N', 'Snap on / off'], ['K', 'Metronome on / off'], ['G', 'Ruler in bars and beats / in time'],
+      ['Home / End', 'Jump to start / end'], ['Double-click the ruler', 'Select that bar (bars ruler)'], ['Alt while dragging', 'Drag without snapping'],
       ['F', 'Mixer and effects for the selected track'], ['A', 'Show the selected track’s automation lane']
     ];
     openSheet('Keyboard shortcuts', '<table class="ed-keys">' + rows.map(function (r) {
@@ -1297,7 +1310,7 @@
     var rect = el.lanes.getBoundingClientRect();
     var h = view.hitTest(e.clientX - rect.left, e.clientY - rect.top, {});
     var t = Math.max(0, view.t(e.clientX - rect.left));
-    if (S.snap) { var sn = M.snap(t, M.snapPoints(S.project, null, [S.playhead]), 10 / S.pps); if (sn != null) t = sn; }
+    if (S.snap) { var sn = M.snap(t, M.snapPoints(S.project, null, snapExtras(t)), 10 / S.pps); if (sn != null) t = sn; }
     importFiles(split.ok, { mode: 'at', t: t, ti: h.track ? h.ti : S.project.tracks.length });
   });
 
@@ -1388,14 +1401,23 @@
     S.snapAt = null;
     if (!S.snap || altKey) return t;
     var hit = M.snap(t, M.snapPoints(S.project, excludeIds, snapExtras(t)), 10 / S.pps);
+    // With the bars ruler the grid is not magnetic but absolute: anything
+    // not pulled to a clip edge, marker or the playhead lands on the grid.
+    if (hit == null && S.project.ruler === 'bars') hit = gridNear(t);
     if (hit != null) { S.snapAt = hit; return hit; }
     return t;
   }
 
-  // The playhead, plus the nearest line of the ruler's grid.
+  // The playhead, plus the nearest line of the ruler's grid: bars and beats
+  // (down to the finest division drawn at this zoom) when the ruler shows
+  // them, otherwise the minor tick of the seconds ruler.
   function snapExtras(t) {
+    return [S.playhead, gridNear(t)];
+  }
+  function gridNear(t) {
+    if (S.project.ruler === 'bars') return M.nearestGrid(S.project, t, V.barSteps(S.pps, S.project).minor);
     var step = V.gridStep(S.pps) / 5;
-    return [S.playhead, Math.round(t / step) * step];
+    return Math.round(t / step) * step;
   }
 
   el.lanes.addEventListener('contextmenu', function (e) { e.preventDefault(); });
@@ -1499,10 +1521,11 @@
         S.snapAt = null;
         if (S.snap && !e.altKey) {
           var tol = 10 / S.pps;
-          var pts = M.snapPoints(S.project, S.drag.ids, [S.playhead]);
+          var pts = M.snapPoints(S.project, S.drag.ids, [S.playhead, gridNear(minStart + dt), gridNear(maxEnd + dt)]);
           var a = M.snap(minStart + dt, pts, tol), b = M.snap(maxEnd + dt, pts, tol);
           if (a != null && (b == null || Math.abs(a - minStart - dt) <= Math.abs(b - maxEnd - dt))) { dt = a - minStart; S.snapAt = a; }
           else if (b != null) { dt = b - maxEnd; S.snapAt = b; }
+          else if (S.project.ruler === 'bars') { a = Math.max(0, gridNear(minStart + dt)); dt = a - minStart; S.snapAt = a; }
         }
         var dTrack = Math.round(dy / S.trackH);
         // A single-track group may go one lane past the last track: that
@@ -1853,6 +1876,8 @@
     else if (k === 'l' || k === 'L') { S.loop = !S.loop; updateTransport(); draw(); toast(S.loop ? 'Loop on' : 'Loop off'); }
     else if (k === 'r' || k === 'R') { if (S.rec) stopRecording(); else startRecording(); }
     else if (k === 'n' || k === 'N') runTool('snap');
+    else if (k === 'k' || k === 'K') runTool('click');
+    else if (k === 'g' || k === 'G') toggleRuler();
     else if (k === 'f' || k === 'F') runTool('mixer');
     else if ((k === 'a' || k === 'A') && S.selTrack) toggleAuto(S.selTrack);
     else if (k === 'Home') { seek(0); S.scrollT = 0; updateHbar(); }
@@ -1864,8 +1889,53 @@
 
   /* ------------------------------------------------------------ recording */
 
-  var countIn = false;
-  try { countIn = localStorage.getItem('as_ed_countin') === '1'; } catch (e) {}
+  // Count-in is in bars (0, 1 or 2); the old on/off setting stored '1',
+  // which reads as one bar. The metronome and its level are preferences of
+  // the person, not of the project, so they live in localStorage too.
+  var countIn = 0, clickOn = false, clickVol = 0.6;
+  try {
+    countIn = Math.max(0, Math.min(2, parseInt(localStorage.getItem('as_ed_countin'), 10) || 0));
+    clickOn = localStorage.getItem('as_ed_click') === '1';
+    var cv0 = parseFloat(localStorage.getItem('as_ed_clickvol'));
+    if (cv0 >= 0 && cv0 <= 1) clickVol = cv0;
+  } catch (e) {}
+  E.setClick({ on: clickOn, vol: clickVol });
+
+  function setClick(on, vol) {
+    if (on != null) clickOn = !!on;
+    if (vol != null) clickVol = vol;
+    E.setClick({ on: clickOn, vol: clickVol });
+    try { localStorage.setItem('as_ed_click', clickOn ? '1' : '0'); localStorage.setItem('as_ed_clickvol', String(clickVol)); } catch (e) {}
+    updateToolbar();
+  }
+  function setCountIn(n) {
+    countIn = n;
+    try { localStorage.setItem('as_ed_countin', String(n)); } catch (e) {}
+  }
+
+  function toggleRuler() {
+    edit(function (p) { M.setRuler(p, p.ruler === 'bars' ? 'time' : 'bars'); }, { noRestart: true });
+    toast(S.project.ruler === 'bars' ? 'Ruler in bars and beats — ' + S.project.bpm + ' BPM, ' + S.project.sig.join('/') : 'Ruler in minutes and seconds');
+  }
+
+  var countTimer = 0;
+  function showCountIn(t0) {
+    // Beats left in the count-in, 3-2-1 in 3/4. Capped at the bar length
+    // because the timeline starts ~60 ms after the call, not on a beat.
+    var box = $('#edCount'), beat = M.beatSec(S.project), total = countIn * S.project.sig[0];
+    clearInterval(countTimer);
+    box.hidden = false;
+    (function tick() {
+      var left = t0 - E.now();
+      if (left <= 0.005 || !S.rec) { box.hidden = true; clearInterval(countTimer); return; }
+      box.textContent = Math.min(total, Math.ceil(left / beat - 1e-3));
+    })();
+    countTimer = setInterval(function () {
+      var left = t0 - E.now();
+      if (left <= 0.005 || !S.rec) { box.hidden = true; clearInterval(countTimer); if (S.rec) status('info', 'Recording — press stop or Space when you are done.'); return; }
+      box.textContent = Math.min(total, Math.ceil(left / beat - 1e-3));
+    }, 30);
+  }
 
   function startRecording() {
     if (S.rec || busy) return;
@@ -1885,7 +1955,9 @@
       status('info', 'Waiting for the microphone…');
       return E.startRecording(function (chans) {
         var r = S.rec;
-        if (!r) return;
+        // Nothing is drawn until the timeline is moving: during a count-in
+        // the take has not started yet.
+        if (!r || !r.info || E.now() < r.info.t0) return;
         var d = chans[0];
         for (var i = 0; i < d.length; i++) {
           var v = d[i] < 0 ? -d[i] : d[i];
@@ -1894,10 +1966,14 @@
         }
         r.length += d.length / r.sr;
       }).then(function () {
-        if (hasClips()) startPlayback(S.playhead, Math.max(M.duration(S.project), S.playhead) + 3600);
+        // Always run the timeline, even over an empty project: the click and
+        // the count-in are scheduled on it, and the take is placed by it.
+        var pre = countIn * M.barSec(S.project);
+        startPlayback(S.playhead, Math.max(M.duration(S.project), S.playhead) + 3600, { countIn: pre });
         S.rec.playing = E.isPlaying();
         S.rec.info = E.playInfo();
-        status('info', 'Recording — press stop or Space when you are done.');
+        if (pre && S.rec.info) { status('info', 'Count-in — recording starts on the downbeat.'); showCountIn(S.rec.info.t0); }
+        else status('info', 'Recording — press stop or Space when you are done.');
         refresh();
       }).catch(function (err) {
         S.project = M.parse(before);
@@ -1908,17 +1984,7 @@
           : 'Could not start recording: ' + ((err && err.message) || 'no microphone found') + '.');
       });
     };
-    if (countIn) {
-      var n = 3, box = $('#edCount');
-      box.hidden = false;
-      (function tick() {
-        box.textContent = n;
-        if (n-- <= 0) { box.hidden = true; begin(); return; }
-        setTimeout(tick, 700);
-      })();
-    } else {
-      begin();
-    }
+    begin();
   }
 
   function stopRecording() {
@@ -1936,7 +2002,12 @@
         // microphone delivered late by the input latency.
         start = info.from + (res.firstT - info.t0) - res.latency;
       }
-      if (start < 0) { trimHead = -start; start = 0; }
+      // The take starts where recording was asked to start. The microphone
+      // opens a little before the timeline moves, and a count-in is whole
+      // bars before it; that audio would otherwise carve into whatever sits
+      // before the playhead on this track.
+      if (start < r.start) { trimHead = r.start - start; start = r.start; }
+      if (trimHead >= res.buffer.duration - 0.05) { S.project = M.parse(r.before); refresh(); status('warn', 'Stopped during the count-in — nothing was recorded.'); return; }
       var p = S.project;
       var n = p.tracks.reduce(function (a, t) { return a + t.clips.filter(function (c) { return /^Take/.test(c.name); }).length; }, 0) + 1;
       var sid = M.addSource(p, { name: 'Take ' + n, duration: res.buffer.duration, channels: res.buffer.numberOfChannels, sampleRate: res.buffer.sampleRate, kind: 'recording' });
@@ -2100,8 +2171,8 @@
       { v: 'open', label: 'Open project file…' },
       '-',
       { v: 'full', label: el.ed.classList.contains('ed-full') ? 'Exit full screen' : 'Full screen editor' },
-      { v: 'countin', label: (countIn ? '✓ ' : '') + 'Count in before recording', hint: '3, 2, 1' },
-      { v: 'tempo', label: 'Tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'tempo', label: 'Tempo, metre and metronome…', hint: S.project.bpm + ' BPM · ' + S.project.sig.join('/') },
+      { v: 'ruler', label: (S.project.ruler === 'bars' ? '✓ ' : '') + 'Ruler in bars and beats', hint: 'G' },
       { v: 'mixer', label: 'Mixer and master effects', hint: 'F' },
       { v: 'mixtool', label: 'Send the whole mix to a tool…', hint: 'and back', disabled: !hasClips() },
       { v: 'keys', label: 'Keyboard shortcuts', hint: '?' },
@@ -2114,7 +2185,7 @@
       if (v === 'save') saveProjectFile();
       if (v === 'open') $('#edProjectInput').click();
       if (v === 'full') toggleFull();
-      if (v === 'countin') { countIn = !countIn; try { localStorage.setItem('as_ed_countin', countIn ? '1' : '0'); } catch (e) {} toast(countIn ? 'Count-in on' : 'Count-in off'); }
+      if (v === 'ruler') toggleRuler();
       if (v === 'keys') keysSheet();
       if (v === 'tempo') tempoSheet();
       if (v === 'mixer') FXUI.open('master');
@@ -2133,16 +2204,36 @@
 
   /* ---------------------------------------------------------------- tempo */
 
-  // Synced delays, tremolos and filter sweeps follow the project tempo. Type
-  // it, tap it, or let the BPM finder read it off the audio.
+  // Tempo, time signature, where bar 1 is, and the metronome. Synced
+  // delays, tremolos and filter sweeps follow the tempo too. Type it, tap it,
+  // or let the BPM finder read it off the audio.
+  var SIGS = [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [3, 8], [5, 8], [6, 8], [7, 8], [9, 8], [12, 8]];
   function tempoSheet() {
-    var taps = [];
-    openSheet('Tempo', '<div class="ed-form"><label>Beats per minute <input type="number" min="20" max="400" step="0.1" data-k="bpm" value="' + S.project.bpm + '" inputmode="decimal"></label></div>' +
+    var taps = [], p0 = S.project, offset = p0.gridOffset, sigNow = p0.sig.join('/');
+    if (!SIGS.some(function (x) { return x.join('/') === sigNow; })) SIGS.push(p0.sig.slice());
+    openSheet('Tempo and metronome', '<div class="ed-form">' +
+      '<label>Beats per minute <input type="number" min="20" max="400" step="0.1" data-k="bpm" value="' + p0.bpm + '" inputmode="decimal"></label>' +
+      '<label>Time signature <select data-k="sig">' + SIGS.map(function (x) {
+        var v = x.join('/');
+        return '<option value="' + v + '"' + (v === sigNow ? ' selected' : '') + '>' + v + '</option>';
+      }).join('') + '</select></label>' +
+      '<label class="ed-check"><input type="checkbox" data-k="ruler"' + (p0.ruler === 'bars' ? ' checked' : '') + '> Show bars and beats on the ruler, and snap to them</label>' +
+      '</div>' +
       '<div class="ed-insp-btns"><button type="button" class="ed-btn" data-v="tap">Tap along</button>' +
-      '<button type="button" class="ed-btn" data-v="detect"' + (hasClips() ? '' : ' disabled') + '>Detect from the audio</button></div>' +
-      '<p class="ed-sheet-note" data-tempo-note>Tap in time with the music, four or more times. Detection reads the longest clip, or the selected one.</p>' +
+      '<button type="button" class="ed-btn" data-v="detect"' + (hasClips() ? '' : ' disabled') + '>Detect from the audio</button>' +
+      '<button type="button" class="ed-btn" data-v="bar1">Bar 1 at the playhead</button></div>' +
+      '<p class="ed-sheet-note" data-tempo-note>Tap in time with the music, four or more times. Detection reads the longest clip, or the selected one. ' +
+      'If the song does not start on a downbeat at 0:00, put the playhead on one and press “Bar 1 at the playhead”.</p>' +
+      '<div class="ed-form">' +
+      '<label class="ed-check"><input type="checkbox" data-k="click"' + (clickOn ? ' checked' : '') + '> Metronome click while playing and recording (K)</label>' +
+      '<label>Click level <input type="range" min="0" max="1" step="0.05" data-k="clickvol" value="' + clickVol + '"></label>' +
+      '<label>Count-in before recording <select data-k="countin">' +
+      [[0, 'None'], [1, 'One bar'], [2, 'Two bars']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === countIn ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+      '</select></label></div>' +
+      '<p class="ed-sheet-note">The click goes to your speakers only. It is never in an export, a bounce or anything sent to a tool. Wear headphones when recording or the microphone will hear it.</p>' +
       '<div class="ed-sheet-actions"><button type="button" class="ed-btn ed-btn-primary" data-v="ok">Done</button></div>', function (v) {
-      var inp = el.sheetBody.querySelector('[data-k="bpm"]'), note = el.sheetBody.querySelector('[data-tempo-note]');
+      var q = function (k) { return el.sheetBody.querySelector('[data-k="' + k + '"]'); };
+      var inp = q('bpm'), note = el.sheetBody.querySelector('[data-tempo-note]');
       if (v === 'tap') {
         var now = performance.now();
         if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
@@ -2154,6 +2245,12 @@
           inp.value = (60000 / iv[Math.floor(iv.length / 2)]).toFixed(1);
           note.textContent = taps.length + ' taps';
         }
+        return;
+      }
+      if (v === 'bar1') {
+        offset = S.playhead;
+        q('ruler').checked = true;
+        note.textContent = 'Bar 1 will start at ' + fmt(offset) + '. The grid runs back from there too, so earlier audio still lines up.';
         return;
       }
       if (v === 'detect') {
@@ -2171,18 +2268,42 @@
         return;
       }
       if (v === 'ok') {
-        var b = parseFloat(inp.value);
+        var b = parseFloat(inp.value), sig = q('sig').value.split('/').map(Number), ruler = q('ruler').checked ? 'bars' : 'time';
+        setClick(q('click').checked, parseFloat(q('clickvol').value));
+        setCountIn(parseInt(q('countin').value, 10) || 0);
         closeSheet();
-        if (b >= 20 && b <= 400 && b !== S.project.bpm) {
-          edit(function (p) { M.setBpm(p, b); }, { noRestart: true });
+        var p = S.project, tempoChanged = b >= 20 && b <= 400 && b !== p.bpm;
+        if (tempoChanged || sig.join('/') !== p.sig.join('/') || ruler !== p.ruler || offset !== p.gridOffset) {
+          edit(function (p) {
+            if (b >= 20 && b <= 400) M.setBpm(p, b);
+            M.setSig(p, sig[0], sig[1]);
+            M.setRuler(p, ruler);
+            M.setGridOffset(p, offset);
+          }, { noRestart: true });
           E.syncFx(S.project);
-          // Synced times are computed when a plugin is built or set; nudge them.
+          // Synced times are computed when a plugin is built or set, and the
+          // click is scheduled from the tempo; nudge them.
           if (E.isPlaying()) restartPlayback();
-          toast('Tempo ' + S.project.bpm + ' BPM');
+          toast(S.project.bpm + ' BPM · ' + S.project.sig.join('/'));
         }
       }
     });
   }
+
+  el.corner.addEventListener('click', tempoSheet);
+
+  // In bars mode, a double-click on the ruler selects that whole bar, so
+  // looping a bar is a double-click and L.
+  el.ruler.addEventListener('dblclick', function (e) {
+    if (S.project.ruler !== 'bars' || !hasClips()) return;
+    var p = S.project, bar = M.barSec(p), t = view.t(localXY(e, el.ruler).x);
+    var a = p.gridOffset + Math.floor((t - p.gridOffset) / bar) * bar;
+    S.sel = {};
+    S.range = { t0: Math.max(0, a), t1: a + bar, tracks: null };
+    seek(Math.max(0, a));
+    updateInspector(); updateToolbar(); draw();
+    toast('Bar ' + M.fmtBars(p, a, p.sig[0]) + ' selected — L to loop it');
+  });
 
   function toggleFull() {
     var on = !el.ed.classList.contains('ed-full');
