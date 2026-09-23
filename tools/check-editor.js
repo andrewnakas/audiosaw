@@ -507,8 +507,37 @@ function fixture() {
   const k2 = JSON.parse(M.serialize(p)); k2.key = { pc: 'x' }; M.normalize(k2); ok(k2.key === null, 'normalize drops a malformed key');
 }
 
+/* ---------------------------------------------------------------- takes */
+{
+  const p = M.create('takes');
+  const A = M.addSource(p, { name: 'take1', duration: 8, channels: 1, sampleRate: 48000, kind: 'recording' });
+  const B = M.addSource(p, { name: 'take2', duration: 8, channels: 1, sampleRate: 48000, kind: 'recording' });
+  const t = M.addTrack(p);
+  M.addClip(p, t, { sourceId: A, start: 1, offset: 0, duration: 4 });
+  const tr = p.tracks[0];
+  const tk = M.addTake(p, t, [{ sourceId: B, name: 'b', start: 1, offset: 0, duration: 4 }], 'Take 1');
+  ok(tr.takes.length === 1 && M.usedSources(p)[B], 'a take is kept, and its source counts as used');
+  valid(p, 'project with a take');
+  // What plays at time x on a lane: [source, position in the source].
+  const at = (lane, x) => { const c = lane.clips.filter((c) => x >= c.start && x < c.start + c.duration)[0]; return c ? c.sourceId + '@' + (c.offset + x - c.start).toFixed(4) : '-'; };
+  const probe = [1.1, 1.9, 2.1, 2.9, 3.1, 4.9];
+  const before = probe.map((x) => [at(tr, x), at(tr.takes[0], x)].sort().join('|'));
+  ok(M.useTake(p, t, tk, 2, 3), 'use take 1 for 2..3 s');
+  valid(p, 'after comping');
+  ok(at(tr, 2.5) === B + '@1.5000' && at(tr, 1.5) === A + '@0.5000' && at(tr, 3.5) === A + '@2.5000', 'the track plays the take inside the range and the original outside it');
+  ok(at(tr.takes[0], 2.5) === A + '@1.5000', 'what was replaced moved into the take');
+  const after = probe.map((x) => [at(tr, x), at(tr.takes[0], x)].sort().join('|'));
+  ok(JSON.stringify(before) === JSON.stringify(after), 'comping swaps audio and loses none');
+  const seam = tr.clips.filter((c) => Math.abs(c.start - 2) < 1e-9)[0];
+  ok(seam && seam.fadeIn > 0 && seam.fadeIn <= 0.005 + 1e-9, 'a 5 ms fade at the comp seam');
+  M.useTake(p, t, tk, 2, 3);
+  ok(at(tr, 2.5) === A + '@1.5000' && at(tr.takes[0], 2.5) === B + '@1.5000', 'swapping again puts it back');
+  ok(!M.useTake(p, t, tk, 6, 7), 'a range the take does not cover changes nothing');
+  ok(M.takesAt(p, t, 0, 1.5).length === 1 && M.takesAt(p, t, 6, 7).length === 0, 'takesAt finds takes by time');
+}
+
 if (failures) {
   console.error('check-editor: ' + failures + ' failure(s).');
   process.exit(1);
 }
-console.log('check-editor: model invariants hold across split, trim, move, ripple, paste, effects, automation and 1,000 random edits, and the tempo grid holds in 4/4, 3/4 and 6/8; ' + D.ORDER.length + ' plugins and ' + D.PATCHES.length + ' patches check out.');
+console.log('check-editor: model invariants hold across split, trim, move, ripple, paste, effects, automation and 1,000 random edits, the tempo grid holds in 4/4, 3/4 and 6/8, and comping takes loses no audio; ' + D.ORDER.length + ' plugins and ' + D.PATCHES.length + ' patches check out.');

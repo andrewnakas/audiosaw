@@ -240,7 +240,7 @@
       var dim = !audible[track.id];
       track.clips.forEach(function (c) {
         if (st.drag && st.drag.kind === 'move' && st.drag.ids[c.id]) return;   // drawn as ghost below
-        this.drawClip(g, c, y, th, css, st.sel[c.id], dim);
+        this.drawClip(g, c, y, th, css, st.sel[c.id], dim, track);
       }, this);
 
       if (st.rec && st.rec.trackId === track.id) this.drawRecording(g, y, th, css);
@@ -299,7 +299,7 @@
     this.drawPlayhead(g, h, css, false);
   };
 
-  View.prototype.drawClip = function (g, c, y, th, css, selected, dim) {
+  View.prototype.drawClip = function (g, c, y, th, css, selected, dim, track) {
     var x0 = this.x(c.start), x1 = this.x(M.clipEnd(c));
     var w = this.width();
     if (x1 < -2 || x0 > w + 2) return;
@@ -364,6 +364,18 @@
         g.fillStyle = selected ? css.labelSel : css.label;
         g.fillText(ch.name, Math.max(xa, 0) + 4, sy + sh / 2 + 0.5);
       });
+    }
+
+    // Takes kept under this clip: a count at its top right.
+    if (track && track.takes && track.takes.length && x1 - x0 > 44 && labelH) {
+      var nk = M.takesAt(st.state.project, track.id, c.start, M.clipEnd(c)).length;
+      if (nk) {
+        var tx = Math.min(x1, w) - 8, label2 = nk + (nk === 1 ? ' take' : ' takes');
+        g.font = '600 10px ' + css.mono; g.textBaseline = 'top';
+        var tw2 = g.measureText(label2).width;
+        g.fillStyle = css.amber; g.fillRect(tx - tw2 - 8, top + 3, tw2 + 8, 14);
+        g.fillStyle = css.paper; g.fillText(label2, tx - tw2 - 4, top + 5);
+      }
     }
 
     // Name and gain label.

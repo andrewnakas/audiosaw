@@ -108,7 +108,7 @@
       id: uid('t'),
       name: opts.name || ('Track ' + (p.tracks.length + 1)),
       volDb: 0, pan: 0, mute: false, solo: false,
-      clips: [], fx: [], sends: {}, auto: {}
+      clips: [], fx: [], sends: {}, auto: {}, takes: []
     };
     if (opts.index != null && opts.index < p.tracks.length) p.tracks.splice(Math.max(0, opts.index), 0, t);
     else p.tracks.push(t);
@@ -575,8 +575,83 @@
   // snapshot may still point at one.
   function usedSources(p) {
     var used = {};
-    p.tracks.forEach(function (t) { t.clips.forEach(function (c) { used[c.sourceId] = true; }); });
+    p.tracks.forEach(function (t) {
+      t.clips.forEach(function (c) { used[c.sourceId] = true; });
+      // A take is not played, but it is kept, and so is its audio.
+      (t.takes || []).forEach(function (k) { k.clips.forEach(function (c) { used[c.sourceId] = true; }); });
+    });
     return used;
+  }
+
+  /* ---------------------------------------------------------------- takes */
+
+  // Takes are other recordings of a stretch of a track: kept, drawn as a
+  // count on the clip, never played or exported. Each take is a lane of its
+  // own clips, following the same no-overlap rule as a track. Comping swaps a
+  // range between the track and a take, so choosing take 2 for a phrase puts
+  // what was there into take 2 instead of throwing it away.
+  function addTake(p, trackId, clips, name) {
+    var t = p.tracks[trackIndex(p, trackId)];
+    if (!t || !clips.length) return null;
+    var k = { id: uid('k'), name: name || ('Take ' + (t.takes.length + 1)), clips: clips.map(function (c) { var x = cloneClip(c); return x; }) };
+    sortTrack(k);
+    t.takes.push(k);
+    return k.id;
+  }
+
+  // Copies of the parts of `list` inside [t0, t1], trimmed to it.
+  function clipsIn(list, t0, t1) {
+    var out = [];
+    list.forEach(function (c) {
+      var a = Math.max(c.start, t0), b = Math.min(clipEnd(c), t1);
+      if (b - a < 0.001) return;
+      var x = cloneClip(c);
+      x.offset = c.offset + (a - c.start); x.start = a; x.duration = b - a;
+      if (a > c.start + EPS) x.fadeIn = 0;
+      if (b < clipEnd(c) - EPS) x.fadeOut = 0;
+      fixFades(x);
+      out.push(x);
+    });
+    return out;
+  }
+
+  // A 5 ms fade on every clip edge that sits on a comp boundary, so a swap
+  // never clicks, without touching fades someone drew.
+  function seamFades(lane, t0, t1) {
+    var f = 0.005;
+    lane.clips.forEach(function (c) {
+      var e = clipEnd(c);
+      if ((Math.abs(c.start - t0) < 1e-6 || Math.abs(c.start - t1) < 1e-6) && !c.fadeIn) c.fadeIn = Math.min(f, c.duration / 2);
+      if ((Math.abs(e - t0) < 1e-6 || Math.abs(e - t1) < 1e-6) && !c.fadeOut) c.fadeOut = Math.min(f, c.duration / 2);
+      fixFades(c);
+    });
+  }
+
+  function useTake(p, trackId, takeId, t0, t1) {
+    var t = p.tracks[trackIndex(p, trackId)];
+    if (!t || t1 - t0 < MIN_LEN) return false;
+    var k = null;
+    t.takes.forEach(function (x) { if (x.id === takeId) k = x; });
+    if (!k) return false;
+    var fromTrack = clipsIn(t.clips, t0, t1), fromTake = clipsIn(k.clips, t0, t1);
+    if (!fromTake.length) return false;
+    carve(t, t0, t1);
+    fromTake.forEach(function (c) { t.clips.push(c); });
+    sortTrack(t);
+    carve(k, t0, t1);
+    fromTrack.forEach(function (c) { k.clips.push(c); });
+    sortTrack(k);
+    seamFades(t, t0, t1);
+    seamFades(k, t0, t1);
+    if (!k.clips.length) t.takes = t.takes.filter(function (x) { return x !== k; });
+    return true;
+  }
+
+  // Takes with audio overlapping [t0, t1] on a track.
+  function takesAt(p, trackId, t0, t1) {
+    var t = p.tracks[trackIndex(p, trackId)];
+    if (!t) return [];
+    return t.takes.filter(function (k) { return k.clips.some(function (c) { return c.start < t1 - EPS && clipEnd(c) > t0 + EPS; }); });
   }
 
   /* -------------------------------------------------------------- markers */
@@ -676,6 +751,7 @@
       if (!Array.isArray(t.fx)) t.fx = [];
       if (!t.sends || typeof t.sends !== 'object') t.sends = {};
       if (!t.auto || typeof t.auto !== 'object') t.auto = {};
+      if (!Array.isArray(t.takes)) t.takes = [];
     });
     if (!p.master || typeof p.master !== 'object') p.master = {};
     if (typeof p.master.volDb !== 'number') p.master.volDb = 0;
@@ -1056,6 +1132,14 @@
       (t.fx || []).forEach(function (f, i) {
         if (!f || !f.id || !f.type || typeof f.params !== 'object') errs.push('track ' + ti + ' fx ' + i + ': malformed slot');
       });
+      (t.takes || []).forEach(function (k, ki) {
+        k.clips.forEach(function (c, i) {
+          var where = 'track ' + ti + ' take ' + ki + ' clip ' + i + ': ';
+          if (!p.sources[c.sourceId]) errs.push(where + 'missing source');
+          if (c.offset + c.duration > sourceLen(p, c) + 1e-4) errs.push(where + 'runs past its source');
+          if (i && clipEnd(k.clips[i - 1]) > c.start + 1e-4) errs.push(where + 'overlaps the clip before it');
+        });
+      });
       Object.keys(t.auto || {}).forEach(function (path) { autoErrs(t.auto[path], 'track ' + ti + ' lane ' + path, errs); });
       Object.keys(t.sends || {}).forEach(function (b) {
         if (!(p.buses || []).some(function (x) { return x.id === b; })) errs.push('track ' + ti + ': send to a missing bus ' + b);
@@ -1116,6 +1200,7 @@
     moveClips: moveClips, splitAt: splitAt, deleteClips: deleteClips, deleteRange: deleteRange,
     cropTo: cropTo, insertGap: insertGap, duplicate: duplicate, copyClips: copyClips, paste: paste,
     replaceSource: replaceSource, usedSources: usedSources, carve: carve,
+    addTake: addTake, useTake: useTake, takesAt: takesAt, clipsIn: clipsIn,
     replaceClipAudio: replaceClipAudio, replaceRange: replaceRange, placeOnNewTrack: placeOnNewTrack, targetPrint: targetPrint,
     addMarker: addMarker, removeMarker: removeMarker,
     snapPoints: snapPoints, snap: snap,

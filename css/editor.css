@@ -473,3 +473,6 @@ html.ed-locked, html.ed-locked body { overflow: hidden; }
   .ed-rec.is-rec { animation: none; }
   .ed-toast { transition: none; }
 }
+.ed-takes { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.ed-take { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ed-take strong { flex: 1 1 120px; font: 600 0.9rem var(--sans); }

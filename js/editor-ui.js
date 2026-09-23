@@ -166,9 +166,19 @@
   // because a background tab gets no animation frames at all and would
   // otherwise never stop, or never come round again when looping.
   function checkEnd() {
-    if (!E.isPlaying() || S.rec) return E.position();
+    if (!E.isPlaying() || (S.rec && !S.rec.loop)) return E.position();
     var pos = E.position();
     if (pos < E.playEnd() - 0.005) return pos;
+    if (S.rec && S.rec.loop) {
+      // Loop recording: go round again, and note when this pass started on
+      // the audio clock so the take can be cut out of the one recording.
+      var L = S.rec.loop;
+      startPlayback(L.r0, L.r1);
+      L.passes.push(E.playInfo());
+      S.rec.peaks = []; S.rec.length = 0; S.rec.acc = 0; S.rec.accN = 0;
+      status('info', 'Loop recording — pass ' + L.passes.length + '. Press stop when you have a take you like.');
+      return L.r0;
+    }
     if (S.loop) {
       var r = loopRange();
       startPlayback(r[0], r[1]);
@@ -509,7 +519,7 @@
     clearTimeout(endTimer);
     if (ok && isFinite(to)) endTimer = setTimeout(function tick() {
       checkEnd();
-      if (E.isPlaying() && !S.rec) endTimer = setTimeout(tick, 250);
+      if (E.isPlaying() && (!S.rec || S.rec.loop)) endTimer = setTimeout(tick, 250);
     }, Math.max(50, (to - from) * 1000 - 200));
     updateTransport();
     draw();
@@ -980,6 +990,7 @@
       { v: 'fx', label: 'Process…', hint: 'renders' },
       { v: 'tool', label: 'Send to a tool…', hint: 'and back' },
       { v: 'fittempo', label: 'Fit to the project tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'takes', label: 'Takes…', hint: M.takesAt(S.project, M.findClip(S.project, clipId).track.id, c.start, M.clipEnd(c)).length + ' kept', disabled: !M.takesAt(S.project, M.findClip(S.project, clipId).track.id, c.start, M.clipEnd(c)).length },
       { v: 'slice', label: 'Slice at the hits', hint: 'splits the clip' },
       { v: 'chords', label: (S.project.sources[c.sourceId] || {}).chords ? 'Detect chords again' : 'Detect chords', hint: 'shown on the clip' },
       { v: 'fitkey', label: 'Match the project key…', hint: S.project.key && global.ASKey ? global.ASKey.keyName(S.project.key.pc, S.project.key.mode) : 'set a key first' },
@@ -1001,6 +1012,7 @@
       if (v === 'fitkey') matchKeySheet(clipId);
       if (v === 'chords') detectChords(clipId);
       if (v === 'slice') sliceAtHits(clipId);
+      if (v === 'takes') takesSheet(clipId);
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -2099,16 +2111,23 @@
     if (S.rec || busy) return;
     if (!global.isSecureContext || !navigator.mediaDevices) { status('error', 'Recording needs a secure (https) page and microphone support.'); return; }
     E.unlock();
+    // With Loop on and a range selected, recording goes round the range and
+    // every pass becomes a take.
+    var loopRec = S.loop && S.range ? loopRange() : null;
+    if (loopRec && loopRec[1] - loopRec[0] < 0.5) loopRec = null;
+    if (loopRec) S.playhead = loopRec[0];
     var begin = function () {
       var p = S.project, target = null;
-      if (S.selTrack) {
+      if (loopRec && S.selTrack && M.trackIndex(p, S.selTrack) >= 0) target = S.selTrack;
+      else if (S.selTrack) {
         var st = p.tracks[M.trackIndex(p, S.selTrack)];
         if (st && !st.clips.some(function (c) { return M.clipEnd(c) > S.playhead; })) target = st.id;
       }
       var before = M.serialize(p);
       if (!target) target = M.addTrack(p, { name: 'Recording ' + (p.tracks.filter(function (t) { return /^Recording/.test(t.name); }).length + 1) });
       var sr = E.sampleRate();
-      S.rec = { trackId: target, start: S.playhead, length: 0, peaks: [], peakHop: 1024, sr: sr, acc: 0, accN: 0, before: before };
+      S.rec = { trackId: target, start: S.playhead, length: 0, peaks: [], peakHop: 1024, sr: sr, acc: 0, accN: 0, before: before,
+        loop: loopRec ? { r0: loopRec[0], r1: loopRec[1], passes: [] } : null };
       S.selTrack = target;
       status('info', 'Waiting for the microphone…');
       return E.startRecording(function (chans) {
@@ -2123,13 +2142,16 @@
           if (++r.accN >= r.peakHop) { r.peaks.push(r.acc); r.acc = 0; r.accN = 0; }
         }
         r.length += d.length / r.sr;
+        if (r.loop) r.length = Math.min(r.length, r.loop.r1 - r.loop.r0);
       }).then(function () {
         // Always run the timeline, even over an empty project: the click and
         // the count-in are scheduled on it, and the take is placed by it.
         var pre = countIn * M.barSec(S.project);
-        startPlayback(S.playhead, Math.max(M.duration(S.project), S.playhead) + 3600, { countIn: pre });
+        if (S.rec.loop) startPlayback(S.rec.loop.r0, S.rec.loop.r1, { countIn: pre });
+        else startPlayback(S.playhead, Math.max(M.duration(S.project), S.playhead) + 3600, { countIn: pre });
         S.rec.playing = E.isPlaying();
         S.rec.info = E.playInfo();
+        if (S.rec.loop) S.rec.loop.passes.push(S.rec.info);
         if (pre && S.rec.info) { status('info', 'Count-in — recording starts on the downbeat.'); showCountIn(S.rec.info.t0); }
         else status('info', 'Recording — press stop or Space when you are done.');
         refresh();
@@ -2153,6 +2175,7 @@
     E.stopRecording().then(function (res) {
       S.rec = null;
       if (!res) { S.project = M.parse(r.before); refresh(); status('warn', 'Nothing was recorded.'); return; }
+      if (r.loop) { placeLoopTakes(r, res); return; }
       var start = r.start, trimHead = 0;
       if (info && res.firstT != null) {
         // Where the first sample belongs on the timeline, less the hardware
@@ -2183,6 +2206,86 @@
       status('error', 'Recording failed: ' + ((err && err.message) || 'unknown error'));
     });
     updateTransport();
+  }
+
+  // One recording, cut into a clip per pass. Pass k's audio for timeline
+  // time tau sits at buffer time (tau - r0) + (t0_k - firstT) + latency, the
+  // same placement as a single take, once per pass. The last pass that got
+  // at least halfway round plays; the others become takes, and so does
+  // whatever was on the track in that range before.
+  function placeLoopTakes(r, res) {
+    var L = r.loop, len = L.r1 - L.r0, dur = res.buffer.duration, p = S.project;
+    var pieces = [];
+    L.passes.forEach(function (info, k) {
+      if (!info || res.firstT == null) return;
+      var off = (info.t0 - res.firstT) + res.latency, avail = dur - off;
+      if (off < 0 || avail < Math.min(len, 0.5)) return;
+      if (avail < len * 0.5 && k > 0) return;          // stopped just after coming round
+      pieces.push({ off: off, len: Math.min(len, avail), n: k + 1 });
+    });
+    if (!pieces.length) { S.project = M.parse(r.before); refresh(); status('warn', 'Stopped before a pass was recorded.'); return; }
+    var n = p.tracks.reduce(function (a, t) { return a + t.clips.filter(function (c) { return /^Take/.test(c.name); }).length; }, 0) + 1;
+    var sid = M.addSource(p, { name: 'Loop take ' + n, duration: dur, channels: res.buffer.numberOfChannels, sampleRate: res.buffer.sampleRate, kind: 'recording' });
+    buffers.set(sid, res.buffer);
+    V.buildPeaks(sid, res.buffer);
+    var last = pieces[pieces.length - 1], track = p.tracks[M.trackIndex(p, r.trackId)];
+    var before = M.clipsIn(track.clips, L.r0, L.r0 + last.len);
+    if (before.length) M.addTake(p, r.trackId, before, 'Before recording');
+    pieces.slice(0, -1).forEach(function (pc) {
+      M.addTake(p, r.trackId, [{ sourceId: sid, name: 'Take ' + n + '.' + pc.n, start: L.r0, offset: pc.off, duration: pc.len }], 'Pass ' + pc.n);
+    });
+    var cid = M.addClip(p, r.trackId, { sourceId: sid, start: L.r0, offset: last.off, duration: last.len, name: 'Take ' + n + '.' + last.n });
+    hist.push(r.before);
+    S.sel = {}; S.sel[cid] = true;
+    S.playhead = L.r0;
+    changed();
+    var kept = pieces.slice(0, -1).map(function (pc) { return 'pass ' + pc.n; });
+    if (before.length) kept.push('what was there before');
+    status('success', 'Recorded ' + pieces.length + ' pass' + (pieces.length === 1 ? '' : 'es') + '. Pass ' + last.n + ' is playing' +
+      (kept.length ? '. Kept as takes: ' + kept.join(', ') + '. Right-click or hold the clip and choose Takes to swap one in.' : '.'));
+  }
+
+  // Listen to each take of a clip's stretch and choose one, for the whole
+  // clip or just the selected range. Choosing swaps, so nothing is lost.
+  function takesSheet(clipId) {
+    var f = M.findClip(S.project, clipId);
+    if (!f) return;
+    var c = f.clip, t0 = c.start, t1 = M.clipEnd(c);
+    if (S.range && (!S.range.tracks || S.range.tracks.indexOf(f.track.id) >= 0)) {
+      var rr = loopRange();
+      if (rr[0] < t1 && rr[1] > t0) { t0 = Math.max(t0, rr[0]); t1 = Math.min(t1, rr[1]); }
+    }
+    var ks = M.takesAt(S.project, f.track.id, t0, t1);
+    if (!ks.length) { toast('No takes under this clip'); return; }
+    var part = t0 > c.start + 1e-6 || t1 < M.clipEnd(c) - 1e-6;
+    openSheet('Takes for ' + fmt(t0) + '–' + fmt(t1), '<p class="ed-sheet-note">Listen to each, then use one for ' + (part ? 'the selected range' : 'this clip') +
+      '. What is playing now moves into that take, so you can always swap back.' + (part ? '' : ' Select a range first to use a take for just part of it.') + '</p>' +
+      '<div class="ed-takes">' + ks.map(function (k) {
+        return '<div class="ed-take"><strong>' + esc(k.name) + '</strong>' +
+          '<button type="button" class="ed-btn" data-v="hear:' + k.id + '">Listen</button>' +
+          '<button type="button" class="ed-btn ed-btn-primary" data-v="use:' + k.id + '">Use</button>' +
+          '<button type="button" class="ed-btn" data-v="del:' + k.id + '">Delete</button></div>';
+      }).join('') + '</div>' +
+      '<p class="ed-sheet-note"><button type="button" class="ed-btn" data-v="hear:main">Listen to what is playing</button></p>', function (v) {
+      var parts = v.split(':'), id = parts[1];
+      if (parts[0] === 'hear') {
+        var lane = id === 'main' ? f.track : S.project.tracks[f.ti].takes.filter(function (k) { return k.id === id; })[0];
+        var piece = lane && M.clipsIn(lane.clips, t0, t1)[0];
+        if (piece) { E.unlock(); E.audition(piece.sourceId, piece.offset, Math.min(piece.duration, 20)); }
+        return;
+      }
+      if (parts[0] === 'use') {
+        closeSheet();
+        edit(function (p) { M.useTake(p, f.track.id, id, t0, t1); });
+        toast('Take used — what was there is kept as that take');
+        return;
+      }
+      if (parts[0] === 'del') {
+        closeSheet();
+        edit(function (p) { var tr = p.tracks[M.trackIndex(p, f.track.id)]; tr.takes = tr.takes.filter(function (k) { return k.id !== id; }); });
+        toast('Take deleted — undo brings it back');
+      }
+    });
   }
 
   el.rec.addEventListener('click', function () { if (S.rec) stopRecording(); else startRecording(); });

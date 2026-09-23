@@ -336,6 +336,21 @@ carrying a separate tone per channel, not because the coefficient tables say
   `ASKey.shiftBetween`). A Process effect can put `_meta` on its output; it
   lands on the new source (`source.bpm` after a fit).
 
+  **Takes and comping.** `track.takes = [{id, name, clips}]`. Takes are
+  lanes that are kept but never played or exported, and `usedSources`
+  includes them so their audio is never collected.
+  - **Swapping.** `M.useTake(p, track, take, t0, t1)` swaps a range between
+    the track and a take, and puts 5 ms fades on the seams.
+    `check-editor.js` asserts that no audio is lost and that swapping twice
+    restores the original.
+  - **Loop recording.** It records while the range loops, and
+    `checkEnd()` stamps each pass's `playInfo()`. `placeLoopTakes()` cuts
+    the single recording at `(t0_k - firstT) + latency` for each pass. The
+    last pass that got at least halfway round plays; the rest, and the
+    track's previous audio in that range, become takes.
+  - **Known gaps.** A loop restarts with a gap of about 0.1 s. Takes do not
+    move with ripple or clip moves.
+
 - `js/project-link.js` + `js/editor-link.js` — the project that follows you
   onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a
   tool page. The page shows a project bar ("Use project audio"), and after the
