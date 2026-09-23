@@ -980,6 +980,7 @@
       { v: 'fx', label: 'Process…', hint: 'renders' },
       { v: 'tool', label: 'Send to a tool…', hint: 'and back' },
       { v: 'fittempo', label: 'Fit to the project tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'chords', label: (S.project.sources[c.sourceId] || {}).chords ? 'Detect chords again' : 'Detect chords', hint: 'shown on the clip' },
       { v: 'fitkey', label: 'Match the project key…', hint: S.project.key && global.ASKey ? global.ASKey.keyName(S.project.key.pc, S.project.key.mode) : 'set a key first' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
       { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
@@ -997,6 +998,7 @@
       if (v === 'tool') LINK.toolSheet('clip');
       if (v === 'fittempo') fitTempoSheet(clipId);
       if (v === 'fitkey') matchKeySheet(clipId);
+      if (v === 'chords') detectChords(clipId);
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -1061,6 +1063,37 @@
     }
     inp.addEventListener('input', function () { explain(); });
     if (src && src.bpm) explain('Fitted before at ' + src.bpm + ' BPM.'); else detect();
+  }
+
+  // Chords for the whole of the clip's source, so trimming the clip later
+  // does not lose them. With the bars ruler on, the analysis is cut at the
+  // project's beats, so chord changes land on the grid.
+  function detectChords(clipId) {
+    var K = global.ASKey, f = M.findClip(S.project, clipId);
+    if (!K || !f) return;
+    var c = f.clip, buf = buffers.get(c.sourceId);
+    if (!buf) return;
+    status('info', 'Listening for chords in “' + c.name + '”…');
+    setTimeout(function () {
+      var p = S.project, beats = null;
+      if (p.ruler === 'bars') {
+        // Beats in source time: the grid is on the timeline, the source starts
+        // at clip.start - clip.offset.
+        var s0 = c.start - c.offset;
+        beats = M.gridLines(p, s0, s0 + buf.duration, 1).map(function (g) { return g.t - s0; });
+      }
+      var ch = [];
+      for (var i = 0; i < buf.numberOfChannels; i++) ch.push(buf.getChannelData(i));
+      var list = K.chords(ch, buf.sampleRate, { beats: beats });
+      if (!list.length || list.every(function (x) { return x.name === 'N'; })) { status('warn', 'No clear chords in “' + c.name + '”.'); return; }
+      edit(function (pp) {
+        var src = pp.sources[c.sourceId];
+        if (src) src.chords = list.map(function (x) { return { t0: Math.round(x.t0 * 1000) / 1000, t1: Math.round(x.t1 * 1000) / 1000, name: x.name }; });
+      }, { noRestart: true });
+      var names = [];
+      list.forEach(function (x) { if (x.name !== 'N' && names[names.length - 1] !== x.name) names.push(x.name); });
+      status('success', 'Chords in “' + c.name + '”: ' + names.slice(0, 12).join(' – ') + (names.length > 12 ? ' …' : '') + '. They are drawn along the bottom of the clip.');
+    }, 30);
   }
 
   // Detect a clip's key and move it into the project key by the shortest

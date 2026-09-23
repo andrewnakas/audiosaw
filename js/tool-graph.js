@@ -676,7 +676,19 @@
         ['autotune', 'Tune a vocal to the key you just found'],
         ['stem-splitter', 'Read the key from the instrumental alone'],
         ['audio-editor', 'Set the tempo and build on it in the editor'],
-        ['audio-to-midi', 'Get the melody out as notes']
+        ['audio-to-midi', 'Get the melody out as notes'],
+        ['chord-finder', 'The chords, bar by bar, not just the key']
+      ]
+    },
+    'chord-finder': {
+      cat: 'create', label: 'chord finder', title: 'Chord Finder',
+      blurb: 'Get the chords of a song from audio, bar by bar, and follow along.',
+      next: [
+        ['key-finder', 'The key and Camelot code, for mixing or transposing'],
+        ['stem-splitter', 'Analyse the instrumental alone for a cleaner reading'],
+        ['pitch-shifter', 'Move the song, and its chords, into your key'],
+        ['tuner', 'Tune up before you play along'],
+        ['audio-speed', 'Slow it down to learn the changes']
       ]
     },
     'metronome': {
@@ -909,7 +921,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'chord-finder', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
       ]
     },
     {

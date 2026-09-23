@@ -344,6 +344,28 @@
       g.stroke();
     });
 
+    // The chord lane: chords detected on this clip's source, as a strip along
+    // the bottom. Stored in source time, so a trimmed or moved clip still
+    // shows the chords of the audio it plays.
+    var src = st.state.project.sources[c.sourceId];
+    if (src && src.chords && src.chords.length && hh > 30) {
+      var sh = 15, sy = top + hh - sh;
+      g.fillStyle = css.chordStrip; g.fillRect(cx0, sy, cx1 - cx0, sh);
+      g.font = '600 10px ' + css.mono; g.textBaseline = 'middle';
+      src.chords.forEach(function (ch) {
+        var a0 = Math.max(ch.t0, c.offset), b0 = Math.min(ch.t1, c.offset + c.duration);
+        if (b0 <= a0) return;
+        var xa = st.x(c.start + a0 - c.offset), xb = st.x(c.start + b0 - c.offset);
+        if (xb < 0 || xa > w) return;
+        g.fillStyle = css.clipEdge; g.fillRect(Math.round(xa), sy + 2, 1, sh - 4);
+        if (ch.name === 'N') return;
+        var tw = g.measureText(ch.name).width;
+        if (xb - xa < tw + 6) return;
+        g.fillStyle = selected ? css.labelSel : css.label;
+        g.fillText(ch.name, Math.max(xa, 0) + 4, sy + sh / 2 + 0.5);
+      });
+    }
+
     // Name and gain label.
     if (labelH && x1 - x0 > 30) {
       g.fillStyle = selected ? css.labelSel : css.label;
@@ -475,7 +497,7 @@
       amber: v('--amber', '#c2410c'), ink: v('--ink', '#1a1814'),
       mono: v('--mono', 'monospace'), sans: v('--sans', 'sans-serif'),
       lane: '#fbf6ed', laneAlt: '#f7f0e4', laneSel: '#fcefdc',
-      grid: 'rgba(122,112,95,0.10)', gridBar: 'rgba(122,112,95,0.30)',
+      grid: 'rgba(122,112,95,0.10)', gridBar: 'rgba(122,112,95,0.30)', chordStrip: 'rgba(251,246,237,0.82)',
       clip: '#f1e2c8', clipSel: '#fde8ce', clipDim: '#ece6dc', clipEdge: 'rgba(122,112,95,0.55)',
       wave: '#6b5a3f', waveSel: '#9a3412', waveDim: '#b8ad9b',
       label: '#4a4338', labelSel: '#7c2d12',

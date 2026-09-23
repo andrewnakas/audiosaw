@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chord Finder — find the chords of any song from audio, bar by bar</title>
+<meta name="description" content="Find the chords of a song from an audio file, laid out in bars with the key and tempo, and follow along as it plays. Free, in your browser, nothing uploaded.">
+<meta name="keywords" content="chord finder, find chords of a song, chord detector, chords from audio, song chord recognition, what chords are in this song">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/chord-finder">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Chord Finder — find the chords of any song from audio, bar by bar">
+<meta property="og:description" content="Find the chords of a song from an audio file, laid out in bars with the key and tempo, and follow along as it plays. Free, in your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/chord-finder">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23k">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Chord Finder",
+  "url": "https://audiosaw.com/chord-finder",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my song uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding and analysis both run in your browser tab, and the player plays the file from your own computer."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"On 36 synthesized progressions of random major and minor chords, clean, over drums and under a busy melody, it named the right chord 100% of the time away from the changes. Slash chords with the third in the bass were right 74% of the time. There is no measured figure for real recordings yet, which is why there is a player to check against."}},{"@type":"Question","name":"Does it find seventh, sus or diminished chords?","acceptedAnswer":{"@type":"Answer","text":"It names major and minor triads only. A seventh chord comes out as its triad (G7 as G). Diminished, augmented and sus chords come out as the nearest major or minor chord, or as no chord."}},{"@type":"Question","name":"Why are the bars shifted by a beat?","acceptedAnswer":{"@type":"Answer","text":"The beat is found accurately, but which beat starts the bar is a guess. The chords are still right; they are just counted from a different beat."}},{"@type":"Question","name":"It shows a chord I do not hear. What now?","acceptedAnswer":{"@type":"Answer","text":"Click it to play from there. Passing notes in a vocal can pull a beat towards another chord; analysing the instrumental from the stem splitter usually gives a cleaner result."}},{"@type":"Question","name":"Can I get the chords into the audio editor?","acceptedAnswer":{"@type":"Answer","text":"Yes. In the editor, choose Detect chords from a clip's menu and they are drawn along the bottom of the clip."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Chord Finder"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Chord Finder</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Find the <span class="ital">chords</span> of a song</h1>
+    <p>Drop a song and get its chords, laid out bar by bar like a lead sheet, with the key and tempo. Press play and the current chord lights up, so you can check every one by ear. The file is analysed in your tab and never uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song here</p>
+      <p>or click to pick. MP3, WAV, M4A, FLAC, OGG and video files all work.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Find the chords</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="chordResult" hidden>
+      <audio id="chordPlayer" controls preload="metadata" class="chord-player"></audio>
+      <div class="chord-sheet" id="chordSheet"></div>
+      <table class="spec-table bpm-detail">
+        <tr><th>Key</th><td id="chordKey">—</td></tr>
+        <tr><th>Tempo</th><td id="chordTempo">—</td></tr>
+        <tr><th>Chords used, most first</th><td id="chordUsed">—</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it hears chords</h2>
+    <p>A chord is a handful of notes sounding together, and what matters for naming it is which of the twelve note names are present, not which octave they are in. So the song is cut into short overlapping windows, about a third of a second each, ten times a second, and each is reduced to how strongly each of the twelve notes sounds. That is a chromagram. It is the same front end as the <a href="/key-finder">key finder</a>, down to taking the recording's tuning out first. Those readings are summed over each beat and compared with the note pattern of all 24 major and minor chords. The closest wins, and a beat where nothing matches well is marked as no chord.</p>
+    <p>Two clean-up steps make it readable. Neighbouring beats with the same chord are joined. Anything shorter than about 0.4 seconds is folded into whichever neighbour its notes fit better, which removes the flicker a passing note in the melody would otherwise cause.</p>
+
+    <h3>Bars, not a stream of timestamps</h3>
+    <p>When the song has a steady beat, the tempo and the position of the beats are found first, the same way <a href="/bpm-finder">the BPM finder</a> does it. The chords are then read beat by beat and set out four beats to a bar, writing a chord only where it changes, like a lead sheet. Every change therefore lands on a beat. Which beat is the first of the bar is a guess. The beat itself is found to within a millisecond on test drum patterns, but the downbeat guess was right in only five of nine. So if the bars look shifted by a beat, the chords are still right, just counted from the wrong place. Without a steady beat, in rubato piano, ambient or a cappella music, you get a timed list instead.</p>
+
+    <h3>What was measured</h3>
+    <p>The detector is checked on every release against 36 synthesized progressions. Each has eight chords drawn at random from all 24 major and minor triads, lasting one to two seconds. They are voiced like a keyboard part: a bass note on the root and the chord above it, in any inversion. Each progression was played three ways: on its own, over a drum kit with a noise floor, and under a melody full of passing notes. It named the right chord 100% of the time in all three, outside a quarter of a second either side of each change, where no detector can know the chord has changed yet. Seventh chords were named by their triad (G7 as G, Am7 as Am) every time.</p>
+    <p>The one voicing that trips it is a slash chord with the third in the bass, such as C/E. Those were right 74% of the time. Am over a C bass is only one note away from C major, and bass notes are loud. Real recordings are harder than these tests in other ways too, with distorted guitars, heavy reverb and vocals sliding between notes, and there is no measured figure for real songs yet. The player is there so you can check.</p>
+
+    <h3>What it names, and what it does not</h3>
+    <p>Only major and minor triads. Sevenths, ninths and sixths come out as the triad under them, which is usually what you want for strumming along. Diminished, augmented and suspended chords have no template, so they come out as the nearest major or minor chord or as no chord. Power chords (a root and a fifth, no third) are neither major nor minor, and will be named whichever way the other instruments lean. If a song is in a key and a chord looks out of place, treat it as a hint to listen closely at that spot.</p>
+
+    <h3>Getting better results</h3>
+    <p>The chords live in the harmony instruments, and a lead vocal mostly adds passing notes. If the reading is noisy, split the song with <a href="/stem-splitter">the stem splitter</a> and analyse the instrumental. Songs that change key halfway are fine, because each beat is read on its own. For a song you are going to play along with, <a href="/tuner">tune up</a> first. If it sits in an awkward key for your voice, <a href="/pitch-shifter">the key changer</a> moves it by semitones, and the chords move with it: up two semitones, C becomes D.</p>
+
+    <h3>In the audio editor</h3>
+    <p><a href="/audio-editor">The audio editor</a> has the same detector. Right-click a clip, or hold it on a phone, and choose <em>Detect chords</em>. The chord names are drawn along the bottom of the clip and follow it when you trim or move it. With the bars-and-beats ruler on, they line up with the project's own grid.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my song uploaded?</summary><p>No. Decoding and analysis both run in your browser tab, and the player plays the file from your own computer.</p></details>
+      <details><summary>How accurate is it?</summary><p>On 36 synthesized progressions of random major and minor chords, clean, over drums and under a busy melody, it named the right chord 100% of the time away from the changes. Slash chords with the third in the bass were right 74% of the time. There is no measured figure for real recordings yet, which is why there is a player to check against.</p></details>
+      <details><summary>Does it find seventh, sus or diminished chords?</summary><p>It names major and minor triads only. A seventh chord comes out as its triad (G7 as G). Diminished, augmented and sus chords come out as the nearest major or minor chord, or as no chord.</p></details>
+      <details><summary>Why are the bars shifted by a beat?</summary><p>The beat is found accurately, but which beat starts the bar is a guess. The chords are still right; they are just counted from a different beat.</p></details>
+      <details><summary>It shows a chord I do not hear. What now?</summary><p>Click it to play from there. Passing notes in a vocal can pull a beat towards another chord; analysing the instrumental from the stem splitter usually gives a cleaner result.</p></details>
+      <details><summary>Can I get the chords into the audio editor?</summary><p>Yes. In the editor, choose Detect chords from a clip's menu and they are drawn along the bottom of the clip.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>The key and Camelot code, for mixing or transposing.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Analyse the instrumental alone for a cleaner reading.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the song, and its chords, into your key.</p></a>
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Tune up before you play along.</p></a>
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Slow it down to learn the changes.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23k"></script>
+<script src="/js/tool-graph.js?v=2026-09-23k"></script>
+<script src="/js/flow.js?v=2026-09-23k"></script>
+<script src="/js/audio-core.js?v=2026-09-23k"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23k"></script>
+<script src="/js/spectral.js?v=2026-09-23k"></script>
+<script src="/js/key-detect.js?v=2026-09-23k"></script>
+<script src="/js/chord-page.js?v=2026-09-23k"></script>
+<script src="/js/consent.js?v=2026-09-23k"></script>
+<script src="/js/pwa.js?v=2026-09-23k"></script>
+</body>
+</html>

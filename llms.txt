@@ -241,6 +241,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [Audio to MIDI](https://audiosaw.com/audio-to-midi): Turn a hummed melody or bassline into a MIDI file.
 - [BPM Finder](https://audiosaw.com/bpm-finder): Detect the tempo of a track, with half and double time shown.
 - [Key Finder](https://audiosaw.com/key-finder): Find the key of a song, with its Camelot code, tuning and BPM.
+- [Chord Finder](https://audiosaw.com/chord-finder): Get the chords of a song from audio, bar by bar, and follow along.
 - [Online Metronome](https://audiosaw.com/metronome): A steady click with subdivisions, tap tempo and a speed trainer.
 - [Online Tuner](https://audiosaw.com/tuner): Tune a guitar, bass, ukulele or violin through your microphone.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.

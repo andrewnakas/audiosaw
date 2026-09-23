@@ -158,6 +158,20 @@ carrying a separate tone per channel, not because the coefficient tables say
   minor as runner-up in 11. It is inherently ambiguous, so the page always
   shows the runner-up. Do not quote a real-music accuracy figure we have not
   measured.
+- `ASKey.chords` + `js/chord-page.js`: `/chord-finder` and the editor's
+  "Detect chords", which stores `source.chords` in source time and draws them
+  in a strip at the bottom of the clip.
+  - **How it detects.** Chroma frames are 4096 samples at ~11 kHz every
+    1024, summed per beat, and matched against the 24 major and minor triads.
+    Short segments are folded into a neighbour.
+  - **Checked by** `tools/check-chords.js`, which requires ≥90% on random
+    progressions (clean, band, melody) and measured 100%. It reports
+    sevenths at 100% and slash chords (third in the bass) at 74%, and caps
+    drums-only at 0.8 s of 8 named.
+  - **Drums.** Three things keep drums from being named as chords: the
+    0.7 score floor, the 100 Hz analysis floor, and the rule that the root
+    and third are present. A kick's falling pitch otherwise reads as a
+    chord.
 - `js/metronome-page.js` + `js/tuner-page.js`: `/metronome` and `/tuner`,
   two pages that play or listen live and never take a file.
   - **Metronome.** It schedules on the AudioContext clock 120 ms ahead, or

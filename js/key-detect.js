@@ -104,16 +104,22 @@
    * channels: Float32Array[] (or one Float32Array). opts.maxSec (default 240),
    * opts.profile ('temperley' | 'krumhansl').
    */
-  function analyse(channels, sr, opts) {
+  /*
+   * The shared front end: per-frame chroma, tuning removed, each frame
+   * normalised to sum to 1 (null for frames that are near-silent or have no
+   * peaks). Key detection sums them all; chord detection sums them per beat.
+   * opts.N / opts.hop set the window (8192 / 2048 at ~11 kHz by default).
+   */
+  function chromaFrames(channels, sr, opts) {
     opts = opts || {};
     if (!Array.isArray(channels)) channels = [channels];
     var n = Math.min(channels[0].length, Math.round((opts.maxSec || 240) * sr));
     var f = Math.max(1, Math.round(sr / 11025)), rate = sr / f;
     var x = decimate(toMono(channels, n), f);
 
-    var N = 8192, hop = 2048, fft = SP.makeFFT(N), win = SP.hannPeriodic(N);
+    var N = opts.N || 8192, hop = opts.hop || 2048, fft = SP.makeFFT(N), win = SP.hannPeriodic(N);
     var re = new Float64Array(N), im = new Float64Array(N), mag = new Float32Array(N / 2 + 1);
-    var loB = Math.ceil(50 * N / rate), hiB = Math.min(N / 2 - 1, Math.floor(2100 * N / rate));
+    var loB = Math.max(2, Math.ceil((opts.loHz || 50) * N / rate)), hiB = Math.min(N / 2 - 1, Math.floor(2100 * N / rate));
     var frames = [], energies = [];
 
     // Pass 1: spectral peaks per frame, as (fractional MIDI note, weight).
@@ -157,10 +163,9 @@
     });
     var tune = Math.atan2(sy, sx) / (2 * Math.PI);   // semitones, -0.5..0.5
 
-    // Pass 2: the chromagram, tuning removed, each frame normalised.
-    var chroma = new Float64Array(12), used = 0;
-    frames.forEach(function (pk, fi) {
-      if (energies[fi] < emax * 1e-5 || !pk.length) return;
+    // Pass 2: per-frame chroma, tuning removed, normalised.
+    var chroma = frames.map(function (pk, fi) {
+      if (energies[fi] < emax * 1e-5 || !pk.length) return null;
       var fr = new Float64Array(12), tot = 0;
       for (var k = 0; k < pk.length; k += 2) {
         var mm = pk[k] - tune, r = Math.round(mm), dev = mm - r;
@@ -168,8 +173,22 @@
         var pc = ((r % 12) + 12) % 12;
         fr[pc] += w * pk[k + 1]; tot += w * pk[k + 1];
       }
-      if (tot <= 0) return;
-      for (var q = 0; q < 12; q++) chroma[q] += fr[q] / tot;
+      if (tot <= 0) return null;
+      for (var q = 0; q < 12; q++) fr[q] /= tot;
+      return fr;
+    });
+    // A frame's time is the centre of its window.
+    return { chroma: chroma, energies: energies, emax: emax, tune: tune, hopSec: hop / rate, centreSec: N / 2 / rate };
+  }
+
+  function analyse(channels, sr, opts) {
+    opts = opts || {};
+    var cf = chromaFrames(channels, sr, opts);
+    if (!cf) return null;
+    var chroma = new Float64Array(12), used = 0, tune = cf.tune;
+    cf.chroma.forEach(function (fr) {
+      if (!fr) return;
+      for (var q = 0; q < 12; q++) chroma[q] += fr[q];
       used++;
     });
     if (!used) return null;
@@ -194,6 +213,146 @@
     out.chroma = Array.prototype.map.call(chroma, function (v) { return v / used; });
     out.scores = scores.map(function (s) { return s.r; });
     return out;
+  }
+
+  /*
+   * Chords over time: major and minor triads, or 'N' where nothing clear is
+   * sounding.
+   *
+   * Frames are 0.37 s windows every 93 ms; a chord that changes twice a
+   * second needs that, and the key's 0.74 s window would smear every change.
+   * Frames are summed over each segment: the beats when opts.beats (a list of
+   * times) is given, which is how the editor calls it, otherwise fixed
+   * opts.segSec slices (default 0.5 s). Each segment is scored against the
+   * 24 triads by cosine similarity, the third weighted a little above the
+   * fifth because it is what makes a chord major or minor and the fifth is
+   * present as an overtone of the root in every note anyway.
+   * A segment scoring under 0.7 is 'N': real triads measured 0.76 to 0.96,
+   * and the tail of a song, drums over a fading chord, 0.62.
+   *
+   * Nothing below 100 Hz is counted. A kick drum's falling pitch lives there
+   * and can pass for a chord. The chord's upper voices name it without the
+   * bass. A named chord must also have its root and third each at least a
+   * fifth of the loudest note. Measured on 8 s of drums alone: 1.5 s named
+   * as chords with a 60 Hz floor, 1.0 s with the 100 Hz floor, 0.5 s with
+   * both.
+   *
+   * Then equal neighbours are merged and anything shorter than opts.minSec
+   * (default 0.4 s) is absorbed into whichever neighbour it scores better
+   * as, which removes the flicker a passing note causes.
+   *
+   * Returns [{t0, t1, pc, quality: 'maj'|'min'|'N', name, score}] in seconds.
+   */
+  var CHORD_ROOTS = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+  var TEMPLATES = (function () {
+    var out = [];
+    ['maj', 'min'].forEach(function (q) {
+      for (var r = 0; r < 12; r++) {
+        var t = new Float64Array(12);
+        t[r] = 1; t[(r + (q === 'maj' ? 4 : 3)) % 12] = 1.1; t[(r + 7) % 12] = 0.9;
+        var norm = 0;
+        for (var i = 0; i < 12; i++) norm += t[i] * t[i];
+        norm = Math.sqrt(norm);
+        for (i = 0; i < 12; i++) t[i] /= norm;
+        out.push({ pc: r, quality: q, t: t });
+      }
+    });
+    return out;
+  })();
+  function chordName(pc, q) { return q === 'N' ? 'N' : CHORD_ROOTS[pc] + (q === 'min' ? 'm' : ''); }
+
+  function scoreChord(v) {
+    var norm = 0;
+    for (var i = 0; i < 12; i++) norm += v[i] * v[i];
+    norm = Math.sqrt(norm);
+    var best = null;
+    TEMPLATES.forEach(function (T) {
+      if (!norm) return;
+      var d = 0;
+      for (var i = 0; i < 12; i++) d += v[i] * T.t[i];
+      d /= norm;
+      if (!best || d > best.score) best = { pc: T.pc, quality: T.quality, score: d };
+    });
+    return best || { pc: 0, quality: 'N', score: 0 };
+  }
+
+  function chords(channels, sr, opts) {
+    opts = opts || {};
+    var cf = chromaFrames(channels, sr, { N: 4096, hop: 1024, loHz: opts.loHz || 100, maxSec: opts.maxSec || 600 });
+    if (!cf) return [];
+    var nFrames = cf.chroma.length, dur = (cf.hopSec * (nFrames - 1)) + 2 * cf.centreSec;
+    var edges = [];
+    if (opts.beats && opts.beats.length > 1) {
+      edges = opts.beats.filter(function (t) { return t >= 0 && t <= dur; });
+      if (!edges.length || edges[0] > 0.01) edges.unshift(0);
+      if (edges[edges.length - 1] < dur - 0.01) edges.push(dur);
+    } else {
+      var seg = opts.segSec || 0.5;
+      for (var t = 0; t < dur; t += seg) edges.push(t);
+      edges.push(dur);
+    }
+    var segs = [];
+    for (var k = 0; k + 1 < edges.length; k++) {
+      var t0 = edges[k], t1 = edges[k + 1], v = new Float64Array(12), used = 0;
+      for (var fi = 0; fi < nFrames; fi++) {
+        var tc = fi * cf.hopSec + cf.centreSec;
+        if (tc < t0 || tc >= t1 || !cf.chroma[fi]) continue;
+        for (var q = 0; q < 12; q++) v[q] += cf.chroma[fi][q];
+        used++;
+      }
+      var sc = used ? scoreChord(v) : { pc: 0, quality: 'N', score: 0 };
+      if (sc.score < (opts.minScore || 0.7) || !triadPresent(v, sc)) sc = { pc: 0, quality: 'N', score: sc.score };
+      segs.push({ t0: t0, t1: t1, pc: sc.pc, quality: sc.quality, score: sc.score, v: v });
+    }
+    function same(a, b) { return a.quality === b.quality && (a.quality === 'N' || a.pc === b.pc); }
+    function merge(list) {
+      var out = [];
+      list.forEach(function (sg) {
+        var last = out[out.length - 1];
+        if (last && same(last, sg)) {
+          last.t1 = sg.t1;
+          for (var q = 0; q < 12; q++) last.v[q] += sg.v[q];
+        } else out.push({ t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, score: sg.score, v: Float64Array.from(sg.v) });
+      });
+      return out;
+    }
+    var list = merge(segs), minSec = opts.minSec == null ? 0.4 : opts.minSec, changed = true;
+    while (changed) {
+      changed = false;
+      for (var j = 0; j < list.length; j++) {
+        var sgm = list[j];
+        if (sgm.t1 - sgm.t0 >= minSec || list.length < 2) continue;
+        // Fold it into the neighbour whose chord fits its notes better.
+        var prev = list[j - 1], next = list[j + 1], into = prev || next;
+        if (prev && next) {
+          var fitP = scoreAs(sgm.v, prev), fitN = scoreAs(sgm.v, next);
+          into = fitN > fitP ? next : prev;
+        }
+        if (into === prev) { prev.t1 = sgm.t1; } else { next.t0 = sgm.t0; }
+        for (var q2 = 0; q2 < 12; q2++) into.v[q2] += sgm.v[q2];
+        list.splice(j, 1);
+        list = merge(list);
+        changed = true;
+        break;
+      }
+    }
+    return list.map(function (sg) {
+      return { t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, name: chordName(sg.pc, sg.quality), score: Math.round(sg.score * 1000) / 1000 };
+    });
+  }
+  // A chord needs its root and its third actually sounding, each at least a
+  // fifth of the loudest note.
+  function triadPresent(v, sc) {
+    var mx = 0;
+    for (var i = 0; i < 12; i++) if (v[i] > mx) mx = v[i];
+    var third = (sc.pc + (sc.quality === 'maj' ? 4 : 3)) % 12;
+    return mx > 0 && v[sc.pc] >= 0.2 * mx && v[third] >= 0.2 * mx;
+  }
+  function scoreAs(v, chord) {
+    if (chord.quality === 'N') return 0;
+    var T = TEMPLATES[(chord.quality === 'min' ? 12 : 0) + chord.pc].t, d = 0, norm = 0;
+    for (var i = 0; i < 12; i++) { d += v[i] * T[i]; norm += v[i] * v[i]; }
+    return norm ? d / Math.sqrt(norm) : 0;
   }
 
   var DEFAULT_PROFILE = 'temperley';
@@ -228,7 +387,7 @@
   }
 
   var api = {
-    analyse: analyse, parse: parse, keyName: keyName, camelot: camelot, shiftBetween: shiftBetween, transpose: transpose,
+    analyse: analyse, parse: parse, chords: chords, chordName: chordName, keyName: keyName, camelot: camelot, shiftBetween: shiftBetween, transpose: transpose,
     PROFILES: PROFILES, NAMES: SHARP, MAJOR_NAMES: MAJOR_NAMES, MINOR_NAMES: MINOR_NAMES
   };
   global.ASKey = api;
