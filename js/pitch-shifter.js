@@ -96,6 +96,23 @@
     });
   }
 
+  // With the song's key known, say which key each shift lands in. The key
+  // arrives from /key-finder as ?key=A-minor.
+  var K = window.ASKey, keySel = CV.$('#songKey'), semSel = CV.$('#semitones'), note = CV.$('#keyShiftNote');
+  function keyNote() {
+    var key = K && K.parse(keySel.value);
+    if (!key) { note.innerHTML = 'Not sure of the key? <a href="/key-finder">The key finder</a> reads it from the file.'; return; }
+    var to = K.transpose(key, parseInt(semSel.value, 10) || 0);
+    note.textContent = key.name + ' (' + key.camelot + ') → ' + to.name + ' (' + to.camelot + ')';
+  }
+  if (K && keySel) {
+    var fromUrl = K.parse(decodeURIComponent((location.search.match(/[?&]key=([^&]+)/) || [])[1] || ''));
+    if (fromUrl) keySel.value = fromUrl.name.replace(' ', '-');
+    keySel.addEventListener('change', keyNote);
+    semSel.addEventListener('change', keyNote);
+    keyNote();
+  }
+
   CV.shell({
     accept: null,
     zipName: 'audiosaw-pitch.zip',

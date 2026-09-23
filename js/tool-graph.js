@@ -563,6 +563,7 @@
       project: 'same',
       next: [
         ['pitch-shifter', 'Move the whole take to another key instead'],
+        ['key-finder', 'Not sure which key to tune to? Find it first'],
         ['stem-splitter', 'Lift the vocal out of a mix before tuning it'],
         ['auto-cut-silence', 'Remove breaths that read as stray notes'],
         ['loudness-normalizer', 'Set the level once the tuning is right']
@@ -578,6 +579,7 @@
         ['vocal-remover', 'Make a karaoke track to transpose'],
         ['audio-cutter', 'Trim before shifting'],
         ['normalize-audio', 'Level the result'],
+        ['key-finder', 'Find the key it is in now, so you know how far to move it'],
         ['bpm-finder', 'Check the tempo you are working against'],
         ['audio-to-midi', 'Capture the line as notes instead of audio'],
         ['autotune', 'Correct the tuning rather than transpose it']
@@ -662,7 +664,19 @@
         ['audio-cutter', 'Trim a loop to a whole number of bars'],
         ['pitch-shifter', 'Change the key without moving the tempo'],
         ['stem-splitter', 'Pull the drums out to hear the pulse alone'],
-        ['audio-to-midi', 'Turn the same line into notes you can edit']
+        ['audio-to-midi', 'Turn the same line into notes you can edit'],
+        ['key-finder', 'Find the key as well as the tempo']
+      ]
+    },
+    'key-finder': {
+      cat: 'create', label: 'key finder', title: 'Key Finder',
+      blurb: 'Find the key of a song, with its Camelot code, tuning and BPM.',
+      next: [
+        ['pitch-shifter', 'Move the song into the key you need'],
+        ['autotune', 'Tune a vocal to the key you just found'],
+        ['stem-splitter', 'Read the key from the instrumental alone'],
+        ['audio-editor', 'Set the tempo and build on it in the editor'],
+        ['audio-to-midi', 'Get the melody out as notes']
       ]
     },
     'split-audio': {
@@ -875,7 +889,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
       ]
     },
     {

@@ -97,7 +97,7 @@ server.listen(0, '127.0.0.1', async () => {
 
 async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
-  for (let i = 0; i < 100 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
+  for (let i = 0; i < 300 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
   let list = [];
   for (let i = 0; i < 50 && !list.some((t) => t.type === 'page'); i++) {

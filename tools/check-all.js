@@ -26,6 +26,7 @@ const CHECKS = [
   ['build-llms.js', '--check'],
   ['check-includes.js'],
   ['check-editor.js'],
+  ['check-key.js'],
   ['check-fx.js'],
   ['check-project-link.js'],
   ['check-grid.js']

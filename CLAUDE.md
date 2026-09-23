@@ -146,6 +146,18 @@ carrying a separate tone per channel, not because the coefficient tables say
   raw signal lands on a different feature each cycle. Measured: grain spacing
   wandered by 15% and the output dropped *two octaves*. One clear peak per cycle
   is the whole requirement.
+- `js/key-detect.js` — `ASKey`, key detection behind `/key-finder`. It is also
+  used by the editor's tempo sheet ("Detect the key", stored as `project.key`),
+  the pitch shifter (it shows the key each shift lands in) and autotune. The
+  last two take `?key=A-minor` from the key finder. It computes a peak-picked
+  chromagram on audio decimated to ~11 kHz, removes the tuning, normalises each
+  frame, and correlates against Temperley profiles. `node tools/check-key.js`
+  synthesizes all 24 keys three ways (clean, with a band, 30 cents sharp) and
+  all 72 must read right. It also *reports* the natural-minor pop loop
+  (Am–F–C–G). That loop reads as the relative major in 12 of 12 keys, with the
+  minor as runner-up in 11. It is inherently ambiguous, so the page always
+  shows the runner-up. Do not quote a real-music accuracy figure we have not
+  measured.
 - `js/midi-write.js` — Standard MIDI File writer (type 0). MIDI has no forgiving
   parser: chunk lengths must match their contents and delta times are
   variable-length quantities. `node tools/check-midi.js` parses the output back

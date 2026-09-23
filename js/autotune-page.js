@@ -8,6 +8,17 @@
   if (!CV) { console.error('autotune-page: CV missing — /js includes must come first'); return; }
   var $ = CV.$;
   var report = $('#tuneReport');
+
+  // A key handed over by /key-finder (?key=A-minor) picks the key and scale.
+  (function () {
+    var K = global.ASKey, m = location.search.match(/[?&]key=([^&]+)/);
+    var key = K && m && K.parse(decodeURIComponent(m[1]));
+    if (!key) return;
+    $('#key').value = String(key.pc);
+    $('#scale').value = key.mode === 'major' ? 'major' : 'minor';
+    var hint = $('#keyFromFinder');
+    if (hint) { hint.textContent = 'Set to ' + key.name + ' from the key finder.'; hint.hidden = false; }
+  })();
   function setRow(id, v) { var el = $(id); if (el) el.textContent = v; }
 
   CV.shell({

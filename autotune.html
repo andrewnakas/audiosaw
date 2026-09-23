@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23f">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23g">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -109,6 +109,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <div class="file-list" id="fileList"></div>
 
     <div id="controls" style="display:none">
+      <p class="key-shift-note"><span id="keyFromFinder" hidden></span> Not sure of the key? <a href="/key-finder">The key finder</a> reads it from the song.</p>
       <div class="controls">
         <label id="keyWrap">Key
           <select id="key"><option value="0" selected>C</option><option value="1">C# / Db</option><option value="2">D</option><option value="3">D# / Eb</option><option value="4">E</option><option value="5">F</option><option value="6">F# / Gb</option><option value="7">G</option><option value="8">G# / Ab</option><option value="9">A</option><option value="10">A# / Bb</option><option value="11">B</option></select>
@@ -226,6 +227,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
       <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the whole take to another key instead.</p></a>
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>Not sure which key to tune to? Find it first.</p></a>
       <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Lift the vocal out of a mix before tuning it.</p></a>
       <a class="card" href="/auto-cut-silence"><h3>Auto-Cut Silence</h3><p>Remove breaths that read as stray notes.</p></a>
       <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Set the level once the tuning is right.</p></a>
@@ -309,6 +311,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <a href="/voice-recorder">voice recorder</a>
         <a href="/audio-to-midi">audio → midi</a>
         <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
         <a href="/split-audio">split</a>
         <a href="/mp3-tag-editor">tag editor</a>
       </div>
@@ -336,17 +339,19 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23f"></script>
-<script src="/js/tool-graph.js?v=2026-09-23f"></script>
-<script src="/js/flow.js?v=2026-09-23f"></script>
-<script src="/js/project-link.js?v=2026-09-23f"></script>
-<script src="/js/audio-core.js?v=2026-09-23f"></script>
-<script src="/js/tool-shell.js?v=2026-09-23f"></script>
-<script src="/js/silence-gaps.js?v=2026-09-23f"></script>
-<script src="/js/pitch-track.js?v=2026-09-23f"></script>
-<script src="/js/autotune.js?v=2026-09-23f"></script>
-<script src="/js/autotune-page.js?v=2026-09-23f"></script>
-<script src="/js/consent.js?v=2026-09-23f"></script>
-<script src="/js/pwa.js?v=2026-09-23f"></script>
+<script src="/js/common.js?v=2026-09-23g"></script>
+<script src="/js/tool-graph.js?v=2026-09-23g"></script>
+<script src="/js/flow.js?v=2026-09-23g"></script>
+<script src="/js/project-link.js?v=2026-09-23g"></script>
+<script src="/js/audio-core.js?v=2026-09-23g"></script>
+<script src="/js/tool-shell.js?v=2026-09-23g"></script>
+<script src="/js/silence-gaps.js?v=2026-09-23g"></script>
+<script src="/js/pitch-track.js?v=2026-09-23g"></script>
+<script src="/js/autotune.js?v=2026-09-23g"></script>
+<script src="/js/spectral.js?v=2026-09-23g"></script>
+<script src="/js/key-detect.js?v=2026-09-23g"></script>
+<script src="/js/autotune-page.js?v=2026-09-23g"></script>
+<script src="/js/consent.js?v=2026-09-23g"></script>
+<script src="/js/pwa.js?v=2026-09-23g"></script>
 </body>
 </html>

@@ -697,6 +697,7 @@
     if (!validSig(p.sig)) p.sig = [4, 4];
     if (!(typeof p.gridOffset === 'number' && isFinite(p.gridOffset))) p.gridOffset = 0;
     if (p.ruler !== 'bars') p.ruler = 'time';
+    if (!validKey(p.key)) p.key = null;
     return p;
   }
 
@@ -860,6 +861,16 @@
     var bar = barSec(p);
     p.gridOffset = Math.round((((t % bar) + bar) % bar) * 1e6) / 1e6;
     if (p.gridOffset > bar - 1e-6) p.gridOffset = 0;
+  }
+  // The project's key, {pc: 0-11, mode: 'major'|'minor'}, or null when it
+  // has not been set. Nothing is transposed by it; it is a label that the
+  // key-aware tools read.
+  function validKey(k) {
+    return k === null || (!!k && k.pc === Math.round(k.pc) && k.pc >= 0 && k.pc <= 11 && (k.mode === 'major' || k.mode === 'minor'));
+  }
+  function setKey(p, pc, mode) {
+    var k = pc == null ? null : { pc: +pc, mode: mode };
+    if (validKey(k)) p.key = k;
   }
   function setRuler(p, mode) { p.ruler = mode === 'bars' ? 'bars' : 'time'; }
 
@@ -1052,6 +1063,7 @@
     });
     if (!(p.bpm >= 20 && p.bpm <= 400)) errs.push('tempo out of range: ' + p.bpm);
     if (!validSig(p.sig)) errs.push('bad time signature ' + JSON.stringify(p.sig));
+    if (p.key !== undefined && !validKey(p.key)) errs.push('bad key ' + JSON.stringify(p.key));
     else if (!(p.gridOffset >= 0 && p.gridOffset < barSec(p) + EPS)) errs.push('grid offset outside one bar: ' + p.gridOffset);
     if (p.master) Object.keys(p.master.auto || {}).forEach(function (path) { autoErrs(p.master.auto[path], 'master lane ' + path, errs); });
     return errs;
@@ -1111,7 +1123,7 @@
     normalize: normalize, owner: owner, chainOf: chainOf, findFx: findFx,
     addFx: addFx, removeFx: removeFx, moveFx: moveFx, setFx: setFx, setChain: setChain,
     setSend: setSend, addBus: addBus, removeBus: removeBus, setBus: setBus, setMaster: setMaster, setBpm: setBpm,
-    setSig: setSig, setGridOffset: setGridOffset, setRuler: setRuler, beatSec: beatSec, barSec: barSec,
+    setSig: setSig, setGridOffset: setGridOffset, setRuler: setRuler, setKey: setKey, beatSec: beatSec, barSec: barSec,
     gridLines: gridLines, nearestGrid: nearestGrid, fmtBars: fmtBars, clickTimes: clickTimes,
     setAutoPoints: setAutoPoints, clearAuto: clearAuto, autoValueAt: autoValueAt, thinPoints: thinPoints,
     validate: validate, History: History

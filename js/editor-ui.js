@@ -227,7 +227,8 @@
       el.total.classList.toggle('is-now', bars);
     }
     // The ruler's corner names what the ruler counts and opens the tempo sheet.
-    var corner = (bars ? '' : 'time · ') + S.project.bpm + ' BPM · ' + S.project.sig.join('/');
+    var pk = S.project.key, K = global.ASKey;
+    var corner = (bars ? '' : 'time · ') + S.project.bpm + ' BPM · ' + S.project.sig.join('/') + (pk && K ? ' · ' + K.keyName(pk.pc, pk.mode) : '');
     if (el.corner && el.corner.textContent !== corner) el.corner.textContent = corner;
   }
 
@@ -2171,7 +2172,7 @@
       { v: 'open', label: 'Open project file…' },
       '-',
       { v: 'full', label: el.ed.classList.contains('ed-full') ? 'Exit full screen' : 'Full screen editor' },
-      { v: 'tempo', label: 'Tempo, metre and metronome…', hint: S.project.bpm + ' BPM · ' + S.project.sig.join('/') },
+      { v: 'tempo', label: 'Tempo, key and metronome…', hint: S.project.bpm + ' BPM · ' + S.project.sig.join('/') },
       { v: 'ruler', label: (S.project.ruler === 'bars' ? '✓ ' : '') + 'Ruler in bars and beats', hint: 'G' },
       { v: 'mixer', label: 'Mixer and master effects', hint: 'F' },
       { v: 'mixtool', label: 'Send the whole mix to a tool…', hint: 'and back', disabled: !hasClips() },
@@ -2209,19 +2210,27 @@
   // or let the BPM finder read it off the audio.
   var SIGS = [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [3, 8], [5, 8], [6, 8], [7, 8], [9, 8], [12, 8]];
   function tempoSheet() {
-    var taps = [], p0 = S.project, offset = p0.gridOffset, sigNow = p0.sig.join('/');
+    var taps = [], p0 = S.project, offset = p0.gridOffset, sigNow = p0.sig.join('/'), K = global.ASKey;
+    var keyNow = p0.key ? p0.key.pc + '-' + p0.key.mode : '';
+    var keyOpts = '<option value="">Not set</option>' + (K ? ['major', 'minor'].map(function (mode) {
+      var o = '';
+      for (var pc = 0; pc < 12; pc++) o += '<option value="' + pc + '-' + mode + '"' + (keyNow === pc + '-' + mode ? ' selected' : '') + '>' + K.keyName(pc, mode) + ' (' + K.camelot(pc, mode) + ')</option>';
+      return o;
+    }).join('') : '');
     if (!SIGS.some(function (x) { return x.join('/') === sigNow; })) SIGS.push(p0.sig.slice());
-    openSheet('Tempo and metronome', '<div class="ed-form">' +
+    openSheet('Tempo, key and metronome', '<div class="ed-form">' +
       '<label>Beats per minute <input type="number" min="20" max="400" step="0.1" data-k="bpm" value="' + p0.bpm + '" inputmode="decimal"></label>' +
       '<label>Time signature <select data-k="sig">' + SIGS.map(function (x) {
         var v = x.join('/');
         return '<option value="' + v + '"' + (v === sigNow ? ' selected' : '') + '>' + v + '</option>';
       }).join('') + '</select></label>' +
+      '<label>Key <select data-k="key">' + keyOpts + '</select></label>' +
       '<label class="ed-check"><input type="checkbox" data-k="ruler"' + (p0.ruler === 'bars' ? ' checked' : '') + '> Show bars and beats on the ruler, and snap to them</label>' +
       '</div>' +
       '<div class="ed-insp-btns"><button type="button" class="ed-btn" data-v="tap">Tap along</button>' +
       '<button type="button" class="ed-btn" data-v="detect"' + (hasClips() ? '' : ' disabled') + '>Detect from the audio</button>' +
-      '<button type="button" class="ed-btn" data-v="bar1">Bar 1 at the playhead</button></div>' +
+      '<button type="button" class="ed-btn" data-v="bar1">Bar 1 at the playhead</button>' +
+      (K ? '<button type="button" class="ed-btn" data-v="detectkey"' + (hasClips() ? '' : ' disabled') + '>Detect the key</button>' : '') + '</div>' +
       '<p class="ed-sheet-note" data-tempo-note>Tap in time with the music, four or more times. Detection reads the longest clip, or the selected one. ' +
       'If the song does not start on a downbeat at 0:00, put the playhead on one and press “Bar 1 at the playhead”.</p>' +
       '<div class="ed-form">' +
@@ -2253,6 +2262,23 @@
         note.textContent = 'Bar 1 will start at ' + fmt(offset) + '. The grid runs back from there too, so earlier audio still lines up.';
         return;
       }
+      if (v === 'detectkey') {
+        var kids = selIds(), kf = kids.length ? M.findClip(S.project, kids[0]) : null, kclip = kf ? kf.clip : null;
+        if (!kclip) M.allClips(S.project).forEach(function (c) { if (!kclip || c.clip.duration > kclip.duration) kclip = c.clip; });
+        var kbuf = kclip && buffers.get(kclip.sourceId);
+        if (!kbuf) return;
+        note.textContent = 'Listening for the key…';
+        setTimeout(function () {
+          var part = slice(kbuf, kclip.offset, Math.min(kclip.duration, 240)), ch = [];
+          for (var c = 0; c < part.numberOfChannels; c++) ch.push(part.getChannelData(c));
+          var res = K.analyse(ch, part.sampleRate);
+          if (!res) { note.textContent = 'Nothing tonal in “' + kclip.name + '” to read a key from.'; return; }
+          q('key').value = res.pc + '-' + res.mode;
+          note.textContent = 'Read ' + res.name + ' (' + res.camelot + ') from “' + kclip.name + '”' +
+            (res.confidence === 'clear' ? '.' : ' — or possibly ' + res.runnerUp.name + '; pick it above if that sounds right.');
+        }, 30);
+        return;
+      }
       if (v === 'detect') {
         var ids = selIds(), f = ids.length ? M.findClip(S.project, ids[0]) : null, clip = f ? f.clip : null;
         if (!clip) M.allClips(S.project).forEach(function (c) { if (!clip || c.clip.duration > clip.duration) clip = c.clip; });
@@ -2269,12 +2295,15 @@
       }
       if (v === 'ok') {
         var b = parseFloat(inp.value), sig = q('sig').value.split('/').map(Number), ruler = q('ruler').checked ? 'bars' : 'time';
+        var kv = q('key').value, key = kv ? { pc: parseInt(kv, 10), mode: kv.split('-')[1] } : null;
+        var keyChanged = JSON.stringify(key) !== JSON.stringify(S.project.key);
         setClick(q('click').checked, parseFloat(q('clickvol').value));
         setCountIn(parseInt(q('countin').value, 10) || 0);
         closeSheet();
         var p = S.project, tempoChanged = b >= 20 && b <= 400 && b !== p.bpm;
-        if (tempoChanged || sig.join('/') !== p.sig.join('/') || ruler !== p.ruler || offset !== p.gridOffset) {
+        if (tempoChanged || keyChanged || sig.join('/') !== p.sig.join('/') || ruler !== p.ruler || offset !== p.gridOffset) {
           edit(function (p) {
+            if (key) M.setKey(p, key.pc, key.mode); else M.setKey(p, null);
             if (b >= 20 && b <= 400) M.setBpm(p, b);
             M.setSig(p, sig[0], sig[1]);
             M.setRuler(p, ruler);
@@ -2284,7 +2313,7 @@
           // Synced times are computed when a plugin is built or set, and the
           // click is scheduled from the tempo; nudge them.
           if (E.isPlaying()) restartPlayback();
-          toast(S.project.bpm + ' BPM · ' + S.project.sig.join('/'));
+          toast(S.project.bpm + ' BPM · ' + S.project.sig.join('/') + (S.project.key && K ? ' · ' + K.keyName(S.project.key.pc, S.project.key.mode) : ''));
         }
       }
     });

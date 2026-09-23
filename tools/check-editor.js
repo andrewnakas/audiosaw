@@ -499,6 +499,12 @@ function fixture() {
   ok(M.clickTimes(p, 0, 0.25).length === 1, 'the click at the end of the window belongs to the next window');
   M.setSig(p, 4, 4);
   ok(M.clickTimes(p, 0, 2).map((x) => x.accent).join('') === '2000', '4/4 accents only the downbeat');
+
+  ok(p.key === null, 'a project has no key until one is set');
+  M.setKey(p, 9, 'minor'); ok(p.key.pc === 9 && p.key.mode === 'minor', 'set the key to A minor');
+  M.setKey(p, 12, 'minor'); M.setKey(p, 3, 'dorian'); ok(p.key.pc === 9, 'impossible keys are refused');
+  M.setKey(p, null); ok(p.key === null, 'the key can be cleared');
+  const k2 = JSON.parse(M.serialize(p)); k2.key = { pc: 'x' }; M.normalize(k2); ok(k2.key === null, 'normalize drops a malformed key');
 }
 
 if (failures) {

@@ -240,6 +240,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [Voice recorder](https://audiosaw.com/voice-recorder): Record from your microphone in the browser — the audio never leaves your device.
 - [Audio to MIDI](https://audiosaw.com/audio-to-midi): Turn a hummed melody or bassline into a MIDI file.
 - [BPM Finder](https://audiosaw.com/bpm-finder): Detect the tempo of a track, with half and double time shown.
+- [Key Finder](https://audiosaw.com/key-finder): Find the key of a song, with its Camelot code, tuning and BPM.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
 - [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
 

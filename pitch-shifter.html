@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23f">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23g">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -127,6 +127,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
             <option value="12">+12 — up an octave</option>
           </select>
         </label>
+        <label>The song's key (optional)
+          <select id="songKey"><option value="" selected>Not sure</option><option value="C-major">C major</option><option value="Db-major">Db major</option><option value="D-major">D major</option><option value="Eb-major">Eb major</option><option value="E-major">E major</option><option value="F-major">F major</option><option value="F#-major">F# major</option><option value="G-major">G major</option><option value="Ab-major">Ab major</option><option value="A-major">A major</option><option value="Bb-major">Bb major</option><option value="B-major">B major</option><option value="C-minor">C minor</option><option value="C#-minor">C# minor</option><option value="D-minor">D minor</option><option value="Eb-minor">Eb minor</option><option value="E-minor">E minor</option><option value="F-minor">F minor</option><option value="F#-minor">F# minor</option><option value="G-minor">G minor</option><option value="G#-minor">G# minor</option><option value="A-minor">A minor</option><option value="Bb-minor">Bb minor</option><option value="B-minor">B minor</option></select>
+        </label>
+        <p class="key-shift-note" id="keyShiftNote" aria-live="polite">Not sure of the key? <a href="/key-finder">The key finder</a> reads it from the file.</p>
         <label>Output format
           <select id="outFmt">
             <option value="mp3" selected>MP3</option>
@@ -217,6 +221,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <a class="card" href="/vocal-remover"><h3>Vocal remover / karaoke</h3><p>Make a karaoke track to transpose.</p></a>
       <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim before shifting.</p></a>
       <a class="card" href="/normalize-audio"><h3>Normalize Audio</h3><p>Level the result.</p></a>
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>Find the key it is in now, so you know how far to move it.</p></a>
       <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Check the tempo you are working against.</p></a>
       <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Capture the line as notes instead of audio.</p></a>
       <a class="card" href="/autotune"><h3>Autotune / Pitch Correction</h3><p>Correct the tuning rather than transpose it.</p></a>
@@ -300,6 +305,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <a href="/voice-recorder">voice recorder</a>
         <a href="/audio-to-midi">audio → midi</a>
         <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
         <a href="/split-audio">split</a>
         <a href="/mp3-tag-editor">tag editor</a>
       </div>
@@ -327,14 +333,16 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23f"></script>
-<script src="/js/tool-graph.js?v=2026-09-23f"></script>
-<script src="/js/flow.js?v=2026-09-23f"></script>
-<script src="/js/project-link.js?v=2026-09-23f"></script>
-<script src="/js/audio-core.js?v=2026-09-23f"></script>
-<script src="/js/tool-shell.js?v=2026-09-23f"></script>
-<script src="/js/consent.js?v=2026-09-23f"></script>
-<script src="/js/pitch-shifter.js?v=2026-09-23f"></script>
-<script src="/js/pwa.js?v=2026-09-23f"></script>
+<script src="/js/common.js?v=2026-09-23g"></script>
+<script src="/js/tool-graph.js?v=2026-09-23g"></script>
+<script src="/js/flow.js?v=2026-09-23g"></script>
+<script src="/js/project-link.js?v=2026-09-23g"></script>
+<script src="/js/audio-core.js?v=2026-09-23g"></script>
+<script src="/js/tool-shell.js?v=2026-09-23g"></script>
+<script src="/js/consent.js?v=2026-09-23g"></script>
+<script src="/js/spectral.js?v=2026-09-23g"></script>
+<script src="/js/key-detect.js?v=2026-09-23g"></script>
+<script src="/js/pitch-shifter.js?v=2026-09-23g"></script>
+<script src="/js/pwa.js?v=2026-09-23g"></script>
 </body>
 </html>

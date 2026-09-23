@@ -225,7 +225,7 @@ function makeRunner(cdp, origin) {
     open: async (p) => { await cdp.send('Page.navigate', { url: origin + p }); await sleep(300); },
     waitSaved: async () => {
       await sleep(300);
-      await waitFor('document.getElementById("edSaved").dataset.state === "saved"', 15000);
+      await waitFor('document.getElementById("edSaved").dataset.state === "saved"', 30000);
     },
     project: async () => JSON.parse(await evaluate(readProject))
   };

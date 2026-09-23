@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Finder — find the key of any song, with Camelot and BPM, no upload</title>
+<meta name="description" content="Find the musical key of a song free in your browser, with its Camelot code for DJs, the runner-up key, tuning and BPM. No upload, no signup.">
+<meta name="keywords" content="key finder, song key finder, what key is this song in, camelot key finder, key detector, find key of song, harmonic mixing key">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/key-finder">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Key Finder — find the key of any song, with Camelot and BPM, no upload">
+<meta property="og:description" content="Find the musical key of a song free in your browser, with its Camelot code for DJs, the runner-up key, tuning and BPM. No upload, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/key-finder">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23g">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Key Finder",
+  "url": "https://audiosaw.com/key-finder",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my song uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding and analysis both run in your browser tab. You can load the page, go offline and still get a key."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real songs the usual miss is the relative major or minor, which shares every note, so that one is always shown as the alternative."}},{"@type":"Question","name":"It says C major but the song sounds minor. Which is right?","acceptedAnswer":{"@type":"Answer","text":"Probably A minor, the alternative. C major and A minor use the same seven notes, and a minor-key pop loop like Am–F–C–G read as the relative major in every key tested. Click the alternative to switch the result."}},{"@type":"Question","name":"What is the Camelot code?","acceptedAnswer":{"@type":"Answer","text":"A number from 1 to 12 plus A for minor or B for major, arranged round the circle of fifths. Tracks with the same code, a neighbouring number, or the same number in the other letter mix together without clashing."}},{"@type":"Question","name":"Does it work on a song that changes key?","acceptedAnswer":{"@type":"Answer","text":"It gives one key for the whole file, whichever the music spends most time in. Cut out the section you care about and analyse that on its own."}},{"@type":"Question","name":"What does the tuning number mean?","acceptedAnswer":{"@type":"Answer","text":"How far the recording is from A = 440 Hz, in hundredths of a semitone. A song tuned to 432 Hz reads about −32 cents; a vinyl rip on a fast turntable reads sharp."}},{"@type":"Question","name":"Does it find the tempo too?","acceptedAnswer":{"@type":"Answer","text":"Yes, with the same detector as the BPM finder. If there is no steady beat, it says so instead of guessing."}},{"@type":"Question","name":"How long can the file be?","acceptedAnswer":{"@type":"Answer","text":"Any length that your browser can decode, but only the first four minutes are read. That is plenty for a song and keeps the analysis to a few seconds."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Key Finder"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Key Finder</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Find the <span class="ital">key</span> of a song</h1>
+    <p>Drop a track and get its key, the runner-up, the Camelot code DJs mix by, how far it is tuned from A&nbsp;=&nbsp;440 and its tempo. The analysis runs in your tab, so an unreleased demo never leaves your computer.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a track here</p>
+      <p>or click to pick. MP3, WAV, M4A, FLAC, OGG and video files all work.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Find the key</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="keyResult" hidden>
+      <div class="bpm-headline">
+        <span class="bpm-number" id="keyName">—</span>
+        <span class="key-camelot" id="keyCamelot" title="Camelot code"></span>
+      </div>
+      <p class="bpm-conf" id="keyConfidence"></p>
+      <div class="bpm-alts">
+        <span>Or possibly:</span>
+        <button type="button" class="btn btn-small btn-secondary" id="keyAlt"></button>
+      </div>
+      <figure class="key-chroma-fig">
+        <div class="key-chroma" id="keyChroma" role="img"></div>
+        <figcaption><span class="key-swatch" aria-hidden="true"></span> <span id="keyNotes"></span>. Bars show how much of each note the recording holds.</figcaption>
+      </figure>
+      <table class="spec-table bpm-detail">
+        <tr><th>Tempo</th><td id="keyTempo">—</td></tr>
+        <tr><th>Tuning</th><td id="keyTuning">—</td></tr>
+        <tr><th>Length</th><td id="keyLength">—</td></tr>
+        <tr><th>Mixes well with</th><td><ul class="key-mix" id="keyMix"></ul></td></tr>
+      </table>
+      <div class="actions key-next">
+        <a class="btn btn-secondary" id="keyToPitch" href="/pitch-shifter">Move it to another key</a>
+        <a class="btn btn-secondary" id="keyToTune" href="/autotune">Tune a vocal to this key</a>
+      </div>
+    </div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it finds the key</h2>
+    <p>A key is a set of seven notes, one of which feels like home. A song in A minor spends most of its time on A, C, D, E, F, G and B, lands on A at the ends of phrases, and hardly touches C# or F#. So the page listens for which of the twelve notes are sounding, summed over the whole track regardless of octave, and draws that as the bar chart above. That summary is called a chromagram. It is then compared with the shape each of the 24 major and minor keys is known to have: which notes turn up how often in real music, from David Temperley's statistical study of which notes appear, and how often, in real pieces. The best match wins, and the second-best is shown beside it.</p>
+    <p>Three details do most of the work. Only the peaks in the spectrum are counted, at their exact frequency, so a kick drum's broad thump does not vote for every note at once. The tuning is measured first and taken out, because a band tuned a third of a semitone sharp otherwise splits every note between two bars. And each moment of the song is weighed equally, so one loud chorus does not outvote the verses.</p>
+
+    <h3>What was measured</h3>
+    <p>Every release is checked against synthesized music in all 24 keys. Each fixture is eight seconds of bass, chords and melody in harmonic tones, which have overtones the way real instruments do. Each is played clean, with a drum kit and a noise floor added, and tuned 30 cents sharp. All 72 come out as the right key, and the tuning reads within 5 cents of what it was built with. Temperley's profiles and Krumhansl's older ones both got all 72 right, but Temperley's won by a wider margin, so that is what the page uses.</p>
+    <p>A real recording is harder. Beethoven's Sixth Symphony is in F major, but its first movement spends long stretches in C major, the key a fifth above. Given only the first minute, the page reads F major, with C major as the runner-up. Given the first four minutes, it reads C major. Both answers describe what is sounding. A song that changes key gets one answer for its whole length, so when that matters, cut out the section you care about with <a href="/audio-cutter">the cutter</a> and analyse just that.</p>
+
+    <h3>Major or minor: the one it gets wrong</h3>
+    <p>Every major key has a relative minor with exactly the same notes: C major and A minor, G major and E minor. What tells them apart is which note the music treats as home, and that is far subtler than which notes are present. The check measures this case too. A loop of A minor, F, C and G, the most common chord loop in pop, uses only the notes of C major. In all 12 keys it read as the relative major, and in 11 of them the minor key was the runner-up. So if the answer is a major key and the song sounds sad, the alternative button is probably right. For DJs this matters less than it seems: relative keys share a Camelot number (C major is 8B, A minor is 8A), and they mix together cleanly either way.</p>
+
+    <h3>Camelot codes and harmonic mixing</h3>
+    <p>The Camelot wheel numbers the keys 1 to 12 round a circle of fifths, with A for minor and B for major. Two tracks mix without clashing when their codes are the same, one number apart in the same letter, or the same number in the other letter. The page lists those neighbours under the result. It is the system Mixed In Key popularised, and most DJ software can show keys in a code like it.</p>
+
+    <h3>Tuning and odd pitches</h3>
+    <p>The tuning figure says how far the recording sits from standard pitch, in cents: a hundredth of a semitone. Most modern productions read within a few cents of zero. A vinyl rip from a turntable running slightly fast reads sharp, a band that tunes to A = 432 Hz reads about −32 cents, and an old recording transferred from tape can be anywhere. None of this changes the key name. It does matter if you are going to play along or layer another sample on top.</p>
+
+    <h3>When it cannot help</h3>
+    <p>Drums on their own, speech and sound effects have no key, and the page will still name one, so the confidence line says when the reading is weak. Modal music is named by its relative major or minor: a song in D Dorian reads as C major or D minor, because those are the only two shapes the model knows. Heavy distortion adds overtones on every note and blurs the chart. And very old or detuned recordings can land between two keys. For vocals, pulling the instrumental out first with <a href="/stem-splitter">the stem splitter</a> often gives a cleaner read, since a voice slides between notes and the chords do not.</p>
+
+    <h3>What to do with the key</h3>
+    <p>Singers usually want a song in a different key, and <a href="/pitch-shifter">the key changer</a> moves it by semitones without changing the tempo. It shows you which key each shift lands in. Producers matching a sample to a project can shift it the same way, then set its tempo with <a href="/audio-speed">the speed tool</a>. <a href="/autotune">Autotune</a> needs to know the key before it can snap a vocal to it, and the button under the result opens it with the key already chosen. The tempo shown here comes from the same detector as <a href="/bpm-finder">the BPM finder</a>.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my song uploaded anywhere?</summary><p>No. Decoding and analysis both run in your browser tab. You can load the page, go offline and still get a key.</p></details>
+      <details><summary>How accurate is it?</summary><p>On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real songs the usual miss is the relative major or minor, which shares every note, so that one is always shown as the alternative.</p></details>
+      <details><summary>It says C major but the song sounds minor. Which is right?</summary><p>Probably A minor, the alternative. C major and A minor use the same seven notes, and a minor-key pop loop like Am–F–C–G read as the relative major in every key tested. Click the alternative to switch the result.</p></details>
+      <details><summary>What is the Camelot code?</summary><p>A number from 1 to 12 plus A for minor or B for major, arranged round the circle of fifths. Tracks with the same code, a neighbouring number, or the same number in the other letter mix together without clashing.</p></details>
+      <details><summary>Does it work on a song that changes key?</summary><p>It gives one key for the whole file, whichever the music spends most time in. Cut out the section you care about and analyse that on its own.</p></details>
+      <details><summary>What does the tuning number mean?</summary><p>How far the recording is from A = 440 Hz, in hundredths of a semitone. A song tuned to 432 Hz reads about −32 cents; a vinyl rip on a fast turntable reads sharp.</p></details>
+      <details><summary>Does it find the tempo too?</summary><p>Yes, with the same detector as the BPM finder. If there is no steady beat, it says so instead of guessing.</p></details>
+      <details><summary>How long can the file be?</summary><p>Any length that your browser can decode, but only the first four minutes are read. That is plenty for a song and keeps the analysis to a few seconds.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move the song into the key you need.</p></a>
+      <a class="card" href="/autotune"><h3>Autotune / Pitch Correction</h3><p>Tune a vocal to the key you just found.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Read the key from the instrumental alone.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Set the tempo and build on it in the editor.</p></a>
+      <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Get the melody out as notes.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23g"></script>
+<script src="/js/tool-graph.js?v=2026-09-23g"></script>
+<script src="/js/flow.js?v=2026-09-23g"></script>
+<script src="/js/audio-core.js?v=2026-09-23g"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23g"></script>
+<script src="/js/spectral.js?v=2026-09-23g"></script>
+<script src="/js/key-detect.js?v=2026-09-23g"></script>
+<script src="/js/key-page.js?v=2026-09-23g"></script>
+<script src="/js/consent.js?v=2026-09-23g"></script>
+<script src="/js/pwa.js?v=2026-09-23g"></script>
+</body>
+</html>
