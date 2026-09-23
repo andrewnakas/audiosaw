@@ -192,7 +192,10 @@
       kind: spec.kind, label: spec.label || null, ref: ref, fp: M.targetPrint(p, ref), tool: slug,
       name: name + '.wav', blob: global.AudioSaw.audioBufferToWav(seg),
       duration: seg.duration, channels: seg.numberOfChannels, sampleRate: seg.sampleRate,
-      peaks: L.peaksOf(seg), createdAt: Date.now()
+      peaks: L.peaksOf(seg), createdAt: Date.now(),
+      // So a key-aware tool (autotune, the pitch shifter) can start from the
+      // project's key instead of asking again.
+      key: p.key || null, bpm: p.bpm
     };
   }
 

@@ -270,6 +270,7 @@
       injecting = true;
       var ok = CV.flow.inject(file, 'project');
       injecting = false;
+      if (ok && target.key) document.dispatchEvent(new CustomEvent('as:project-key', { detail: { key: target.key } }));
       CV.track('chain_continue', { from_tool: 'audio-editor', to_tool: slug, placement: 'project', accepted: ok });
       if (ok) markUsed(true);
     });

@@ -9,19 +9,41 @@
   var $ = CV.$;
   var report = $('#tuneReport');
 
-  // A key handed over by /key-finder (?key=A-minor) picks the key and scale.
-  (function () {
-    var K = global.ASKey, m = location.search.match(/[?&]key=([^&]+)/);
-    var key = K && m && K.parse(decodeURIComponent(m[1]));
+  // The key and scale can come from three places: /key-finder (?key=A-minor),
+  // the editor's project key when "Use project audio" is taken, or a read
+  // of the file itself.
+  var K = global.ASKey, shellApi = null;
+  function setKey(key, from) {
     if (!key) return;
     $('#key').value = String(key.pc);
     $('#scale').value = key.mode === 'major' ? 'major' : 'minor';
     var hint = $('#keyFromFinder');
-    if (hint) { hint.textContent = 'Set to ' + key.name + ' from the key finder.'; hint.hidden = false; }
+    if (hint) { hint.textContent = 'Set to ' + (key.name || K.keyName(key.pc, key.mode)) + ' ' + from + '.'; hint.hidden = false; }
+  }
+  (function () {
+    var m = location.search.match(/[?&]key=([^&]+)/);
+    if (K && m) setKey(K.parse(decodeURIComponent(m[1])), 'from the key finder');
   })();
+  document.addEventListener('as:project-key', function (e) { if (K) setKey(e.detail.key, 'from the project'); });
+  var detectBtn = $('#detectKey');
+  if (detectBtn) detectBtn.addEventListener('click', async function () {
+    var files = shellApi && shellApi.files();
+    if (!K || !files || !files.length) return;
+    detectBtn.disabled = true;
+    var hint = $('#keyFromFinder');
+    hint.hidden = false; hint.textContent = 'Listening for the key…';
+    try {
+      var buf = await AudioSaw.decodeToAudioBuffer(files[0]), ch = [];
+      for (var c = 0; c < buf.numberOfChannels; c++) ch.push(buf.getChannelData(c));
+      var res = K.analyse(ch, buf.sampleRate);
+      if (!res) hint.textContent = 'No key to read in that file.';
+      else setKey(res, 'from the file' + (res.confidence === 'clear' ? '' : ' (or possibly ' + res.runnerUp.name + ')'));
+    } catch (err) { hint.textContent = 'Could not read that file.'; }
+    detectBtn.disabled = false;
+  });
   function setRow(id, v) { var el = $(id); if (el) el.textContent = v; }
 
-  CV.shell({
+  shellApi = CV.shell({
     accept: ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus',
       '.aif', '.aiff', '.m4b', '.wma', '.mp4', '.mov', '.webm', '.mkv'],
     zipName: 'audiosaw-tuned.zip',

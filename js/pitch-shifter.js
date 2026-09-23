@@ -101,7 +101,7 @@
   var K = window.ASKey, keySel = CV.$('#songKey'), semSel = CV.$('#semitones'), note = CV.$('#keyShiftNote');
   function keyNote() {
     var key = K && K.parse(keySel.value);
-    if (!key) { note.innerHTML = 'Not sure of the key? <a href="/key-finder">The key finder</a> reads it from the file.'; return; }
+    if (!key) { note.innerHTML = 'Not sure of the key? <button type="button" class="btn btn-small btn-secondary" data-detect-key>Detect it from this file</button>'; return; }
     var to = K.transpose(key, parseInt(semSel.value, 10) || 0);
     note.textContent = key.name + ' (' + key.camelot + ') → ' + to.name + ' (' + to.camelot + ')';
   }
@@ -111,9 +111,30 @@
     keySel.addEventListener('change', keyNote);
     semSel.addEventListener('change', keyNote);
     keyNote();
+    // The editor's project key, when "Use project audio" is taken.
+    document.addEventListener('as:project-key', function (e) {
+      var k = e.detail.key;
+      if (k) { keySel.value = K.keyName(k.pc, k.mode).replace(' ', '-'); keyNote(); }
+    });
+    note.addEventListener('click', async function (e) {
+      if (!e.target.hasAttribute('data-detect-key')) return;
+      var files = shellApi && shellApi.files();
+      if (!files || !files.length) return;
+      note.textContent = 'Listening for the key…';
+      try {
+        var buf = await AudioSaw.decodeToAudioBuffer(files[0]), ch = [];
+        for (var c = 0; c < buf.numberOfChannels; c++) ch.push(buf.getChannelData(c));
+        var res = K.analyse(ch, buf.sampleRate);
+        if (!res) { note.textContent = 'No key to read in that file.'; return; }
+        keySel.value = res.name.replace(' ', '-');
+        keyNote();
+        if (res.confidence !== 'clear') note.textContent += ' — read from the file; it could also be ' + res.runnerUp.name + '.';
+      } catch (err) { note.textContent = 'Could not read that file.'; }
+    });
   }
+  var shellApi = null;
 
-  CV.shell({
+  shellApi = CV.shell({
     accept: null,
     zipName: 'audiosaw-pitch.zip',
     failMessage: 'Could not shift the pitch. ',
