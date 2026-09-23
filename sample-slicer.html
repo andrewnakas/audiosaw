@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample Slicer — chop breaks into slices, play pads, export for SP-404 and MPC</title>
+<meta name="description" content="Chop a drum break or loop into slices at the hits, play them on pads from your keyboard, and download 16-bit WAVs for SP-404, MPC or any DAW. Free, nothing uploaded.">
+<meta name="keywords" content="sample slicer, chop samples online, slice drum break, sp-404 chops, mpc slices, beat slicer, transient slicer">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/sample-slicer">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Sample Slicer — chop breaks into slices, play pads, export for SP-404 and MPC">
+<meta property="og:description" content="Chop a drum break or loop into slices at the hits, play them on pads from your keyboard, and download 16-bit WAVs for SP-404, MPC or any DAW. Free, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/sample-slicer">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23l">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Sample Slicer",
+  "url": "https://audiosaw.com/sample-slicer",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my sample uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, slicing, the pads and the export all run in your browser tab."}},{"@type":"Question","name":"How accurate is the hit detection?","acceptedAnswer":{"@type":"Answer","text":"On eight test breaks with 211 hits from full level to -24 dB, it cut 91.9% of them, each within 3 ms before the hit, with 1.5% false cuts. The misses are mostly quiet hits right after loud ones; raise the sensitivity or click to add them."}},{"@type":"Question","name":"What format are the slices?","acceptedAnswer":{"@type":"Answer","text":"16-bit PCM WAV at 48 kHz (SP-404 MK2, TR-8S) or 44.1 kHz (SP-404 MK1, MPC, most DAWs), mono or stereo, numbered in order and zipped."}},{"@type":"Question","name":"Will the slices click?","acceptedAnswer":{"@type":"Answer","text":"No. Every cut is moved to a zero crossing and every slice has a tiny fade at each end, so each starts and ends on exactly zero."}},{"@type":"Question","name":"Can I move or add slice points?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click the waveform to add a cut and click a cut to remove it. Cuts you add snap to the nearest zero crossing."}},{"@type":"Question","name":"Can I play the slices before downloading?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each slice is a pad: tap it, or use the number row, then Q to P, A to L and Z onward on your keyboard."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Cut, trim & arrange","item":"https://audiosaw.com/tools#edit"},{"@type":"ListItem","position":3,"name":"Sample Slicer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#edit">Cut, trim &amp; arrange</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Sample Slicer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Sample <span class="ital">slicer</span></h1>
+    <p>Chop a drum break, a loop or a vocal phrase into slices at the hits, play them on pads from your keyboard, and download them as WAVs your SP-404, MPC or DAW will load. It all happens in your browser, and nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a break or a loop here</p>
+      <p>or click to pick. WAV, MP3, AIFF, FLAC, M4A and video files work.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.opus,.aac,.aif,.aiff,.mp4,.mov,.webm,.mkv">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Slice
+          <select id="slMode">
+            <option value="transients" selected>At the hits</option>
+            <option value="equal">Into equal parts</option>
+            <option value="beats">On the beat</option>
+            <option value="manual">By hand</option>
+          </select>
+        </label>
+        <label>Sensitivity <input type="range" id="slSens" min="0" max="1" step="0.05" value="0.5"></label>
+        <label hidden>Parts
+          <select id="slCount"><option>4</option><option>8</option><option selected>16</option><option>32</option></select>
+        </label>
+        <label hidden>Every
+          <select id="slBeats"><option value="0.5">eighth note</option><option value="1" selected>beat</option><option value="2">half bar</option><option value="4">bar</option></select>
+        </label>
+        <label hidden>Tempo (BPM) <input type="number" id="slBpm" min="30" max="300" step="0.1" value="120" inputmode="decimal"></label>
+      </div>
+      <canvas id="slWave" class="sl-wave" aria-label="Waveform with slice points: click to add a cut, click a cut to remove it"></canvas>
+      <p class="key-shift-note" id="slInfo"></p>
+      <div class="sl-pads" id="slPads"></div>
+      <div class="controls">
+        <label>Export for
+          <select id="slPreset">
+            <option value="48000" selected>SP-404 MK2 / TR-8S — 48 kHz, 16-bit</option>
+            <option value="44100">SP-404 MK1 / MPC / DAW — 44.1 kHz, 16-bit</option>
+            <option value="0">Keep the original rate, 16-bit</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="slMono" checked> Mono</label>
+        <label>File names <input type="text" id="slPrefix" value="break" maxlength="40"></label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" type="button">Download slices (.zip)</button>
+        <button class="btn btn-secondary" id="resetBtn" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How the chopping works</h2>
+    <p>Drop a file and it is cut at every hit straight away. To find the hits, the sound is split into 24 bands from the kick's thump to the hi-hat's fizz. The page then looks, 86 times a second, for moments when a band suddenly gets louder. A band-by-band view matters. Counting every frequency the same way, a kick hides under the noise of the cymbals, and in an early version a kick at full level was missed for exactly that reason. A hit has to stand out from the last third of a second around it, not from the whole file, so quiet ghost notes in a busy break still count.</p>
+    <p>Finding a hit is half of it. The other half is where to cut, because a slice that starts a few milliseconds late has lost the snap that made the sound worth sampling. Each hit is traced back through a fine envelope, 0.7 millisecond windows, to the steepest part of its attack. The cut goes a millisecond and a half before that, then back to the nearest point where the waveform crosses zero. Every slice also gets a tiny fade at each end. Hardware samplers play a slice from its first sample, and one that starts or ends mid-wave clicks.</p>
+
+    <h3>What was measured</h3>
+    <p>The slicer is checked on every release against eight synthesized breaks, 211 hits in all. They mix kicks, snares, closed hats, claps and rims at levels from full down to −24 dB, some only 60 ms apart, over a reverb tail and a noise floor. At the default sensitivity it cut 91.9% of the hits, and every one of those cuts was no more than 3 ms before its hit and never late enough to clip the attack. 1.5% of cuts were not hits. Nearly all the misses are quiet hits landing 60 ms after a loud one, while the loud one is still ringing. If you need those, raise the sensitivity or click the waveform to add the cut. A sustained chord fading in from silence is cut where it begins and nowhere after, and every slice starts and ends on exactly zero.</p>
+
+    <h3>Four ways to slice</h3>
+    <ul>
+      <li><strong>At the hits</strong>: for breaks and drum loops. Slide the sensitivity left for fewer, stronger slices (kick and snare only) and right to catch ghost notes.</li>
+      <li><strong>Into equal parts</strong>: 4, 8, 16 or 32. For a loop that is already exactly a whole number of bars, sixteen equal slices are sixteenth notes of one bar, or quarters of four. This is the classic way to rearrange a break.</li>
+      <li><strong>On the beat</strong>: every eighth, beat, half bar or bar at the tempo, which is detected when the file loads. The same detector powers <a href="/bpm-finder">the BPM finder</a>. Check it; if the loop does not start exactly on a downbeat, trim it first with <a href="/audio-cutter">the cutter</a>.</li>
+      <li><strong>By hand</strong>: click anywhere on the waveform to add a cut (it snaps to a zero crossing) and click a cut to remove it. Editing any of the other modes switches to this one, so your changes stay.</li>
+    </ul>
+
+    <h3>Playing the pads</h3>
+    <p>Each slice is a pad. Tap it, or play it from the keyboard: the number row is pads 1 to 10, then Q to P, A to L and Z onward. Playing a pad stops the one before, like a choke group on a sampler, so you can finger-drum the slices into a new pattern and hear straight away whether the chop works before downloading anything.</p>
+
+    <h3>Getting slices onto an SP-404 or MPC</h3>
+    <p>The download is a zip of 16-bit PCM WAVs, numbered in order. The SP-404 MK2 and the TR-8S want 48 kHz. The original SP-404 and SP-404SX, and Akai MPCs, want 44.1 kHz. <a href="/wav-for-sp404">The sampler format page</a> explains why a file in the wrong format loads silently or not at all. Mono is on by default: drum hits rarely need stereo, and mono halves the memory each pad uses. On an SP-404 MK2, copy the WAVs into the <code>IMPORT</code> folder on the SD card and import them from the pad's menu. On an MPC, drag the folder in and use it as a program. In a DAW, drop them on a drum rack or sampler track, one per pad, in order.</p>
+
+    <h3>Where the samples come from</h3>
+    <p>For a vocal chop or an isolated drum part from a full song, split it first with <a href="/stem-splitter">the stem splitter</a>, then slice the stem. <a href="/audio-editor">The audio editor</a> can arrange slices back into a pattern on a bar grid with a metronome. And if the original is in the wrong key for your track, <a href="/key-finder">the key finder</a> and <a href="/pitch-shifter">the key changer</a> fix that before you chop.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my sample uploaded?</summary><p>No. Decoding, slicing, the pads and the export all run in your browser tab.</p></details>
+      <details><summary>How accurate is the hit detection?</summary><p>On eight test breaks with 211 hits from full level to -24 dB, it cut 91.9% of them, each within 3 ms before the hit, with 1.5% false cuts. The misses are mostly quiet hits right after loud ones; raise the sensitivity or click to add them.</p></details>
+      <details><summary>What format are the slices?</summary><p>16-bit PCM WAV at 48 kHz (SP-404 MK2, TR-8S) or 44.1 kHz (SP-404 MK1, MPC, most DAWs), mono or stereo, numbered in order and zipped.</p></details>
+      <details><summary>Will the slices click?</summary><p>No. Every cut is moved to a zero crossing and every slice has a tiny fade at each end, so each starts and ends on exactly zero.</p></details>
+      <details><summary>Can I move or add slice points?</summary><p>Yes. Click the waveform to add a cut and click a cut to remove it. Cuts you add snap to the nearest zero crossing.</p></details>
+      <details><summary>Can I play the slices before downloading?</summary><p>Yes. Each slice is a pad: tap it, or use the number row, then Q to P, A to L and Z onward on your keyboard.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/wav-for-sp404"><h3>WAV for SP-404 / MPC</h3><p>The exact WAV spec each sampler wants.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Pull the drums or vocal out of a song to chop.</p></a>
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Get the tempo before slicing on the beat.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Arrange the slices on a bar grid.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Trim the loop to whole bars first.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23l"></script>
+<script src="/js/tool-graph.js?v=2026-09-23l"></script>
+<script src="/js/flow.js?v=2026-09-23l"></script>
+<script src="/js/audio-core.js?v=2026-09-23l"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23l"></script>
+<script src="/js/spectral.js?v=2026-09-23l"></script>
+<script src="/js/slicer.js?v=2026-09-23l"></script>
+<script src="/js/slicer-page.js?v=2026-09-23l"></script>
+<script src="/js/consent.js?v=2026-09-23l"></script>
+<script src="/js/pwa.js?v=2026-09-23l"></script>
+</body>
+</html>

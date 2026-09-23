@@ -28,6 +28,7 @@ const CHECKS = [
   ['check-editor.js'],
   ['check-key.js'],
   ['check-chords.js'],
+  ['check-slicer.js'],
   ['check-beat.js'],
   ['check-pitch.js'],
   ['check-fx.js'],

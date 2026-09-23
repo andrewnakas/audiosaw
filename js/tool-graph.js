@@ -810,6 +810,17 @@
         ['change-sample-rate', 'Match your Audacity project rate']
       ]
     },
+    'sample-slicer': {
+      cat: 'edit', label: 'sample slicer', title: 'Sample Slicer',
+      blurb: 'Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.',
+      next: [
+        ['wav-for-sp404', 'The exact WAV spec each sampler wants'],
+        ['stem-splitter', 'Pull the drums or vocal out of a song to chop'],
+        ['bpm-finder', 'Get the tempo before slicing on the beat'],
+        ['audio-editor', 'Arrange the slices on a bar grid'],
+        ['audio-cutter', 'Trim the loop to whole bars first']
+      ]
+    },
     'wav-for-sp404': {
       cat: 'apps', label: 'for samplers', title: 'WAV for SP-404 / MPC',
       blurb: 'The exact spec hardware samplers need, or they fail silently.',
@@ -819,6 +830,7 @@
         ['trim-silence-edges', 'Tighten the start so pads trigger instantly'],
         ['normalize-audio', 'Even out a kit of samples'],
         ['bpm-finder', 'Get the tempo before chopping the sample'],
+        ['sample-slicer', 'Chop a break into pads before converting'],
         ['audio-to-midi', 'Transcribe a sample rather than chopping it']
       ]
     }
@@ -921,7 +933,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
       ]
     },
     {

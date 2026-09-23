@@ -214,6 +214,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [Trim silence off the ends](https://audiosaw.com/trim-silence-edges): Top and tail a recording, leaving the middle untouched.
 - [Auto-Cut Silence](https://audiosaw.com/auto-cut-silence): Shorten the pauses between phrases, keeping speech natural.
 - [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
+- [Sample Slicer](https://audiosaw.com/sample-slicer): Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.
 
 ## Loudness & channels
 

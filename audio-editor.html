@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23k">
-<link rel="stylesheet" href="/css/editor.css?v=2026-09-23k">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23l">
+<link rel="stylesheet" href="/css/editor.css?v=2026-09-23l">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -268,6 +268,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>Most loops and samples arrive at the wrong tempo and in the wrong key. Open the tempo sheet (click the tempo in the ruler's corner) and press <em>Detect from the audio</em>. The tempo is read from the longest clip, or the one you selected, and the grid lines up with its beats as well: bar lines land on the kicks, not wherever 0:00 happened to be. The beat position is measured. On synthesized drum patterns from 84 to 174 BPM, the first beat landed within a millisecond, and the check that runs on every release allows 10 ms. Which beat is <em>one</em> is only a guess, and it guessed right on 5 of the 9 patterns, so the sheet tells you where it put bar 1 and how to move it. <em>Detect the key</em> in the same sheet reads the project's key with the engine behind the <a href="/key-finder">key finder</a>.</p>
     <p>Then right-click a clip, or hold it on a phone, and choose <strong>Fit to the project tempo</strong>. The clip's own tempo is detected and turned into the half or double reading nearest the project, so a 70 BPM loop going into a 140 project is treated as a 140 loop. It is then time-stretched with ffmpeg without changing its pitch. The result is held to exactly the right length: a 19.5-second loop at 100 BPM comes back exactly 16.25 seconds long at 120, not a few milliseconds over. A loop that is even slightly too long drifts off the grid a little more on every repeat.</p>
     <p><strong>Match the project key</strong> reads the clip's key and offers the shortest shift into the project's key, up or down. A minor-key clip counts as already fitting its relative major, since the two share every note. It also offers the other direction (up 5 or down 7 land on the same notes an octave apart) and a button for when the key was misread. In testing, an E minor loop moved up five semitones into an A minor project and then read as A minor. Both fits are one step of undo, like every other Process effect.</p>
+    <p><strong>Slice at the hits</strong> splits a drum loop into one clip per hit, with the detector behind the <a href="/sample-slicer">sample slicer</a>. Each cut sits just before its attack, on a zero crossing, so the pieces can be moved, duplicated and rearranged on the grid without clicks. It is one step of undo.</p>
     <p><strong>Detect chords</strong>, in the same menu, writes the chords along the bottom of the clip, and they stay with the audio when you trim or move it. With the bars ruler on, chord changes land on the project's beats. The detector is the one behind the <a href="/chord-finder">chord finder</a>, and that page lists what it names and how it was measured.</p>
 
     <h3>Automation</h3>
@@ -375,6 +376,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <a href="/trim-silence-edges">top &amp; tail</a>
         <a href="/auto-cut-silence">auto-cut silence</a>
         <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
       </div>
       <div class="footer-col">
         <h4>Loudness &amp; channels</h4>
@@ -432,29 +434,30 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23k"></script>
-<script src="/js/tool-graph.js?v=2026-09-23k"></script>
-<script src="/js/flow.js?v=2026-09-23k"></script>
-<script src="/js/audio-core.js?v=2026-09-23k"></script>
-<script src="/js/tool-shell.js?v=2026-09-23k"></script>
-<script src="/js/loudness.js?v=2026-09-23k"></script>
-<script src="/js/silence-gaps.js?v=2026-09-23k"></script>
-<script src="/js/slowed-reverb.js?v=2026-09-23k"></script>
-<script src="/js/noise-reduction.js?v=2026-09-23k"></script>
-<script src="/js/editor-model.js?v=2026-09-23k"></script>
-<script src="/js/editor-dsp.js?v=2026-09-23k"></script>
-<script src="/js/editor-engine.js?v=2026-09-23k"></script>
-<script src="/js/editor-view.js?v=2026-09-23k"></script>
-<script src="/js/editor-fx.js?v=2026-09-23k"></script>
-<script src="/js/editor-store.js?v=2026-09-23k"></script>
-<script src="/js/project-link.js?v=2026-09-23k"></script>
-<script src="/js/editor-link.js?v=2026-09-23k"></script>
-<script src="/js/bpm-detector.js?v=2026-09-23k"></script>
-<script src="/js/spectral.js?v=2026-09-23k"></script>
-<script src="/js/key-detect.js?v=2026-09-23k"></script>
-<script src="/js/editor-fxui.js?v=2026-09-23k"></script>
-<script src="/js/editor-ui.js?v=2026-09-23k"></script>
-<script src="/js/consent.js?v=2026-09-23k"></script>
-<script src="/js/pwa.js?v=2026-09-23k"></script>
+<script src="/js/common.js?v=2026-09-23l"></script>
+<script src="/js/tool-graph.js?v=2026-09-23l"></script>
+<script src="/js/flow.js?v=2026-09-23l"></script>
+<script src="/js/audio-core.js?v=2026-09-23l"></script>
+<script src="/js/tool-shell.js?v=2026-09-23l"></script>
+<script src="/js/loudness.js?v=2026-09-23l"></script>
+<script src="/js/silence-gaps.js?v=2026-09-23l"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-23l"></script>
+<script src="/js/noise-reduction.js?v=2026-09-23l"></script>
+<script src="/js/editor-model.js?v=2026-09-23l"></script>
+<script src="/js/editor-dsp.js?v=2026-09-23l"></script>
+<script src="/js/editor-engine.js?v=2026-09-23l"></script>
+<script src="/js/editor-view.js?v=2026-09-23l"></script>
+<script src="/js/editor-fx.js?v=2026-09-23l"></script>
+<script src="/js/editor-store.js?v=2026-09-23l"></script>
+<script src="/js/project-link.js?v=2026-09-23l"></script>
+<script src="/js/editor-link.js?v=2026-09-23l"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23l"></script>
+<script src="/js/spectral.js?v=2026-09-23l"></script>
+<script src="/js/key-detect.js?v=2026-09-23l"></script>
+<script src="/js/slicer.js?v=2026-09-23l"></script>
+<script src="/js/editor-fxui.js?v=2026-09-23l"></script>
+<script src="/js/editor-ui.js?v=2026-09-23l"></script>
+<script src="/js/consent.js?v=2026-09-23l"></script>
+<script src="/js/pwa.js?v=2026-09-23l"></script>
 </body>
 </html>

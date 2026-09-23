@@ -980,6 +980,7 @@
       { v: 'fx', label: 'Process…', hint: 'renders' },
       { v: 'tool', label: 'Send to a tool…', hint: 'and back' },
       { v: 'fittempo', label: 'Fit to the project tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'slice', label: 'Slice at the hits', hint: 'splits the clip' },
       { v: 'chords', label: (S.project.sources[c.sourceId] || {}).chords ? 'Detect chords again' : 'Detect chords', hint: 'shown on the clip' },
       { v: 'fitkey', label: 'Match the project key…', hint: S.project.key && global.ASKey ? global.ASKey.keyName(S.project.key.pc, S.project.key.mode) : 'set a key first' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
@@ -999,6 +1000,7 @@
       if (v === 'fittempo') fitTempoSheet(clipId);
       if (v === 'fitkey') matchKeySheet(clipId);
       if (v === 'chords') detectChords(clipId);
+      if (v === 'slice') sliceAtHits(clipId);
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -1063,6 +1065,28 @@
     }
     inp.addEventListener('input', function () { explain(); });
     if (src && src.bpm) explain('Fitted before at ' + src.bpm + ' BPM.'); else detect();
+  }
+
+  // Split a clip at every hit, with the same detector as /sample-slicer:
+  // cuts land just before each attack, on a zero crossing, so the pieces
+  // can be moved or duplicated without clicks. One undo step.
+  function sliceAtHits(clipId) {
+    var f = M.findClip(S.project, clipId), SLR = global.ASSlicer;
+    if (!f || !SLR) return;
+    var c = f.clip, buf = buffers.get(c.sourceId);
+    if (!buf) return;
+    var part = slice(buf, c.offset, c.duration), ch = [];
+    for (var i = 0; i < part.numberOfChannels; i++) ch.push(part.getChannelData(i));
+    var hits = SLR.onsets(ch, part.sampleRate).filter(function (t) { return t > M.MIN_LEN && t < c.duration - M.MIN_LEN; });
+    if (!hits.length) { status('warn', 'No hits found inside “' + c.name + '” to slice at.'); return; }
+    var ids = [clipId];
+    edit(function (p) {
+      hits.forEach(function (t) { ids = ids.concat(M.splitAt(p, c.start + t, ids)); });
+    });
+    S.sel = {};
+    ids.forEach(function (id) { if (M.findClip(S.project, id)) S.sel[id] = true; });
+    refresh();
+    status('success', 'Sliced “' + c.name + '” into ' + (hits.length + 1) + ' pieces at the hits. Undo puts it back together.');
   }
 
   // Chords for the whole of the clip's source, so trimming the clip later

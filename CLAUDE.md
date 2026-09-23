@@ -172,6 +172,20 @@ carrying a separate tone per channel, not because the coefficient tables say
     0.7 score floor, the 100 Hz analysis floor, and the rule that the root
     and third are present. A kick's falling pitch otherwise reads as a
     chord.
+- `js/slicer.js` (`ASSlicer`) + `js/slicer-page.js`: `/sample-slicer`, and
+  the editor's "Slice at the hits". Onsets are band flux (24 log bands,
+  2048/512 frames) against 1.8x the local median, with a 12%-of-peak floor
+  and an absolute floor. Each cut is placed 1.5 ms before the steepest rise
+  of a 0.7 ms envelope, then moved back to a zero crossing.
+  - **Checked by** `tools/check-slicer.js`, which needs ≥90% of 211 hits
+    (measured 91.9%) and ≤5% false cuts (1.5%). Cuts are never more than
+    1 ms late. A pad is cut only where it begins, and slices start and end
+    on zero.
+  - **Each rule was measured.** Summing bins instead of bands missed kicks.
+    A threshold from the global mean missed a kick at -2 dB. 1024-point
+    frames cut a steady chord 27 times.
+  - **A fixture trap.** A test kick cut off abruptly mid-decay is a real
+    transient, not a slicer bug.
 - `js/metronome-page.js` + `js/tuner-page.js`: `/metronome` and `/tuner`,
   two pages that play or listen live and never take a file.
   - **Metronome.** It schedules on the AudioContext clock 120 ms ahead, or
