@@ -7,3 +7,6 @@ Thumbs.db
 node_modules/
 .env
 .env.local
+
+# wrangler pages dev local cache
+.wrangler/
