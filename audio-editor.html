@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Free Online Audio Editor — multitrack, no upload, works on your phone</title>
-<meta name="description" content="A free multitrack audio editor in your browser. Cut, split, move, fade and mix clips, record over a backing track, add effects, export MP3 or WAV. Nothing uploads, no signup, works on mobile.">
-<meta name="keywords" content="online audio editor, free audio editor, multitrack audio editor, audio editor no upload, edit mp3 online, audio editor for phone, browser daw, audacity alternative online">
+<meta name="description" content="Free multitrack audio editor in your browser: cut, mix and record with 25 live effects, presets and automation. Export MP3 or WAV. Nothing uploads.">
+<meta name="keywords" content="online audio editor, free audio editor, multitrack audio editor, audio editor no upload, edit mp3 online, audio editor for phone, browser daw, online mixer with effects, audio automation online, audacity alternative online">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/audio-editor">
 <link rel="icon" href="/favicon.ico">
@@ -19,7 +19,7 @@
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
 <meta property="og:title" content="Free Online Audio Editor — multitrack, no upload, works on your phone">
-<meta property="og:description" content="Cut, move, fade, mix and record on a multitrack timeline in your browser. Nothing uploads.">
+<meta property="og:description" content="Cut, mix and record on a multitrack timeline with live effects, patches and automation, in your browser. Nothing uploads.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/audio-editor">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23">
-<link rel="stylesheet" href="/css/editor.css?v=2026-09-23">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23b">
+<link rel="stylesheet" href="/css/editor.css?v=2026-09-23b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +59,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out."}},{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source."}},{"@type":"Question","name":"Does it work on iPhone and Android?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record."}},{"@type":"Question","name":"Will I lose my work if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file."}},{"@type":"Question","name":"How many tracks can I have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded."}},{"@type":"Question","name":"Can I undo an effect?","acceptedAnswer":{"@type":"Answer","text":"Yes. Effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original."}},{"@type":"Question","name":"Why does my recording sound late against the backing track?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one."}},{"@type":"Question","name":"Can I open the project in Audacity or another editor?","acceptedAnswer":{"@type":"Answer","text":"Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out."}},{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source."}},{"@type":"Question","name":"Does it work on iPhone and Android?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record."}},{"@type":"Question","name":"Will I lose my work if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file."}},{"@type":"Question","name":"How many tracks can I have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded."}},{"@type":"Question","name":"Can I undo an effect?","acceptedAnswer":{"@type":"Answer","text":"Yes. Adding, removing, reordering and bypassing effects, every knob turn, every patch and every automation point is one step of undo. Process effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original."}},{"@type":"Question","name":"What is the difference between Track effects and Process?","acceptedAnswer":{"@type":"Answer","text":"Track effects run live on a whole track as it plays, never change the audio, and can be adjusted or switched off at any time. Process renders an effect into one clip or a selected range, which suits things that need the whole file at once, like noise removal, a loudness target or a speed change."}},{"@type":"Question","name":"What effects are there?","acceptedAnswer":{"@type":"Answer","text":"25 of them: Channel EQ, filter, exciter, compressor, limiter, noise gate, de-esser, multiband compressor, transient shaper, sidechain ducker, drive, bitcrusher, tape, chorus, flanger, phaser, tremolo, auto-pan, ring modulator, stereo delay, tape echo, reverb, pitch shifter, utility and an analyzer. They come with 89 presets, plus 20 patches that load a whole chain at once."}},{"@type":"Question","name":"Can I automate volume or an effect over time?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press A on a track to show its automation lane and pick volume, pan, a send or any effect setting on that track, then tap to add points. Or turn on Auto in the mixer and move the control while the song plays to record the movement."}},{"@type":"Question","name":"How do I make music dip under a voice automatically?","acceptedAnswer":{"@type":"Answer","text":"Put the Music under voice patch on the music track and choose the voice track in its ducker. The music turns down whenever the voice plays and comes back up in the pauses, with no automation to draw."}},{"@type":"Question","name":"Does the export sound exactly like playback?","acceptedAnswer":{"@type":"Answer","text":"It runs the same effect code, so it matches what you heard. There are two differences. Chorus, phaser and tremolo sweeps start from the beginning of the export rather than from wherever you pressed play. And a reverb or echo tail carries on past the end only when Let reverb and echo ring out is ticked."}},{"@type":"Question","name":"Why does my recording sound late against the backing track?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one."}},{"@type":"Question","name":"Can I open the project in Audacity or another editor?","acceptedAnswer":{"@type":"Answer","text":"Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -94,7 +94,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>Audio <span class="ital">Editor</span></h1>
-    <p>A multitrack editor that runs in this tab. Drop in songs, voice memos or the sound from a video, then cut, move, fade, mix, record and export. Nothing is uploaded, there is no account, and it works with a finger as well as a mouse.</p>
+    <p>A multitrack editor that runs in this tab. Drop in songs, voice memos or the sound from a video, then cut, move, fade, record and mix them through live effects with presets and automation. Nothing is uploaded, there is no account, and it works with a finger as well as a mouse.</p>
   </section>
 
   <noscript><div class="noscript-banner">The editor needs JavaScript turned on.</div></noscript>
@@ -119,6 +119,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           <button type="button" class="ed-icon" id="edRedo" title="Redo (⇧⌘Z)" aria-label="Redo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5M20 9H10a6 6 0 0 0 0 12h3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button type="button" class="ed-icon" id="edFull" aria-pressed="false" title="Full screen editor" aria-label="Full screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
           <button type="button" class="ed-icon" id="edMore" title="Project menu" aria-label="Project menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg></button>
+          <button type="button" class="ed-btn" id="edMixerBtn" title="Mixer: effects, sends and levels (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M12 3v18M18 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".5"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg><span class="ed-hide-sm">Mixer</span></button>
           <button type="button" class="ed-btn ed-btn-primary" id="edExport">Export</button>
         </div>
       </div>
@@ -206,6 +207,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </label>
           <label>File name <input type="text" id="edExName" maxlength="80" autocomplete="off"></label>
           <label class="ed-check"><input type="checkbox" id="edExProtect" checked> Stop the mix clipping (turns it down to peak at -1 dB, only if it would clip)</label>
+          <label class="ed-check" id="edExTailsWrap"><input type="checkbox" id="edExTails" checked> Let reverb and echo ring out past the end</label>
+          <label class="ed-check" id="edExStemMasterWrap" hidden><input type="checkbox" id="edExStemMaster"> Run each stem through the master effects too</label>
           <label class="ed-check"><input type="checkbox" id="edExMono"> Mono</label>
         </div>
         <div class="ed-sheet-actions">
@@ -219,12 +222,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="content-section">
     <h2>How it works</h2>
     <p>Every file you add becomes a <em>clip</em> on a <em>track</em>. A clip is a window onto the original audio, not a copy of it: when you trim, split or move one, only its start and length change, and the samples underneath stay exactly as they arrived. That is what "non-destructive" means, and it is why a trim can be pulled back out again later and why undo goes back two hundred steps without eating memory.</p>
-    <p>Effects are the one thing that makes new audio. Applying noise removal or a loudness target writes a processed copy and points the clip at it, so undo still takes the effect off. The project saves itself in your browser as you work; close the tab, come back tomorrow, and the editor offers to pick up where you left off. To move a project to another computer, the project menu saves it as a single <code>.audiosaw</code> file, which is an ordinary zip of your audio and a JSON description of the timeline.</p>
+    <p>Effects come in two kinds. <em>Track effects</em> run live on a track as it plays and never touch the audio, so you can change them at any point. <em>Process</em> effects, like noise removal or a loudness target, write a processed copy and point the clip at it, so undo still takes them off. The project saves itself in your browser as you work; close the tab, come back tomorrow, and the editor offers to pick up where you left off. To move a project to another computer, the project menu saves it as a single <code>.audiosaw</code> file, which is an ordinary zip of your audio and a JSON description of the timeline.</p>
 
     <h3>Jobs it is good at</h3>
     <ul>
       <li><strong>Cutting a section out of the middle.</strong> Drag along the ruler over the part you do not want and press Delete. The gap closes up, the way deleting a sentence does. The single-purpose <a href="/audio-cutter">audio cutter</a> cannot do this; it keeps one region.</li>
-      <li><strong>A podcast or voice-over with music.</strong> Voice on one track, the music bed on another, a fade on the music where the talking starts. Run <em>Loudness → -16 LUFS</em> on the voice clips and export as MP3.</li>
+      <li><strong>A podcast or voice-over with music.</strong> Voice on one track, the music bed on another. Load the <em>Podcast voice</em> patch on the voice and <em>Music under voice</em> on the bed, pick the voice track in its ducker, and the music dips by itself whenever someone talks. Put <em>Podcast master</em> on the master and export as MP3.</li>
       <li><strong>Recording over a backing track.</strong> Press Record and the other tracks play while you sing or talk; the take lands on its own track, lined up. Record several takes and keep the best bits of each.</li>
       <li><strong>Mashups, edits and ringtones.</strong> Line up two songs, split at the beat, duplicate a chorus, loop a section to check the join, then export just the selected range.</li>
     </ul>
@@ -233,17 +236,46 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>Most browser recorders use MediaRecorder, which hands back a compressed file with no timing information, so a take recorded over a backing track has to be lined up by eye. Here the microphone is read sample by sample on the same audio clock the playback runs on, and the delay through your speakers and microphone, as the browser reports it, is taken off when the take is placed. Two things still matter. Wear headphones, or the backing track bleeds into the microphone and ends up in the take. And Bluetooth headphones add a delay that browsers do not always report accurately; if a take sounds late, select it and press ← a few times. Each press moves it 10 ms.</p>
     <p>Echo cancellation, noise suppression and automatic gain are switched off for recording. They are built for video calls and damage music: automatic gain pumps the level up and down, and noise suppression treats a held note as noise.</p>
 
-    <h3>The effects are the site's own tools</h3>
-    <p>Each effect runs the same code as the matching single-purpose page, so it sounds identical: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a>, <a href="/auto-cut-silence">pause shortening</a>, <a href="/slowed-reverb">reverb</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
+    <h3>The mixer: live effects on every track</h3>
+    <p>Press <strong>FX</strong> on a track, the <strong>Mixer</strong> button, or the F key. Every track has its own effect chain, and so do the master and any number of return buses. Effects run while the song plays and you hear a change the moment you make it: nothing is rendered, the original audio is never altered, and every knob turn is one step of undo. The mixer docks at the side on a laptop and slides up from the bottom on a phone, with the timeline still usable above it, so you can scrub, loop and tweak at the same time.</p>
+    <p>There are three ways in, depending on how much control you want:</p>
+    <ul>
+      <li><strong>Patches.</strong> A whole chain in one tap. There are twenty, including <em>Podcast voice</em>, <em>Radio DJ</em>, <em>Singer, polished</em>, <em>Telephone</em>, <em>Walkie-talkie</em>, <em>Robot</em>, <em>Lo-fi</em>, <em>Underwater</em>, <em>Punchy drums</em>, <em>Fat bass</em>, <em>Guitar amp</em>, <em>Dub delay</em> and, for the master, <em>Streaming master</em> and <em>Loud master</em>. You can save your own chain as a patch.</li>
+      <li><strong>Smart controls.</strong> Each effect opens on two to four plain-words knobs, and each knob moves several settings together. The compressor's <em>Amount</em> lowers the threshold and raises the ratio as you turn it. The reverb's <em>Space</em> lengthens the decay, adds pre-delay and pulls back the early reflections, the way a bigger room would. The EQ has <em>Bass</em>, <em>Clear the mud</em>, <em>Presence</em> and <em>Air</em>.</li>
+      <li><strong>Show all controls.</strong> Every parameter, grouped, with a slider and a value you can type. The EQ has a low cut and a high cut at 12, 24 or 48 dB per octave, two shelves and four bands, which you can drag directly on its curve with the live spectrum behind it. The compressor draws its transfer curve and shows gain reduction as it happens.</li>
+    </ul>
+    <p>Every effect has an on/off switch, an output level and, where it makes sense, a Mix control for blending the dry and processed sound. A/B lets you flip between two settings of the same effect to compare them. There are 89 factory presets across the 25 effects, and you can save your own.</p>
+    <p>The 25 are grouped the way a studio would group them:</p>
+    <ul>
+      <li><strong>EQ and filter:</strong> Channel EQ, a resonant filter with an LFO that can sync to the tempo (from a slow build to a dubstep wobble), and an exciter.</li>
+      <li><strong>Dynamics:</strong> compressor, look-ahead limiter, noise gate, de-esser, three-band multiband compressor, transient shaper, and a sidechain ducker that turns one track down whenever another plays.</li>
+      <li><strong>Colour:</strong> drive with six characters from tube to wavefolder, bitcrusher, and tape saturation with wow and flutter.</li>
+      <li><strong>Modulation:</strong> chorus, flanger, phaser with 2 to 12 stages, tremolo, auto-pan and ring modulator. The <em>Robot voice</em> preset is the classic 30 Hz ring-mod Dalek.</li>
+      <li><strong>Delay and reverb:</strong> a stereo delay with ping-pong and filters in the feedback path (the <em>Dotted 8th</em> preset is the Edge's guitar trick), a tape echo in the spirit of a Roland Space Echo that saturates as it runs away, and a reverb generated from its settings.</li>
+      <li><strong>Pitch and utility:</strong> a real-time pitch shifter for harmonies and doubling, a utility for gain, stereo width, balance, polarity, channel swap and mono, and an analyzer.</li>
+    </ul>
+
+    <h3>Sends, buses and the tempo</h3>
+    <p>Every project starts with two return buses, <em>Reverb</em> and <em>Delay</em>. A track's Send knob copies it into a bus, so a vocal and a guitar can share one room and sound like they were recorded together. The effects on a bus are 100% wet because the dry sound is already on the track. You can add more buses and put anything on them. Synced delays, tremolos, auto-pans and filter sweeps follow the project tempo. Type it in, tap along, or let the editor read it from the audio with the same detector the <a href="/bpm-finder">BPM finder</a> uses.</p>
+
+    <h3>Automation</h3>
+    <p>Press <strong>A</strong> on a track to show its automation lane, then choose what it controls: volume, pan, a send, or any continuous setting of any effect on that track. Tap to add a point, drag to move one, and double-tap to delete it. For a fade under a voice, a filter that opens into the chorus, or a delay that throws on the last word, you can also turn on <strong>● Auto</strong> in the mixer and simply move the control while the song plays. The movement is recorded, thinned to the fewest points that stay within 1% of what you did, and written into the lane. Automation belongs to the timeline, so when you cut a section out or insert silence, the lane moves with the audio after it.</p>
+
+    <h3>What was measured</h3>
+    <p>Every effect and every preset is rendered in a browser and checked on each release. The compressor takes 7.5 dB off a tone 10 dB over its threshold at 4:1, as the textbook says it should. The browser's built-in compressor, given the same settings, came out 9.3 dB louder than that because it adds make-up gain it does not report, which is why it is not used here. The limiter was pushed 18 dB into its ceiling and its true peak, measured the way the ITU-R BS.1770 loudness standard measures it, came out at the ceiling and not above. An EQ band at +6 dB boosts a tone at its centre by 6.00 dB. The multiband compressor's three bands sum back to within 0.15 dB of the input when they are not compressing. The limiter looks ahead 4.5 ms; every other track is delayed by the same amount so it stays in time, and the export trims that delay off the front. A mono track sits at −3 dB per side in the centre and at full level on one side when panned hard, the same pan law as before the mixer existed.</p>
+
+    <h3>Process: effects that render</h3>
+    <p><strong>Process…</strong> keeps the one-off effects that need to see the whole file. They run the same code as the matching single-purpose page: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a>, <a href="/auto-cut-silence">pause shortening</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
 
     <h3>Exporting</h3>
     <p>Export mixes every audible track together at 44.1 or 48 kHz and writes MP3, 16-bit or 32-bit WAV, M4A, FLAC or OGG. You can export the whole mix, the selected range, one clip, every track as a separate stem, or the timeline split at its markers, which is how you turn one long recording into numbered files. If the mix would clip, it is turned down so its loudest peak sits at -1 dB; if it would not, it is left exactly as you heard it. For a file going back into another editor, choose 32-bit WAV, which keeps levels above 0 dB intact instead of flattening them.</p>
+    <p>The export runs the same effect code as playback, offline and faster than real time. With <em>Let reverb and echo ring out</em> ticked, it keeps rendering after the last clip until the tails fall below −90 dB. A 2-second reverb on an 8-second clip ends up about 10.4 seconds long, instead of stopping dead. Stems include each track's own effects and its sends into the buses, and leave out the master chain unless you ask for it, so they can be mastered together somewhere else.</p>
 
     <h3>On a phone</h3>
     <p>Tap a clip to select it, then drag it to move it or drag its edges to trim. An unselected clip scrolls the timeline instead, because on a small screen one clip is often all you can see. Pinch to zoom, drag along the ruler to select a range, and press and hold a clip for its menu. The full-screen button gives the timeline the whole screen. Decoded audio is held in memory, so phones run out sooner than laptops; iPhones limit a tab's memory most tightly.</p>
 
     <h3>What it does not do</h3>
-    <p>There is no volume automation: a clip has one gain and two fades, not a line you can draw. There is no MIDI, no plugin support and no video output. Two clips on the same track cannot overlap, so a crossfade is two tracks with a fade on each. If you need automation, plugins or a mixing desk, <a href="https://www.reaper.fm/" rel="noopener">Reaper</a>, Audacity, GarageBand or the Fairlight page in DaVinci Resolve are the next step up. They all open the WAV files this exports.</p>
+    <p>There is no MIDI, no third-party plugins (VST and Audio Unit plugins cannot run inside a browser) and no video output. Two clips on the same track cannot overlap, so a crossfade is two tracks with a fade on each. Automation is drawn as straight lines between points, not curves. The real-time pitch shifter is built for harmonies and doubling; for a clean shift of a whole song, <em>Process → Pitch</em> uses ffmpeg offline and sounds better. A long chain on many tracks costs processing power, and an older phone will stutter before a laptop does. Turning off the effects you are not listening to helps. For surround, video or a full mastering suite, <a href="https://www.reaper.fm/" rel="noopener">Reaper</a>, Logic Pro, GarageBand or the Fairlight page in DaVinci Resolve are the next step up. They all open the WAV files this exports.</p>
   </section>
 
   <section class="faq">
@@ -254,7 +286,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Does it work on iPhone and Android?</summary><p>Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record.</p></details>
       <details><summary>Will I lose my work if I close the tab?</summary><p>Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file.</p></details>
       <details><summary>How many tracks can I have?</summary><p>There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded.</p></details>
-      <details><summary>Can I undo an effect?</summary><p>Yes. Effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original.</p></details>
+      <details><summary>Can I undo an effect?</summary><p>Yes. Adding, removing, reordering and bypassing effects, every knob turn, every patch and every automation point is one step of undo. Process effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original.</p></details>
+      <details><summary>What is the difference between Track effects and Process?</summary><p>Track effects run live on a whole track as it plays, never change the audio, and can be adjusted or switched off at any time. Process renders an effect into one clip or a selected range, which suits things that need the whole file at once, like noise removal, a loudness target or a speed change.</p></details>
+      <details><summary>What effects are there?</summary><p>25 of them: Channel EQ, filter, exciter, compressor, limiter, noise gate, de-esser, multiband compressor, transient shaper, sidechain ducker, drive, bitcrusher, tape, chorus, flanger, phaser, tremolo, auto-pan, ring modulator, stereo delay, tape echo, reverb, pitch shifter, utility and an analyzer. They come with 89 presets, plus 20 patches that load a whole chain at once.</p></details>
+      <details><summary>Can I automate volume or an effect over time?</summary><p>Yes. Press A on a track to show its automation lane and pick volume, pan, a send or any effect setting on that track, then tap to add points. Or turn on Auto in the mixer and move the control while the song plays to record the movement.</p></details>
+      <details><summary>How do I make music dip under a voice automatically?</summary><p>Put the Music under voice patch on the music track and choose the voice track in its ducker. The music turns down whenever the voice plays and comes back up in the pauses, with no automation to draw.</p></details>
+      <details><summary>Does the export sound exactly like playback?</summary><p>It runs the same effect code, so it matches what you heard. There are two differences. Chorus, phaser and tremolo sweeps start from the beginning of the export rather than from wherever you pressed play. And a reverb or echo tail carries on past the end only when Let reverb and echo ring out is ticked.</p></details>
       <details><summary>Why does my recording sound late against the backing track?</summary><p>Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one.</p></details>
       <details><summary>Can I open the project in Audacity or another editor?</summary><p>Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point.</p></details>
       <!-- /AS:faq -->
@@ -376,22 +413,25 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23"></script>
-<script src="/js/tool-graph.js?v=2026-09-23"></script>
-<script src="/js/flow.js?v=2026-09-23"></script>
-<script src="/js/audio-core.js?v=2026-09-23"></script>
-<script src="/js/tool-shell.js?v=2026-09-23"></script>
-<script src="/js/loudness.js?v=2026-09-23"></script>
-<script src="/js/silence-gaps.js?v=2026-09-23"></script>
-<script src="/js/slowed-reverb.js?v=2026-09-23"></script>
-<script src="/js/noise-reduction.js?v=2026-09-23"></script>
-<script src="/js/editor-model.js?v=2026-09-23"></script>
-<script src="/js/editor-engine.js?v=2026-09-23"></script>
-<script src="/js/editor-view.js?v=2026-09-23"></script>
-<script src="/js/editor-fx.js?v=2026-09-23"></script>
-<script src="/js/editor-store.js?v=2026-09-23"></script>
-<script src="/js/editor-ui.js?v=2026-09-23"></script>
-<script src="/js/consent.js?v=2026-09-23"></script>
-<script src="/js/pwa.js?v=2026-09-23"></script>
+<script src="/js/common.js?v=2026-09-23b"></script>
+<script src="/js/tool-graph.js?v=2026-09-23b"></script>
+<script src="/js/flow.js?v=2026-09-23b"></script>
+<script src="/js/audio-core.js?v=2026-09-23b"></script>
+<script src="/js/tool-shell.js?v=2026-09-23b"></script>
+<script src="/js/loudness.js?v=2026-09-23b"></script>
+<script src="/js/silence-gaps.js?v=2026-09-23b"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-23b"></script>
+<script src="/js/noise-reduction.js?v=2026-09-23b"></script>
+<script src="/js/editor-model.js?v=2026-09-23b"></script>
+<script src="/js/editor-dsp.js?v=2026-09-23b"></script>
+<script src="/js/editor-engine.js?v=2026-09-23b"></script>
+<script src="/js/editor-view.js?v=2026-09-23b"></script>
+<script src="/js/editor-fx.js?v=2026-09-23b"></script>
+<script src="/js/editor-store.js?v=2026-09-23b"></script>
+<script src="/js/bpm-detector.js?v=2026-09-23b"></script>
+<script src="/js/editor-fxui.js?v=2026-09-23b"></script>
+<script src="/js/editor-ui.js?v=2026-09-23b"></script>
+<script src="/js/consent.js?v=2026-09-23b"></script>
+<script src="/js/pwa.js?v=2026-09-23b"></script>
 </body>
 </html>

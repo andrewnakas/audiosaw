@@ -189,13 +189,15 @@ carrying a separate tone per channel, not because the coefficient tables say
   `CV.downloadBlob`, so it fires `convert_start` (via `data-track="convert"`)
   and no `convert_success`. That is correct — nothing was converted — but it
   means the tool is invisible in the `convert_success` metric by design.
-- `js/editor-*.js` — `/audio-editor`, the multitrack editor. Five files with one
-  job each: `editor-model.js` (pure project model, UMD, runs in Node),
+- `js/editor-*.js` — `/audio-editor`, the multitrack editor. Seven files with
+  one job each: `editor-model.js` (pure project model, UMD, runs in Node),
   `editor-engine.js` (Web Audio playback, offline export, AudioWorklet
   recording), `editor-view.js` (canvas timeline and hit testing),
-  `editor-fx.js` (effects, which reuse loudness.js, silence-gaps.js,
-  slowed-reverb.js, the denoiser that noise-reduction.js now exports as
-  `ASDenoise`, and ffmpeg's atempo) and `editor-ui.js` (gestures, menus,
+  `editor-fx.js` (the destructive "Process…" effects, which reuse
+  loudness.js, silence-gaps.js, slowed-reverb.js, the denoiser that
+  noise-reduction.js now exports as `ASDenoise`, and ffmpeg's atempo),
+  `editor-dsp.js` (the real-time plugin catalogue and its builders),
+  `editor-fxui.js` (the mixer panel) and `editor-ui.js` (gestures, menus,
   import/export, autosave). `node tools/check-editor.js` checks the model: exact
   undo, trim bounds, overwrite-on-move, ripple, and no overlapping clips after
   1,000 random edits. It runs in `check-all.js`.
@@ -219,6 +221,42 @@ carrying a separate tone per channel, not because the coefficient tables say
   Tap selects, then drag moves. Playback end and looping are checked from a
   timer as well as the animation loop, because a background tab gets no
   animation frames.
+
+  **The mixer.** Each track, the master and each return bus has an insert
+  chain (`fx: [{id, type, on, params, m}]`, `m` = smart-control positions),
+  tracks have `sends` and `auto` lanes (`'vol'`, `'pan'`, `'send:<bus>'`,
+  `'fx:<fxId>:<param>'`), and the project has `master`, `buses` and `bpm`.
+  `M.normalize()` fills these in for older projects; `adopt()` calls it.
+  editor-dsp.js is the single source of truth for plugins: params, smart
+  controls, presets and patches are all declared there, and check-editor.js
+  asserts every preset and patch names real parameters inside their ranges.
+  `node tools/check-fx.js` renders every plugin and preset in headless Chrome
+  and re-measures the numbers the page quotes (compressor 7.5 dB GR at 4:1,
+  limiter true peak at the ceiling, EQ +6.00 dB, multiband flat within
+  0.15 dB, latency compensation, automation, tails). It runs in check-all.
+
+  Four things that bit. `BiquadFilterNode` takes Q **in dB** for lowpass and
+  highpass (Butterworth is -3.01, not 0.7071). `DynamicsCompressorNode`
+  adds unreported make-up gain (measured 9.3 dB louder than textbook), so the
+  dynamics are an AudioWorklet. `WaveShaperNode` clamps its input to ±1, so
+  drive lives inside the curve. And a Web Audio feedback loop cannot be
+  shorter than 128 samples, which is why the flanger and phaser are worklets.
+  The worklet source is a function in editor-dsp.js shipped as a Blob URL;
+  its classes must not share a name with a site global, or check-includes
+  reads them as a missing script.
+
+  Live edits go through `E.syncFx(project)`: a parameter change is `set()` on
+  the running plugin, a structural change (add, remove, reorder, bypass, or a
+  param listed in `structural`) rebuilds that one chain in place. Only a new
+  send to an idle bus or a look-ahead plugin appearing restarts playback. Any
+  plugin with look-ahead declares `latency`; the engine pads the other tracks
+  and buses to match and the export trims it off the front.
+
+  A mono clip enters its track at -3 dB and the pan is an equal-power balance
+  scaled by √2, so a mono track sounds exactly as it did before the mixer
+  (0.707 per side at centre, unity hard-panned). Do not swap it for
+  StereoPannerNode on a stereo signal: that folds and is +3 dB hard-panned.
+
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not

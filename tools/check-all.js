@@ -9,6 +9,9 @@
  * check-includes.js is not a generator but belongs to the same class of silent
  * drift: a hand-assembled <script> list that is missing a file, or has one in
  * the wrong order, breaks a tool with nothing visible on the page.
+ *
+ * check-fx.js renders every audio-editor effect in headless Chrome, which
+ * takes about twenty seconds. It skips itself on a machine without Chrome.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
@@ -20,7 +23,8 @@ const CHECKS = [
   ['build-sitemap.js', '--check'],
   ['build-llms.js', '--check'],
   ['check-includes.js'],
-  ['check-editor.js']
+  ['check-editor.js'],
+  ['check-fx.js']
 ];
 
 let failed = 0;

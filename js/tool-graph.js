@@ -275,7 +275,7 @@
     // ---- Cut, trim & arrange ---------------------------------------------
     'audio-editor': {
       cat: 'edit', label: 'editor', title: 'Audio Editor',
-      blurb: 'A multitrack timeline: cut, move, fade, mix, record and export, on a phone or a laptop.',
+      blurb: 'A multitrack timeline with live effects, patches and automation: cut, mix, record and export, on a phone or a laptop.',
       next: [
         ['loudness-normalizer', 'Check the finished mix hits a streaming loudness target'],
         ['mp3-tag-editor', 'Add a title, artist and cover art to the export'],

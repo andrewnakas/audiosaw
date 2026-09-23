@@ -195,6 +195,9 @@
       }, this);
 
       if (st.rec && st.rec.trackId === track.id) this.drawRecording(g, y, th, css);
+      // An automation lane, when the track is showing one. The UI owns the
+      // lane's scale and drawing; the view only says where the track is.
+      if (st.autoDraw && st.autoLanes && st.autoLanes[track.id]) st.autoDraw(g, track, ti, y, th, w, css);
     }, this);
 
     // The spare lane at the bottom, where dropping creates a new track.

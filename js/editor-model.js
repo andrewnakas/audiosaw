@@ -35,7 +35,7 @@
   function dbToGain(db) { return db <= -60 ? 0 : Math.pow(10, db / 20); }
 
   function create(name) {
-    return { v: 1, name: name || 'Untitled project', tracks: [], sources: {}, markers: [] };
+    return normalize({ v: 1, name: name || 'Untitled project', tracks: [], sources: {}, markers: [] });
   }
 
   function serialize(p) { return JSON.stringify(p); }
@@ -108,7 +108,7 @@
       id: uid('t'),
       name: opts.name || ('Track ' + (p.tracks.length + 1)),
       volDb: 0, pan: 0, mute: false, solo: false,
-      clips: []
+      clips: [], fx: [], sends: {}, auto: {}
     };
     if (opts.index != null && opts.index < p.tracks.length) p.tracks.splice(Math.max(0, opts.index), 0, t);
     else p.tracks.push(t);
@@ -358,6 +358,7 @@
         track.clips.forEach(function (c) {
           if (c.start >= e - EPS) c.start = Math.max(0, c.start - g.duration);
         });
+        autoCut(track.auto, g.start, e);
       });
       sortTrack(track);
     });
@@ -376,9 +377,11 @@
       if (ripple) {
         track.clips.forEach(function (c) { if (c.start >= t1 - EPS) c.start -= len; });
         sortTrack(track);
+        autoCut(track.auto, t0, t1);
       }
     });
     if (ripple && all) {
+      if (p.master) autoCut(p.master.auto, t0, t1);
       p.markers = p.markers.filter(function (m) { return m.t < t0 || m.t >= t1; });
       p.markers.forEach(function (m) { if (m.t >= t1) m.t -= len; });
     }
@@ -391,7 +394,9 @@
       carve(track, t1, Infinity);
       carve(track, 0, t0);
       track.clips.forEach(function (c) { c.start -= t0; });
+      autoCrop(track.auto, t0, t1);
     });
+    if (p.master) autoCrop(p.master.auto, t0, t1);
     p.markers = p.markers.filter(function (m) { return m.t >= t0 && m.t <= t1; });
     p.markers.forEach(function (m) { m.t -= t0; });
   }
@@ -405,8 +410,12 @@
       var ids = track.clips.map(function (c) { return c.id; });
       splitAt(p, t, ids);
       track.clips.forEach(function (c) { if (c.start >= t - EPS) c.start += len; });
+      autoInsert(track.auto, t, len);
     });
-    if (all) p.markers.forEach(function (m) { if (m.t >= t) m.t += len; });
+    if (all) {
+      p.markers.forEach(function (m) { if (m.t >= t) m.t += len; });
+      if (p.master) autoInsert(p.master.auto, t, len);
+    }
   }
 
   // Copies placed straight after the group they duplicate, on the same tracks.
@@ -553,6 +562,300 @@
     return out;
   }
 
+
+  /* ---------------------------------------------------------------- mixer */
+
+  /*
+   * Real-time effects, sends and automation. Like everything else here these
+   * are plain JSON on the project, so undo, autosave and .audiosaw files carry
+   * them without any code of their own.
+   *
+   * A chain belongs to an "owner": a track id, 'master', or a bus id. Each
+   * slot is {id, type, on, params, m} — m holds the smart-control (macro)
+   * positions, or is absent when the params have been set by hand and no
+   * longer sit on a macro curve. The model does not know what a plugin is;
+   * editor-dsp.js owns the catalogue and fills in any missing params.
+   *
+   * Automation lives on the owner as auto[path] = [[t, v], ...], sorted by t,
+   * linear between points and flat before the first and after the last.
+   * Paths: 'vol', 'pan', 'send:<busId>', 'fx:<fxId>:<param>'.
+   */
+
+  var DEFAULT_BUSES = [
+    { id: 'bus-reverb', name: 'Reverb', fx: 'reverb' },
+    { id: 'bus-delay', name: 'Delay', fx: 'delay' }
+  ];
+
+  // Fill in what an older project (or one from before this code) is missing.
+  // Idempotent: normalize(normalize(p)) is normalize(p).
+  function normalize(p) {
+    p.tracks = p.tracks || [];
+    p.sources = p.sources || {};
+    p.markers = p.markers || [];
+    p.tracks.forEach(function (t) {
+      if (!Array.isArray(t.fx)) t.fx = [];
+      if (!t.sends || typeof t.sends !== 'object') t.sends = {};
+      if (!t.auto || typeof t.auto !== 'object') t.auto = {};
+    });
+    if (!p.master || typeof p.master !== 'object') p.master = {};
+    if (typeof p.master.volDb !== 'number') p.master.volDb = 0;
+    if (!Array.isArray(p.master.fx)) p.master.fx = [];
+    if (!p.master.auto || typeof p.master.auto !== 'object') p.master.auto = {};
+    if (!Array.isArray(p.buses)) {
+      // Two returns ready to use, so a send does something the first time.
+      // The reverb and delay on them are 100% wet: the dry sound is already
+      // on the track.
+      p.buses = DEFAULT_BUSES.map(function (b) {
+        return { id: b.id, name: b.name, volDb: 0, fx: [{ id: uid('f'), type: b.fx, on: true, params: { mix: 100 } }] };
+      });
+    }
+    p.buses.forEach(function (b) {
+      if (!Array.isArray(b.fx)) b.fx = [];
+      if (typeof b.volDb !== 'number') b.volDb = 0;
+    });
+    if (!(p.bpm > 0)) p.bpm = 120;
+    return p;
+  }
+
+  function owner(p, key) {
+    if (key === 'master') return p.master;
+    var i = trackIndex(p, key);
+    if (i >= 0) return p.tracks[i];
+    for (var b = 0; b < (p.buses || []).length; b++) if (p.buses[b].id === key) return p.buses[b];
+    return null;
+  }
+  function chainOf(p, key) { var o = owner(p, key); return o ? o.fx : null; }
+
+  function fxIndex(chain, fxId) {
+    for (var i = 0; i < chain.length; i++) if (chain[i].id === fxId) return i;
+    return -1;
+  }
+
+  function findFx(p, fxId) {
+    var keys = ['master'].concat(p.tracks.map(function (t) { return t.id; }), (p.buses || []).map(function (b) { return b.id; }));
+    for (var k = 0; k < keys.length; k++) {
+      var ch = chainOf(p, keys[k]), i = ch ? fxIndex(ch, fxId) : -1;
+      if (i >= 0) return { owner: keys[k], chain: ch, index: i, fx: ch[i] };
+    }
+    return null;
+  }
+
+  function cleanParams(params) {
+    var out = {};
+    Object.keys(params || {}).forEach(function (k) {
+      var v = params[k];
+      if (typeof v === 'number' ? isFinite(v) : typeof v === 'string' || typeof v === 'boolean') out[k] = v;
+    });
+    return out;
+  }
+
+  function addFx(p, key, type, params, index, m) {
+    var ch = chainOf(p, key);
+    if (!ch) return null;
+    var slot = { id: uid('f'), type: String(type), on: true, params: cleanParams(params) };
+    if (m) slot.m = cleanParams(m);
+    if (index == null || index > ch.length) ch.push(slot);
+    else ch.splice(Math.max(0, index), 0, slot);
+    return slot.id;
+  }
+
+  // Removing a plugin removes its automation too, or a lane would point at nothing.
+  function removeFx(p, key, fxId) {
+    var o = owner(p, key);
+    if (!o) return;
+    var i = fxIndex(o.fx, fxId);
+    if (i < 0) return;
+    o.fx.splice(i, 1);
+    if (o.auto) Object.keys(o.auto).forEach(function (path) {
+      if (path.indexOf('fx:' + fxId + ':') === 0) delete o.auto[path];
+    });
+  }
+
+  function moveFx(p, key, fxId, to) {
+    var ch = chainOf(p, key);
+    if (!ch) return;
+    var i = fxIndex(ch, fxId);
+    if (i < 0) return;
+    to = clamp(to | 0, 0, ch.length - 1);
+    if (to === i) return;
+    var s = ch.splice(i, 1)[0];
+    ch.splice(to, 0, s);
+  }
+
+  // patch: {on?, params?, m?}. params merge; m === null drops the macro
+  // positions (the params were set by hand), an object merges.
+  function setFx(p, key, fxId, patch) {
+    var ch = chainOf(p, key);
+    if (!ch) return;
+    var i = fxIndex(ch, fxId);
+    if (i < 0) return;
+    var s = ch[i];
+    if (patch.on !== undefined) s.on = !!patch.on;
+    if (patch.params) {
+      var pp = cleanParams(patch.params);
+      Object.keys(pp).forEach(function (k) { s.params[k] = pp[k]; });
+    }
+    if (patch.m === null) delete s.m;
+    else if (patch.m) { s.m = s.m || {}; var mm = cleanParams(patch.m); Object.keys(mm).forEach(function (k) { s.m[k] = mm[k]; }); }
+  }
+
+  // Replace a whole chain (a patch). Every slot gets a fresh id, and the old
+  // chain's automation goes with it.
+  function setChain(p, key, list) {
+    var o = owner(p, key);
+    if (!o) return [];
+    if (o.auto) Object.keys(o.auto).forEach(function (path) { if (path.indexOf('fx:') === 0) delete o.auto[path]; });
+    o.fx = (list || []).map(function (s) {
+      var slot = { id: uid('f'), type: String(s.type), on: s.on !== false, params: cleanParams(s.params) };
+      if (s.m) slot.m = cleanParams(s.m);
+      return slot;
+    });
+    return o.fx.map(function (s) { return s.id; });
+  }
+
+  // A send level in dB. -60 or below removes it.
+  function setSend(p, trackId, busId, db) {
+    var i = trackIndex(p, trackId);
+    if (i < 0 || !owner(p, busId)) return;
+    var t = p.tracks[i];
+    db = +db;
+    if (!(db > -60)) delete t.sends[busId];
+    else t.sends[busId] = clamp(db, -60, 6);
+  }
+
+  function addBus(p, name) {
+    var id = uid('b');
+    p.buses.push({ id: id, name: name || ('Bus ' + (p.buses.length + 1)), volDb: 0, fx: [] });
+    return id;
+  }
+
+  function removeBus(p, busId) {
+    p.buses = p.buses.filter(function (b) { return b.id !== busId; });
+    p.tracks.forEach(function (t) {
+      delete t.sends[busId];
+      delete t.auto['send:' + busId];
+    });
+  }
+
+  function setBus(p, busId, patch) {
+    var b = owner(p, busId);
+    if (!b || b === p.master || b.clips) return;
+    if (patch.name !== undefined) b.name = String(patch.name).slice(0, 40) || b.name;
+    if (patch.volDb !== undefined) b.volDb = clamp(+patch.volDb || 0, -60, 12);
+  }
+
+  function setMaster(p, patch) {
+    if (patch.volDb !== undefined) p.master.volDb = clamp(+patch.volDb || 0, -60, 12);
+  }
+
+  function setBpm(p, bpm) {
+    bpm = +bpm;
+    if (bpm >= 20 && bpm <= 400) p.bpm = Math.round(bpm * 100) / 100;
+  }
+
+  /* ----------------------------------------------------------- automation */
+
+  function setAutoPoints(p, key, path, points) {
+    var o = owner(p, key);
+    if (!o || !o.auto) return;
+    var pts = (points || []).filter(function (pt) { return pt && isFinite(pt[0]) && isFinite(pt[1]); })
+      .map(function (pt) { return [Math.max(0, +pt[0]), +pt[1]]; })
+      .sort(function (a, b) { return a[0] - b[0]; });
+    if (pts.length) o.auto[path] = pts; else delete o.auto[path];
+  }
+
+  function clearAuto(p, key, path) {
+    var o = owner(p, key);
+    if (o && o.auto) delete o.auto[path];
+  }
+
+  // Value of a lane at time t: linear between points, flat outside them.
+  function autoValueAt(pts, t) {
+    if (!pts || !pts.length) return null;
+    if (t <= pts[0][0]) return pts[0][1];
+    var n = pts.length;
+    if (t >= pts[n - 1][0]) return pts[n - 1][1];
+    var lo = 0, hi = n - 1;
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (pts[mid][0] <= t) lo = mid; else hi = mid; }
+    var a = pts[lo], b = pts[hi], span = b[0] - a[0];
+    return span < EPS ? b[1] : a[1] + (b[1] - a[1]) * (t - a[0]) / span;
+  }
+
+  // Automation follows the audio when time is removed or inserted, so a fade
+  // drawn under a chorus is still under it after the verse before is cut.
+  // The value at each cut edge is pinned first, so the shape either side is
+  // kept rather than re-interpolated across the join.
+  function autoCut(auto, t0, t1) {
+    var len = t1 - t0;
+    Object.keys(auto || {}).forEach(function (path) {
+      var pts = auto[path];
+      var v0 = autoValueAt(pts, t0), v1 = autoValueAt(pts, t1);
+      var out = [];
+      pts.forEach(function (pt) { if (pt[0] < t0 - EPS) out.push(pt); });
+      out.push([t0, v0]);
+      if (Math.abs(v1 - v0) > EPS) out.push([t0 + 1e-4, v1]);
+      pts.forEach(function (pt) { if (pt[0] > t1 + EPS) out.push([pt[0] - len, pt[1]]); });
+      auto[path] = dedupe(out);
+    });
+  }
+
+  function autoInsert(auto, t, len) {
+    Object.keys(auto || {}).forEach(function (path) {
+      var pts = auto[path], v = autoValueAt(pts, t);
+      var out = [];
+      var before = pts.some(function (pt) { return pt[0] < t - EPS; });
+      var after = pts.some(function (pt) { return pt[0] >= t - EPS; });
+      pts.forEach(function (pt) { out.push(pt[0] >= t - EPS ? [pt[0] + len, pt[1]] : pt); });
+      if (before && after) out.push([t, v], [t + len, v]);
+      auto[path] = dedupe(out.sort(function (a, b) { return a[0] - b[0]; }));
+    });
+  }
+
+  function autoCrop(auto, t0, t1) {
+    Object.keys(auto || {}).forEach(function (path) {
+      var pts = auto[path];
+      var v0 = autoValueAt(pts, t0), v1 = autoValueAt(pts, t1);
+      var out = [[0, v0]];
+      pts.forEach(function (pt) { if (pt[0] > t0 + EPS && pt[0] < t1 - EPS) out.push([pt[0] - t0, pt[1]]); });
+      out.push([t1 - t0, v1]);
+      auto[path] = dedupe(out);
+    });
+  }
+
+  function dedupe(pts) {
+    var out = [];
+    pts.forEach(function (pt) {
+      var last = out[out.length - 1];
+      if (last && Math.abs(last[0] - pt[0]) < 1e-5 && Math.abs(last[1] - pt[1]) < 1e-9) return;
+      out.push(pt);
+    });
+    // Three equal values in a row: the middle one says nothing.
+    return out.filter(function (pt, i) {
+      return !(i > 0 && i < out.length - 1 && Math.abs(out[i - 1][1] - pt[1]) < 1e-9 && Math.abs(out[i + 1][1] - pt[1]) < 1e-9);
+    });
+  }
+
+  // Thin a recorded lane to the fewest points that stay within `tol` of it
+  // (Ramer-Douglas-Peucker on value error).
+  function thinPoints(pts, tol) {
+    if (pts.length < 3) return pts.slice();
+    var keep = new Array(pts.length);
+    keep[0] = keep[pts.length - 1] = true;
+    var stack = [[0, pts.length - 1]];
+    while (stack.length) {
+      var seg = stack.pop(), a = seg[0], b = seg[1];
+      var worst = -1, wi = -1;
+      for (var i = a + 1; i < b; i++) {
+        var span = pts[b][0] - pts[a][0];
+        var v = span < EPS ? pts[a][1] : pts[a][1] + (pts[b][1] - pts[a][1]) * (pts[i][0] - pts[a][0]) / span;
+        var err = Math.abs(v - pts[i][1]);
+        if (err > worst) { worst = err; wi = i; }
+      }
+      if (worst > tol) { keep[wi] = true; stack.push([a, wi], [wi, b]); }
+    }
+    return pts.filter(function (pt, i) { return keep[i]; });
+  }
+
   /* ------------------------------------------------------------- validate */
 
   function validate(p) {
@@ -573,8 +876,25 @@
           if (clipEnd(prev) > c.start + 1e-4) errs.push(where + 'overlaps the clip before it by ' + (clipEnd(prev) - c.start));
         }
       }
+      (t.fx || []).forEach(function (f, i) {
+        if (!f || !f.id || !f.type || typeof f.params !== 'object') errs.push('track ' + ti + ' fx ' + i + ': malformed slot');
+      });
+      Object.keys(t.auto || {}).forEach(function (path) { autoErrs(t.auto[path], 'track ' + ti + ' lane ' + path, errs); });
+      Object.keys(t.sends || {}).forEach(function (b) {
+        if (!(p.buses || []).some(function (x) { return x.id === b; })) errs.push('track ' + ti + ': send to a missing bus ' + b);
+      });
     });
+    if (p.master) Object.keys(p.master.auto || {}).forEach(function (path) { autoErrs(p.master.auto[path], 'master lane ' + path, errs); });
     return errs;
+  }
+
+  function autoErrs(pts, where, errs) {
+    if (!Array.isArray(pts) || !pts.length) { errs.push(where + ': empty lane'); return; }
+    for (var i = 0; i < pts.length; i++) {
+      if (pts[i][0] < -EPS) errs.push(where + ': negative time');
+      if (!isFinite(pts[i][1])) errs.push(where + ': bad value');
+      if (i && pts[i][0] < pts[i - 1][0] - EPS) errs.push(where + ': not sorted');
+    }
   }
 
   /* -------------------------------------------------------------- history */
@@ -618,6 +938,10 @@
     addMarker: addMarker, removeMarker: removeMarker,
     snapPoints: snapPoints, snap: snap,
     fadeShape: fadeShape, clipGainAt: clipGainAt, audibleTracks: audibleTracks,
+    normalize: normalize, owner: owner, chainOf: chainOf, findFx: findFx,
+    addFx: addFx, removeFx: removeFx, moveFx: moveFx, setFx: setFx, setChain: setChain,
+    setSend: setSend, addBus: addBus, removeBus: removeBus, setBus: setBus, setMaster: setMaster, setBpm: setBpm,
+    setAutoPoints: setAutoPoints, clearAuto: clearAuto, autoValueAt: autoValueAt, thinPoints: thinPoints,
     validate: validate, History: History
   };
 

@@ -16,7 +16,8 @@
 
   var CV = global.CV, M = global.ASEditModel, E = global.ASEditEngine;
   var V = global.ASEditView, FX = global.ASEditFx, ST = global.ASEditStore;
-  if (!CV || !M || !E || !V || !FX || !ST) {
+  var D = global.ASEditDsp, FXUI = global.ASEditFxUI;
+  if (!CV || !M || !E || !V || !FX || !ST || !D || !FXUI) {
     console.error('[audio-editor] a script is missing or loaded out of order; the editor cannot start.');
     return;
   }
@@ -42,7 +43,8 @@
     drag: null,
     rec: null,
     snapAt: null,
-    viewTop: 0, viewH: 400
+    viewTop: 0, viewH: 400,
+    autoLanes: {}            // trackId -> the automation path shown on it
   };
   var hist = new M.History(200);
   var files = new Map();     // sourceId -> original File, for autosave and project files
@@ -110,11 +112,13 @@
   // the start and commit it once at the end.
   var liveSnap = null;
   function beginLive() { if (liveSnap === null) liveSnap = M.serialize(S.project); }
-  function endLive() {
+  function endLive(opts) {
     if (liveSnap === null) return;
-    if (M.serialize(S.project) !== liveSnap) { hist.push(liveSnap); changed(); }
+    var was = liveSnap;
     liveSnap = null;
+    if (M.serialize(S.project) !== was) { hist.push(was); changed(opts); }
   }
+  function isLive() { return liveSnap !== null; }
   function cancelLive() {
     if (liveSnap === null) return;
     S.project = M.parse(liveSnap);
@@ -227,6 +231,7 @@
     updateEmpty();
     updateHbar();
     draw();
+    FXUI.refresh();
   }
 
   /* ---------------------------------------------------------------- zoom */
@@ -279,14 +284,20 @@
     var html = '';
     p.tracks.forEach(function (t, i) {
       var cls = 'ed-head' + (S.selTrack === t.id ? ' is-sel' : '') + (t.mute ? ' is-muted' : '');
+      var lane = S.autoLanes[t.id], info = lane ? FXUI.laneInfo(t, lane) : null;
+      var hasAuto = Object.keys(t.auto || {}).length > 0;
       html += '<div class="' + cls + '" style="height:' + h + 'px" data-track="' + t.id + '">' +
         '<button type="button" class="ed-head-name" data-act="track" title="Track settings">' + esc(t.name) + '</button>' +
         '<div class="ed-head-btns">' +
         '<button type="button" class="ed-ms' + (t.mute ? ' on' : '') + '" data-act="mute" aria-pressed="' + t.mute + '" title="Mute">M</button>' +
         '<button type="button" class="ed-ms ed-solo' + (t.solo ? ' on' : '') + '" data-act="solo" aria-pressed="' + t.solo + '" title="Solo">S</button>' +
+        '<button type="button" class="ed-ms ed-fxb' + (t.fx.length ? ' on' : '') + '" data-act="fx" title="Effects and sends (F)" aria-label="Effects on ' + esc(t.name) + (t.fx.length ? ', ' + t.fx.length + ' in use' : '') + '">FX</button>' +
+        '<button type="button" class="ed-ms ed-autob' + (lane ? ' on' : hasAuto ? ' has' : '') + '" data-act="auto" aria-pressed="' + !!lane + '" title="Automation lane (A)" aria-label="Automation on ' + esc(t.name) + '">A</button>' +
         '</div>' +
-        '<label class="ed-vol"><span class="sr-only">Volume of ' + esc(t.name) + '</span>' +
-        '<input type="range" min="-30" max="12" step="0.5" value="' + t.volDb + '" data-act="vol" aria-label="Volume of ' + esc(t.name) + '"></label>' +
+        (info
+          ? '<button type="button" class="ed-lane" data-act="lane" title="Choose what this lane automates">' + esc(info.label) + ' ▾</button>'
+          : '<label class="ed-vol"><span class="sr-only">Volume of ' + esc(t.name) + '</span>' +
+            '<input type="range" min="-30" max="12" step="0.5" value="' + t.volDb + '" data-act="vol" aria-label="Volume of ' + esc(t.name) + '"></label>') +
         '</div>';
     });
     html += '<div class="ed-head ed-head-add" style="height:' + h + 'px"><button type="button" class="ed-addtrack" data-act="addtrack">+ Track</button></div>';
@@ -305,6 +316,9 @@
     if (act === 'mute') { edit(function (p) { M.setTrack(p, id, { mute: !t.mute }); }, { noRestart: true }); E.updateTracks(S.project); }
     if (act === 'solo') { edit(function (p) { M.setTrack(p, id, { solo: !t.solo }); }, { noRestart: true }); E.updateTracks(S.project); }
     if (act === 'track') { S.selTrack = id; refresh(); trackSheet(id); }
+    if (act === 'fx') { S.selTrack = id; FXUI.open(id); refresh(); }
+    if (act === 'auto') toggleAuto(id);
+    if (act === 'lane') laneSheet(id);
   });
   el.heads.addEventListener('input', function (e) {
     if (e.target.getAttribute('data-act') !== 'vol') return;
@@ -314,8 +328,158 @@
     E.updateTracks(S.project);
   });
   el.heads.addEventListener('change', function (e) {
-    if (e.target.getAttribute('data-act') === 'vol') { endLive(); }
+    if (e.target.getAttribute('data-act') === 'vol') { endLive({ noRestart: true }); }
   });
+
+  /* ------------------------------------------------------- automation */
+
+  // Show or hide a track's automation lane. It opens on whatever was last
+  // automated there, or on volume.
+  function toggleAuto(id) {
+    var t = S.project.tracks[M.trackIndex(S.project, id)];
+    if (!t) return;
+    if (S.autoLanes[id]) { delete S.autoLanes[id]; refresh(); return; }
+    var paths = Object.keys(t.auto);
+    S.autoLanes[id] = paths.length ? paths[paths.length - 1] : 'vol';
+    S.selTrack = id;
+    refresh();
+    toast(isTouchUI() ? 'Tap the lane to add a point, drag a point to move it, double-tap to delete' : 'Click the lane to add a point, drag to move, double-click to delete');
+  }
+
+  function laneSheet(id) {
+    var t = S.project.tracks[M.trackIndex(S.project, id)];
+    if (!t) return;
+    var cur = S.autoLanes[id];
+    var items = FXUI.lanePaths(t).map(function (x) {
+      return { v: 'p' + x[0], label: (x[0] === cur ? '✓ ' : '') + x[1], hint: t.auto[x[0]] ? t.auto[x[0]].length + ' pts' : '' };
+    });
+    items.push('-');
+    if (cur && t.auto[cur]) items.push({ v: 'clear', label: 'Clear this lane', danger: true });
+    items.push({ v: 'hide', label: 'Hide automation' });
+    openSheet('Automate on ' + t.name, menuHtml(items), function (v) {
+      closeSheet();
+      if (v === 'hide') { delete S.autoLanes[id]; refresh(); return; }
+      if (v === 'clear') { edit(function (p) { M.clearAuto(p, id, cur); }, { noRestart: true }); E.relane(S.project); E.syncFx(S.project); return; }
+      S.autoLanes[id] = v.slice(1);
+      refresh();
+    });
+  }
+
+  function laneOf(track) {
+    var path = S.autoLanes[track.id];
+    if (!path) return null;
+    var info = FXUI.laneInfo(track, path);
+    if (!info) { delete S.autoLanes[track.id]; return null; }
+    return { path: path, info: info, pts: track.auto[path] || null };
+  }
+  function laneTop(ti) { return ti * S.trackH + 10; }
+  function laneH() { return S.trackH - 20; }
+  function laneY(info, v, ti) { return laneTop(ti) + (1 - info.toNorm(v)) * laneH(); }
+  function laneV(info, y, ti) { return info.fromNorm(1 - (y - laneTop(ti)) / laneH()); }
+
+  // Drawn by the view over the clips of a track whose lane is showing.
+  S.autoDraw = function (g, track, ti, y, th, w, css) {
+    var L = laneOf(track);
+    if (!L) return;
+    g.fillStyle = 'rgba(251,246,237,0.62)';
+    g.fillRect(0, y, w, th - 1);
+    var col = '#2f6f4f';
+    g.strokeStyle = col; g.lineWidth = 2;
+    g.beginPath();
+    if (!L.pts) {
+      g.setLineDash([6, 5]);
+      var y0 = laneY(L.info, L.info.value, ti);
+      g.moveTo(0, y0); g.lineTo(w, y0); g.stroke(); g.setLineDash([]);
+    } else {
+      g.moveTo(0, laneY(L.info, L.pts[0][1], ti));
+      L.pts.forEach(function (pt) { g.lineTo(view.x(pt[0]), laneY(L.info, pt[1], ti)); });
+      g.lineTo(w, laneY(L.info, L.pts[L.pts.length - 1][1], ti));
+      g.stroke();
+      var r = view.touch ? 6 : 4.5;
+      L.pts.forEach(function (pt, i) {
+        var x = view.x(pt[0]);
+        if (x < -10 || x > w + 10) return;
+        var hot = S.autoHot && S.autoHot.track === track.id && S.autoHot.i === i;
+        g.beginPath(); g.arc(x, laneY(L.info, pt[1], ti), hot ? r + 2 : r, 0, Math.PI * 2);
+        g.fillStyle = hot ? col : '#fff'; g.fill(); g.stroke();
+      });
+    }
+    g.font = '600 11px ' + css.sans; g.textBaseline = 'top';
+    var label = L.info.label + (S.autoHot && S.autoHot.track === track.id && S.autoHot.text ? '  ·  ' + S.autoHot.text : '') + (L.pts ? '' : '  ·  ' + (view.touch ? 'tap' : 'click') + ' to add a point');
+    var tw = g.measureText(label).width;
+    g.fillStyle = 'rgba(47,111,79,0.92)'; g.fillRect(6, y + 4, tw + 12, 17);
+    g.fillStyle = '#fff'; g.fillText(label, 12, y + 7);
+  };
+
+  // A press on a track that is showing its lane edits the lane, not the clips.
+  // Returns true when it took the gesture.
+  function autoDown(e, h, p, touch) {
+    var L = laneOf(h.track);
+    if (!L) return false;
+    var ti = h.ti, pts = L.pts || [], r = touch ? 18 : 9, hit = -1, bd = r;
+    pts.forEach(function (pt, i) {
+      var d = Math.hypot(view.x(pt[0]) - p.x, laneY(L.info, pt[1], ti) - p.y);
+      if (d <= bd) { bd = d; hit = i; }
+    });
+    var now = Date.now();
+    if (hit >= 0 && lastAutoTap && lastAutoTap.track === h.track.id && lastAutoTap.i === hit && now - lastAutoTap.at < 380) {
+      // Double tap: delete the point.
+      lastAutoTap = null;
+      edit(function (pp) {
+        var t = pp.tracks[M.trackIndex(pp, h.track.id)];
+        var next = (t.auto[L.path] || []).filter(function (x, i) { return i !== hit; });
+        M.setAutoPoints(pp, h.track.id, L.path, next);
+      }, { noRestart: true });
+      E.relane(S.project); E.syncFx(S.project);
+      down = null;
+      return true;
+    }
+    lastAutoTap = hit >= 0 ? { track: h.track.id, i: hit, at: now } : null;
+    if (hit >= 0) {
+      beginLive();
+      down.mode = 'autoPoint'; down.lane = L; down.i = hit;
+      S.autoHot = { track: h.track.id, i: hit, text: L.info.fmt(pts[hit][1]) };
+      draw();
+      return true;
+    }
+    if (touch) { down.mode = 'pending-auto'; down.lane = L; return true; }
+    // Mouse: add a point where it landed and keep dragging it.
+    beginLive();
+    var idx = addAutoPoint(h.track, L, view.t(p.x), laneV(L.info, p.y, ti));
+    down.mode = 'autoPoint'; down.lane = L; down.i = idx;
+    return true;
+  }
+  var lastAutoTap = null;
+
+  function addAutoPoint(track, L, t, v) {
+    var pts = (track.auto[L.path] || []).slice();
+    // The first point of a new lane keeps the current setting everywhere
+    // else, so drawing one point does not jump the whole song to it.
+    if (!pts.length && Math.abs(t) > 0.01) pts.push([0, L.info.value]);
+    pts.push([Math.max(0, t), v]);
+    M.setAutoPoints(S.project, track.id, L.path, pts);
+    var arr = track.auto[L.path];
+    var idx = 0;
+    for (var i = 0; i < arr.length; i++) if (Math.abs(arr[i][0] - Math.max(0, t)) < 1e-9 && arr[i][1] === v) idx = i;
+    S.autoHot = { track: track.id, i: idx, text: L.info.fmt(v) };
+    E.relane(S.project); E.syncFx(S.project);
+    draw();
+    return idx;
+  }
+
+  function autoMove(p) {
+    var f = M.trackIndex(S.project, down.hit.track.id), track = S.project.tracks[f];
+    var pts = track && track.auto[down.lane.path];
+    if (!pts || !pts[down.i]) return;
+    var lo = down.i > 0 ? pts[down.i - 1][0] + 0.001 : 0, hi = down.i < pts.length - 1 ? pts[down.i + 1][0] - 0.001 : Infinity;
+    var t = Math.min(hi, Math.max(lo, snapT(view.t(p.x), null, true)));
+    var v = laneV(down.lane.info, Math.max(laneTop(f), Math.min(laneTop(f) + laneH(), p.y)), f);
+    pts[down.i] = [t, v];
+    S.autoHot = { track: track.id, i: down.i, text: down.lane.info.fmt(v) + ' @ ' + fmt(t) };
+    E.relane(S.project); E.syncFx(S.project);
+    draw();
+  }
+
   el.scroll.addEventListener('scroll', function () {
     S.viewTop = el.scroll.scrollTop; S.viewH = el.scroll.clientHeight; draw();
   });
@@ -417,6 +581,7 @@
     zin: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M15.5 15.5L21 21M7.5 10.5h6M10.5 7.5v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     zout: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M15.5 15.5L21 21M7.5 10.5h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     fit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+    mixer: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M12 3v18M18 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".5"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg>',
     snap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v8a6 6 0 0 0 12 0V3M6 7h4M14 7h4" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
     cut: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 16L19 4M16 16L5 4" stroke="currentColor" stroke-width="2"/></svg>'
   };
@@ -429,7 +594,8 @@
     { id: 'paste', label: 'Paste', icon: 'paste', key: '⌘V' },
     { id: 'fadein', label: 'Fade in', icon: 'fadein' },
     { id: 'fadeout', label: 'Fade out', icon: 'fadeout' },
-    { id: 'fx', label: 'Effects', icon: 'fx' },
+    { id: 'mixer', label: 'Mixer', icon: 'mixer', key: 'F' },
+    { id: 'fx', label: 'Process', icon: 'fx' },
     { id: 'marker', label: 'Marker', icon: 'marker', key: 'M' },
     { id: 'zoomout', label: 'Zoom out', icon: 'zout', key: '−' },
     { id: 'zoomin', label: 'Zoom in', icon: 'zin', key: '+' },
@@ -458,6 +624,7 @@
       case 'fadein': quickFade('in'); break;
       case 'fadeout': quickFade('out'); break;
       case 'fx': fxSheet(); break;
+      case 'mixer': if (FXUI.isOpen()) FXUI.close(); else FXUI.open(S.selTrack); break;
       case 'marker': edit(function (p) { M.addMarker(p, S.playhead); }, { noRestart: true }); toast('Marker added'); break;
       case 'zoomin': zoomAt(1.6, view.x(S.playhead) >= 0 && view.x(S.playhead) <= lanesWidth() ? view.x(S.playhead) : lanesWidth() / 2); break;
       case 'zoomout': zoomAt(1 / 1.6, view.x(S.playhead) >= 0 && view.x(S.playhead) <= lanesWidth() ? view.x(S.playhead) : lanesWidth() / 2); break;
@@ -480,6 +647,7 @@
       fadein: ids.length > 0,
       fadeout: ids.length > 0,
       fx: ids.length > 0 || !!S.range,
+      mixer: S.project.tracks.length > 0,
       marker: any,
       zoomin: any, zoomout: any, fit: any, snap: true
     };
@@ -643,7 +811,7 @@
         '<button type="button" class="ed-btn" data-i="rangeCrop">Keep only this</button>' +
         '<button type="button" class="ed-btn" data-i="rangeSplit">Split at edges</button>' +
         '<button type="button" class="ed-btn" data-i="rangeSilence">Insert silence here</button>' +
-        '<button type="button" class="ed-btn" data-i="fx">Effects…</button>' +
+        '<button type="button" class="ed-btn" data-i="fx" title="Render an effect into this part of the audio">Process…</button>' +
         '<button type="button" class="ed-btn" data-i="rangeExport">Export selection</button>' +
         '<button type="button" class="ed-btn ed-btn-ghost" data-i="clear">Clear</button>' +
         '</div>';
@@ -660,7 +828,8 @@
         '<input type="range" min="0" max="' + Math.min(30, c.duration).toFixed(2) + '" step="0.01" value="' + (c.fadeOut || 0) + '" data-i="fadeOut"></label>' +
         '</div>' +
         '<div class="ed-insp-btns">' +
-        '<button type="button" class="ed-btn" data-i="fx">Effects…</button>' +
+        '<button type="button" class="ed-btn" data-i="trackfx" title="Live effects on the whole track: adjustable any time">Track effects</button>' +
+        '<button type="button" class="ed-btn" data-i="fx" title="Render an effect into this clip">Process…</button>' +
         '<button type="button" class="ed-btn" data-i="rippleDelete">Delete (close gap)</button>' +
         '<button type="button" class="ed-btn" data-i="newTrack">Move to new track</button>' +
         '<button type="button" class="ed-btn" data-i="clipExport">Export this clip</button>' +
@@ -668,7 +837,7 @@
     } else if (ids.length > 1) {
       html = '<div class="ed-insp-head"><strong>' + ids.length + ' clips selected</strong></div>' +
         '<div class="ed-insp-btns">' +
-        '<button type="button" class="ed-btn" data-i="fx">Effects on all…</button>' +
+        '<button type="button" class="ed-btn" data-i="fx">Process all…</button>' +
         '<button type="button" class="ed-btn" data-i="rippleDelete">Delete (close gaps)</button>' +
         '<button type="button" class="ed-btn" data-i="butt">Butt together</button>' +
         '<button type="button" class="ed-btn ed-btn-ghost" data-i="clear">Clear</button>' +
@@ -700,6 +869,7 @@
       case 'rangeExport': openExport('range'); break;
       case 'clipExport': openExport('clip'); break;
       case 'fx': fxSheet(); break;
+      case 'trackfx': { var ff = M.findClip(S.project, ids[0]); if (ff) FXUI.open(ff.track.id); break; }
       case 'clear': clearSelection(); break;
       case 'rippleDelete': doDelete(true); break;
       case 'keys': keysSheet(); break;
@@ -789,7 +959,8 @@
       { v: 'dup', label: 'Duplicate', hint: '⌘D' },
       { v: 'copy', label: 'Copy', hint: '⌘C' },
       { v: 'cut', label: 'Cut', hint: '⌘X' },
-      { v: 'fx', label: 'Effects…' },
+      { v: 'trackfx', label: 'Track effects…', hint: 'live' },
+      { v: 'fx', label: 'Process…', hint: 'renders' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
       { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
       { v: 'export', label: 'Export this clip' },
@@ -803,6 +974,7 @@
       if (v === 'copy') doCopy();
       if (v === 'cut') doCopy(true);
       if (v === 'fx') fxSheet();
+      if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
       if (v === 'export') openExport('clip');
@@ -827,7 +999,14 @@
         '-',
         { v: 'remove', label: 'Delete track', danger: true }
       ]);
+    html = html.replace('<div class="ed-menu">', '<div class="ed-menu">' +
+      '<button type="button" class="ed-menu-item" data-v="fx"><span>Effects and sends…</span><small>' + (t.fx.length ? t.fx.length + ' in use' : 'F') + '</small></button>' +
+      '<button type="button" class="ed-menu-item" data-v="auto"><span>' + (S.autoLanes[id] ? 'Hide automation' : 'Show automation') + '</span><small>A</small></button>' +
+      (S.autoLanes[id] ? '<button type="button" class="ed-menu-item" data-v="lane"><span>Choose what the lane automates…</span></button>' : '') + '<hr>');
     openSheet('Track', html, function (v) {
+      if (v === 'fx') { closeSheet(); FXUI.open(id); return; }
+      if (v === 'auto') { closeSheet(); toggleAuto(id); return; }
+      if (v === 'lane') { closeSheet(); laneSheet(id); return; }
       if (v === 'mute') edit(function (p) { M.setTrack(p, id, { mute: !t.mute }); }, { noRestart: true });
       if (v === 'solo') edit(function (p) { M.setTrack(p, id, { solo: !t.solo }); }, { noRestart: true });
       if (v === 'up') edit(function (p) { M.moveTrack(p, id, -1); });
@@ -850,7 +1029,7 @@
       E.updateTracks(S.project);
       buildHeads();
     });
-    body.addEventListener('change', function () { endLive(); });
+    body.addEventListener('change', function () { endLive({ noRestart: true }); });
   }
   function panLabel(p) { return Math.abs(p) < 0.03 ? 'centre' : (p < 0 ? Math.round(-p * 100) + '% left' : Math.round(p * 100) + '% right'); }
 
@@ -860,7 +1039,8 @@
       ['⇧ Delete', 'Delete clips and close the gap'], ['⌘Z / ⇧⌘Z', 'Undo / redo'], ['⌘C ⌘X ⌘V', 'Copy, cut, paste at the playhead'],
       ['⌘D', 'Duplicate'], ['⌘A', 'Select every clip'], ['Esc', 'Clear the selection'], ['← →', 'Nudge clips 10 ms (⇧ for 1 s), or move the playhead'],
       ['+ / −  or ⌘ wheel', 'Zoom'], ['0', 'Zoom to fit'], ['M', 'Add a marker'], ['L', 'Loop on / off'], ['R', 'Record'], ['N', 'Snap on / off'],
-      ['Home / End', 'Jump to start / end'], ['Alt while dragging', 'Drag without snapping']
+      ['Home / End', 'Jump to start / end'], ['Alt while dragging', 'Drag without snapping'],
+      ['F', 'Mixer and effects for the selected track'], ['A', 'Show the selected track’s automation lane']
     ];
     openSheet('Keyboard shortcuts', '<table class="ed-keys">' + rows.map(function (r) {
       return '<tr><th><kbd>' + esc(r[0]) + '</kbd></th><td>' + esc(r[1]) + '</td></tr>';
@@ -893,7 +1073,14 @@
       var f = FX.FX[id];
       return '<button type="button" class="ed-fx" data-v="' + id + '"><strong>' + esc(f.label) + '</strong><small>' + esc(f.hint) + '</small></button>';
     }).join('') + '</div>';
-    openSheet(S.range ? 'Effects on the selection' : 'Effects', html, function (id) {
+    html = '<p class="ed-sheet-note mx-sheet-lead">These render new audio into the ' + (S.range ? 'selection' : 'clip') + ' (undo takes them off). For effects you can keep adjusting, use <button type="button" class="ed-linkbtn" data-v="__mixer">Track effects</button>.</p>' + html;
+    openSheet(S.range ? 'Process the selection' : 'Process', html, function (id) {
+      if (id === '__mixer') {
+        closeSheet();
+        var ff = selIds().length ? M.findClip(S.project, selIds()[0]) : null;
+        FXUI.open(ff ? ff.track.id : S.selTrack);
+        return;
+      }
       var f = FX.FX[id];
       if (!f) return;
       if (f.options) {
@@ -1227,6 +1414,7 @@
     down = { id: e.pointerId, x0: p.x, y0: p.y, cx: e.clientX, cy: e.clientY, hit: h, touch: touch, moved: false, mode: null, shift: e.shiftKey || e.metaKey || e.ctrlKey, scrollT0: S.scrollT, scrollTop0: el.scroll.scrollTop };
 
     if (e.button === 2 && h.clip) { e.preventDefault(); clipMenu(h.clip.id); down = null; return; }
+    if (h.track && S.autoLanes[h.track.id] && e.button !== 2 && autoDown(e, h, p, touch)) return;
 
     if (h.type === 'fadeIn' || h.type === 'fadeOut' || h.type === 'trimStart' || h.type === 'trimEnd') {
       down.mode = h.type;
@@ -1281,6 +1469,15 @@
 
     var h = down.hit, t = view.t(p.x);
     switch (down.mode) {
+      case 'autoPoint': autoMove(p); break;
+      case 'pending-auto':
+        down.mode = 'pan';
+        S.scrollT = Math.max(0, down.scrollT0 - (e.clientX - down.cx) / S.pps);
+        clampScroll();
+        el.scroll.scrollTop = down.scrollTop0 - (e.clientY - down.cy);
+        updateHbar();
+        draw();
+        break;
       case 'pending-move':
         down.mode = 'move';
         var ids = {};
@@ -1362,11 +1559,22 @@
     S.snapAt = null;
     if (e.type === 'pointercancel') {
       if (g.mode === 'move') S.drag = null;
+      S.autoHot = null;
       if (liveSnap !== null) endLive();
       draw();
       return;
     }
     switch (g.mode) {
+      case 'autoPoint':
+        S.autoHot = null;
+        endLive({ noRestart: true });
+        E.relane(S.project); E.syncFx(S.project);
+        draw();
+        break;
+      case 'pending-auto':
+        edit(function () { addAutoPoint(g.hit.track, g.lane, view.t(g.x0), laneV(g.lane.info, g.y0, g.hit.ti)); }, { noRestart: true });
+        setTimeout(function () { S.autoHot = null; draw(); }, 900);
+        break;
       case 'move':
         var drag = S.drag;
         S.drag = null;
@@ -1423,6 +1631,7 @@
 
   el.lanes.addEventListener('dblclick', function (e) {
     var p = localXY(e, el.lanes), h = view.hitTest(p.x, p.y, {});
+    if (h.track && S.autoLanes[h.track.id]) return;
     if (h.clip) { S.range = { t0: h.clip.start, t1: M.clipEnd(h.clip), tracks: [h.track.id] }; S.sel = {}; refresh(); }
   });
 
@@ -1590,14 +1799,26 @@
 
   document.addEventListener('keydown', function (e) {
     var tag = (e.target.tagName || '').toLowerCase();
+    var inMixer = e.target.closest && e.target.closest('.ed-mixer');
+    // In the mixer a slider or a button keeps focus after it is used; Space
+    // must still play rather than nudge the slider or press the button again.
+    if (inMixer && (e.key === ' ' || e.key === 'Spacebar') && (tag === 'button' || (tag === 'input' && e.target.type === 'range'))) {
+      e.preventDefault();
+      togglePlay();
+      return;
+    }
     if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) {
       if (e.key === 'Escape') e.target.blur();
       return;
+    }
+    if (inMixer && e.key !== 'Escape') {
+      if (e.key !== 'z' && e.key !== 'Z' && e.key !== 'y' && e.key !== 'Y') return;
     }
     if (!el.sheet.hidden || !el.exportSheet.hidden) {
       if (e.key === 'Escape') { closeSheet(); closeExport(); }
       return;
     }
+    if (e.key === 'Escape' && FXUI.isOpen() && !Object.keys(S.sel).length && !S.range) { FXUI.close(); e.preventDefault(); return; }
     // Only take keys when the editor is on screen, so Space still scrolls the
     // article below it.
     var r = el.ed.getBoundingClientRect();
@@ -1627,6 +1848,8 @@
     else if (k === 'l' || k === 'L') { S.loop = !S.loop; updateTransport(); draw(); toast(S.loop ? 'Loop on' : 'Loop off'); }
     else if (k === 'r' || k === 'R') { if (S.rec) stopRecording(); else startRecording(); }
     else if (k === 'n' || k === 'N') runTool('snap');
+    else if (k === 'f' || k === 'F') runTool('mixer');
+    else if ((k === 'a' || k === 'A') && S.selTrack) toggleAuto(S.selTrack);
     else if (k === 'Home') { seek(0); S.scrollT = 0; updateHbar(); }
     else if (k === 'End') seek(M.duration(S.project));
     else if (k === '?') keysSheet();
@@ -1752,9 +1975,13 @@
   }
   function closeExport() { if (el.exportSheet) el.exportSheet.hidden = true; }
   function syncExportForm() {
-    var fmtv = $('#edExFmt').value;
+    var fmtv = $('#edExFmt').value, what = $('#edExWhat').value;
     $('#edExBitrateWrap').hidden = !/^(mp3|m4a|ogg)$/.test(fmtv);
+    $('#edExStemMasterWrap').hidden = what !== 'stems';
+    var anyFx = S.project.master.fx.length || S.project.tracks.some(function (t) { return t.fx.length || Object.keys(t.sends).length; });
+    $('#edExTailsWrap').hidden = what === 'markers' || !anyFx;
   }
+  $('#edExWhat').addEventListener('change', syncExportForm);
   $('#edExport').addEventListener('click', function () {
     if (!hasClips()) { status('warn', 'Add some audio first.'); return; }
     openExport(S.range ? 'range' : 'mix');
@@ -1766,6 +1993,7 @@
   CV.remember($('#edExFmt'), 'ed_fmt');
   CV.remember($('#bitrate'), 'ed_bitrate');
   CV.remember($('#edExRate'), 'ed_rate');
+  CV.remember($('#edExTails'), 'ed_tails');
 
   function encode(buf, fmtv, bitrate, onProgress) {
     if (fmtv === 'mp3') return global.AudioSaw.audioBufferToMp3(buf, bitrate, onProgress);
@@ -1777,10 +2005,12 @@
   }
   function extFor(fmtv) { return fmtv === 'wav32' ? 'wav' : fmtv; }
 
-  function soloProject(trackId) {
+  // One track on its own. For stems the others stay in the project, muted,
+  // so a ducker on this track still hears what it listens to.
+  function soloProject(trackId, keepOthers) {
     var p = M.copy(S.project);
-    p.tracks = p.tracks.filter(function (t) { return t.id === trackId; });
-    p.tracks.forEach(function (t) { t.mute = false; t.solo = false; });
+    if (!keepOthers) p.tracks = p.tracks.filter(function (t) { return t.id === trackId; });
+    p.tracks.forEach(function (t) { t.solo = false; t.mute = t.id !== trackId; });
     return p;
   }
 
@@ -1792,6 +2022,8 @@
     var name = ($('#edExName').value || 'audiosaw-mix').replace(/[\\/:*?"<>|]+/g, '-').trim() || 'audiosaw-mix';
     var protect = $('#edExProtect').checked;
     var channels = $('#edExMono').checked ? 1 : 2;
+    var tails = what !== 'markers' && $('#edExTails').checked;
+    var noMaster = what === 'stems' && !$('#edExStemMaster').checked;
     closeExport();
     if (E.isPlaying()) togglePlay();
 
@@ -1813,7 +2045,7 @@
       }
     } else if (what === 'stems') {
       S.project.tracks.forEach(function (t) {
-        if (t.clips.length) jobs.push({ project: soloProject(t.id), t0: 0, t1: d, name: name + '-' + t.name.replace(/[\\/:*?"<>|]+/g, '-') });
+        if (t.clips.length) jobs.push({ project: soloProject(t.id, true), t0: 0, t1: d, name: name + '-' + t.name.replace(/[\\/:*?"<>|]+/g, '-') });
       });
     } else {
       jobs.push({ project: S.project, t0: 0, t1: d, name: name });
@@ -1826,7 +2058,7 @@
     jobs.forEach(function (job, idx) {
       chain = chain.then(function () {
         status('info', 'Mixing' + (jobs.length > 1 ? ' ' + (idx + 1) + ' of ' + jobs.length : '') + '…');
-        return E.render(job.project, job.t0, job.t1, { sampleRate: sr, channels: channels, protect: protect });
+        return E.render(job.project, job.t0, job.t1, { sampleRate: sr, channels: channels, protect: protect, tails: tails, noMaster: noMaster });
       }).then(function (res) {
         status('info', 'Encoding ' + fmtv.replace('wav32', 'WAV') .toUpperCase() + (jobs.length > 1 ? ' ' + (idx + 1) + ' of ' + jobs.length : '') + '…');
         return encode(res.buffer, fmtv, bitrate, function (pct) {
@@ -1864,6 +2096,8 @@
       '-',
       { v: 'full', label: el.ed.classList.contains('ed-full') ? 'Exit full screen' : 'Full screen editor' },
       { v: 'countin', label: (countIn ? '✓ ' : '') + 'Count in before recording', hint: '3, 2, 1' },
+      { v: 'tempo', label: 'Tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'mixer', label: 'Mixer and master effects', hint: 'F' },
       { v: 'keys', label: 'Keyboard shortcuts', hint: '?' },
       '-',
       { v: 'new', label: 'New project', hint: 'Clears the timeline — undo still works', danger: true }
@@ -1876,6 +2110,8 @@
       if (v === 'full') toggleFull();
       if (v === 'countin') { countIn = !countIn; try { localStorage.setItem('as_ed_countin', countIn ? '1' : '0'); } catch (e) {} toast(countIn ? 'Count-in on' : 'Count-in off'); }
       if (v === 'keys') keysSheet();
+      if (v === 'tempo') tempoSheet();
+      if (v === 'mixer') FXUI.open('master');
       if (v === 'new') {
         if (E.isPlaying()) togglePlay();
         edit(function (p) { p.tracks = []; p.markers = []; p.name = 'Untitled project'; });
@@ -1885,6 +2121,59 @@
       }
     });
   });
+
+  /* ---------------------------------------------------------------- tempo */
+
+  // Synced delays, tremolos and filter sweeps follow the project tempo. Type
+  // it, tap it, or let the BPM finder read it off the audio.
+  function tempoSheet() {
+    var taps = [];
+    openSheet('Tempo', '<div class="ed-form"><label>Beats per minute <input type="number" min="20" max="400" step="0.1" data-k="bpm" value="' + S.project.bpm + '" inputmode="decimal"></label></div>' +
+      '<div class="ed-insp-btns"><button type="button" class="ed-btn" data-v="tap">Tap along</button>' +
+      '<button type="button" class="ed-btn" data-v="detect"' + (hasClips() ? '' : ' disabled') + '>Detect from the audio</button></div>' +
+      '<p class="ed-sheet-note" data-tempo-note>Tap in time with the music, four or more times. Detection reads the longest clip, or the selected one.</p>' +
+      '<div class="ed-sheet-actions"><button type="button" class="ed-btn ed-btn-primary" data-v="ok">Done</button></div>', function (v) {
+      var inp = el.sheetBody.querySelector('[data-k="bpm"]'), note = el.sheetBody.querySelector('[data-tempo-note]');
+      if (v === 'tap') {
+        var now = performance.now();
+        if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
+        taps.push(now);
+        if (taps.length >= 3) {
+          var iv = [];
+          for (var i = 1; i < taps.length; i++) iv.push(taps[i] - taps[i - 1]);
+          iv.sort(function (a, b) { return a - b; });
+          inp.value = (60000 / iv[Math.floor(iv.length / 2)]).toFixed(1);
+          note.textContent = taps.length + ' taps';
+        }
+        return;
+      }
+      if (v === 'detect') {
+        var ids = selIds(), f = ids.length ? M.findClip(S.project, ids[0]) : null, clip = f ? f.clip : null;
+        if (!clip) M.allClips(S.project).forEach(function (c) { if (!clip || c.clip.duration > clip.duration) clip = c.clip; });
+        var buf = clip && buffers.get(clip.sourceId);
+        if (!buf || !global.ASBpm) return;
+        note.textContent = 'Listening…';
+        setTimeout(function () {
+          var res = global.ASBpm.analyse(slice(buf, clip.offset, Math.min(clip.duration, 90)));
+          if (!res) { note.textContent = 'No steady beat found in “' + clip.name + '”. Tap along instead.'; return; }
+          inp.value = res.bpm.toFixed(1);
+          note.textContent = 'Read ' + res.bpm.toFixed(1) + ' BPM from “' + clip.name + '”' + (res.confidence < 0.5 ? ' — not certain; tap along to check. Half or double is common.' : '.');
+        }, 30);
+        return;
+      }
+      if (v === 'ok') {
+        var b = parseFloat(inp.value);
+        closeSheet();
+        if (b >= 20 && b <= 400 && b !== S.project.bpm) {
+          edit(function (p) { M.setBpm(p, b); }, { noRestart: true });
+          E.syncFx(S.project);
+          // Synced times are computed when a plugin is built or set; nudge them.
+          if (E.isPlaying()) restartPlayback();
+          toast('Tempo ' + S.project.bpm + ' BPM');
+        }
+      }
+    });
+  }
 
   function toggleFull() {
     var on = !el.ed.classList.contains('ed-full');
@@ -1932,7 +2221,7 @@
     var before = M.serialize(S.project);
     res.buffers.forEach(function (b, id) { buffers.set(id, b); V.buildPeaks(id, b); });
     res.files.forEach(function (f, id) { files.set(id, f); });
-    var p = res.project;
+    var p = M.normalize(res.project);
     // A restored file may decode a sample longer or shorter than it did before
     // (a different output device means a different sample rate).
     Object.keys(p.sources).forEach(function (id) {
@@ -2013,7 +2302,7 @@
 
   function applyLayout() {
     var small = global.matchMedia('(max-width: 700px)').matches;
-    var th = small ? 80 : 96;
+    var th = small ? 90 : 96;
     if (S.trackH !== th) { S.trackH = th; }
     S.viewH = el.scroll.clientHeight;
     refresh();
@@ -2021,6 +2310,13 @@
   if (global.ResizeObserver) new ResizeObserver(function () { applyLayout(); }).observe(el.stage);
   else global.addEventListener('resize', applyLayout);
   global.addEventListener('pagehide', function () { if (saveTimer) { clearTimeout(saveTimer); doSave(); } });
+
+  FXUI.init({
+    S: S, el: el, esc: esc, edit: edit, beginLive: beginLive, endLive: endLive, isLive: isLive,
+    refresh: refresh, buildHeads: buildHeads, toast: toast, openSheet: openSheet, closeSheet: closeSheet,
+    menuHtml: menuHtml, isTouchUI: isTouchUI, layout: applyLayout, tempoSheet: tempoSheet
+  });
+  $('#edMixerBtn').addEventListener('click', function () { if (FXUI.isOpen()) FXUI.close(); else FXUI.open(S.selTrack); });
 
   applyLayout();
   updateTransport();

@@ -10,6 +10,8 @@
  *   - a trim can never reach past either end of its source, or into a neighbour
  *   - moves snap to clip edges, and moving onto occupied time overwrites it
  *   - ripple delete closes the gap on that track only
+ *   - effect chains, sends and automation undo exactly, automation follows
+ *     ripple edits, and every preset and patch names real parameters in range
  *   - 1,000 random operations never leave an overlap, a negative time, a clip
  *     running past its source, or fades longer than the clip
  *
@@ -17,6 +19,7 @@
  * lands on the values it should.
  */
 const M = require('../js/editor-model.js');
+const D = require('../js/editor-dsp.js');
 
 let failures = 0;
 function ok(cond, msg) {
@@ -160,6 +163,117 @@ function fixture() {
   near(mix[1500], a[1500] * Math.pow(10, -6 / 20) + 0.25 * Math.sin(Math.PI / 4), 1e-9, 'mixed sample matches expected value');
 }
 
+
+/* ------------------------------------------------------ effects: model */
+{
+  const { p, t1 } = fixture();
+  ok(p.buses.length === 2 && p.master && p.bpm === 120, 'a new project has two return buses, a master and a tempo');
+  const once = M.serialize(p);
+  M.normalize(p);
+  ok(M.serialize(p) === once, 'normalize is idempotent');
+
+  // An autosave from before effects existed.
+  const old = JSON.parse(once);
+  delete old.master; delete old.buses; delete old.bpm;
+  old.tracks.forEach((t) => { delete t.fx; delete t.sends; delete t.auto; });
+  M.normalize(old);
+  ok(Array.isArray(old.tracks[0].fx) && old.master.fx && old.buses.length === 2, 'normalize upgrades an old project');
+  valid(old, 'upgraded project');
+
+  const h = new M.History();
+  const before = M.serialize(p);
+  h.push(before);
+  const a = M.addFx(p, t1, 'eq', D.fresh('eq').params);
+  const b = M.addFx(p, t1, 'comp', D.fresh('comp').params, 0);
+  ok(p.tracks[0].fx[0].id === b && p.tracks[0].fx[1].id === a, 'addFx inserts at the index given');
+  M.moveFx(p, t1, b, 1);
+  ok(p.tracks[0].fx[1].id === b, 'moveFx reorders');
+  M.setFx(p, t1, a, { on: false, params: { p3Gain: 4 }, m: null });
+  ok(p.tracks[0].fx[0].on === false && p.tracks[0].fx[0].params.p3Gain === 4 && !('m' in p.tracks[0].fx[0]), 'setFx bypasses, merges params and drops macros');
+  M.setAutoPoints(p, t1, 'fx:' + a + ':p3Gain', [[2, 0], [1, -3], [4, 6]]);
+  ok(p.tracks[0].auto['fx:' + a + ':p3Gain'][0][0] === 1, 'automation points are sorted');
+  near(M.autoValueAt(p.tracks[0].auto['fx:' + a + ':p3Gain'], 3), 3, 1e-9, 'automation interpolates linearly');
+  near(M.autoValueAt(p.tracks[0].auto['fx:' + a + ':p3Gain'], 0), -3, 1e-9, 'automation holds before the first point');
+  M.removeFx(p, t1, a);
+  ok(!p.tracks[0].auto['fx:' + a + ':p3Gain'], 'removing a plugin removes its automation');
+  M.setSend(p, t1, 'bus-reverb', -6);
+  ok(p.tracks[0].sends['bus-reverb'] === -6, 'setSend stores the level');
+  M.setSend(p, t1, 'bus-reverb', -60);
+  ok(!('bus-reverb' in p.tracks[0].sends), 'a send at -60 dB is removed');
+  M.setSend(p, t1, 'bus-delay', -3);
+  M.setAutoPoints(p, t1, 'send:bus-delay', [[0, -10], [5, 0]]);
+  M.removeBus(p, 'bus-delay');
+  ok(!p.tracks[0].sends['bus-delay'] && !p.tracks[0].auto['send:bus-delay'], 'removing a bus removes its sends and their automation');
+  valid(p, 'after effect ops');
+  ok(h.undo(M.serialize(p)) === before, 'undo after effect ops restores the identical project');
+
+  const ids = M.setChain(p, 'master', D.patchChain(D.PATCHES.filter((x) => x.name === 'Streaming master')[0]));
+  ok(ids.length === 3 && p.master.fx[2].type === 'limiter', 'setChain loads a patch onto the master');
+}
+
+/* ------------------------------------------- automation follows edits */
+{
+  const { p, t1 } = fixture();
+  M.setAutoPoints(p, t1, 'vol', [[0, 0], [2, -6], [6, -6], [8, 0]]);
+  M.deleteRange(p, 3, 5, null, true);
+  const pts = p.tracks[0].auto.vol;
+  near(M.autoValueAt(pts, 6), 0, 1e-9, 'ripple delete pulls later automation left (8 s -> 6 s)');
+  near(M.autoValueAt(pts, 2.5), -6, 1e-9, 'automation before the cut is untouched');
+  M.insertGap(p, 1, 2, null);
+  near(M.autoValueAt(p.tracks[0].auto.vol, 8), 0, 1e-9, 'inserting silence pushes automation right');
+  near(M.autoValueAt(p.tracks[0].auto.vol, 2), M.autoValueAt(p.tracks[0].auto.vol, 3), 1e-9, 'the inserted gap holds the value it was cut at');
+  M.cropTo(p, 2, 9);
+  near(p.tracks[0].auto.vol[0][0], 0, 1e-12, 'crop moves automation to zero');
+  valid(p, 'after automation edits');
+  const thin = M.thinPoints(Array.from({ length: 200 }, (_, i) => [i / 100, i < 100 ? 0 : -6]), 0.01);
+  ok(thin.length <= 4, 'a recorded step thins to a handful of points (' + thin.length + ')');
+}
+
+/* ------------------------------------------------- effects: catalogue */
+{
+  function inRange(def, k, v, where) {
+    const pr = def.byKey[k];
+    if (!pr) { ok(false, where + ': no parameter ' + k); return; }
+    if (pr.opts) ok(pr.kind === 'track' || pr.opts.some((o) => String(o[0]) === String(v)), where + ': ' + k + ' = ' + v + ' is not an option');
+    else ok(typeof v === 'number' && v >= pr.min - 1e-9 && v <= pr.max + 1e-9, where + ': ' + k + ' = ' + v + ' outside ' + pr.min + '..' + pr.max);
+  }
+  ok(D.ORDER.length >= 23, 'at least 23 plugins (' + D.ORDER.length + ')');
+  D.ORDER.forEach((k) => {
+    const d = D.PLUGINS[k];
+    ok(d && d.name && d.desc && D.CATS.some((c) => c[0] === d.cat), k + ' has a name, description and category');
+    d.params.forEach((pr) => inRange(d, pr.k, pr.def, k + ' default'));
+    d.structural.forEach((s) => ok(!!d.byKey[s], k + ': structural key ' + s + ' is a parameter'));
+    d.macros.forEach((m) => [0, m.def, 0.5, 1].forEach((v) => {
+      const patch = m.map(v);
+      Object.keys(patch).forEach((pk) => inRange(d, pk, patch[pk], k + ' macro ' + m.k + '@' + v));
+    }));
+    d.presets.forEach((pr) => Object.keys(pr.p).forEach((pk) => inRange(d, pk, pr.p[pk], k + ' preset "' + pr.name + '"')));
+    const f = D.fresh(k);
+    ok(JSON.stringify(D.resolve({ type: k, params: f.params })) === JSON.stringify(f.params), k + ': a fresh slot resolves to itself');
+    ok(D.tailOf({ type: k, params: f.params }, 120) >= 0, k + ': tail is defined');
+  });
+  D.PATCHES.forEach((pt) => {
+    ok(['track', 'master', 'both'].indexOf(pt.for) >= 0, 'patch ' + pt.name + ' says where it goes');
+    pt.chain.forEach((s) => {
+      const d = D.PLUGINS[s.type];
+      ok(!!d, 'patch ' + pt.name + ': plugin ' + s.type + ' exists');
+      if (!d) return;
+      if (s.preset) ok(d.presets.some((x) => x.name === s.preset), 'patch ' + pt.name + ': preset ' + s.preset + ' exists');
+      Object.keys(s.p || {}).forEach((pk) => inRange(d, pk, s.p[pk], 'patch ' + pt.name));
+    });
+    D.patchChain(pt).forEach((slot) => ok(D.PLUGINS[slot.type] && slot.params, 'patch ' + pt.name + ' builds a chain'));
+  });
+  near(D.noteSec('1/4', 120), 0.5, 1e-12, 'a quarter note at 120 BPM is half a second');
+  near(D.noteSec('1/8D', 120), 0.375, 1e-12, 'a dotted eighth is 1.5 eighths');
+  near(D.noteSec('1/4T', 120), 1 / 3, 1e-12, 'a quarter triplet is two-thirds of a quarter');
+  near(D.response('eq', { p3Freq: 1000, p3Gain: 6, p3Q: 1 }, [1000], 48000)[0], 6, 1e-6, 'EQ curve: +6 dB at the band centre');
+  near(D.response('eq', { hpOn: 'on', hpFreq: 100, hpSlope: '24' }, [100], 48000)[0], -3.01, 0.02, 'EQ curve: a Butterworth low cut is -3 dB at its corner');
+  near(D.response('eq', { hpOn: 'on', hpFreq: 100, hpSlope: '24' }, [50], 48000)[0], -24.1, 0.5, 'EQ curve: 24 dB/oct is about -24 dB an octave below');
+  // The reverb must be the same room every time, or playback and export differ.
+  const ir1 = D.reverbIR(48000, 1.2, 5000, 40, 80)[0], ir2 = D.reverbIR(44100 + 3900, 1.2, 5000, 40, 80)[0];
+  ok(ir1 === ir2 || ir1.every((v, i) => v === ir2[i]), 'the reverb impulse is deterministic');
+}
+
 /* ------------------------------------------------------------- fuzzing */
 {
   let seed = 12345;
@@ -194,7 +308,17 @@ function fixture() {
     }
     else if (r < 0.91) { op = 'addTrack'; M.addTrack(p); }
     else if (r < 0.93 && p.tracks.length > 2) { op = 'removeTrack'; M.removeTrack(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id); }
-    else if (r < 0.96 && id) { op = 'setClip'; M.setClip(p, id, { gainDb: (rnd() - 0.5) * 30, fadeIn: rnd() * 3 }); }
+    else if (r < 0.95 && id) { op = 'setClip'; M.setClip(p, id, { gainDb: (rnd() - 0.5) * 30, fadeIn: rnd() * 3 }); }
+    else if (r < 0.965) {
+      op = 'fx';
+      const tr = p.tracks[Math.floor(rnd() * p.tracks.length)], key = rnd() < 0.2 ? 'master' : tr.id, ch = M.chainOf(p, key);
+      const x = rnd();
+      if (x < 0.4 || !ch.length) M.addFx(p, key, D.ORDER[Math.floor(rnd() * D.ORDER.length)], {});
+      else if (x < 0.6) M.moveFx(p, key, ch[0].id, Math.floor(rnd() * ch.length));
+      else if (x < 0.8) M.setFx(p, key, ch[0].id, { on: rnd() < 0.5, params: { out: -3 } });
+      else M.removeFx(p, key, ch[Math.floor(rnd() * ch.length)].id);
+    }
+    else if (r < 0.975) { op = 'auto'; M.setAutoPoints(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id, 'vol', [[t, -6], [t + rnd() * 4, 0], [rnd() * 20, -3]]); }
     else { op = 'addClip'; M.addClip(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id, { sourceId: Object.keys(p.sources)[0], start: t, offset: rnd() * 5, duration: rnd() * 5 + 0.05 }); }
     if (M.serialize(p) !== snapBefore) { h.push(snapBefore); ops++; }
     const errs = M.validate(p);
@@ -214,4 +338,4 @@ if (failures) {
   console.error('check-editor: ' + failures + ' failure(s).');
   process.exit(1);
 }
-console.log('check-editor: model invariants hold across split, trim, move, ripple, paste and 1,000 random edits.');
+console.log('check-editor: model invariants hold across split, trim, move, ripple, paste, effects, automation and 1,000 random edits; ' + D.ORDER.length + ' plugins and ' + D.PATCHES.length + ' patches check out.');
