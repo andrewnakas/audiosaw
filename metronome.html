@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Metronome — steady in any tab, with tap tempo and a speed trainer</title>
+<meta name="description" content="A free online metronome that keeps time on the audio clock: time signatures, subdivisions, tap tempo, accents and a speed trainer. Works on phones, no signup.">
+<meta name="keywords" content="online metronome, metronome, free metronome, metronome with subdivisions, 6/8 metronome, tap tempo, speed trainer metronome">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/metronome">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Online Metronome — steady in any tab, with tap tempo and a speed trainer">
+<meta property="og:description" content="A free online metronome that keeps time on the audio clock: time signatures, subdivisions, tap tempo, accents and a speed trainer. Works on phones, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/metronome">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23j">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Online Metronome",
+  "url": "https://audiosaw.com/metronome",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it accurate?","acceptedAnswer":{"@type":"Answer","text":"Yes. Clicks are scheduled on your sound card's clock, not fired by a timer, so a busy page or a background tab does not make it stutter. Measured in a browser, consecutive clicks are exactly one beat apart."}},{"@type":"Question","name":"How does 6/8 work?","acceptedAnswer":{"@type":"Answer","text":"Six eighth-note clicks a bar, with a full beat sound only on the first of each group of three, so it is felt in two. The tempo always counts quarter notes, as in DAWs."}},{"@type":"Question","name":"What is the speed trainer?","acceptedAnswer":{"@type":"Answer","text":"It raises the tempo by a set number of BPM every few bars, up to a ceiling you choose, on the bar line. It is the \"start slow and speed up\" practice routine, without stopping to change the number."}},{"@type":"Question","name":"Does it keep going if I switch tabs?","acceptedAnswer":{"@type":"Answer","text":"Yes. In a background tab it schedules further ahead, so even a throttled page does not leave gaps."}},{"@type":"Question","name":"Can I use it with headphones?","acceptedAnswer":{"@type":"Answer","text":"Yes. Wired headphones are best. Bluetooth adds a fixed delay, which keeps the beat steady but makes playing to the flashing dots feel late."}},{"@type":"Question","name":"Are there keyboard shortcuts?","acceptedAnswer":{"@type":"Answer","text":"Space starts and stops, T taps the tempo, and the up and down arrows change it by one BPM."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Online Metronome"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Online Metronome</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Online <span class="ital">metronome</span></h1>
+    <p>A metronome that keeps time properly in a browser, with time signatures, subdivisions, tap tempo and a speed trainer that raises the tempo as you get a passage clean. Press Start or the space bar.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app metro">
+    <div class="metro-head">
+      <button type="button" class="btn btn-small btn-secondary" data-nudge="-5" aria-label="Five slower">−5</button>
+      <button type="button" class="btn btn-small btn-secondary" data-nudge="-1" aria-label="One slower">−1</button>
+      <div class="metro-bpm"><span class="bpm-number" id="mBpmOut">100</span><span class="bpm-unit">BPM</span></div>
+      <button type="button" class="btn btn-small btn-secondary" data-nudge="1" aria-label="One faster">+1</button>
+      <button type="button" class="btn btn-small btn-secondary" data-nudge="5" aria-label="Five faster">+5</button>
+    </div>
+    <input type="range" id="mBpmRange" min="30" max="300" step="1" value="100" aria-label="Tempo" class="metro-range">
+    <div class="metro-dots" id="mDots" aria-hidden="true"></div>
+    <div class="actions metro-actions">
+      <button class="btn" id="mStart" type="button">Start</button>
+      <button class="btn btn-secondary" id="mTap" type="button">Tap tempo</button>
+    </div>
+    <div class="controls">
+      <label>Tempo <input type="number" id="mBpm" min="30" max="300" step="0.1" value="100" inputmode="decimal"></label>
+      <label>Time signature
+        <select id="mSig">
+          <option value="2/4">2/4</option><option value="3/4">3/4</option><option value="4/4" selected>4/4</option><option value="5/4">5/4</option>
+          <option value="6/4">6/4</option><option value="7/4">7/4</option><option value="3/8">3/8</option><option value="5/8">5/8</option>
+          <option value="6/8">6/8</option><option value="7/8">7/8</option><option value="9/8">9/8</option><option value="12/8">12/8</option>
+        </select>
+      </label>
+      <label>Subdivide
+        <select id="mSub"><option value="none" selected>No</option><option value="eighth">Eighths</option><option value="triplet">Triplets</option><option value="sixteenth">Sixteenths</option></select>
+      </label>
+      <label>Sound
+        <select id="mSound"><option value="click" selected>Click</option><option value="wood">Woodblock</option><option value="beep">Beep</option></select>
+      </label>
+      <label>Volume <input type="range" id="mVol" min="0" max="1" step="0.05" value="0.8"></label>
+      <label class="check"><input type="checkbox" id="mAccent" checked> Accent beat one</label>
+    </div>
+    <details class="metro-trainer">
+      <summary>Speed trainer</summary>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="mTrainer"> Raise the tempo as I play</label>
+        <label>By <input type="number" id="mStep" min="1" max="40" value="5"> BPM</label>
+        <label>Every <input type="number" id="mEvery" min="1" max="64" value="4"> bars</label>
+        <label>Up to <input type="number" id="mCeil" min="30" max="300" value="160"> BPM</label>
+      </div>
+    </details>
+    <p class="key-shift-note" id="mTrainNote" aria-live="polite"></p>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Why a browser metronome usually drifts, and why this one does not</h2>
+    <p>The obvious way to build a metronome in a web page is a timer that fires every beat and plays a sound. It does not keep time. Browser timers are only a request: when the page is busy, or you switch tabs, or the phone is saving battery, the timer fires late, and the beat stutters by whatever it was late by. Over a few minutes that is easy to hear, and it is the worst possible fault in a tool whose only job is to be steady.</p>
+    <p>This one uses the audio hardware's clock instead. A timer still runs, but all it does is look a tenth of a second ahead and hand the sound card the exact times of the next clicks. The sound card plays them at those times to the sample, however late the timer was. The page was measured in a headless browser, and the gap between one scheduled click and the next was exactly one beat, with no error, at every tempo tried. When the tab is in the background, it looks further ahead, a second and a half, so even a throttled timer cannot open a gap.</p>
+
+    <h3>Time signatures and subdivisions</h3>
+    <p>The tempo counts quarter notes, as every DAW and most printed music does, and the beat is the note under the time signature. In 3/4 at 90 there are three clicks a bar, two thirds of a second apart. In 6/8 at 90 there are six clicks a bar, and only the first of each group of three gets the full beat sound. That is how 6/8 is actually felt, in two, and hearing all six as equal beats makes a jig sound like a march. 9/8 and 12/8 work the same way, in three and four.</p>
+    <p>Subdivisions fill in eighths, triplets or sixteenths at a quieter level. Practising with sixteenths on is the fastest way to hear whether a run is even, because a rushed note lands audibly early against the fill. Turn beat one's accent off for pieces where the bar line should not be heard, or when you want to practise feeling the downbeat yourself.</p>
+
+    <h3>Tap tempo</h3>
+    <p>Tap the button, or press T, along with a song you are listening to. After three taps the tempo is set from the median gap between them, which ignores one sloppy tap in a way a simple average does not. Stop for two seconds and the next tap starts a fresh count. For a recording, <a href="/bpm-finder">the BPM finder</a> reads the tempo from the file itself, to within a fifth of a BPM on material with a clear beat.</p>
+
+    <h3>The speed trainer</h3>
+    <p>The standard advice for a difficult passage is to play it slowly until it is clean, then speed up a little, over and over. The trainer does the speeding up. Pick how many BPM to add, how many bars to play at each tempo and where to stop, and it steps up on the bar line so the change never lands in the middle of a phrase. Starting at 80 and adding 5 every 4 bars up to 120 is nine steps and 36 bars, about two minutes of focused work. If it gets away from you, stop, knock the tempo back down with the −5 button and start again.</p>
+
+    <h3>Keyboard</h3>
+    <p>Space starts and stops, T taps, and the up and down arrows move the tempo by one. The tempo you last used is remembered in this browser. A link can set it too: <code>/metronome?bpm=132</code> opens at 132.</p>
+
+    <h3>Practising with recordings</h3>
+    <p>Want to play along with a song, not a click? <a href="/audio-speed">The speed tool</a> slows a recording down without changing its pitch, which is how most people learn a fast solo. For recording yourself in time, <a href="/audio-editor">the audio editor</a> has the same kind of click built in, a one- or two-bar count-in, and a bar-and-beat grid your takes line up against. It also keeps the click out of what you export.</p>
+
+    <h3>What it cannot do</h3>
+    <p>There is no tempo map, so a piece that changes tempo mid-way needs you to change it by hand. The sound comes out of your device's speaker or headphones, and Bluetooth headphones add a delay of their own, often 150 ms or more. That delay is constant, so the beat is still steady, but tapping or playing along to a visual cue will feel late. Wired headphones or the speaker avoid it.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is it accurate?</summary><p>Yes. Clicks are scheduled on your sound card's clock, not fired by a timer, so a busy page or a background tab does not make it stutter. Measured in a browser, consecutive clicks are exactly one beat apart.</p></details>
+      <details><summary>How does 6/8 work?</summary><p>Six eighth-note clicks a bar, with a full beat sound only on the first of each group of three, so it is felt in two. The tempo always counts quarter notes, as in DAWs.</p></details>
+      <details><summary>What is the speed trainer?</summary><p>It raises the tempo by a set number of BPM every few bars, up to a ceiling you choose, on the bar line. It is the "start slow and speed up" practice routine, without stopping to change the number.</p></details>
+      <details><summary>Does it keep going if I switch tabs?</summary><p>Yes. In a background tab it schedules further ahead, so even a throttled page does not leave gaps.</p></details>
+      <details><summary>Can I use it with headphones?</summary><p>Yes. Wired headphones are best. Bluetooth adds a fixed delay, which keeps the beat steady but makes playing to the flashing dots feel late.</p></details>
+      <details><summary>Are there keyboard shortcuts?</summary><p>Space starts and stops, T taps the tempo, and the up and down arrows change it by one BPM.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Tune up before you start.</p></a>
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Find the tempo of the song you are practising.</p></a>
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Slow a recording down to practise along with it.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Record yourself to a click and a count-in.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23j"></script>
+<script src="/js/tool-graph.js?v=2026-09-23j"></script>
+<script src="/js/flow.js?v=2026-09-23j"></script>
+<script src="/js/audio-core.js?v=2026-09-23j"></script>
+<script src="/js/metronome-page.js?v=2026-09-23j"></script>
+<script src="/js/consent.js?v=2026-09-23j"></script>
+<script src="/js/pwa.js?v=2026-09-23j"></script>
+</body>
+</html>

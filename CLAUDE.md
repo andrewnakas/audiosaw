@@ -158,6 +158,18 @@ carrying a separate tone per channel, not because the coefficient tables say
   minor as runner-up in 11. It is inherently ambiguous, so the page always
   shows the runner-up. Do not quote a real-music accuracy figure we have not
   measured.
+- `js/metronome-page.js` + `js/tuner-page.js`: `/metronome` and `/tuner`,
+  two pages that play or listen live and never take a file.
+  - **Metronome.** It schedules on the AudioContext clock 120 ms ahead, or
+    1.5 s ahead when the tab is hidden, because a hidden tab's timers can be
+    held to once a second. Measured in headless Chrome, consecutive clicks
+    are exactly one beat apart (worst error 6e-16 s).
+  - **Tuner.** It runs YIN from pitch-track.js on a 4096-sample
+    AnalyserNode window every 50 ms and shows the median of five readings.
+    `tools/check-pitch.js` requires it to be within 1 cent from B0 to E6.
+    That became true once YIN's parabolic refinement moved from the
+    normalised curve (4.5 cents off at 1.3 kHz) to the raw difference
+    (0.25 cents).
 - `js/midi-write.js` — Standard MIDI File writer (type 0). MIDI has no forgiving
   parser: chunk lengths must match their contents and delta times are
   variable-length quantities. `node tools/check-midi.js` parses the output back

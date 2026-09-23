@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Tuner — guitar, bass, ukulele, violin and chromatic, by microphone</title>
+<meta name="description" content="Free online tuner using your microphone: chromatic, or guitar, bass, ukulele, violin, viola and cello strings. Accurate to a cent, adjustable A4. Nothing is recorded.">
+<meta name="keywords" content="online tuner, guitar tuner, bass tuner, ukulele tuner, violin tuner, chromatic tuner, tuner with microphone, 432 hz tuner">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/tuner">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Online Tuner — guitar, bass, ukulele, violin and chromatic, by microphone">
+<meta property="og:description" content="Free online tuner using your microphone: chromatic, or guitar, bass, ukulele, violin, viola and cello strings. Accurate to a cent, adjustable A4. Nothing is recorded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/tuner">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-23j">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Online Tuner",
+  "url": "https://audiosaw.com/tuner",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-09-23"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"Checked on every release against test tones from 31 Hz to 1.3 kHz, it reads every note within a cent; the worst case measured was a quarter of a cent. The dial turns green within 3 cents."}},{"@type":"Question","name":"Is my microphone recorded?","acceptedAnswer":{"@type":"Answer","text":"No. The sound is analysed in the page and dropped. Nothing is saved or uploaded, and Stop switches the microphone off."}},{"@type":"Question","name":"Which instruments does it know?","acceptedAnswer":{"@type":"Answer","text":"Guitar in standard and drop D, 4- and 5-string bass, ukulele, violin, viola and cello, plus a chromatic mode for anything else, including voice and wind instruments."}},{"@type":"Question","name":"Can I tune to 432 Hz?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set A4 to 432, or anything from 400 to 480 Hz, and every note moves with it."}},{"@type":"Question","name":"Why does the reading jump around?","acceptedAnswer":{"@type":"Answer","text":"Usually more than one string is ringing, or the room is noisy. Mute the other strings and let one note ring; the needle averages a quarter of a second of sound so it settles."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Allow the microphone when asked. The phone's built-in microphone is fine at arm's length from the instrument."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Online Tuner"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Online Tuner</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Online <span class="ital">tuner</span></h1>
+    <p>Tune a guitar, bass, ukulele, violin, voice or anything else through your microphone. It shows the note, how many cents sharp or flat you are, and which string you are on. The sound is analysed in this tab and never sent anywhere.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app tuner">
+    <div class="controls">
+      <label>Instrument
+        <select id="tInst">
+          <option value="chromatic" selected>Chromatic — any note</option>
+          <option value="guitar">Guitar (E A D G B E)</option>
+          <option value="dropd">Guitar, drop D</option>
+          <option value="bass">Bass, 4 string (E A D G)</option>
+          <option value="bass5">Bass, 5 string (B E A D G)</option>
+          <option value="ukulele">Ukulele (G C E A)</option>
+          <option value="violin">Violin (G D A E)</option>
+          <option value="viola">Viola (C G D A)</option>
+          <option value="cello">Cello (C G D A)</option>
+        </select>
+      </label>
+      <label>Concert pitch <span class="nocase">(A4, Hz)</span> <input type="number" id="tRef" min="400" max="480" step="0.5" value="440" inputmode="decimal"></label>
+    </div>
+    <div class="t-dial" id="tDial">
+      <div class="t-scale" aria-hidden="true"><span>−50</span><span>−25</span><span>0</span><span>+25</span><span>+50</span></div>
+      <div class="t-arc" aria-hidden="true"><div class="t-needle" id="tNeedle"></div></div>
+      <div class="t-readout" aria-live="polite"><span class="t-note" id="tNote">–</span><span class="t-oct" id="tOct"></span></div>
+      <p class="t-cents" id="tCents"></p>
+      <p class="t-hz" id="tHz"></p>
+      <div class="t-strings" id="tStrings"></div>
+    </div>
+    <div class="actions"><button class="btn" id="tStart" type="button">Start tuning</button></div>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>How to tune with it</h2>
+    <p>Press <em>Start tuning</em> and allow the microphone. Pick your instrument if it is listed, which makes the tuner name the nearest string rather than the nearest note. That matters when a string is badly out: a low E that has dropped to D# shows up as "E, 100 cents flat, tune up" instead of as a perfectly good D#. Play one string at a time and let it ring. The needle sits in the middle and the dial turns green when you are within 3 cents, which is closer than most people can hear on a single note.</p>
+    <p>Tune up to the note, not down to it. If a string is sharp, go below the note and come back up. The gears on most tuning pegs have a little play in them, and a string tuned from above tends to slip flat within a song. Tune the whole guitar, then check the first string again: raising one string's tension pulls the neck forward a fraction and flattens the others slightly, most noticeably on a guitar with a floating bridge.</p>
+
+    <h3>How accurate is it?</h3>
+    <p>The pitch is found with YIN, a detector designed to avoid the classic tuner mistake of reading a note an octave too high or low. It is the same code behind this site's <a href="/audio-to-midi">audio to MIDI</a> and <a href="/autotune">autotune</a>. On every release it is checked against test tones with six harmonics, from the low B of a five-string bass (31 Hz) up to E6 (1.3 kHz). That runs at both common sample rates, with each note exactly in tune and 23 cents either side. It has to read every one within a cent, and the worst case measured was a quarter of a cent.</p>
+    <p>A real instrument reads less steadily than a test tone, because a plucked string starts a little sharp and settles as it rings. The needle shows the median of the last five readings, a quarter of a second of sound, so it settles instead of twitching. The first instant of a hard pluck is best ignored anyway. Tune against the ringing note.</p>
+
+    <h3>Reference pitch</h3>
+    <p>Almost all modern music tunes to A = 440 Hz. Some orchestras tune a little higher, to 442 or 443, for a brighter sound, and some players prefer 432. Change the A4 box and every note moves with it. It is also how to match a recording that was not made at 440. Run the recording through <a href="/key-finder">the key finder</a>, which reports how far it sits from 440 in cents. At 440 Hz, every 4 cents of difference moves A by about 1 Hz.</p>
+
+    <h3>Getting a clean reading</h3>
+    <p>Pitch detection needs one clear note. Chords, two strings ringing together or a noisy room make the reading jump, and the tuner ignores any reading it is not sure of rather than guessing, so the needle holds still until it hears a clean note. Mute the strings you are not tuning. A phone microphone works fine at arm's length, and a laptop's microphone is better with its fan quiet. For an electric guitar without an amp, hold the body close to the microphone: the strings are loud enough acoustically.</p>
+    <p>Browser voice processing is turned off for the microphone here. Echo cancellation and noise suppression are built for calls, and they can remove or bend a steady tone, which is exactly the sound a tuner needs to hear.</p>
+
+    <h3>Tuning to a recording</h3>
+    <p>To play along with a song, you need to be in its key as well as its tuning. <a href="/key-finder">The key finder</a> tells you both. If the song is in an awkward key for your voice or instrument, <a href="/pitch-shifter">the key changer</a> moves it by semitones without changing its speed. Keeping time is the other half of practising; there is a <a href="/metronome">metronome</a> too.</p>
+
+    <h3>Privacy</h3>
+    <p>The microphone signal goes into the page, is analysed, and is dropped. Nothing is recorded and nothing is uploaded. The browser shows its microphone indicator while the tuner is listening, and pressing Stop turns the microphone off completely.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How accurate is it?</summary><p>Checked on every release against test tones from 31 Hz to 1.3 kHz, it reads every note within a cent; the worst case measured was a quarter of a cent. The dial turns green within 3 cents.</p></details>
+      <details><summary>Is my microphone recorded?</summary><p>No. The sound is analysed in the page and dropped. Nothing is saved or uploaded, and Stop switches the microphone off.</p></details>
+      <details><summary>Which instruments does it know?</summary><p>Guitar in standard and drop D, 4- and 5-string bass, ukulele, violin, viola and cello, plus a chromatic mode for anything else, including voice and wind instruments.</p></details>
+      <details><summary>Can I tune to 432 Hz?</summary><p>Yes. Set A4 to 432, or anything from 400 to 480 Hz, and every note moves with it.</p></details>
+      <details><summary>Why does the reading jump around?</summary><p>Usually more than one string is ringing, or the room is noisy. Mute the other strings and let one note ring; the needle averages a quarter of a second of sound so it settles.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>Yes. Allow the microphone when asked. The phone's built-in microphone is fine at arm's length from the instrument.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/metronome"><h3>Online Metronome</h3><p>Practise in time once you are in tune.</p></a>
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>Find the key and tuning of a song to play along with.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Move a song into a key that suits your instrument.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record what you play.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-23j"></script>
+<script src="/js/tool-graph.js?v=2026-09-23j"></script>
+<script src="/js/flow.js?v=2026-09-23j"></script>
+<script src="/js/audio-core.js?v=2026-09-23j"></script>
+<script src="/js/pitch-track.js?v=2026-09-23j"></script>
+<script src="/js/tuner-page.js?v=2026-09-23j"></script>
+<script src="/js/consent.js?v=2026-09-23j"></script>
+<script src="/js/pwa.js?v=2026-09-23j"></script>
+</body>
+</html>

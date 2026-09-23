@@ -679,6 +679,26 @@
         ['audio-to-midi', 'Get the melody out as notes']
       ]
     },
+    'metronome': {
+      cat: 'create', label: 'metronome', title: 'Online Metronome',
+      blurb: 'A steady click with subdivisions, tap tempo and a speed trainer.',
+      next: [
+        ['tuner', 'Tune up before you start'],
+        ['bpm-finder', 'Find the tempo of the song you are practising'],
+        ['audio-speed', 'Slow a recording down to practise along with it'],
+        ['audio-editor', 'Record yourself to a click and a count-in']
+      ]
+    },
+    'tuner': {
+      cat: 'create', label: 'tuner', title: 'Online Tuner',
+      blurb: 'Tune a guitar, bass, ukulele or violin through your microphone.',
+      next: [
+        ['metronome', 'Practise in time once you are in tune'],
+        ['key-finder', 'Find the key and tuning of a song to play along with'],
+        ['pitch-shifter', 'Move a song into a key that suits your instrument'],
+        ['voice-recorder', 'Record what you play']
+      ]
+    },
     'split-audio': {
       cat: 'create', label: 'split', title: 'Split an audio file',
       blurb: 'Cut one long recording into equal parts, fixed chunks, or at the silent gaps.',
@@ -889,7 +909,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
       ]
     },
     {

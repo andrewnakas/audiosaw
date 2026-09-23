@@ -88,7 +88,10 @@
     var x2 = best + 1 < tauMax ? best + 1 : best;
     var refined = best;
     if (x0 !== best && x2 !== best) {
-      var s0 = cmnd[x0], s1 = cmnd[best], s2 = cmnd[x2];
+      // On the raw difference, not the normalised curve: the normalisation
+      // tilts the dip, which read high notes up to 4.5 cents off (measured at
+      // 1.3 kHz). On d(tau) the worst case is a fraction of a cent.
+      var s0 = diff[x0], s1 = diff[best], s2 = diff[x2];
       var denom = 2 * (2 * s1 - s2 - s0);
       if (denom !== 0) refined = best + (s2 - s0) / denom;
     }

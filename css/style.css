@@ -1410,3 +1410,39 @@ select:focus-visible {
 .key-next { margin-top: 16px; }
 .key-shift-note { flex-basis: 100%; margin: 0 0 12px; font-size: 0.86rem; color: var(--ink-soft); }
 #keyAlt { text-transform: none; }
+
+/* /metronome */
+.metro-head { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.metro-bpm { display: flex; align-items: baseline; gap: 8px; min-width: 150px; justify-content: center; }
+.metro-range { width: 100%; accent-color: var(--amber); margin: 6px 0 18px; }
+.metro-dots { display: flex; justify-content: center; gap: 12px; margin: 4px 0 20px; min-height: 22px; }
+.m-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--rule); background: var(--paper-2); transition: background 40ms, border-color 40ms; }
+.m-dot-one { width: 22px; height: 22px; }
+.m-dot.on { background: var(--amber); border-color: var(--amber); }
+.metro-actions { justify-content: center; }
+#mStart.is-on, #tStart.is-on { background: var(--ink); }
+.metro-trainer { margin-top: 14px; }
+.metro-trainer summary { cursor: pointer; font-weight: 600; }
+.controls label.check { flex-direction: row; align-items: center; gap: 8px; }
+
+/* /tuner */
+.t-dial { text-align: center; margin: 18px 0 8px; padding: 18px 12px; border: 1px solid var(--rule); border-radius: 12px; background: var(--card); }
+.t-scale { display: flex; justify-content: space-between; max-width: 340px; margin: 0 auto; font: 0.72rem/1 var(--mono); color: var(--muted); }
+.t-arc { position: relative; height: 110px; max-width: 340px; margin: 6px auto 0; border-bottom: 2px solid var(--rule); overflow: hidden; }
+.t-arc::before { content: ''; position: absolute; left: 50%; bottom: 0; width: 2px; height: 100%; margin-left: -1px; background: var(--rule); }
+.t-needle { position: absolute; left: 50%; bottom: 0; width: 3px; height: 100px; margin-left: -1.5px; background: var(--ink); border-radius: 2px; transform-origin: 50% 100%; transition: transform 90ms linear; }
+.t-dial.in-tune .t-needle { background: var(--success); }
+.t-dial.far .t-needle { background: var(--muted); }
+.t-readout { margin-top: 10px; }
+.t-note { font-family: var(--serif); font-size: clamp(3rem, 12vw, 4.6rem); font-weight: 600; line-height: 1; color: var(--amber); }
+.t-dial.in-tune .t-note { color: var(--success); }
+.t-oct { font: 600 1.2rem var(--mono); color: var(--muted); margin-left: 4px; }
+.t-cents { font: 600 1rem var(--mono); color: var(--ink); margin: 8px 0 2px; min-height: 1.3em; }
+.t-hz { font: 0.8rem var(--mono); color: var(--muted); margin: 0; min-height: 1.2em; }
+.t-strings { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.t-string { font: 600 0.85rem var(--mono); padding: 4px 9px; border: 1px solid var(--rule); border-radius: 6px; color: var(--muted); }
+.t-string.on { color: var(--paper); background: var(--amber); border-color: var(--amber); }
+.nocase { text-transform: none; }
+#mVol { accent-color: var(--amber); }
+.tuner .controls label, .metro .controls label { max-width: 100%; min-width: 0; }
+.tuner .controls select, .metro .controls select { max-width: 100%; min-width: 0; width: 100%; }
