@@ -474,7 +474,7 @@
     'stemflipper': {
       cat: 'repair', label: 'stems, MIDI & samples', title: 'StemFlipper — stems, MIDI and playable instruments',
       external: true,
-      blurb: 'Split a song into stems, transcribe each one to MIDI, and cut it into samples and instruments for a DAW. Uses a free GPU, so this one uploads your file.',
+      blurb: 'Split a song into stems and transcribe each one to MIDI, in your browser with nothing uploaded — or on a free GPU for four stems plus samples and instruments.',
       next: [
         ['stem-splitter', 'Separate vocals from the instrumental in your browser instead'],
         ['audio-to-midi', 'Just the melody as MIDI, with nothing uploaded'],
@@ -489,7 +489,7 @@
       cat: 'repair', label: 'ai vocal remover', title: 'AI vocal remover / stem splitter',
       blurb: 'Neural separation into a clean instrumental and acapella, running on your machine.',
       next: [
-        ['stemflipper', 'Four stems plus MIDI and samples, on a GPU'],
+        ['stemflipper', 'Stems plus MIDI, in your browser or on a GPU'],
         ['vocal-remover', 'The instant version, when centre cancellation is enough'],
         ['audio-cutter', 'Trim to the section you need before separating'],
         ['pitch-shifter', 'Move the finished instrumental into your key'],
