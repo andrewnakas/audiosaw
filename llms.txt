@@ -227,7 +227,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 ## Clean up & separate
 
 - [Vocal remover / karaoke](https://audiosaw.com/vocal-remover): Remove the vocal from a stereo song, or isolate it, by cancelling the centre.
-- [StemFlipper — stems, MIDI and playable instruments](https://audiosaw.com/stemflipper): Split a song into stems, transcribe each one to MIDI, and cut it into samples and instruments for a DAW. Uses a free GPU, so this one uploads your file.
+- [StemFlipper — stems, MIDI and playable instruments](https://audiosaw.com/stemflipper): Split a song into stems and transcribe each one to MIDI, in your browser with nothing uploaded — or on a free GPU for four stems plus samples and instruments.
 - [AI vocal remover / stem splitter](https://audiosaw.com/stem-splitter): Neural separation into a clean instrumental and acapella, running on your machine.
 - [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fan noise out of a recording with spectral gating.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
