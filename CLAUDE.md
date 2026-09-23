@@ -282,6 +282,15 @@ carrying a separate tone per channel, not because the coefficient tables say
   start at the playhead, so count-in audio never carves the track before it.
   Recording always runs the timeline now, even over an empty project.
 
+  "Detect from the audio" also sets `gridOffset` from `ASBpm.phase()`. The
+  beat is measured: `tools/check-beat.js` requires it within 10 ms, and it
+  measured under 1 ms. The downbeat is a labelled guess, right on 5 of 9
+  patterns. The clip menu has "Fit to the project tempo" (FX `tempoFit`,
+  atempo, held to exactly length/rate, because a loop a few ms long drifts
+  off the grid) and "Match the project key" (the Pitch FX by
+  `ASKey.shiftBetween`). A Process effect can put `_meta` on its output; it
+  lands on the new source (`source.bpm` after a fit).
+
 - `js/project-link.js` + `js/editor-link.js` — the project that follows you
   onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a
   tool page. The page shows a project bar ("Use project audio"), and after the

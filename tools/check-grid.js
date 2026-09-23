@@ -13,6 +13,8 @@
  *   5. recording with a one-bar count-in (fake microphone) clicks the bar
  *      first, shows the countdown, and places the take at the playhead, not
  *      a bar early
+ *   6. "Detect from the audio" reads a drum loop's tempo and lines the grid
+ *      up with its beats
  *
  *   node tools/check-grid.js
  *
@@ -186,6 +188,38 @@ async function scenario(r, cdp) {
   }
   const cl = await r.eval('ASEditEngine.clickState().log');
   ok(cl.length - before >= 6, 'the count-in and the take both clicked (' + (cl.length - before) + ' clicks)');
+
+  // 6. "Detect from the audio" lines the grid up with a drum loop whose first
+  // beat is at 0.3 s, at 100 BPM, placed on a new track at 0:00.
+  await r.eval('document.getElementById("edHome").click()');
+  await r.eval(`(function () {
+    var sr = 44100, beat = 0.6, n = Math.round(sr * (0.3 + 16 * beat)), b = new AudioBuffer({ numberOfChannels: 1, length: n, sampleRate: sr }), d = b.getChannelData(0);
+    for (var k = 0; k < 16; k++) { var i0 = Math.round((0.3 + k * beat) * sr); for (var i = 0; i < sr * 0.2 && i0 + i < n; i++) { var x = i / sr; d[i0 + i] += 0.6 * Math.exp(-x / 0.06) * Math.sin(2 * Math.PI * (45 + 90 * Math.exp(-x / 0.03)) * x); } }
+    var dt = new DataTransfer(); dt.items.add(new File([AudioSaw.audioBufferToWav(b)], 'kick100.wav', { type: 'audio/wav' }));
+    var i = document.getElementById('fileInput'); i.files = dt.files; i.dispatchEvent(new Event('change', { bubbles: true }));
+  })()`);
+  await r.waitFor('!document.getElementById("edSheet").hidden || document.getElementById("edSaved").dataset.state === "saved"', 30000);
+  if (await r.eval('!document.getElementById("edSheet").hidden && !!document.querySelector(\'#edSheet [data-v="tracks"]\')')) await r.eval('document.querySelector(\'#edSheet [data-v="tracks"]\').click()');
+  await r.waitSaved();
+  p = await r.project();
+  const loop = [].concat.apply([], p.tracks.map((t) => t.clips)).filter((c) => c.name === 'kick100')[0];
+  ok(!!loop, 'the drum loop was added');
+  if (loop) {
+    // Select it so detection reads this clip.
+    await r.eval('document.getElementById("edCorner").click()');
+    await r.waitFor('!!document.querySelector(\'#edSheet [data-v="detect"]\')');
+    await r.eval(`(function () { document.querySelector('#edSheet [data-k="sig"]').value = '4/4'; })()`);
+    await r.eval('document.querySelector(\'#edSheet [data-v="detect"]\').click()');
+    await r.waitFor('/Read |No steady/.test(document.querySelector("#edSheet [data-tempo-note]").textContent)', 15000);
+    await r.eval('document.querySelector(\'#edSheet [data-v="ok"]\').click()');
+    await r.waitSaved();
+    p = await r.project();
+    const want = (loop.start + 0.3) % 0.6;
+    let err = ((p.gridOffset - want) % 0.6 + 0.6) % 0.6; if (err > 0.3) err -= 0.6;
+    ok(Math.abs(p.bpm - 100) < 0.2, 'detection read the loop at 100 BPM (got ' + p.bpm + ')');
+    ok(Math.abs(err) < 0.01, 'the grid lines up with the loop\'s beats within 10 ms (off by ' + (err * 1000).toFixed(1) + ' ms)');
+    notes.push('grid lined up with a 100 BPM loop to ' + (err * 1000).toFixed(1) + ' ms');
+  }
 }
 
 /* -------------------------------------------------------------- runner */

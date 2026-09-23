@@ -121,5 +121,58 @@
     return { bpm: bpm, confidence: conf, duration: buffer.duration };
   }
 
-  global.ASBpm = { analyse: analyse, toMono: toMono, onsetEnvelope: onsetEnvelope };
-})(window);
+  /*
+   * Where the beats fall, given the tempo: the time of the first beat
+   * (0 <= beat < one beat period) and a guess at the first downbeat.
+   *
+   * A comb of teeth one beat apart is slid across one period of the onset
+   * envelope, and the offset that collects the most onset energy wins. Each
+   * tooth takes the strongest envelope value within ±15 ms, so a small error
+   * in the tempo does not smear the comb over a long file. Only the first 30 s
+   * are used for the same reason.
+   *
+   * The downbeat is a guess and is labelled as one: it is whichever beat of
+   * the bar collects the most energy, which is right when the kick or a crash
+   * marks beat one, and wrong on plenty of music that does not.
+   */
+  function phase(buffer, bpm, beatsPerBar) {
+    var sr = buffer.sampleRate, mono = toMono(buffer);
+    var lim = Math.min(mono.length, Math.round(sr * 30));
+    var e = onsetEnvelope(mono.subarray(0, lim), sr), flux = e.flux, rate = e.rate;
+    var P = rate * 60 / bpm, tol = Math.max(1, Math.round(rate * 0.015));
+    if (!(P > 2) || flux.length < P * 2) return null;
+    function tooth(x) {
+      var c = Math.round(x), m = 0;
+      for (var i = c - tol; i <= c + tol; i++) if (i >= 0 && i < flux.length && flux[i] > m) m = flux[i];
+      return m;
+    }
+    function comb(o, step) { var s = 0; for (var x = o; x < flux.length; x += step) s += tooth(x); return s; }
+    var best = 0, bestS = -1, total = 0;
+    // Coarse pass a frame at a time, then the tolerance window is removed
+    // from the answer by a fine pass with single-frame teeth.
+    for (var o = 0; o < P; o++) { var sc = comb(o, P); total += sc; if (sc > bestS) { bestS = sc; best = o; } }
+    var fine = best, fineS = -1;
+    for (var d = -tol; d <= tol; d++) {
+      var oo = best + d, s2 = 0;
+      for (var x = oo; x < flux.length; x += P) { var xi = Math.round(x); if (xi >= 0 && xi < flux.length) s2 += flux[xi] + 0.5 * ((flux[xi - 1] || 0) + (flux[xi + 1] || 0)); }
+      if (s2 > fineS) { fineS = s2; fine = oo; }
+    }
+    fine = ((fine % P) + P) % P;
+    // The envelope frame marks the end of the hop the energy rose in; the
+    // attack itself is half a hop earlier.
+    var beat = Math.max(0, (fine - 0.5) / rate);
+    var n = beatsPerBar || 4, down = 0, downS = -1;
+    for (var j = 0; j < n; j++) {
+      var sj = comb(fine + j * P, P * n);
+      if (sj > downS) { downS = sj; down = j; }
+    }
+    return {
+      beat: beat,
+      downbeat: beat + down * 60 / bpm,
+      strength: total > 0 ? bestS / (total / Math.ceil(P)) : 0   // peak over mean; ~1 means no pulse
+    };
+  }
+
+  global.ASBpm = { analyse: analyse, phase: phase, toMono: toMono, onsetEnvelope: onsetEnvelope };
+  if (typeof module === 'object' && module.exports) module.exports = global.ASBpm;
+})(typeof window !== 'undefined' ? window : globalThis);

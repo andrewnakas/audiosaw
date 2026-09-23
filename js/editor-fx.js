@@ -266,6 +266,28 @@
         return viaFFmpeg(buf, atempoChain(parseFloat(opt || '1.25')), onProgress);
       }
     },
+    // Not in the Process menu: opened from "Fit to the project tempo…" with
+    // opt = "<rate>@<target bpm>", so the new source can record its tempo.
+    tempoFit: {
+      label: 'Fit to tempo', hint: 'Stretch to the project tempo, same pitch',
+      changesLength: true, ffmpeg: true,
+      run: function (buf, opt, onProgress) {
+        var parts = String(opt).split('@'), rate = parseFloat(parts[0]), bpm = parseFloat(parts[1]);
+        return viaFFmpeg(buf, atempoChain(rate), onProgress).then(function (out) {
+          // atempo comes back a few milliseconds long (measured: 15 ms on a
+          // 19.5 s loop). A loop has to be exactly its bars long or it drifts
+          // off the grid on every repeat, so hold it to length / rate.
+          var want = Math.round(buf.length / rate);
+          if (out.sampleRate === buf.sampleRate && Math.abs(out.length - want) < out.sampleRate * 0.1) {
+            out = fromChans(chansCopy(out).map(function (d) {
+              var n = new Float32Array(want); n.set(d.subarray(0, want)); return n;
+            }), out.sampleRate);
+          }
+          if (bpm > 0) out._meta = { bpm: bpm };
+          return out;
+        });
+      }
+    },
     pitch: {
       label: 'Pitch', hint: 'Change key, same speed',
       ffmpeg: true,

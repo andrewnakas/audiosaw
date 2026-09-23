@@ -979,6 +979,8 @@
       { v: 'trackfx', label: 'Track effects…', hint: 'live' },
       { v: 'fx', label: 'Process…', hint: 'renders' },
       { v: 'tool', label: 'Send to a tool…', hint: 'and back' },
+      { v: 'fittempo', label: 'Fit to the project tempo…', hint: S.project.bpm + ' BPM' },
+      { v: 'fitkey', label: 'Match the project key…', hint: S.project.key && global.ASKey ? global.ASKey.keyName(S.project.key.pc, S.project.key.mode) : 'set a key first' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
       { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
       { v: 'export', label: 'Export this clip' },
@@ -993,6 +995,8 @@
       if (v === 'cut') doCopy(true);
       if (v === 'fx') fxSheet();
       if (v === 'tool') LINK.toolSheet('clip');
+      if (v === 'fittempo') fitTempoSheet(clipId);
+      if (v === 'fitkey') matchKeySheet(clipId);
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -1000,6 +1004,101 @@
       if (v === 'del') doDelete(false);
       if (v === 'ripple') doDelete(true);
     });
+  }
+
+  /* ------------------------------------------------ fit a clip to the song */
+
+  function only(clipId) { S.sel = {}; S.sel[clipId] = true; S.range = null; }
+
+  // Stretch a clip to the project tempo without changing its pitch. The
+  // clip's own tempo is detected (or remembered, if it was fitted before, or
+  // typed), and half and double are one click away, as on /bpm-finder.
+  function fitTempoSheet(clipId) {
+    var f = M.findClip(S.project, clipId);
+    if (!f) return;
+    var c = f.clip, src = S.project.sources[c.sourceId], buf = buffers.get(c.sourceId), target = S.project.bpm;
+    openSheet('Fit to the project tempo', '<div class="ed-form"><label>Tempo of “' + esc(c.name) + '” <input type="number" min="20" max="400" step="0.1" data-k="bpm" value="' + (src && src.bpm ? src.bpm : '') + '" inputmode="decimal"></label></div>' +
+      '<div class="ed-insp-btns"><button type="button" class="ed-btn" data-v="half">Half</button><button type="button" class="ed-btn" data-v="double">Double</button>' +
+      '<button type="button" class="ed-btn" data-v="detect">Detect again</button></div>' +
+      '<p class="ed-sheet-note" data-fit-note></p>' +
+      '<div class="ed-sheet-actions"><button type="button" class="ed-btn ed-btn-primary" data-v="ok">Fit to ' + target + ' BPM</button></div>', function (v) {
+      var inp = el.sheetBody.querySelector('[data-k="bpm"]');
+      if (v === 'half') { inp.value = (parseFloat(inp.value) / 2).toFixed(1); explain(); return; }
+      if (v === 'double') { inp.value = (parseFloat(inp.value) * 2).toFixed(1); explain(); return; }
+      if (v === 'detect') { detect(); return; }
+      if (v === 'ok') {
+        var from = parseFloat(inp.value);
+        if (!(from >= 20 && from <= 400)) { note('Type the clip’s tempo, or press Detect.'); return; }
+        var rate = target / from;
+        closeSheet();
+        if (Math.abs(rate - 1) < 0.0005) { toast('Already at ' + target + ' BPM'); return; }
+        only(clipId);
+        applyFx('tempoFit', rate.toFixed(6) + '@' + target);
+      }
+    });
+    var inp = el.sheetBody.querySelector('[data-k="bpm"]');
+    function note(t) { var n = el.sheetBody.querySelector('[data-fit-note]'); if (n) n.textContent = t; }
+    function explain(extra) {
+      var from = parseFloat(inp.value);
+      if (!(from >= 20 && from <= 400)) { note(extra || ''); return; }
+      var rate = target / from;
+      note((extra ? extra + ' ' : '') + (rate > 1 ? rate.toFixed(3) + '× faster' : (1 / rate).toFixed(3) + '× slower') +
+        ': ' + c.duration.toFixed(2) + ' s becomes ' + (c.duration / rate).toFixed(2) + ' s, at the same pitch.' +
+        (rate > 1.5 || rate < 0.67 ? ' That is a big stretch and will sound processed; check half or double.' : ''));
+    }
+    function detect() {
+      if (!buf || !global.ASBpm) return;
+      note('Listening…');
+      setTimeout(function () {
+        var res = global.ASBpm.analyse(slice(buf, c.offset, Math.min(c.duration, 90)));
+        if (!res || res.confidence < 0.06) { note('No steady beat found in “' + c.name + '”. Type its tempo if you know it.'); return; }
+        // Of the reading, half and double, offer the one nearest the target:
+        // a 70 BPM loop going into a 140 project is a 140 loop.
+        var best = [res.bpm, res.bpm / 2, res.bpm * 2].sort(function (a, b) { return Math.abs(Math.log(a / target)) - Math.abs(Math.log(b / target)); })[0];
+        inp.value = best.toFixed(1);
+        explain('Read ' + res.bpm.toFixed(1) + ' BPM' + (best !== res.bpm ? ', using ' + best.toFixed(1) + ' as nearer the project' : '') + '.');
+      }, 30);
+    }
+    inp.addEventListener('input', function () { explain(); });
+    if (src && src.bpm) explain('Fitted before at ' + src.bpm + ' BPM.'); else detect();
+  }
+
+  // Detect a clip's key and move it into the project key by the shortest
+  // shift. Relative keys count as the same (A minor needs nothing to sit in
+  // C major); the other direction is offered too, since +5 and -7 land on
+  // the same notes an octave apart.
+  function matchKeySheet(clipId) {
+    var K = global.ASKey, pk = S.project.key;
+    if (!K) return;
+    if (!pk) { toast('Set the project key first'); tempoSheet(); return; }
+    var f = M.findClip(S.project, clipId);
+    if (!f) return;
+    var c = f.clip, buf = buffers.get(c.sourceId), res = null, use = null;
+    openSheet('Match the project key', '<p class="ed-sheet-note" data-key-note>Listening for the key of “' + esc(c.name) + '”…</p><div class="ed-insp-btns" data-key-btns></div>', function (v) {
+      if (v === 'alt') { use = use === res ? res.runnerUp : res; render(); return; }
+      if (/^[-0-9]+$/.test(v)) { closeSheet(); only(clipId); applyFx('pitch', v); }
+    });
+    function render() {
+      var st = K.shiftBetween(use, pk), other = st > 0 ? st - 12 : st + 12;
+      var noteEl = el.sheetBody.querySelector('[data-key-note]'), btns = el.sheetBody.querySelector('[data-key-btns]');
+      if (!noteEl) return;
+      noteEl.textContent = '“' + c.name + '” reads ' + use.name + ' (' + use.camelot + ')' + (use === res ? '' : ', the alternative reading') +
+        '. The project is in ' + K.keyName(pk.pc, pk.mode) + '.' + (st === 0 ? ' They already share their notes, so nothing needs to move.' : '');
+      var sem = function (n) { return (n > 0 ? 'Up ' : 'Down ') + Math.abs(n) + ' semitone' + (Math.abs(n) === 1 ? '' : 's'); };
+      btns.innerHTML = (st ? '<button type="button" class="ed-btn ed-btn-primary" data-v="' + st + '">' + sem(st) + '</button>' +
+        '<button type="button" class="ed-btn" data-v="' + other + '">' + sem(other) + '</button>' : '') +
+        '<button type="button" class="ed-btn" data-v="alt">It is ' + (use === res ? res.runnerUp.name : res.name) + '</button>';
+    }
+    setTimeout(function () {
+      if (!buf) return;
+      var part = slice(buf, c.offset, Math.min(c.duration, 240)), ch = [];
+      for (var i = 0; i < part.numberOfChannels; i++) ch.push(part.getChannelData(i));
+      res = K.analyse(ch, part.sampleRate);
+      var n = el.sheetBody.querySelector('[data-key-note]');
+      if (!res) { if (n) n.textContent = 'Nothing tonal in “' + c.name + '” to read a key from.'; return; }
+      use = res;
+      render();
+    }, 30);
   }
 
   function trackSheet(id) {
@@ -1153,6 +1252,7 @@
         var sid = M.addSource(S.project, {
           name: c.name, duration: out.duration, channels: out.numberOfChannels, sampleRate: out.sampleRate, kind: 'derived'
         });
+        if (out._meta) Object.keys(out._meta).forEach(function (k) { S.project.sources[sid][k] = out._meta[k]; });
         buffers.set(sid, out);
         V.buildPeaks(sid, out);
         M.replaceSource(S.project, id2, sid, out.duration, ripple);
@@ -2289,7 +2389,15 @@
           var res = global.ASBpm.analyse(slice(buf, clip.offset, Math.min(clip.duration, 90)));
           if (!res) { note.textContent = 'No steady beat found in “' + clip.name + '”. Tap along instead.'; return; }
           inp.value = res.bpm.toFixed(1);
-          note.textContent = 'Read ' + res.bpm.toFixed(1) + ' BPM from “' + clip.name + '”' + (res.confidence < 0.5 ? ' — not certain; tap along to check. Half or double is common.' : '.');
+          var ph = res.confidence >= 0.06 && global.ASBpm.phase ? global.ASBpm.phase(slice(buf, clip.offset, Math.min(clip.duration, 90)), res.bpm, parseInt(q('sig').value, 10) || 4) : null;
+          if (ph) {
+            // Line the grid up with the beats. The beat itself is measured;
+            // which beat is "one" is a guess, and the note says so.
+            offset = clip.start + ph.downbeat;
+            q('ruler').checked = true;
+          }
+          note.textContent = 'Read ' + res.bpm.toFixed(1) + ' BPM from “' + clip.name + '”' + (res.confidence < 0.5 ? ' — not certain; tap along to check. Half or double is common.' : '.') +
+            (ph ? ' The grid will line up with its beats. Bar 1 is a guess at ' + fmt(offset) + '; if it is off by a beat, put the playhead on the real downbeat and press “Bar 1 at the playhead”.' : '');
         }, 30);
         return;
       }
