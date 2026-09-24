@@ -60,9 +60,13 @@ function progression(variant) {
     const third = c.q === 'maj' ? 4 : 3, triad = [0, third, 7];
     const inv = Math.floor(rnd() * 3), base = 60 + c.pc - (c.pc > 6 ? 12 : 0);   // root G3..F#4
     const notes = triad.map((iv, i) => base + iv + (i < inv ? 12 : 0));
-    // Sevenths: dominant 7 on major, minor 7 on minor. The triad is still the
-    // right answer; the detector only names triads.
-    if (variant === 'sevenths') notes.push(base + (c.q === 'maj' && rnd() < 0.5 ? 11 : 10));
+    // Sevenths: a dominant 7 or a major 7 on major chords, a minor 7 on minor.
+    c.ext = '';
+    if (variant === 'sevenths') {
+      const iv = c.q === 'maj' && rnd() < 0.5 ? 11 : 10;
+      notes.push(base + iv);
+      c.ext = iv === 11 ? 'maj7' : c.q === 'maj' ? '7' : 'm7';
+    }
     // Slash chords put the third in the bass (C/E), which pulls a bass-heavy
     // chroma towards the wrong root.
     const bassPc = variant === 'slash' ? (c.pc + third) % 12 : c.pc;
@@ -90,19 +94,31 @@ function progression(variant) {
   return { audio: d, chords, dur: t };
 }
 
-function accuracy(truth, got, dur) {
+// The share of time with the right triad; with `full`, the right seventh too.
+function accuracy(truth, got, dur, full) {
   let right = 0, total = 0;
   for (let t = 0.05; t < dur; t += 0.05) {
     if (truth.some((c) => Math.abs(t - c.t0) < 0.25) || Math.abs(t - dur) < 0.25) continue;
     const want = truth.filter((c) => t >= c.t0 && t < c.t0 + c.dur)[0];
     const have = got.filter((c) => t >= c.t0 && t < c.t1)[0];
     total++;
-    if (have && want && have.quality === want.q && have.pc === want.pc) right++;
+    if (have && want && have.quality === want.q && have.pc === want.pc && (!full || (have.ext || '') === want.ext)) right++;
   }
   return total ? right / total : 0;
 }
+// The share of named time given a seventh that is not there.
+function falseSevenths(truth, got) {
+  let bad = 0, named = 0;
+  got.forEach((c) => {
+    if (c.quality === 'N') return;
+    named += c.t1 - c.t0;
+    if (c.ext) bad += c.t1 - c.t0;
+  });
+  return { bad, named };
+}
 
 const fails = [], lines = [];
+let fsBad = 0, fsNamed = 0;
 for (const variant of ['clean', 'band', 'melody']) {
   let sum = 0, worst = 1;
   for (let k = 0; k < 12; k++) {
@@ -110,16 +126,31 @@ for (const variant of ['clean', 'band', 'melody']) {
     const got = K.chords([p.audio], SR);
     const a = accuracy(p.chords, got, p.dur);
     sum += a; worst = Math.min(worst, a);
+    const f = falseSevenths(p.chords, got); fsBad += f.bad; fsNamed += f.named;
   }
   const mean = sum / 12;
   lines.push(variant + ': ' + (mean * 100).toFixed(1) + '% of the time right (worst progression ' + (worst * 100).toFixed(1) + '%)');
   if (mean < 0.9) fails.push(variant + ' accuracy ' + (mean * 100).toFixed(1) + '%, needs 90%');
 }
+// Sevenths: the triad must still be right, and the seventh named.
+{
+  let tri = 0, full = 0;
+  for (let k = 0; k < 12; k++) {
+    const p = progression('sevenths'), got = K.chords([p.audio], SR);
+    tri += accuracy(p.chords, got, p.dur); full += accuracy(p.chords, got, p.dur, true);
+  }
+  tri /= 12; full /= 12;
+  lines.push('sevenths: the triad right ' + (tri * 100).toFixed(1) + '% of the time, the whole chord (C7, Cmaj7, Cm7) ' + (full * 100).toFixed(1) + '%');
+  if (tri < 0.9) fails.push('sevenths: triad right only ' + (tri * 100).toFixed(1) + '%');
+  if (full < 0.8) fails.push('sevenths: whole chord right only ' + (full * 100).toFixed(1) + '%, needs 80%');
+  lines.push('triads given a seventh they do not have: ' + (fsBad / fsNamed * 100).toFixed(1) + '% of the named time');
+  if (fsBad / fsNamed > 0.05) fails.push('plain triads named as sevenths ' + (fsBad / fsNamed * 100).toFixed(1) + '% of the time, allowed 5%');
+}
 // Reported, not required.
-for (const variant of ['sevenths', 'slash']) {
+{
   let sum = 0;
-  for (let k = 0; k < 12; k++) { const p = progression(variant); sum += accuracy(p.chords, K.chords([p.audio], SR), p.dur); }
-  lines.push(variant + ' (reported): ' + (sum / 12 * 100).toFixed(1) + '% of the time right');
+  for (let k = 0; k < 12; k++) { const p = progression('slash'); sum += accuracy(p.chords, K.chords([p.audio], SR), p.dur); }
+  lines.push('slash (reported): ' + (sum / 12 * 100).toFixed(1) + '% of the time right');
 }
 
 // Drums alone have no chord. A kick's falling pitch can pass for one; the
@@ -154,4 +185,4 @@ if (fails.length) {
   console.error('check-chords: ' + fails.length + ' failure(s).');
   process.exit(1);
 }
-console.log('check-chords: major and minor triads read right at least 90% of the time, clean, over a band and under a melody.');
+console.log('check-chords: major and minor triads read right at least 90% of the time, clean, over a band and under a melody; sevenths named, and seldom invented.');

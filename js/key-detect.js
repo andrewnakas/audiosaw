@@ -241,7 +241,8 @@
    * (default 0.4 s) is absorbed into whichever neighbour it scores better
    * as, which removes the flicker a passing note causes.
    *
-   * Returns [{t0, t1, pc, quality: 'maj'|'min'|'N', name, score}] in seconds.
+   * Returns [{t0, t1, pc, quality: 'maj'|'min'|'N', ext: ''|'7'|'maj7'|'m7',
+   * name, score}] in seconds.
    */
   var CHORD_ROOTS = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
   var TEMPLATES = (function () {
@@ -259,7 +260,52 @@
     });
     return out;
   })();
-  function chordName(pc, q) { return q === 'N' ? 'N' : CHORD_ROOTS[pc] + (q === 'min' ? 'm' : ''); }
+  function chordName(pc, q, ext) {
+    if (q === 'N') return 'N';
+    return CHORD_ROOTS[pc] + (ext === 'maj7' ? 'maj7' : q === 'min' ? (ext ? 'm7' : 'm') : (ext ? '7' : ''));
+  }
+
+  /*
+   * A seventh on top of a triad that has already been named: the dominant 7
+   * or major 7 on a major chord, the minor 7 on a minor one. It is decided on
+   * the whole merged segment, after the triad, so it can never change which
+   * triad is named. The seventh has to be a real voice, not an overtone or
+   * a passing note.
+   *
+   * Overtones: the third harmonic of a note is a fifth above it (plus an
+   * octave). So a major third feeds the major seventh, a minor third the
+   * minor seventh, and the fifth feeds the ninth: every triad carries some
+   * of its own seventh. SEV_LEAK of the note a fifth below is taken off each
+   * pitch class before it is compared.
+   *
+   * Level: the seventh is compared with the third, the one voice of the
+   * chord that the bass note and the root's overtones do not also feed. On
+   * the check's harmonic tones, plain triads measured up to 0.51 of the
+   * third (0.37 at the 90th percentile, under a melody), real sevenths from
+   * 0.26 (0.45 at the 10th percentile).
+   *
+   * Clear: a melody walking the scale passes through the seventh as often
+   * as through the sixth or the second, so the seventh must also be
+   * SEV_CLEAR times the loudest other note outside the chord. Real sevenths
+   * measured at least 1.55.
+   */
+  var SEV_LEVEL = 0.4, SEV_LEAK = 0.3, SEV_CLEAR = 1.5;
+  function seventhOf(v, pc, q) {
+    var third = (pc + (q === 'maj' ? 4 : 3)) % 12, fifth = (pc + 7) % 12;
+    var cands = q === 'maj' ? [[10, '7'], [11, 'maj7']] : [[10, 'm7']];
+    var skip = {}; skip[pc] = skip[third] = skip[fifth] = true;
+    cands.forEach(function (c) { skip[(pc + c[0]) % 12] = true; });
+    function own(i) { return v[i] - SEV_LEAK * v[(i + 5) % 12]; }
+    var other = 0;
+    for (var i = 0; i < 12; i++) if (!skip[i]) other = Math.max(other, own(i));
+    var best = null, bestV = 0, bestRaw = 0;
+    cands.forEach(function (c) {
+      var k = (pc + c[0]) % 12, e = own(k);
+      if (e > bestV) { bestV = e; bestRaw = v[k]; best = c[1]; }
+    });
+    if (!best || !(v[third] > 0)) return '';
+    return bestV >= SEV_LEVEL * v[third] && bestRaw >= SEV_CLEAR * other ? best : '';
+  }
 
   function scoreChord(v) {
     var norm = 0;
@@ -337,7 +383,8 @@
       }
     }
     return list.map(function (sg) {
-      return { t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, name: chordName(sg.pc, sg.quality), score: Math.round(sg.score * 1000) / 1000 };
+      var ext = sg.quality === 'N' ? '' : seventhOf(sg.v, sg.pc, sg.quality);
+      return { t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, ext: ext, name: chordName(sg.pc, sg.quality, ext), score: Math.round(sg.score * 1000) / 1000 };
     });
   }
   // A chord needs its root and its third actually sounding, each at least a

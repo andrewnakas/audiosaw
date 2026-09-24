@@ -163,11 +163,21 @@ carrying a separate tone per channel, not because the coefficient tables say
   in a strip at the bottom of the clip.
   - **How it detects.** Chroma frames are 4096 samples at ~11 kHz every
     1024, summed per beat, and matched against the 24 major and minor triads.
-    Short segments are folded into a neighbour.
+    Short segments are folded into a neighbour. Then a seventh (7, maj7, m7)
+    is looked for on the whole merged segment, so it can never change the
+    triad. A note's third harmonic is a fifth above it, so a major third
+    feeds the maj7 and a minor third the m7: plain triads showed as much
+    "seventh" as real sevenths at their quietest. `seventhOf` subtracts
+    0.3 of the note a fifth below, compares with the third (the voice the
+    bass does not feed), and needs the seventh 1.5x any other non-chord
+    note, which is what keeps a melody's passing notes out.
   - **Checked by** `tools/check-chords.js`, which requires ≥90% on random
-    progressions (clean, band, melody) and measured 100%. It reports
-    sevenths at 100% and slash chords (third in the bass) at 74%, and caps
-    drums-only at 0.8 s of 8 named.
+    progressions (clean, band, melody) and measured 100%. Sevenths: the
+    triad must be right ≥90% (100%) and the whole chord ≥80% (91.7%), and
+    plain triads may be given a seventh ≤5% of the time (1.8%). On four
+    other seeds: 85–95% and ≤1.6%. It reports slash chords (third in the
+    bass) at 74%, and caps drums-only at 0.8 s of 8 named. That cap holds
+    on the committed seed only; seeds 101, 2024 and 77777 give 1.0–1.5 s.
   - **Drums.** Three things keep drums from being named as chords: the
     0.7 score floor, the 100 Hz analysis floor, and the rule that the root
     and third are present. A kick's falling pitch otherwise reads as a
@@ -329,8 +339,14 @@ carrying a separate tone per channel, not because the coefficient tables say
 
   "Detect from the audio" also sets `gridOffset` from `ASBpm.phase()`. The
   beat is measured: `tools/check-beat.js` requires it within 10 ms, and it
-  measured under 1 ms. The downbeat is a labelled guess, right on 5 of 9
-  patterns. The clip menu has "Fit to the project tempo" (FX `tempoFit`,
+  measured 1.3 ms on drums, 3.1 ms on strums. `phase()` uses a trailing
+  20 ms peak envelope, not `analyse()`'s RMS: on a bass note a 1.25 ms RMS
+  hop tracks the waveform, and put strums 30–75 ms late. The downbeat is
+  still a labelled guess, from four cues (chord change, low end, backbeat,
+  crash ring; see `downbeatOf`). check-beat requires 20 of 22 patterns
+  across rock, dance, waltz, strum and drums-with-a-crash, each starting
+  mid-bar (measured 22; 131 of 132 with tempo, key and pickup varied). It
+  was 5 of 9 before. No real-music figure; do not quote one. The clip menu has "Fit to the project tempo" (FX `tempoFit`,
   atempo, held to exactly length/rate, because a loop a few ms long drifts
   off the grid) and "Match the project key" (the Pitch FX by
   `ASKey.shiftBetween`). A Process effect can put `_meta` on its output; it
