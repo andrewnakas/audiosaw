@@ -307,16 +307,23 @@
 
     var moving = {};
     found.forEach(function (f) { moving[f.clip.id] = true; });
+    // The takes under each clip travel with it. Lift them all before placing
+    // any, so a group moved a little way does not pick up its own takes twice.
+    var carried = found.map(function (f) { return liftTakes(f.track, f.clip.start, clipEnd(f.clip)); });
     p.tracks.forEach(function (t) {
       t.clips = t.clips.filter(function (c) { return !moving[c.id]; });
     });
-    found.forEach(function (f) {
+    var laneMap = {};
+    found.forEach(function (f, i) {
       f.clip.start = Math.max(0, f.clip.start + dt);
       var dest = p.tracks[f.ti + dTrack];
       carve(dest, f.clip.start, clipEnd(f.clip), moving);
+      // The clip it lands on is overwritten, and so are that clip's takes.
+      takesCut(dest, f.clip.start, clipEnd(f.clip), false, true);
       dest.clips.push(f.clip);
+      dropTakes(dest, carried[i], dt, laneMap);
     });
-    p.tracks.forEach(sortTrack);
+    p.tracks.forEach(function (t) { sortTrack(t); pruneTakes(t); });
   }
 
   // Split at t. `ids` limits it to those clips; otherwise every clip under t.
@@ -357,12 +364,16 @@
       var gone = track.clips.filter(function (c) { return del[c.id]; })
         .sort(function (a, b) { return b.start - a.start; });
       track.clips = track.clips.filter(function (c) { return !del[c.id]; });
+      // A clip's takes go with it; left behind they would be kept, and hold
+      // their audio, with nothing on screen to reach them by.
+      gone.forEach(function (g) { takesCut(track, g.start, clipEnd(g), false); });
       if (!ripple) return;
       gone.forEach(function (g) {
         var e = clipEnd(g);
         track.clips.forEach(function (c) {
           if (c.start >= e - EPS) c.start = Math.max(0, c.start - g.duration);
         });
+        takesShift(track, e, -g.duration);
         autoCut(track.auto, g.start, e);
       });
       sortTrack(track);
@@ -382,6 +393,7 @@
       if (ripple) {
         track.clips.forEach(function (c) { if (c.start >= t1 - EPS) c.start -= len; });
         sortTrack(track);
+        takesCut(track, t0, t1, true);
         autoCut(track.auto, t0, t1);
       }
     });
@@ -399,6 +411,8 @@
       carve(track, t1, Infinity);
       carve(track, 0, t0);
       track.clips.forEach(function (c) { c.start -= t0; });
+      takesCut(track, t1, Infinity, false);
+      takesCut(track, 0, t0, true);
       autoCrop(track.auto, t0, t1);
     });
     if (p.master) autoCrop(p.master.auto, t0, t1);
@@ -415,6 +429,8 @@
       var ids = track.clips.map(function (c) { return c.id; });
       splitAt(p, t, ids);
       track.clips.forEach(function (c) { if (c.start >= t - EPS) c.start += len; });
+      (track.takes || []).forEach(function (k) { splitLane(k, t); });
+      takesShift(track, t, len);
       autoInsert(track.auto, t, len);
     });
     if (all) {
@@ -496,6 +512,9 @@
         if (o !== c && o.start >= oldEnd - EPS) o.start += delta;
       });
       sortTrack(f.track);
+      // Takes after the clip move with the clips; those under it no longer
+      // line up with the new audio, and stay where they are to be comped in.
+      takesShift(f.track, oldEnd, delta);
     }
   }
 
@@ -625,6 +644,88 @@
       if ((Math.abs(e - t0) < 1e-6 || Math.abs(e - t1) < 1e-6) && !c.fadeOut) c.fadeOut = Math.min(f, c.duration / 2);
       fixFades(c);
     });
+  }
+
+  // Take edits that mirror what a track edit did to the track's own clips.
+
+  // Remove [t0, t1) from every take; with ripple, what follows slides left.
+  // keepEmpty leaves emptied takes for the caller to prune (a move that is
+  // about to put clips back into one).
+  function takesCut(track, t0, t1, ripple, keepEmpty) {
+    if (!track.takes || !track.takes.length) return;
+    track.takes.forEach(function (k) {
+      carve(k, t0, t1);
+      if (ripple && isFinite(t1)) k.clips.forEach(function (c) { if (c.start >= t1 - EPS) c.start = Math.max(0, c.start - (t1 - t0)); });
+      sortTrack(k);
+    });
+    if (!keepEmpty) pruneTakes(track);
+  }
+
+  // Slide every take clip at or after t by dt.
+  function takesShift(track, t, dt) {
+    if (!track.takes || !track.takes.length || Math.abs(dt) < EPS) return;
+    track.takes.forEach(function (k) {
+      k.clips.forEach(function (c) { if (c.start >= t - EPS) c.start = Math.max(0, c.start + dt); });
+      sortTrack(k);
+    });
+  }
+
+  function splitLane(lane, t) {
+    var add = [];
+    lane.clips.forEach(function (c) {
+      if (t <= c.start + EPS || t >= clipEnd(c) - EPS) return;
+      var right = cloneClip(c);
+      right.start = t; right.offset = c.offset + (t - c.start); right.duration = clipEnd(c) - t;
+      right.fadeIn = 0; right.fadeOut = c.fadeOut;
+      c.duration = t - c.start; c.fadeOut = 0;
+      fixFades(c); fixFades(right);
+      add.push(right);
+    });
+    lane.clips = lane.clips.concat(add);
+    sortTrack(lane);
+  }
+
+  function pruneTakes(track) {
+    track.takes = (track.takes || []).filter(function (k) { return k.clips.length; });
+  }
+
+  // Take the parts of every take inside [t0, t1) off the track, for moving.
+  // Empty takes are left for pruneTakes, so a move on the same track can put
+  // its clips back into the take they came from.
+  function liftTakes(track, t0, t1) {
+    var out = [];
+    (track.takes || []).forEach(function (k) {
+      var parts = clipsIn(k.clips, t0, t1);
+      if (!parts.length) return;
+      carve(k, t0, t1);
+      out.push({ lane: k, track: track, clips: parts });
+    });
+    return out;
+  }
+
+  // Put lifted takes down dt later on `dest`: back in the same take when it
+  // stays on its track, otherwise in a take of the same name made for the
+  // move (laneMap keeps a group's clips from one take together). What they
+  // land on in that take is overwritten, as clips are on a track.
+  function dropTakes(dest, lifted, dt, laneMap) {
+    lifted.forEach(function (l) {
+      var lane = l.lane;
+      if (l.track !== dest) {
+        var key = dest.id + '|' + l.lane.id;
+        lane = laneMap[key];
+        if (!lane) {
+          lane = laneMap[key] = { id: uid('k'), name: l.lane.name, clips: [] };
+          dest.takes.push(lane);
+        }
+      }
+      l.clips.forEach(function (c) { c.start = Math.max(0, c.start + dt); });
+      placeIn(lane, l.clips);
+    });
+  }
+
+  function placeIn(lane, clips) {
+    clips.forEach(function (c) { carve(lane, c.start, clipEnd(c)); lane.clips.push(c); });
+    sortTrack(lane);
   }
 
   function useTake(p, trackId, takeId, t0, t1) {
@@ -1137,6 +1238,9 @@
           var where = 'track ' + ti + ' take ' + ki + ' clip ' + i + ': ';
           if (!p.sources[c.sourceId]) errs.push(where + 'missing source');
           if (c.offset + c.duration > sourceLen(p, c) + 1e-4) errs.push(where + 'runs past its source');
+          if (c.start < -EPS || c.offset < -EPS) errs.push(where + 'negative time');
+          if (c.duration < 0.001 - EPS) errs.push(where + 'too short');
+          if (i && k.clips[i - 1].start > c.start + EPS) errs.push(where + 'not sorted');
           if (i && clipEnd(k.clips[i - 1]) > c.start + 1e-4) errs.push(where + 'overlaps the clip before it');
         });
       });

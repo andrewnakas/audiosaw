@@ -15,6 +15,10 @@
  *      a bar early
  *   6. "Detect from the audio" reads a drum loop's tempo and lines the grid
  *      up with its beats
+ *   7. looping a bar goes round with no gap: every pass starts exactly one
+ *      bar after the one before on the context clock, the clips are started
+ *      for each pass before it is due, and the click stays one beat apart
+ *      across the join
  *
  *   node tools/check-grid.js
  *
@@ -220,6 +224,68 @@ async function scenario(r, cdp) {
     ok(Math.abs(err) < 0.01, 'the grid lines up with the loop\'s beats within 10 ms (off by ' + (err * 1000).toFixed(1) + ' ms)');
     notes.push('grid lined up with a 100 BPM loop to ' + (err * 1000).toFixed(1) + ' ms');
   }
+
+  // 7. Loop the second bar (4/4 at 100 BPM, 2.4 s) and let it go round.
+  // Every buffer source start is logged, so the check sees exactly what was
+  // scheduled and when it was asked for.
+  await r.eval(`(function () {
+    window.__starts = [];
+    var orig = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (when, off, dur) {
+      if (this.buffer && this.buffer.duration > 0.1) window.__starts.push({ when: when, off: off || 0, asked: this.context.currentTime });
+      return orig.apply(this, arguments);
+    };
+  })()`);
+  p = await r.project();
+  const bar = 60 / p.bpm * p.sig[0];
+  // The view's pixel-to-time mapping is private, so find the middle of bar 2
+  // the way a person would: click the ruler and read the bars clock.
+  const rb = await r.eval('(function () { var b = document.getElementById("edRuler").getBoundingClientRect(); return { x: b.left, y: b.top + b.height / 2, w: b.width }; })()');
+  const beats = (txt) => { const m = /^(\d+)\.(\d+)\.(\d+)/.exec(txt || ''); return m ? (m[1] - 1) * p.sig[0] * 4 + (m[2] - 1) * 4 + (m[3] - 1) : NaN; };
+  const target = p.sig[0] * 4 + p.sig[0] * 2;   // bar 2, halfway, in sixteenths
+  let lo = rb.x + 1, hi = rb.x + rb.w - 1, x = lo;
+  for (let i = 0; i < 16; i++) {
+    x = (lo + hi) / 2;
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y: rb.y, button: 'left', buttons: 1, clickCount: 1 });
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y: rb.y, button: 'left', buttons: 0, clickCount: 1 });
+    await sleep(60);
+    const b = beats(await r.eval('document.getElementById("edTime").textContent'));
+    if (!(b >= 0)) break;
+    if (b === target) break;
+    if (b < target) lo = x; else hi = x;
+  }
+  await r.eval(`(function () { var e = new MouseEvent('dblclick', { bubbles: true, clientX: ${x}, clientY: ${rb.y} }); document.getElementById('edRuler').dispatchEvent(e); })()`);
+  await sleep(100);
+  if (await r.eval('document.getElementById("edLoop").getAttribute("aria-pressed") !== "true"')) await r.eval('document.getElementById("edLoop").click()');
+  const c0 = (await r.eval('ASEditEngine.clickState().log')).length;
+  await r.eval('window.__starts = []; document.getElementById("edPlay").click()');
+  await sleep(Math.round(bar * 3.4 * 1000));
+  const passes = await r.eval('ASEditEngine.passes()');
+  const still = await r.eval('ASEditEngine.isPlaying() && ASEditEngine.isLooping()');
+  await r.eval('document.getElementById("edPlay").click()');
+  const starts = await r.eval('window.__starts');
+  const clicks = (await r.eval('ASEditEngine.clickState().log')).slice(c0);
+  ok(still, 'the loop is still playing after three passes');
+  ok(passes.length >= 3, 'the loop came round at least twice (' + passes.length + ' passes)');
+  const len = passes.length > 1 ? passes[1].from : 0;
+  let worst = 0;
+  for (let k = 1; k < passes.length; k++) {
+    ok(Math.abs(passes[k].from - passes[1].from) < 1e-9, 'every pass after the first starts at the loop start');
+    if (k > 1) worst = Math.max(worst, Math.abs(passes[k].t0 - passes[k - 1].t0 - bar));
+  }
+  ok(worst < 1e-9, 'each pass starts exactly one bar after the last on the context clock (worst ' + worst + ' s)');
+  let late = 0, missing = 0;
+  for (let k = 1; k < passes.length; k++) {
+    const s = starts.filter((x) => Math.abs(x.when - passes[k].t0) < 1e-6);
+    if (!s.length) missing++;
+    s.forEach((x) => { if (x.asked > x.when) late++; });
+  }
+  ok(!missing, 'a clip starts on the first sample of every pass (' + missing + ' passes without one)');
+  ok(!late, 'every pass was scheduled before it was due (' + late + ' late)');
+  let gap = 0;
+  for (let i = 1; i < clicks.length; i++) gap = Math.max(gap, Math.abs(clicks[i].when - clicks[i - 1].when - 60 / p.bpm));
+  ok(clicks.length >= 8 && gap < 1e-6, 'the click stays exactly one beat apart across the loop joins (' + clicks.length + ' clicks, worst ' + gap + ' s)');
+  notes.push('loop: ' + passes.length + ' passes of ' + bar.toFixed(2) + ' s, joins exact to ' + worst.toExponential(1) + ' s' + (len ? ', from ' + len.toFixed(3) + ' s' : ''));
 }
 
 /* -------------------------------------------------------------- runner */

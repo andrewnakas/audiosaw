@@ -441,6 +441,16 @@ function fixture() {
       else M.removeFx(p, key, ch[Math.floor(rnd() * ch.length)].id);
     }
     else if (r < 0.975) { op = 'auto'; M.setAutoPoints(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id, 'vol', [[t, -6], [t + rnd() * 4, 0], [rnd() * 20, -3]]); }
+    else if (r < 0.985 && id) {
+      op = 'addTake';
+      const f = M.findClip(p, id), c = f.clip;
+      M.addTake(p, f.track.id, [{ sourceId: Object.keys(p.sources)[0], name: 'k', start: c.start, offset: 0, duration: Math.min(c.duration, 10) }]);
+    }
+    else if (r < 0.99 && id) {
+      op = 'useTake';
+      const f = M.findClip(p, id), ks = M.takesAt(p, f.track.id, f.clip.start, M.clipEnd(f.clip));
+      if (ks.length) M.useTake(p, f.track.id, ks[0].id, f.clip.start + rnd() * f.clip.duration / 2, M.clipEnd(f.clip));
+    }
     else { op = 'addClip'; M.addClip(p, p.tracks[Math.floor(rnd() * p.tracks.length)].id, { sourceId: Object.keys(p.sources)[0], start: t, offset: rnd() * 5, duration: rnd() * 5 + 0.05 }); }
     if (M.serialize(p) !== snapBefore) { h.push(snapBefore); ops++; }
     const errs = M.validate(p);
@@ -534,6 +544,69 @@ function fixture() {
   ok(at(tr, 2.5) === A + '@1.5000' && at(tr.takes[0], 2.5) === B + '@1.5000', 'swapping again puts it back');
   ok(!M.useTake(p, t, tk, 6, 7), 'a range the take does not cover changes nothing');
   ok(M.takesAt(p, t, 0, 1.5).length === 1 && M.takesAt(p, t, 6, 7).length === 0, 'takesAt finds takes by time');
+}
+
+/* ------------------------------------------- takes follow the edits */
+{
+  // A track playing A over 1..5 s with a second clip C at 6..8 s; Take 1
+  // holds B over the same 1..5 s.
+  const setup = () => {
+    const p = M.create('takes-follow');
+    const A = M.addSource(p, { name: 'A', duration: 8, channels: 1, sampleRate: 48000 });
+    const B = M.addSource(p, { name: 'B', duration: 8, channels: 1, sampleRate: 48000 });
+    const C = M.addSource(p, { name: 'C', duration: 8, channels: 1, sampleRate: 48000 });
+    const t = M.addTrack(p), t2 = M.addTrack(p);
+    const a = M.addClip(p, t, { sourceId: A, start: 1, duration: 4 });
+    const c = M.addClip(p, t, { sourceId: C, start: 6, duration: 2 });
+    M.addTake(p, t, [{ sourceId: B, name: 'b', start: 1, offset: 0, duration: 4 }], 'Take 1');
+    M.addTake(p, t, [{ sourceId: B, name: 'b2', start: 6, offset: 2, duration: 2 }], 'Take 2');
+    return { p, A, B, C, t, t2, a, c, tr: p.tracks[0] };
+  };
+  const at = (lane, x) => { const c = lane.clips.filter((c) => x >= c.start - 1e-9 && x < c.start + c.duration - 1e-9)[0]; return c ? c.sourceId + '@' + (c.offset + x - c.start).toFixed(4) : '-'; };
+  const take = (tr, name) => tr.takes.filter((k) => k.name === name)[0];
+
+  { const { p, B, a, tr } = setup();
+    M.moveClips(p, [a], 3, 0);
+    valid(p, 'after moving a clip with takes');
+    ok(at(take(tr, 'Take 1'), 4.5) === B + '@0.5000' && at(take(tr, 'Take 1'), 1.5) === '-', 'a moved clip takes its takes with it');
+    ok(M.takesAt(p, tr.id, 4, 8).length === 1 && !take(tr, 'Take 2'), 'and the clip it overwrites loses its takes along with its audio');
+  }
+  { const { p, B, a, tr, t2 } = setup();
+    M.moveClips(p, [a], 0.5, 1);
+    valid(p, 'after moving a clip with takes to another track');
+    const k = p.tracks[1].takes[0];
+    ok(k && k.name === 'Take 1' && at(k, 2) === B + '@0.5000', 'moving to another track carries the take to that track');
+    ok(!take(tr, 'Take 1'), 'and an emptied take is dropped from the old track');
+    ok(M.takesAt(p, t2, 1.5, 5.5).length === 1, 'the take is found under the clip in its new place');
+  }
+  { const { p, B, a, tr } = setup();
+    M.deleteRange(p, 0, 0.5, null, true);
+    ok(at(take(tr, 'Take 1'), 0.75) === B + '@0.2500' && at(take(tr, 'Take 2'), 6) === B + '@2.5000', 'a ripple delete slides the takes with the clips');
+    M.insertGap(p, 2, 1, null);
+    valid(p, 'after a gap is inserted through a take');
+    ok(at(take(tr, 'Take 1'), 1.5) === B + '@1.0000' && at(take(tr, 'Take 1'), 2.25) === '-' && at(take(tr, 'Take 1'), 3.25) === B + '@1.7500', 'inserting a gap splits and slides the takes too');
+  }
+  { const { p, B, a, c, tr } = setup();
+    M.deleteClips(p, [a], true);
+    valid(p, 'after ripple-deleting a clip with takes');
+    ok(!take(tr, 'Take 1'), 'deleting a clip deletes its takes');
+    ok(M.findClip(p, c).clip.start === 2 && at(take(tr, 'Take 2'), 2.5) === B + '@2.5000', 'and a ripple delete slides the next clip\'s takes with it');
+  }
+  { const { p, B, a, c, tr } = setup();
+    const src = M.addSource(p, { name: 'fx', duration: 6, kind: 'derived' });
+    M.replaceSource(p, a, src, 6);
+    ok(M.findClip(p, c).clip.start === 8 && at(take(tr, 'Take 2'), 8.5) === B + '@2.5000', 'an effect that lengthens a clip ripples the later takes too');
+  }
+  { const { p, B, tr } = setup();
+    M.cropTo(p, 2, 7);
+    valid(p, 'after a crop through takes');
+    ok(at(take(tr, 'Take 1'), 0.5) === B + '@1.5000' && at(take(tr, 'Take 2'), 4.5) === B + '@2.5000' && at(take(tr, 'Take 2'), 5.5) === '-', 'a crop trims and slides the takes');
+  }
+  { const { p, a, tr } = setup();
+    const h = new M.History(), before = M.serialize(p);
+    h.push(before); M.moveClips(p, [a], 2, 1);
+    ok(h.undo(M.serialize(p)) === before, 'a move that carried takes undoes byte-for-byte');
+  }
 }
 
 if (failures) {

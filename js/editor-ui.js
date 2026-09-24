@@ -165,25 +165,24 @@
   // Stop or loop at the end. Called from the animation loop and from a timer,
   // because a background tab gets no animation frames at all and would
   // otherwise never stop, or never come round again when looping.
+  //
+  // Looping itself happens in the engine, which schedules each pass ahead
+  // on the audio clock; this only tells it what to loop, since Loop can be
+  // switched and the range redrawn while playing.
   function checkEnd() {
     if (!E.isPlaying() || (S.rec && !S.rec.loop)) return E.position();
+    E.setLoop(wantLoop());
     var pos = E.position();
-    if (pos < E.playEnd() - 0.005) return pos;
     if (S.rec && S.rec.loop) {
-      // Loop recording: go round again, and note when this pass started on
-      // the audio clock so the take can be cut out of the one recording.
-      var L = S.rec.loop;
-      startPlayback(L.r0, L.r1);
-      L.passes.push(E.playInfo());
-      S.rec.peaks = []; S.rec.length = 0; S.rec.acc = 0; S.rec.accN = 0;
-      status('info', 'Loop recording — pass ' + L.passes.length + '. Press stop when you have a take you like.');
-      return L.r0;
+      // A new pass has begun: start its waveform afresh.
+      var L = S.rec.loop, n = E.passes().length;
+      if (n > L.seen) {
+        L.seen = n;
+        S.rec.peaks = []; S.rec.length = 0; S.rec.acc = 0; S.rec.accN = 0;
+        status('info', 'Loop recording — pass ' + n + '. Press stop when you have a take you like.');
+      }
     }
-    if (S.loop) {
-      var r = loopRange();
-      startPlayback(r[0], r[1]);
-      return r[0];
-    }
+    if (E.isLooping() || pos < E.playEnd() - 0.005) return pos;
     E.stop();
     S.playhead = playStart;
     updateTransport();
@@ -506,6 +505,12 @@
 
   /* ------------------------------------------------------------ transport */
 
+  // What the engine should loop right now, or null.
+  function wantLoop() {
+    if (S.rec) return S.rec.loop ? [S.rec.loop.r0, S.rec.loop.r1] : null;
+    return S.loop ? loopRange() : null;
+  }
+
   function loopRange() {
     if (S.range) return [Math.min(S.range.t0, S.range.t1), Math.max(S.range.t0, S.range.t1)];
     return [0, M.duration(S.project)];
@@ -514,7 +519,7 @@
   function startPlayback(from, to, opts) {
     E.unlock();
     playStart = from;
-    var ok = E.play(S.project, from, { to: to, countIn: opts && opts.countIn });
+    var ok = E.play(S.project, from, { to: to, countIn: opts && opts.countIn, loop: wantLoop() });
     S.playhead = from;
     clearTimeout(endTimer);
     if (ok && isFinite(to)) endTimer = setTimeout(function tick() {
@@ -2127,7 +2132,7 @@
       if (!target) target = M.addTrack(p, { name: 'Recording ' + (p.tracks.filter(function (t) { return /^Recording/.test(t.name); }).length + 1) });
       var sr = E.sampleRate();
       S.rec = { trackId: target, start: S.playhead, length: 0, peaks: [], peakHop: 1024, sr: sr, acc: 0, accN: 0, before: before,
-        loop: loopRec ? { r0: loopRec[0], r1: loopRec[1], passes: [] } : null };
+        loop: loopRec ? { r0: loopRec[0], r1: loopRec[1], passes: [], seen: 1 } : null };
       S.selTrack = target;
       status('info', 'Waiting for the microphone…');
       return E.startRecording(function (chans) {
@@ -2151,7 +2156,6 @@
         else startPlayback(S.playhead, Math.max(M.duration(S.project), S.playhead) + 3600, { countIn: pre });
         S.rec.playing = E.isPlaying();
         S.rec.info = E.playInfo();
-        if (S.rec.loop) S.rec.loop.passes.push(S.rec.info);
         if (pre && S.rec.info) { status('info', 'Count-in — recording starts on the downbeat.'); showCountIn(S.rec.info.t0); }
         else status('info', 'Recording — press stop or Space when you are done.');
         refresh();
@@ -2171,6 +2175,8 @@
     if (!S.rec) return;
     var r = S.rec;
     var info = r.info;
+    // Every pass the engine started, each with the audio-clock time it began.
+    if (r.loop) r.loop.passes = E.passes();
     E.stop();
     E.stopRecording().then(function (res) {
       S.rec = null;

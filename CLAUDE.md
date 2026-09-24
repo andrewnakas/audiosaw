@@ -348,8 +348,19 @@ carrying a separate tone per channel, not because the coefficient tables say
     the single recording at `(t0_k - firstT) + latency` for each pass. The
     last pass that got at least halfway round plays; the rest, and the
     track's previous audio in that range, become takes.
-  - **Known gaps.** A loop restarts with a gap of about 0.1 s. Takes do not
-    move with ripple or clip moves.
+  - **Takes follow the edits.** A take is the part of a take lane under a
+    clip, by time. Moving a clip carries its takes (to a new take of the same
+    name on another track); deleting a clip, or overwriting it with another,
+    deletes its takes; ripple deletes, inserted gaps, crops and effects that
+    change a clip's length shift them as they shift clips. check-editor
+    asserts each case, and the fuzz run includes takes.
+  - **Looping is seamless.** The engine loops (`opts.loop` on `E.play`), not
+    the UI: each pass is scheduled into the running graph 0.3 s before the
+    one before it ends (1.5 s in a hidden tab), with its clips, automation
+    and clicks. `E.passes()` lists when each pass began on the context clock,
+    which is what loop recording cuts the takes by. Restarting the graph at
+    the end, as it used to, left about 0.1 s of silence. check-grid step 7
+    asserts the passes are exactly one bar apart and nothing was late.
 
 - `js/project-link.js` + `js/editor-link.js` — the project that follows you
   onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a

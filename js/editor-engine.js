@@ -29,7 +29,7 @@
 
   var ctx = null;
   var master = null, meterL = null, meterR = null;
-  var playing = null;          // { from, to, t0, G, project }
+  var playing = null;          // { from, to, t0, G, project, loop, next, prev, passes }
   var buffers = new Map();     // sourceId -> AudioBuffer
 
   function ensureCtx() {
@@ -198,6 +198,43 @@
     return project.tracks.some(function (t) { return (t.sends[busId] > -60) || !!t.auto['send:' + busId]; });
   }
 
+  // Start every clip's audio for timeline [from, to) at context time `when`,
+  // into the track inputs of a built graph. A looping playback calls this
+  // again for each pass, into the same graph. `into` collects the sources.
+  function scheduleClips(G, project, from, to, when, into) {
+    var c = G.ctx;
+    into = into || G.nodes;
+    project.tracks.forEach(function (t) {
+      var T = G.tracks[t.id];
+      if (!T) return;
+      t.clips.forEach(function (clip) {
+        var ce = M.clipEnd(clip);
+        if (ce <= from || clip.start >= to) return;
+        var buf = buffers.get(clip.sourceId);
+        if (!buf) return;
+        var cs = Math.max(clip.start, from);
+        var local = cs - clip.start;
+        var dur = Math.min(ce, to) - cs;
+        if (dur <= 0.0005) return;
+        var at = when + (cs - from);
+        var src = c.createBufferSource();
+        src.buffer = buf;
+        var g = c.createGain();
+        scheduleClipGain(g.gain, clip, local, at, at + dur);
+        src.connect(g);
+        if (buf.numberOfChannels === 1) {
+          // Upmixed to both sides at -3 dB: see the pan law above.
+          var m3 = c.createGain(); m3.gain.value = Math.SQRT1_2;
+          g.connect(m3); m3.connect(T.in);
+        } else g.connect(T.in);
+        src.start(at, clip.offset + local, dur);
+        src.onended = function () { src.done = true; try { src.disconnect(); } catch (e) {} };
+        into.push(src);
+        if (into !== G.nodes) G.nodes.push(src);
+      });
+    });
+  }
+
   // Build the mix of [from, to) into `dest`, starting at context time `when`.
   function build(c, dest, project, from, to, when, opts) {
     opts = opts || {};
@@ -270,30 +307,8 @@
         if (t.auto['send:' + b.id]) G.lanes.push([sg.gain, t.auto['send:' + b.id], dbGain]);
       });
 
-      t.clips.forEach(function (clip) {
-        var ce = M.clipEnd(clip);
-        if (ce <= from || clip.start >= to) return;
-        var buf = buffers.get(clip.sourceId);
-        if (!buf) return;
-        var cs = Math.max(clip.start, from);
-        var local = cs - clip.start;
-        var dur = Math.min(ce, to) - cs;
-        if (dur <= 0.0005) return;
-        var at = when + (cs - from);
-        var src = c.createBufferSource();
-        src.buffer = buf;
-        var g = c.createGain();
-        scheduleClipGain(g.gain, clip, local, at, at + dur);
-        src.connect(g);
-        if (buf.numberOfChannels === 1) {
-          // Upmixed to both sides at -3 dB: see the pan law above.
-          var m3 = c.createGain(); m3.gain.value = Math.SQRT1_2;
-          g.connect(m3); m3.connect(T.in);
-        } else g.connect(T.in);
-        src.start(at, clip.offset + local, dur);
-        G.nodes.push(src);
-      });
     });
+    scheduleClips(G, project, from, to, when);
 
     project.buses.forEach(function (b) {
       if (!busChains[b.id]) return;
@@ -383,6 +398,7 @@
   function clickAt(when, accent) {
     if (when < ctx.currentTime) return;
     var s = ctx.createBufferSource();
+    s.when = when;
     s.buffer = clickBufs()[accent || 0];
     s.connect(click.gain);
     s.start(when);
@@ -392,15 +408,21 @@
     if (click.log.length > 256) click.log.shift();
   }
 
+  // Each pass of a loop is a segment with its own clock mapping; the next
+  // one is already scheduled when this runs near a loop's end.
   function scheduleClicks() {
     if (!playing || !click.on) return;
-    var p = playing, now = ctx.currentTime;
+    var now = ctx.currentTime;
+    clicksFor(playing, now);
+    if (playing.next) clicksFor(playing.next, now);
+  }
+  function clicksFor(p, now) {
     // Never behind "now": switching the click on mid-song must not fire a
     // burst of every beat it missed.
     var fromT = Math.max(p.clickT, p.from + (now - p.t0));
     var toT = Math.min(p.to, p.from + (now + 0.15 - p.t0));
     if (toT <= fromT) return;
-    M.clickTimes(p.project, fromT, toT).forEach(function (c) { clickAt(p.t0 + c.t - p.from, c.accent); });
+    M.clickTimes(playing.project, fromT, toT).forEach(function (c) { clickAt(p.t0 + c.t - p.from, c.accent); });
     p.clickT = toT;
   }
 
@@ -416,7 +438,11 @@
     if (o.on != null) {
       click.on = !!o.on;
       if (!click.on) silenceClicks();
-      else if (playing) { playing.clickT = playing.from + Math.max(0, ctx.currentTime - playing.t0); scheduleClicks(); }
+      else if (playing) {
+        playing.clickT = playing.from + Math.max(0, ctx.currentTime - playing.t0);
+        if (playing.next) playing.next.clickT = playing.next.from;
+        scheduleClicks();
+      }
     }
   }
   function clickState() { return { on: click.on, vol: click.vol, log: click.log.slice() }; }
@@ -424,9 +450,17 @@
   /* ------------------------------------------------------------- playback */
 
   var ticker = 0;
+  var MIN_LOOP = 0.05;
+
   // opts.countIn: seconds of count-in clicks before `from` starts sounding.
   // The timeline mapping simply starts that much later, so everything keyed
   // off t0 (the playhead, recording placement) needs no special case.
+  //
+  // opts.loop: [r0, r1]. When the playback reaches `to` it carries on from r0
+  // without a break. Each pass is scheduled into the running graph on the
+  // context clock shortly before the one before it ends, so the join is
+  // sample-exact: stopping and rebuilding the graph at the end, as looping
+  // used to, left about 0.1 s of silence every time round.
   function play(project, from, opts) {
     opts = opts || {};
     ensureCtx();
@@ -436,10 +470,11 @@
     var pre = opts.countIn > 0 ? opts.countIn : 0;
     var when = ctx.currentTime + 0.06 + pre;
     var G = build(ctx, master, project, from, to, when);
-    playing = { from: from, to: to, t0: when, G: G, project: project, clickT: from };
+    playing = { from: from, to: to, t0: when, G: G, project: project, clickT: from, loop: null, next: null, prev: null, passes: [{ from: from, t0: when }] };
+    setLoop(opts.loop);
     if (pre) M.clickTimes(project, from - pre, from).forEach(function (c) { clickAt(when + c.t - from, c.accent); });
-    scheduleClicks();
-    click.timer = setInterval(scheduleClicks, 25);
+    pump();
+    click.timer = setInterval(pump, 25);
     if (G.fxLanes.length) {
       ticker = setInterval(function () {
         if (!playing) return;
@@ -449,12 +484,72 @@
     return true;
   }
 
+  function pump() {
+    advanceLoop();
+    scheduleClicks();
+  }
+
+  // Schedule the next pass of a loop ahead of time, and step onto it once
+  // it has begun.
+  function advanceLoop() {
+    var p = playing;
+    if (!p) return;
+    var now = ctx.currentTime;
+    if (p.next && now >= p.next.t0) {
+      var n = p.next;
+      p.prev = { from: p.from, to: p.to, t0: p.t0 };
+      p.from = n.from; p.to = n.to; p.t0 = n.t0; p.clickT = n.clickT; p.next = null;
+      p.passes.push({ from: p.from, t0: p.t0 });
+      p.G.nodes = p.G.nodes.filter(function (x) { return !x.done; });
+    }
+    if (!p.loop || p.next) return;
+    var end = p.t0 + (p.to - p.from);
+    // A hidden tab's timers can be held to once a second.
+    var ahead = (global.document && global.document.hidden) ? 1.5 : 0.3;
+    if (now < end - ahead) return;
+    var r0 = p.loop[0], r1 = p.loop[1];
+    var next = { from: r0, to: r1, t0: end, clickT: r0, nodes: [] };
+    // A timer that fired too late still keeps the loop in time: the pass
+    // starts partway in rather than late.
+    var at = Math.max(end, now + 0.02), skip = at - end;
+    if (skip < r1 - r0) {
+      scheduleClips(p.G, p.project, r0 + skip, r1, at, next.nodes);
+      p.G.lanes.forEach(function (l) {
+        try { scheduleLane(l[0], l[1], r0 + skip, r1, at, l[2]); } catch (e) { /* leave the lane where it is */ }
+      });
+    }
+    p.next = next;
+  }
+
+  // Loop [r0, r1] from the end of the current pass, or null to stop at its
+  // end. A pass already scheduled for the old range is called off.
+  function setLoop(range) {
+    if (!playing) return;
+    if (range && !(range[1] - range[0] >= MIN_LOOP)) range = null;
+    var cur = playing.loop;
+    if (range && cur && Math.abs(range[0] - cur[0]) < 1e-9 && Math.abs(range[1] - cur[1]) < 1e-9) return;
+    if (!range && !cur) return;
+    playing.loop = range ? [range[0], range[1]] : null;
+    var n = playing.next;
+    if (n) {
+      n.nodes.forEach(function (x) { try { x.stop(); } catch (e) {} try { x.disconnect(); } catch (e) {} });
+      click.nodes = click.nodes.filter(function (x) {
+        if (x.when < n.t0 - 1e-6) return true;
+        try { x.stop(); x.disconnect(); } catch (e) {}
+        return false;
+      });
+      playing.next = null;
+    }
+  }
+  function isLooping() { return !!(playing && playing.loop); }
+  function passes() { return playing ? playing.passes.slice() : []; }
+
   function replay() {
     if (!playing) return;
     var pos = playing.from + Math.max(0, ctx.currentTime - playing.t0);
     var p = playing;
-    play(p.project, Math.min(pos, p.to - 0.02), { to: p.to });
-    if (playing) playing.from0 = p.from0 != null ? p.from0 : p.from;
+    play(p.project, Math.min(pos, p.to - 0.02), { to: p.to, loop: p.loop });
+    if (playing) { playing.from0 = p.from0 != null ? p.from0 : p.from; playing.passes = p.passes; }
   }
 
   function stop() {
@@ -474,13 +569,22 @@
 
   function isPlaying() { return !!playing; }
 
+  // Timeline time at context time t: on the pass that was playing then, so
+  // just after a loop comes round the end of the last pass still maps to
+  // the end of the range.
+  function mapTime(t, raw) {
+    var p = playing;
+    if (p.prev && t < p.t0) return p.prev.from + (t - p.prev.t0);
+    return p.from + (raw ? t - p.t0 : Math.max(0, t - p.t0));
+  }
+
   // Timeline position being heard right now. Output latency is subtracted so
   // the playhead sits on the sound, not on the sample being handed to the
   // driver — on Bluetooth headphones that difference is a visible 150+ ms.
   function position() {
     if (!playing) return null;
     var lat = (ctx.outputLatency || 0) + (ctx.baseLatency || 0);
-    return playing.from + Math.max(0, ctx.currentTime - playing.t0 - lat);
+    return mapTime(ctx.currentTime - lat);
   }
 
   function playEnd() { return playing ? playing.to : null; }
@@ -512,8 +616,13 @@
   function relane(project) {
     if (!playing) return;
     var G = playing.G, now = ctx.currentTime + 0.005, pos = playing.from + Math.max(0, now - playing.t0), to = playing.to;
+    var nx = playing.next;
     function lane(param, pts, map, key, fallback) {
-      if (pts && !holds[key]) scheduleLane(param, pts, pos, to, now, map);
+      if (pts && !holds[key]) {
+        scheduleLane(param, pts, pos, to, now, map);
+        // Cancelling from now also cancelled the next pass of a loop.
+        if (nx) try { scheduleLane(param, pts, nx.from, nx.to, nx.t0, map); } catch (e) {}
+      }
       else { param.cancelScheduledValues(now); param.setTargetAtTime(fallback, now, 0.015); }
     }
     project.tracks.forEach(function (t) {
@@ -855,7 +964,7 @@
   // Context time -> timeline time, while playing.
   function timelineAt(ctxTime) {
     if (!playing) return null;
-    return playing.from + (ctxTime - playing.t0);
+    return mapTime(ctxTime, true);
   }
 
   function now() { return ctx ? ctx.currentTime : 0; }
@@ -866,6 +975,7 @@
     buffers: buffers,
     unlock: unlock,
     play: play, stop: stop, isPlaying: isPlaying, position: position, playEnd: playEnd, playInfo: playInfo,
+    setLoop: setLoop, isLooping: isLooping, passes: passes,
     updateTracks: updateTracks, syncFx: syncFx, relane: relane, hold: hold, probe: probe, trackPeak: trackPeak, meter: meter, audition: audition,
     render: render, tailOf: tailOf, setClick: setClick, clickState: clickState,
     startRecording: startRecording, stopRecording: stopRecording, isRecording: isRecording,
