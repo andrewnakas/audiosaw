@@ -193,7 +193,7 @@
       CV.setProgress(progressBar, 95 + (i / wanted.length) * 5);
       var buffer = CV.bufferFrom([w.ch[0], w.ch[1]], m.sampleRate);
       var blob = await CV.encodeBuffer(buffer, opts.fmt, opts.bitrate);
-      outputs.push({ name: base + '-' + w.key + '.' + opts.fmt, blob: blob });
+      outputs.push({ name: base + '-' + w.key + '.' + AudioSaw.extFor(opts.fmt), blob: blob });
     }
 
     var mins = ((Date.now() - startedAt) / 60000);
@@ -248,7 +248,7 @@
       instrumental: $('#wantInstrumental').checked,
       acapella: $('#wantAcapella').checked,
       fmt: ($('#outFmt').value || 'mp3').toLowerCase(),
-      bitrate: parseInt($('#bitrate').value, 10) || 320
+      bitrate: $('#bitrate').value || 320
     };
   }
 

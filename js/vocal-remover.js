@@ -95,7 +95,7 @@
         crossover: parseInt(CV.$('#crossover').value, 10),
         normalise: CV.$('#normalise').value === 'yes',
         fmt: (CV.$('#outFmt').value || 'mp3').toLowerCase(),
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

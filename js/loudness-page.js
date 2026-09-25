@@ -42,7 +42,7 @@
         target: Math.max(-40, Math.min(0, target)),
         ceiling: parseFloat($('#ceiling').value),
         format: $('#outFormat').value,
-        bitrate: parseInt($('#bitrate').value, 10) || 256
+        bitrate: $('#bitrate').value || 256
       };
     },
 
@@ -153,6 +153,6 @@
   // MP3 bitrate is meaningless for a WAV export.
   var fmtSel = $('#outFormat');
   var brWrap = $('#bitrateWrap');
-  function syncBitrate() { if (brWrap) brWrap.style.display = fmtSel.value === 'wav' ? 'none' : ''; }
+  function syncBitrate() { if (brWrap) brWrap.style.display = fmtSel.value !== 'mp3' ? 'none' : ''; }
   if (fmtSel) { fmtSel.addEventListener('change', syncBitrate); syncBitrate(); }
 })(window);

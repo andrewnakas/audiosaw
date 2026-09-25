@@ -230,19 +230,18 @@
       var blob, outName;
       if (phone === 'android') {
         CV.setStatus(statusEl, 'info', 'Encoding MP3…');
-        blob = await AudioSaw.audioBufferToMp3(processed, 192, function (pct) {
+        blob = await AudioSaw.audioBufferToMp3(processed, 256, function (pct) {
           CV.setProgress(progressBar, 40 + (pct - 55) * 1.0);
         });
         outName = fileBaseName + '-ringtone.mp3';
       } else {
-        // iOS: encode to AAC (.m4a) via ffmpeg, then rename to .m4r.
-        var wav = AudioSaw.audioBufferToWav(processed);
-        var wavFile = new File([wav], 'tmp.wav', { type: 'audio/wav' });
+        // iOS: encode to AAC (.m4a) via ffmpeg, from 32-bit float, then
+        // rename to .m4r.
         CV.setStatus(statusEl, 'info', 'Encoding AAC for iPhone…');
-        var m4a = await AudioSaw.convertViaFFmpeg(wavFile, 'm4a', { bitrate: 192 }, function (pct, msg) {
+        var m4a = await AudioSaw.encode(processed, 'm4a', { bitrate: 256, onProgress: function (pct, msg) {
           CV.setProgress(progressBar, 40 + (pct - 55) * 1.0);
           if (msg) CV.setStatus(statusEl, 'info', msg);
-        });
+        } });
         blob = new Blob([await m4a.arrayBuffer()], { type: 'audio/mp4' });
         outName = fileBaseName + '-ringtone.m4r';
       }

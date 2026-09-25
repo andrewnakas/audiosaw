@@ -72,7 +72,7 @@
     resultList.innerHTML = '';
 
     var fmt = (outFmt.value || 'mp3').toLowerCase();
-    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    var bitrate = bitrateSel.value;
 
     var outputs = [];
     var failures = [];
@@ -89,13 +89,12 @@
         CV.setProgress(progressBar, ((i + 0.5) / files.length) * 100);
 
         var blob;
-        if (fmt === 'wav') {
-          blob = AudioSaw.audioBufferToWav(reversed);
-        } else {
-          blob = await AudioSaw.audioBufferToMp3(reversed, bitrate, function (pct) {
+        blob = await AudioSaw.encode(reversed, AudioSaw.resolveFormat(fmt, bitrate), {
+          bitrate: AudioSaw.bitrateOf(bitrate),
+          onProgress: function (pct) {
             CV.setProgress(progressBar, ((i + 0.5 + (pct / 100) * 0.5) / files.length) * 100);
-          });
-        }
+          }
+        });
         outputs.push({ name: AudioSaw.rename(f.name, fmt).replace(/\.([^.]+)$/, '-reversed.$1'), blob: blob });
       } catch (e) {
         failures.push({ name: f.name, error: e.message || String(e) });

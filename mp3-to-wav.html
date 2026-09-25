@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -113,7 +113,17 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div id="controls" style="display:none">
       <div class="controls">
-        <p class="control-note">WAV is uncompressed, so there is no bitrate to pick — the output is 16-bit PCM at your file's original sample rate.</p>
+        <label>Bit depth
+          <select id="depth">
+            <option value="" selected>Match the source (16 or 24-bit)</option>
+            <option value="16">16-bit</option>
+            <option value="24">24-bit</option>
+            <option value="32f">32-bit float</option>
+          </select>
+        </label>
+      </div>
+      <div class="controls">
+        <p class="control-note">WAV is uncompressed, so there is no bitrate to pick. The output keeps your file's own sample rate. An MP3 holds nothing past 16-bit, so 16-bit is enough; 24-bit or float only helps if you will process the file further.</p>
       </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
@@ -132,7 +142,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <table class="spec-table">
         <tbody>
         <tr><th>Input formats</th><td>.mp3, plus most other audio files</td></tr>
-        <tr><th>Output format</th><td>WAV, 16-bit PCM (RIFF)</td></tr>
+        <tr><th>Output format</th><td>WAV, 16-bit PCM (RIFF); 24-bit or 32-bit float on request</td></tr>
         <tr><th>Sample rate</th><td>Preserved from the source</td></tr>
         <tr><th>Channels</th><td>Preserved from the source</td></tr>
         <tr><th>Typical size change</th><td>About 10× larger</td></tr>
@@ -300,12 +310,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'wav', accept: ['.mp3'] };</script>
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-converter.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-converter.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -113,14 +113,16 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div id="controls" style="display:none">
       <div class="controls">
-        <label>FLAC bitrate
-          <select id="bitrate">
-            <option value="128">128 kbps</option>
-            <option value="192" selected>192 kbps — balanced</option>
-            <option value="256">256 kbps</option>
-            <option value="320">320 kbps — maximum</option>
+        <label>Bit depth
+          <select id="depth">
+            <option value="" selected>Match the source (16 or 24-bit)</option>
+            <option value="16">16-bit</option>
+            <option value="24">24-bit</option>
           </select>
         </label>
+      </div>
+      <div class="controls">
+        <p class="control-note">FLAC is lossless, so there is no bitrate: the file is as large as the audio needs. Compression is set to level 8, the smallest FLAC makes; it only costs encoding time.</p>
       </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to FLAC</button>
@@ -306,12 +308,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'flac', accept: ['.wav','.wave','.aif','.aiff'] };</script>
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-converter.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-converter.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

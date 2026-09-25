@@ -18,6 +18,9 @@
   var convertBtn = $('#convertBtn');
   var resetBtn = $('#resetBtn');
   var bitrateSel = $('#bitrate');
+  // Optional bit depth for a PCM or FLAC target: '' (match the source), '16',
+  // '24' or '32f'. Appended to the target to make a format token ('wav24').
+  var depthSel = $('#depth');
   var statusEl = $('#status');
   var progressWrap = $('#progressWrap');
   var progressBar = $('#progressBar');
@@ -75,6 +78,7 @@
   if (resetBtn) resetBtn.addEventListener('click', reset);
   if (bitrateSel && !cfg.lockedBitrate) CV.remember(bitrateSel);
   if (targetSelect) CV.remember(targetSelect);
+  if (depthSel) CV.remember(depthSel);
 
   convertBtn.addEventListener('click', async function () {
     if (!files.length) return;
@@ -85,11 +89,12 @@
     resultList.innerHTML = '';
 
     var options = {
-      bitrate: cfg.lockedBitrate || (bitrateSel ? (parseInt(bitrateSel.value, 10) || 192) : 192)
+      bitrate: cfg.lockedBitrate || (bitrateSel ? bitrateSel.value : 192)
     };
     if (cfg.lockedSampleRate) options.sampleRate = cfg.lockedSampleRate;
     if (cfg.lockedChannels) options.channels = cfg.lockedChannels;
     var target = currentTarget();
+    if (depthSel && depthSel.value) target += depthSel.value;
 
     var outputs = [];
     var failures = [];

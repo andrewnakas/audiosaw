@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -107,11 +107,21 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <div class="file-list" id="fileList"></div>
 
     <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Bit depth
+          <select id="depth">
+            <option value="" selected>Match the source (16 or 24-bit)</option>
+            <option value="16">16-bit</option>
+            <option value="24">24-bit</option>
+            <option value="32f">32-bit float</option>
+          </select>
+        </label>
+      </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
-      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output keeps the original sample rate and channel count. Bit depth becomes 16-bit (FLACs at 24-bit are quantized down — for 24-bit retention, contact us and we'll add a 24-bit option).</p>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output keeps the original sample rate, channel count and bit depth: a 24-bit, 96 kHz FLAC becomes a 24-bit, 96 kHz WAV, sample for sample. Pick 16-bit for a CD burner (dithered), or 32-bit float for a DAW.</p>
     </div>
 
     <div class="status hidden" id="status"></div>
@@ -282,12 +292,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'wav', accept: ['.flac'] };</script>
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-converter.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-converter.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -107,6 +107,16 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <div class="file-list" id="fileList"></div>
 
     <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Bit depth
+          <select id="depth">
+            <option value="" selected>Match the source (16 or 24-bit)</option>
+            <option value="16">16-bit</option>
+            <option value="24">24-bit</option>
+            <option value="32f">32-bit float</option>
+          </select>
+        </label>
+      </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to WAV</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -131,7 +141,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2>Step-by-step</h2>
     <ol>
       <li>Drop your .m4a file in the box above.</li>
-      <li>Click <em>Convert to WAV</em>. (We default to lossless 16-bit PCM, same sample rate as the source.)</li>
+      <li>Click <em>Convert to WAV</em>. (By default: PCM at the source's own sample rate, 16-bit for an AAC source. 24-bit and 32-bit float are in the menu.)</li>
       <li>Download the .wav.</li>
       <li>In Audacity: <em>File → Import → Audio</em> (or drag the WAV onto the track view). It opens instantly.</li>
     </ol>
@@ -152,7 +162,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>Audacity's wording has changed across versions, but it is one of a small set: "Audacity did not recognise the type of the file", "This version of Audacity was not compiled with support for...", or an import dialog that lists the file and then does nothing. All three mean the same thing — no decoder — and all three are fixed the same way.</p>
 
     <h3>Why 16-bit, and when to want 32-bit float</h3>
-    <p>The output is 16-bit PCM at the source's own sample rate, which is the correct default for a voice memo or a downloaded track. The source is lossy AAC, so its effective noise floor is far above the point where extra bit depth carries information; a 24-bit file would be half again as large and identical in content.</p>
+    <p>By default the output is 16-bit PCM at the source's own sample rate, which is right for a voice memo or a downloaded track. The source is lossy AAC, so its noise floor is far above the point where extra bit depth carries information. A 24-bit file would be half again as large and hold the same content. An ALAC file (Apple Lossless, also .m4a) at 24-bit comes out at 24-bit.</p>
     <p>Audacity will convert to 32-bit float on import anyway if that is your project default, and it works in that internally regardless. Bit depth matters when you are recording, not when you are importing something that has already been through a lossy encoder.</p>
 
     <h3>After the import</h3>
@@ -295,12 +305,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'wav', accept: ['.m4a','.aac','.m4r','.mp4'] };</script>
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-converter.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-converter.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

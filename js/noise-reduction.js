@@ -229,7 +229,7 @@
         sensitivity: s.sensitivity,
         reduction: s.reduction,
         fmt: (CV.$('#outFmt').value || 'mp3').toLowerCase(),
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

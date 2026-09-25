@@ -177,7 +177,7 @@
   $('#saveBtn').addEventListener('click', async function () {
     if (!recordedBlob) return;
     var fmt = ($('#outFmt').value || 'mp3').toLowerCase();
-    var bitrate = parseInt($('#bitrate').value, 10) || 192;
+    var bitrate = $('#bitrate').value;
 
     progressWrap.style.display = '';
     CV.setProgress(progressBar, 5);
@@ -185,7 +185,7 @@
 
     try {
       var stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-      var name = 'recording-' + stamp + '.' + fmt;
+      var name = 'recording-' + stamp + '.' + AudioSaw.extFor(fmt);
       // Hand the recorded blob to the normal decode path so it behaves exactly
       // like a dropped file would.
       var asFile = new File([recordedBlob], 'recording.webm', { type: recordedBlob.type });

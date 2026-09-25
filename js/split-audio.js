@@ -112,7 +112,7 @@
         onProgress(20 + (idx / pieces.length) * 78, 'Encoding part ' + (idx + 1) + ' of ' + pieces.length + '…');
         var piece = sliceBuffer(buf, pieces[idx][0], pieces[idx][1]);
         return CV.encodeBuffer(piece, opts.fmt, opts.bitrate).then(function (blob) {
-          outputs.push({ name: base + '-' + pad(idx + 1, width) + '.' + opts.fmt, blob: blob });
+          outputs.push({ name: base + '-' + pad(idx + 1, width) + '.' + AudioSaw.extFor(opts.fmt), blob: blob });
           return encodeNext(idx + 1);
         });
       }
@@ -134,7 +134,7 @@
         thresholdDb: parseFloat(CV.$('#threshold').value) || -45,
         minGapSec: parseFloat(CV.$('#minGap').value) || 2,
         fmt: (CV.$('#outFmt').value || 'mp3').toLowerCase(),
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

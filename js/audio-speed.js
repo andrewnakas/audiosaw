@@ -45,20 +45,10 @@
     resultList.innerHTML = '';
   }
 
-  // Pitch + speed coupled: render at speed×sampleRate, then declare it as the original sample rate.
-  // Result: same number of samples played as though sped up, with pitch shifted.
+  // Pitch + speed coupled, like a tape machine: a band-limited resample
+  // (AudioSaw.varispeed), at the file's own sample rate.
   function pitchShiftSpeed(audioBuffer, speed) {
-    var sr = audioBuffer.sampleRate;
-    var newLen = Math.floor(audioBuffer.length / speed);
-    var channels = audioBuffer.numberOfChannels;
-    var Octx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    var off = new Octx(channels, newLen, sr);
-    var src = off.createBufferSource();
-    src.buffer = audioBuffer;
-    src.playbackRate.value = speed;
-    src.connect(off.destination);
-    src.start(0);
-    return off.startRendering();
+    return AudioSaw.varispeed(audioBuffer, speed);
   }
 
   // Build ffmpeg -filter:a atempo=X (atempo only takes 0.5–2.0 per filter, chain for outside).
@@ -73,34 +63,15 @@
     return parts.join(',');
   }
 
-  // Pitch-preserved time-stretch via ffmpeg.
-  async function timeStretchFFmpeg(file, speed, outExt, bitrate, onProgress) {
+  // Pitch-preserved time-stretch via ffmpeg's atempo. ffmpeg writes 32-bit
+  // float at the file's own rate and our encoder does the rest, so the
+  // format and bit depth choices behave exactly as on the other path.
+  async function timeStretchFFmpeg(file, speed, onProgress) {
     if (onProgress) onProgress(20, 'Loading codec…');
-    var pack = await AudioSaw.ensureFFmpeg();
-    var ffmpeg = pack.ffmpeg;
-    var fetchFile = pack.util.fetchFile;
-    var inName = 'in_' + Date.now() + '.' + (file.name.split('.').pop() || 'bin');
-    var outName = 'out.' + outExt;
-    await ffmpeg.writeFile(inName, await fetchFile(file));
-    if (onProgress) onProgress(40, 'Time-stretching…');
-
-    var args = ['-i', inName, '-filter:a', buildAtempoChain(speed)];
-    if (outExt === 'mp3') args.push('-b:a', bitrate + 'k');
-    if (outExt === 'm4a') { args.push('-c:a', 'aac'); args.push('-b:a', bitrate + 'k'); }
-    args.push('-vn', outName);
-
-    ffmpeg.on('progress', function (e) {
-      if (onProgress && e && e.progress != null) {
-        var pct = 40 + Math.min(55, Math.max(0, e.progress * 55));
-        onProgress(pct, 'Time-stretching…');
-      }
-    });
-
-    await ffmpeg.exec(args);
-    var data = await ffmpeg.readFile(outName);
-    try { await ffmpeg.deleteFile(inName); await ffmpeg.deleteFile(outName); } catch (e) {}
-    var mime = outExt === 'mp3' ? 'audio/mpeg' : (outExt === 'wav' ? 'audio/wav' : 'audio/mp4');
-    return new Blob([data.buffer], { type: mime });
+    var ext = (file.name.split('.').pop() || 'bin');
+    var wav = await AudioSaw.runFFmpeg(file, ext, ['-filter:a', buildAtempoChain(speed), '-c:a', 'pcm_f32le', '-vn'],
+      'wav', 'audio/wav', function (pct) { if (onProgress) onProgress(20 + pct * 0.5, 'Time-stretching…'); }, 'Time-stretching…');
+    return AudioSaw.decodeToAudioBuffer(new File([wav], 'stretched.wav'));
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles);
@@ -116,7 +87,7 @@
     var speed = parseFloat(speedSel.value) || 1;
     var mode = modeSel.value;
     var fmt = (outFmt.value || 'mp3').toLowerCase();
-    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    var bitrate = bitrateSel.value;
 
     var outputs = [];
     var failures = [];
@@ -125,11 +96,14 @@
       var f = files[i];
       var idx = i + 1;
       try {
-        var blob;
+        var blob, shifted;
+        // The source's header, for "match the source" (the time-stretch
+        // decodes an intermediate float file, which would otherwise win).
+        var srcInfo = AudioSaw.sniffFormat(await f.slice(0, 1 << 20).arrayBuffer());
         if (mode === 'pitch-preserve') {
           CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] Time-stretching at ' + speed + '×…');
-          blob = await timeStretchFFmpeg(f, speed, fmt, bitrate, function (pct, msg) {
-            CV.setProgress(progressBar, ((i + (pct / 100)) / files.length) * 100);
+          shifted = await timeStretchFFmpeg(f, speed, function (pct, msg) {
+            CV.setProgress(progressBar, ((i + (pct / 100) * 0.5) / files.length) * 100);
             if (msg) CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] ' + msg);
           });
         } else {
@@ -137,16 +111,16 @@
           CV.setProgress(progressBar, ((i + 0.1) / files.length) * 100);
           var ab = await AudioSaw.decodeToAudioBuffer(f);
           CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] Pitching at ' + speed + '×…');
-          var shifted = await pitchShiftSpeed(ab, speed);
-          CV.setProgress(progressBar, ((i + 0.5) / files.length) * 100);
-          if (fmt === 'wav') {
-            blob = AudioSaw.audioBufferToWav(shifted);
-          } else {
-            blob = await AudioSaw.audioBufferToMp3(shifted, bitrate, function (pct) {
-              CV.setProgress(progressBar, ((i + 0.5 + (pct / 100) * 0.5) / files.length) * 100);
-            });
-          }
+          shifted = await pitchShiftSpeed(ab, speed);
         }
+        CV.setProgress(progressBar, ((i + 0.5) / files.length) * 100);
+        blob = await AudioSaw.encode(shifted, AudioSaw.resolveFormat(fmt, bitrate), {
+          bitrate: AudioSaw.bitrateOf(bitrate),
+          srcInfo: srcInfo,
+          onProgress: function (pct) {
+            CV.setProgress(progressBar, ((i + 0.5 + (pct / 100) * 0.5) / files.length) * 100);
+          }
+        });
         outputs.push({ name: AudioSaw.rename(f.name, fmt).replace(/\.([^.]+)$/, '-' + speed + 'x.$1'), blob: blob });
       } catch (e) {
         failures.push({ name: f.name, error: e.message || String(e) });

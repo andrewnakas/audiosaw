@@ -41,7 +41,7 @@
         depth: parseFloat(CV.$('#depth').value),
         room: parseFloat(CV.$('#room').value),
         fmt: CV.$('#outFmt').value,
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

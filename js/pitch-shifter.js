@@ -36,62 +36,61 @@
     var ratio = Math.pow(2, semitones / 12);
 
     onProgress(10, 'Loading codec…');
-    return AudioSaw.ensureFFmpeg().then(function (pack) {
-      var ffmpeg = pack.ffmpeg;
-      var fetchFile = pack.util.fetchFile;
-      var ext = (file.name.split('.').pop() || 'bin').toLowerCase();
-      var inName = 'pitch_in_' + Date.now() + '.' + ext;
-      var outName = 'pitch_out.' + opts.fmt;
-
+    var ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    var srcInfo = null;
+    return file.slice(0, 1 << 20).arrayBuffer().then(function (head) {
       // asetrate takes a literal rate, so the source rate has to be known:
       // assuming 48 kHz and feeding it a 44.1 kHz file shifts by the wrong
-      // interval entirely (+2 semitones becomes +3.5). Read it out of ffmpeg's
-      // own stream report by decoding a fraction of a second.
-      var sourceRate = 0;
+      // interval entirely (+2 semitones becomes +3.5). The header says; if it
+      // cannot be read, ask ffmpeg's own stream report.
+      srcInfo = AudioSaw.sniffFormat(head);
+      if (srcInfo && srcInfo.sampleRate) return srcInfo.sampleRate;
+      return probeRate(file, ext);
+    }).then(function (sourceRate) {
+      onProgress(30, 'Shifting pitch…');
+      // ffmpeg's resampler at 64 taps rather than its default 16, and
+      // 32-bit float out at the file's own rate; our encoder writes the
+      // chosen format, so bit depth and LAME behave as on every other tool.
+      var filter = 'asetrate=' + Math.round(sourceRate * ratio) +
+                   ',aresample=' + sourceRate + ':filter_size=64:phase_shift=10:cutoff=0.97,' + atempoChain(1 / ratio);
+      return AudioSaw.runFFmpeg(file, ext, ['-af', filter, '-c:a', 'pcm_f32le', '-vn'], 'wav', 'audio/wav',
+        function (pct) { onProgress(30 + Math.min(55, pct * 0.55), 'Shifting pitch…'); }, 'Shifting pitch…');
+    }).then(function (wav) {
+      return AudioSaw.decodeToAudioBuffer(new File([wav], 'shifted.wav'));
+    }).then(function (buf) {
+      onProgress(88, 'Encoding…');
+      return AudioSaw.encode(buf, AudioSaw.resolveFormat(opts.fmt, opts.bitrate), {
+        bitrate: AudioSaw.bitrateOf(opts.bitrate), srcInfo: srcInfo
+      });
+    }).then(function (blob) {
+      onProgress(95, 'Finishing…');
+      var sign = semitones > 0 ? '+' : '';
+      return {
+        name: AudioSaw.rename(file.name, opts.fmt)
+          .replace(/\.([^.]+)$/, '-' + sign + semitones + 'st.$1'),
+        blob: blob
+      };
+    });
+  }
+
+  // The sample rate from ffmpeg's stream report, for files whose header the
+  // sniffer does not know. 44.1 kHz only if even that fails.
+  function probeRate(file, ext) {
+    return AudioSaw.ensureFFmpeg().then(function (pack) {
+      var ffmpeg = pack.ffmpeg, rate = 0, inName = 'probe_' + Date.now() + '.' + ext;
       function onLog(e) {
         var m = /(\d{4,6}) Hz/.exec((e && e.message) || '');
-        if (m && !sourceRate) sourceRate = parseInt(m[1], 10);
+        if (m && !rate) rate = parseInt(m[1], 10);
       }
-
-      return fetchFile(file).then(function (data) {
+      return pack.util.fetchFile(file).then(function (data) {
         return ffmpeg.writeFile(inName, data);
       }).then(function () {
-        onProgress(22, 'Reading the file…');
         ffmpeg.on('log', onLog);
-        return ffmpeg.exec(['-i', inName, '-t', '0.1', '-f', 'null', '-'])
-          .catch(function () { /* probing only; a non-zero exit is fine */ });
+        return ffmpeg.exec(['-i', inName, '-t', '0.1', '-f', 'null', '-']).catch(function () {});
       }).then(function () {
         try { ffmpeg.off('log', onLog); } catch (e) { /* older API */ }
-        if (!sourceRate) sourceRate = 44100;
-        onProgress(30, 'Shifting pitch…');
-
-        var filter = 'asetrate=' + Math.round(sourceRate * ratio) +
-                     ',aresample=' + sourceRate + ',' + atempoChain(1 / ratio);
-
-        var args = ['-i', inName, '-af', filter];
-        if (opts.fmt === 'mp3') args.push('-b:a', opts.bitrate + 'k');
-        if (opts.fmt === 'm4a') args.push('-c:a', 'aac', '-b:a', opts.bitrate + 'k');
-        args.push('-vn', outName);
-
-        ffmpeg.on('progress', function (e) {
-          if (e && e.progress != null) {
-            onProgress(30 + Math.min(60, Math.max(0, e.progress * 60)), 'Shifting pitch…');
-          }
-        });
-
-        return ffmpeg.exec(args);
-      }).then(function () {
-        return ffmpeg.readFile(outName);
-      }).then(function (data) {
-        try { ffmpeg.deleteFile(inName); ffmpeg.deleteFile(outName); } catch (e) { /* best effort */ }
-        onProgress(95, 'Finishing…');
-        var mime = opts.fmt === 'mp3' ? 'audio/mpeg' : (opts.fmt === 'wav' ? 'audio/wav' : 'audio/mp4');
-        var sign = semitones > 0 ? '+' : '';
-        return {
-          name: AudioSaw.rename(file.name, opts.fmt)
-            .replace(/\.([^.]+)$/, '-' + sign + semitones + 'st.$1'),
-          blob: new Blob([data.buffer], { type: mime })
-        };
+        try { ffmpeg.deleteFile(inName); } catch (e) {}
+        return rate || 44100;
       });
     });
   }
@@ -142,7 +141,7 @@
       return {
         semitones: parseInt(CV.$('#semitones').value, 10),
         fmt: (CV.$('#outFmt').value || 'mp3').toLowerCase(),
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

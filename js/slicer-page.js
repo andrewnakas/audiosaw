@@ -208,7 +208,7 @@
         var b = new AudioBuffer({ numberOfChannels: ch.length, length: ch[0].length, sampleRate: buffer.sampleRate });
         ch.forEach(function (d, k) { b.copyToChannel(d, k); });
         var out = await AudioSaw.resampleBuffer(b, rate);
-        entries.push({ name: prefix + '_' + (i + 1 < 10 ? '0' : '') + (i + 1) + '.wav', blob: AudioSaw.audioBufferToWav(out) });
+        entries.push({ name: prefix + '_' + (i + 1 < 10 ? '0' : '') + (i + 1) + '.wav', blob: await AudioSaw.encode(out, 'wav16') });
         CV.setProgress(progressBar, (i + 1) / list.length * 90);
       }
       var zip = await AudioSaw.zipBlobs(entries);

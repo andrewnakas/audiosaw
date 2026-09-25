@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -125,7 +125,13 @@ window.AS_VERSION = '2026-09-22';
         <label>Output format
           <select id="outFmt">
             <option value="mp3" selected>MP3</option>
-            <option value="wav">WAV — uncompressed</option>
+            <option value="wav">WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
           </select>
         </label>
         <label>MP3 bitrate
@@ -133,6 +139,8 @@ window.AS_VERSION = '2026-09-22';
             <option value="192">192 kbps</option>
             <option value="256">256 kbps</option>
             <option value="320" selected>320 kbps — recommended</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
           </select>
         </label>
       </div>
@@ -323,14 +331,14 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/project-link.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-shell.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/stem-separator.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/project-link.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-shell.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/stem-separator.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

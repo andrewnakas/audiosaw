@@ -190,7 +190,7 @@
     return {
       v: 1, id: L.uid('k'), projectId: p.id, projectName: p.name || 'Untitled project',
       kind: spec.kind, label: spec.label || null, ref: ref, fp: M.targetPrint(p, ref), tool: slug,
-      name: name + '.wav', blob: global.AudioSaw.audioBufferToWav(seg),
+      name: name + '.wav', blob: global.AudioSaw.floatWav(seg),
       duration: seg.duration, channels: seg.numberOfChannels, sampleRate: seg.sampleRate,
       peaks: L.peaksOf(seg), createdAt: Date.now(),
       // So a key-aware tool (autotune, the pitch shifter) can start from the

@@ -171,10 +171,13 @@
   /* ------------------------------------------------------------ DSP helpers */
 
   // Encode an AudioBuffer to whatever the page asked for. Every processing tool
-  // needs this ending, so keep it in one place.
+  // needs this ending, so keep it in one place. `fmt` is a format token (see
+  // FORMATS in audio-core.js); `bitrate` is the bitrate select's raw value,
+  // which may be 'v0' or 'lame320'.
   CV.encodeBuffer = function (buffer, fmt, bitrate, onProgress) {
-    if (fmt === 'wav') return Promise.resolve(AudioSaw.audioBufferToWav(buffer));
-    return AudioSaw.audioBufferToMp3(buffer, bitrate || 192, onProgress);
+    return AudioSaw.encode(buffer, AudioSaw.resolveFormat(fmt, bitrate), {
+      bitrate: AudioSaw.bitrateOf(bitrate), onProgress: onProgress
+    });
   };
 
   // Build an AudioBuffer from raw Float32 channel data.

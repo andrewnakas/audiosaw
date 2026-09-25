@@ -1433,7 +1433,7 @@
     return global.AudioSaw.decodeToAudioBuffer(file).catch(function () {
       // Video containers, WMA, AC3 and friends: let ffmpeg pull the audio out.
       if (onProgress) onProgress('Opening ' + file.name + ' with ffmpeg (first time: a 30 MB download)…');
-      return global.AudioSaw.convert(file, 'wav', {}, function (pct, msg) {
+      return global.AudioSaw.convert(file, 'wav32f', {}, function (pct, msg) {
         progress(pct);
         if (msg && onProgress) onProgress(msg);
       }).then(function (wav) {

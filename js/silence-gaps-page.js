@@ -26,7 +26,7 @@
         minSilence: parseFloat($('#minGap').value),
         keepSilence: parseFloat($('#keepGap').value),
         format: $('#outFormat').value,
-        bitrate: parseInt($('#bitrate').value, 10) || 192
+        bitrate: $('#bitrate').value
       };
     },
 
@@ -95,6 +95,6 @@
 
   var fmtSel = $('#outFormat');
   var brWrap = $('#bitrateWrap');
-  function sync() { if (brWrap) brWrap.style.display = fmtSel.value === 'wav' ? 'none' : ''; }
+  function sync() { if (brWrap) brWrap.style.display = fmtSel.value !== 'mp3' ? 'none' : ''; }
   if (fmtSel) { fmtSel.addEventListener('change', sync); sync(); }
 })(window);

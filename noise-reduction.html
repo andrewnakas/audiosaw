@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -121,7 +121,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <label>Output format
           <select id="outFmt">
             <option value="mp3" selected>MP3</option>
-            <option value="wav">WAV — uncompressed</option>
+            <option value="wav">WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
           </select>
         </label>
         <label>MP3 bitrate
@@ -130,6 +136,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
             <option value="192" selected>192 kbps — balanced</option>
             <option value="256">256 kbps</option>
             <option value="320">320 kbps — maximum</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
           </select>
         </label>
       </div>
@@ -315,14 +323,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/project-link.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-shell.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/noise-reduction.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/project-link.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-shell.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/noise-reduction.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

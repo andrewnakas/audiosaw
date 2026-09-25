@@ -247,8 +247,20 @@
       useBtn.textContent = 'This tool does not take WAV';
     }
 
+    // Audio going back into a project should not be quantised or encoded on
+    // the way: pick 32-bit float WAV if the page offers it. The user can still
+    // change it; this only moves the default off MP3.
+    function preferLossless() {
+      var sel = ['outFmt', 'outFormat', 'targetFormat'].map(function (id) { return document.getElementById(id); })
+        .filter(function (s) { return s && s.querySelector('option[value="wav32f"]'); })[0];
+      if (!sel || sel.value === 'wav32f') return;
+      sel.value = 'wav32f';
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
     function markUsed(on) {
       used = on ? target.id : null;
+      if (on) preferLossless();
       try { if (on) global.sessionStorage.setItem(usedKey, target.id); else global.sessionStorage.removeItem(usedKey); } catch (e) {}
       bar.classList.toggle('is-used', !!on);
       if (on) useBtn.textContent = 'Loaded: run the tool, then send it back';

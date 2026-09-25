@@ -71,7 +71,7 @@
         decay: cfg.decay,
         preDelay: cfg.preDelay,
         fmt: CV.$('#outFmt').value,
-        bitrate: parseInt(CV.$('#bitrate').value, 10) || 192
+        bitrate: CV.$('#bitrate').value
       };
     },
     process: process

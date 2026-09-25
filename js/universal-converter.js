@@ -77,7 +77,7 @@
 
     var target = targetSel.value;
     var options = {
-      bitrate: parseInt(bitrateSel.value, 10) || 192,
+      bitrate: bitrateSel.value,
       sampleRate: sampleSel.value ? parseInt(sampleSel.value, 10) : null
     };
 

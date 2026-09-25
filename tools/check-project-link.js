@@ -172,6 +172,11 @@ async function scenario(r) {
   await r.waitFor('location.pathname === "/noise-reduction" && !!document.getElementById("projectBar")');
   await r.eval('document.getElementById("strength").value = "gentle"; document.querySelector(\'#projectBar [data-act="use"]\').click()');
   await r.waitFor('!document.getElementById("convertBtn").disabled');
+  // Project audio defaults the output to 32-bit float WAV; MP3 is picked here
+  // on purpose, to exercise the encoder-delay trim.
+  const fmt0 = await r.eval('document.getElementById("outFmt").value');
+  ok(fmt0 === 'wav32f', 'project audio switches the output to 32-bit float WAV (got ' + fmt0 + ')');
+  await r.eval('document.getElementById("outFmt").value = "mp3"');
   await r.eval('document.getElementById("convertBtn").click()');
   await r.waitFor('!!document.querySelector("#nextSteps .project-return a")', 60000);
   await r.eval('document.querySelector("#nextSteps .project-return a").click()');

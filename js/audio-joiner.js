@@ -152,15 +152,14 @@
       CV.setProgress(progressBar, 55);
       var fmt = outFmt.value;
       var blob;
-      if (fmt === 'wav') {
-        blob = AudioSaw.audioBufferToWav(merged);
-      } else {
-        blob = await AudioSaw.audioBufferToMp3(merged, parseInt(bitrate.value, 10) || 192, function (pct) {
+      blob = await AudioSaw.encode(merged, AudioSaw.resolveFormat(fmt, bitrate.value), {
+        bitrate: AudioSaw.bitrateOf(bitrate.value),
+        onProgress: function (pct) {
           CV.setProgress(progressBar, 55 + (pct - 55) * 0.9);
-        });
-      }
+        }
+      });
       CV.setProgress(progressBar, 100);
-      var name = 'audiosaw-joined.' + fmt;
+      var name = 'audiosaw-joined.' + AudioSaw.extFor(fmt);
       CV.downloadBlob(blob, name);
       CV.setStatus(statusEl, 'success', 'Done — downloaded ' + name);
     } catch (e) {

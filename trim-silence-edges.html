@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -118,8 +118,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         </label>
         <label>Output format
           <select id="targetFormat">
-            <option value="wav" selected>WAV (lossless)</option>
             <option value="mp3">MP3</option>
+            <option value="wav" selected>WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
           </select>
         </label>
         <label id="bitrateLabel" style="display:none">MP3 bitrate
@@ -128,6 +134,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
             <option value="192" selected>192 kbps</option>
             <option value="256">256 kbps</option>
             <option value="320">320 kbps</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
           </select>
         </label>
       </div>
@@ -305,12 +313,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/project-link.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/project-link.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
 <script>
 (function(){
   if (!window.CV || !window.AudioSaw) { console.error('AudioSaw: script order broken'); return; }
@@ -388,7 +396,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
     var threshold = parseFloat(threshSel.value);
     var target = targetSel.value;
-    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    var bitrate = bitrateSel.value;
     try {
       var f = files[0];
       CV.setStatus(statusEl, 'info', 'Decoding…');
@@ -405,16 +413,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       var newAb = await sliceBuffer(ab, edges.start, edges.end);
       CV.setProgress(progressBar, 70);
       var blob;
-      if (target === 'wav'){
-        blob = AudioSaw.audioBufferToWav(newAb);
-      } else {
-        CV.setStatus(statusEl, 'info', 'Encoding MP3…');
-        blob = await AudioSaw.audioBufferToMp3(newAb, bitrate, function(pct){
+      CV.setStatus(statusEl, 'info', 'Encoding…');
+      blob = await AudioSaw.encode(newAb, AudioSaw.resolveFormat(target, bitrate), {
+        bitrate: AudioSaw.bitrateOf(bitrate),
+        onProgress: function (pct) {
           CV.setProgress(progressBar, 70 + pct * 0.3);
-        });
-      }
+        }
+      });
       var base = AudioSaw.rename(f.name, target).replace(/\.[^.]+$/, '');
-      var finalName = base + '-trimmed.' + target;
+      var finalName = base + '-trimmed.' + AudioSaw.extFor(target);
       CV.downloadBlob(blob, finalName);
       CV.setStatus(statusEl, 'success', 'Done — '+finalName+' (cut '+trimmedSec.toFixed(2)+' s)');
       var row = document.createElement('div'); row.className='file-item';
@@ -435,6 +442,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   });
 })();
 </script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

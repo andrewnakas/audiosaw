@@ -88,7 +88,7 @@
     resultList.innerHTML = '';
 
     var fmt = (outFmt.value || 'mp3').toLowerCase();
-    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    var bitrate = bitrateSel.value;
     var targetAmp = dbToAmp(parseFloat(targetDb.value));
 
     var outputs = [];
@@ -114,13 +114,12 @@
         CV.setProgress(progressBar, ((i + 0.6) / files.length) * 100);
 
         var blob;
-        if (fmt === 'wav') {
-          blob = AudioSaw.audioBufferToWav(processed);
-        } else {
-          blob = await AudioSaw.audioBufferToMp3(processed, bitrate, function (pct) {
+        blob = await AudioSaw.encode(processed, AudioSaw.resolveFormat(fmt, bitrate), {
+          bitrate: AudioSaw.bitrateOf(bitrate),
+          onProgress: function (pct) {
             CV.setProgress(progressBar, ((i + 0.6 + (pct / 100) * 0.4) / files.length) * 100);
-          });
-        }
+          }
+        });
         outputs.push({ name: AudioSaw.rename(f.name, fmt), blob: blob, gainDb: gainDb });
       } catch (e) {
         failures.push({ name: f.name, error: e.message || String(e) });

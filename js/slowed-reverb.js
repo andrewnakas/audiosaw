@@ -9,9 +9,11 @@
  * exactly like changing the speed of a record. That is the whole sound of these
  * genres, and it is why this does not reuse the ffmpeg `atempo` path that
  * audio-speed.js uses for pitch-preserved stretching, or the `asetrate` +
- * `atempo` pair pitch-shifter.js uses to move pitch alone. Coupled speed is one
- * line of Web Audio (`playbackRate` on a buffer source) and needs no codec
- * download at all, so these pages run offline after first load.
+ * `atempo` pair pitch-shifter.js uses to move pitch alone. Coupled speed is a
+ * band-limited resample (AudioSaw.varispeed, js/resample.js) and needs no codec
+ * download at all, so these pages run offline after first load. It used to be
+ * `playbackRate` on a buffer source, which Chromium interpolates without a
+ * filter: nightcore's speed-up folded the top octave back down as aliasing.
  *
  * The reverb is a ConvolverNode driven by a synthesised impulse response rather
  * than a recorded one: a recorded IR would be another asset to host, and the
@@ -81,8 +83,17 @@
    *            than bass, so an undamped tail sounds like a metal tank.
    */
   function render(buffer, opts) {
+    var A = global.AudioSaw;
+    if (A && A.varispeed && opts.speed !== 1) {
+      return A.varispeed(buffer, opts.speed).then(function (sped) {
+        return renderAt(sped, opts, 1);
+      });
+    }
+    return renderAt(buffer, opts, opts.speed);
+  }
+
+  function renderAt(buffer, opts, speed) {
     var sr = buffer.sampleRate;
-    var speed = opts.speed;
     var seconds = opts.seconds == null ? 2.4 : opts.seconds;
     var mix = opts.mix == null ? 0.35 : opts.mix;
     var damp = opts.damp == null ? 4200 : opts.damp;

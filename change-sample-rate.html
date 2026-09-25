@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will resampling change how my audio sounds?","acceptedAnswer":{"@type":"Answer","text":"For typical music and voice, no audible difference. For very content-heavy material at very low target rates (e.g., music at 16 kHz), you'll hear loss of high frequencies — that's the point of going to 16 kHz. For 44.1 ↔ 48 ↔ 96, you'll hear nothing."}},{"@type":"Question","name":"Should I go up to 96 kHz from a 44.1 source?","acceptedAnswer":{"@type":"Answer","text":"It doesn't add quality (you can't invent samples you didn't record) but doesn't hurt either if a destination requires 96. Just makes the file bigger."}},{"@type":"Question","name":"Why does the file get smaller when I downsample?","acceptedAnswer":{"@type":"Answer","text":"Fewer samples per second = fewer bytes per second. A WAV at 22 kHz is half the size of a WAV at 44 kHz. Useful for archiving voice content where high frequencies don't matter."}},{"@type":"Question","name":"What's the right rate for an audiobook?","acceptedAnswer":{"@type":"Answer","text":"22.05 kHz mono is plenty for narration. Cuts file size by 75% versus 44.1 stereo with no audible loss for voice."}},{"@type":"Question","name":"What's the right rate for a podcast?","acceptedAnswer":{"@type":"Answer","text":"44.1 kHz stereo or mono. Most podcast hosts accept 44.1 / 48 either way; 44.1 is slightly more space-efficient."}},{"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. Resampling and re-encoding both run in your browser."}},{"@type":"Question","name":"What's the difference between 44.1 kHz and 48 kHz?","acceptedAnswer":{"@type":"Answer","text":"44.1 kHz is the audio CD standard (used by Spotify, Apple Music, Bandcamp). 48 kHz is the video / broadcast standard (used by YouTube, film, TV). The audio quality difference is inaudible; the standards exist for historical reasons. Convert when your destination wants one specifically."}},{"@type":"Question","name":"Will resampling reduce audio quality?","acceptedAnswer":{"@type":"Answer","text":"Done correctly (with an anti-aliasing low-pass filter, which we apply via the browser's OfflineAudioContext), the quality loss is negligible — well below human hearing thresholds. Going up (e.g., 44.1 → 96) is mathematically lossless. Going down (96 → 44.1) loses high frequencies above the new Nyquist limit, which are above 22 kHz anyway."}},{"@type":"Question","name":"Why does my 48 kHz audio play at the wrong speed in my 44.1 kHz DAW project?","acceptedAnswer":{"@type":"Answer","text":"Most modern DAWs auto-resample, but some don't, and some hardware playback drivers play 48 kHz files at 44.1 kHz speed (so they sound slower / lower pitched). Pre-converting to match your project sample rate fixes it permanently."}},{"@type":"Question","name":"Should I pick 44.1 or 48 for my project?","acceptedAnswer":{"@type":"Answer","text":"If the final delivery is music for streaming (Spotify, Bandcamp), 44.1. If it's audio for video (YouTube, film), 48. If you're not sure, 48 — it matches more downstream platforms and the only thing you lose is a tiny bit of file size."}},{"@type":"Question","name":"What about 96 kHz or 192 kHz?","acceptedAnswer":{"@type":"Answer","text":"High-res rates have headroom for processing (more samples to work with during mixing/mastering). For final delivery, 44.1 / 48 is the standard. Upsample only if a destination explicitly requires it."}},{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Resampling runs in your browser. The file never leaves your machine."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will resampling change how my audio sounds?","acceptedAnswer":{"@type":"Answer","text":"For typical music and voice, no audible difference. For very content-heavy material at very low target rates (e.g., music at 16 kHz), you'll hear loss of high frequencies — that's the point of going to 16 kHz. For 44.1 ↔ 48 ↔ 96, you'll hear nothing."}},{"@type":"Question","name":"Should I go up to 96 kHz from a 44.1 source?","acceptedAnswer":{"@type":"Answer","text":"It doesn't add quality (you can't invent samples you didn't record) but doesn't hurt either if a destination requires 96. Just makes the file bigger."}},{"@type":"Question","name":"Why does the file get smaller when I downsample?","acceptedAnswer":{"@type":"Answer","text":"Fewer samples per second = fewer bytes per second. A WAV at 22 kHz is half the size of a WAV at 44 kHz. Useful for archiving voice content where high frequencies don't matter."}},{"@type":"Question","name":"What's the right rate for an audiobook?","acceptedAnswer":{"@type":"Answer","text":"22.05 kHz mono is plenty for narration. Cuts file size by 75% versus 44.1 stereo with no audible loss for voice."}},{"@type":"Question","name":"What's the right rate for a podcast?","acceptedAnswer":{"@type":"Answer","text":"44.1 kHz stereo or mono. Most podcast hosts accept 44.1 / 48 either way; 44.1 is slightly more space-efficient."}},{"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. Resampling and re-encoding both run in your browser."}},{"@type":"Question","name":"What's the difference between 44.1 kHz and 48 kHz?","acceptedAnswer":{"@type":"Answer","text":"44.1 kHz is the audio CD standard (used by Spotify, Apple Music, Bandcamp). 48 kHz is the video / broadcast standard (used by YouTube, film, TV). The audio quality difference is inaudible; the standards exist for historical reasons. Convert when your destination wants one specifically."}},{"@type":"Question","name":"Will resampling reduce audio quality?","acceptedAnswer":{"@type":"Answer","text":"Done correctly, with a proper anti-aliasing filter, the loss is negligible. Ours keeps the band flat to 20 kHz within 0.0001 dB and holds aliasing more than 120 dB down. Going up (e.g., 44.1 → 96) is mathematically lossless. Going down (96 → 44.1) loses high frequencies above the new Nyquist limit, which are above 22 kHz anyway."}},{"@type":"Question","name":"Why does my 48 kHz audio play at the wrong speed in my 44.1 kHz DAW project?","acceptedAnswer":{"@type":"Answer","text":"Most modern DAWs auto-resample, but some don't, and some hardware playback drivers play 48 kHz files at 44.1 kHz speed (so they sound slower / lower pitched). Pre-converting to match your project sample rate fixes it permanently."}},{"@type":"Question","name":"Should I pick 44.1 or 48 for my project?","acceptedAnswer":{"@type":"Answer","text":"If the final delivery is music for streaming (Spotify, Bandcamp), 44.1. If it's audio for video (YouTube, film), 48. If you're not sure, 48 — it matches more downstream platforms and the only thing you lose is a tiny bit of file size."}},{"@type":"Question","name":"What about 96 kHz or 192 kHz?","acceptedAnswer":{"@type":"Answer","text":"High-res rates have headroom for processing (more samples to work with during mixing/mastering). For final delivery, 44.1 / 48 is the standard. Upsample only if a destination explicitly requires it."}},{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Resampling runs in your browser. The file never leaves your machine."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -122,8 +122,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         </label>
         <label>Output format
           <select id="targetFormat">
-            <option value="wav" selected>WAV (lossless)</option>
-            <option value="mp3">MP3 (smaller)</option>
+            <option value="mp3">MP3</option>
+            <option value="wav" selected>WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
           </select>
         </label>
         <label id="bitrateLabel" style="display:none">MP3 bitrate
@@ -132,6 +138,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
             <option value="192" selected>192 kbps</option>
             <option value="256">256 kbps</option>
             <option value="320">320 kbps</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
           </select>
         </label>
       </div>
@@ -170,7 +178,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     </ul>
 
     <h2>What we do under the hood</h2>
-    <p>We decode the file using the browser's audio engine, then resample through an OfflineAudioContext at the target rate. The Web Audio API uses a high-quality polyphase filter for resampling — better than naive linear interpolation. The output is then re-encoded as either WAV (lossless) or MP3 (lossy but smaller).</p>
+    <p>We decode the file at its own sample rate, then resample it with a windowed-sinc converter (a Kaiser-windowed polyphase filter, 120 dB stopband) written for this site. Measured going 96 to 48 kHz: flat to within 0.0001 dB up to 20 kHz, and a 30 kHz tone that would fold back to 18 kHz comes out more than 140 dB down. We do not use the browser's own conversion. In Chrome, playing a 96 kHz buffer into a 48 kHz context takes every other sample with no filter, and that same 30 kHz tone comes out at 18 kHz at full level. The output is then written as WAV (16-bit, 24-bit or 32-bit float), FLAC or MP3. 16- and 24-bit get triangular dither.</p>
   </section>
 
   <section class="faq">
@@ -183,7 +191,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>What's the right rate for a podcast?</summary><p>44.1 kHz stereo or mono. Most podcast hosts accept 44.1 / 48 either way; 44.1 is slightly more space-efficient.</p></details>
       <details><summary>Does anything upload?</summary><p>No. Resampling and re-encoding both run in your browser.</p></details>
       <details><summary>What's the difference between 44.1 kHz and 48 kHz?</summary><p>44.1 kHz is the audio CD standard (used by Spotify, Apple Music, Bandcamp). 48 kHz is the video / broadcast standard (used by YouTube, film, TV). The audio quality difference is inaudible; the standards exist for historical reasons. Convert when your destination wants one specifically.</p></details>
-      <details><summary>Will resampling reduce audio quality?</summary><p>Done correctly (with an anti-aliasing low-pass filter, which we apply via the browser's OfflineAudioContext), the quality loss is negligible — well below human hearing thresholds. Going up (e.g., 44.1 → 96) is mathematically lossless. Going down (96 → 44.1) loses high frequencies above the new Nyquist limit, which are above 22 kHz anyway.</p></details>
+      <details><summary>Will resampling reduce audio quality?</summary><p>Done correctly, with a proper anti-aliasing filter, the loss is negligible. Ours keeps the band flat to 20 kHz within 0.0001 dB and holds aliasing more than 120 dB down. Going up (e.g., 44.1 → 96) is mathematically lossless. Going down (96 → 44.1) loses high frequencies above the new Nyquist limit, which are above 22 kHz anyway.</p></details>
       <details><summary>Why does my 48 kHz audio play at the wrong speed in my 44.1 kHz DAW project?</summary><p>Most modern DAWs auto-resample, but some don't, and some hardware playback drivers play 48 kHz files at 44.1 kHz speed (so they sound slower / lower pitched). Pre-converting to match your project sample rate fixes it permanently.</p></details>
       <details><summary>Should I pick 44.1 or 48 for my project?</summary><p>If the final delivery is music for streaming (Spotify, Bandcamp), 44.1. If it's audio for video (YouTube, film), 48. If you're not sure, 48 — it matches more downstream platforms and the only thing you lose is a tiny bit of file size.</p></details>
       <details><summary>What about 96 kHz or 192 kHz?</summary><p>High-res rates have headroom for processing (more samples to work with during mixing/mastering). For final delivery, 44.1 / 48 is the standard. Upsample only if a destination explicitly requires it.</p></details>
@@ -312,11 +320,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
 <script>
 (function(){
   if (!window.CV || !window.AudioSaw) { console.error('AudioSaw: script order broken'); return; }
@@ -357,7 +365,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     progressWrap.style.display=''; CV.setProgress(progressBar, 0); resultList.innerHTML='';
     var sr = parseInt(srSel.value, 10);
     var target = targetSel.value;
-    var bitrate = parseInt(bitrateSel.value, 10) || 192;
+    var bitrate = bitrateSel.value;
     var options = { sampleRate: sr };
     if (target === 'mp3') options.bitrate = bitrate;
     var outputs = [], failures = [];
@@ -403,6 +411,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   });
 })();
 </script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>

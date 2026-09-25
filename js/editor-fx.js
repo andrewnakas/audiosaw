@@ -96,7 +96,7 @@
     }).then(function (pack) {
       var ff = pack.ffmpeg, stamp = Date.now();
       var inName = 'ed_in_' + stamp + '.wav', outName = 'ed_out_' + stamp + '.wav';
-      var wav = global.AudioSaw.audioBufferToWav(buf);
+      var wav = global.AudioSaw.floatWav(buf);   // float in, float out: nothing quantised
       function prog(e) { if (onProgress && e && e.progress != null) onProgress(55 + Math.min(40, e.progress * 40), 'Processing…'); }
       return wav.arrayBuffer().then(function (ab) {
         return ff.writeFile(inName, new Uint8Array(ab));

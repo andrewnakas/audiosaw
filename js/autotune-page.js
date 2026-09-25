@@ -55,7 +55,7 @@
         strength: parseFloat($('#strength').value),
         retuneSec: parseFloat($('#retune').value),
         format: $('#outFormat').value,
-        bitrate: parseInt($('#bitrate').value, 10) || 256
+        bitrate: $('#bitrate').value || 256
       };
     },
     outName: function (name, opts) { return AudioSaw.rename(name, opts.format); },
@@ -122,7 +122,7 @@
   });
 
   var fmtSel = $('#outFormat'), brWrap = $('#bitrateWrap');
-  function sync() { if (brWrap) brWrap.style.display = fmtSel.value === 'wav' ? 'none' : ''; }
+  function sync() { if (brWrap) brWrap.style.display = fmtSel.value !== 'mp3' ? 'none' : ''; }
   if (fmtSel) { fmtSel.addEventListener('change', sync); sync(); }
 
   // Scale choice is meaningless for chromatic; say so rather than leaving a

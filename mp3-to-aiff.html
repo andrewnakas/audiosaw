@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much bigger will the AIFF be?","acceptedAnswer":{"@type":"Answer","text":"Roughly 10× the MP3 size — same scale as WAV. A 5 MB MP3 becomes a ~50 MB AIFF."}},{"@type":"Question","name":"Why is AIFF bigger if it doesn't sound better?","acceptedAnswer":{"@type":"Answer","text":"It's uncompressed. MP3 throws away audio data to be small. Converting to AIFF just unpacks the (now-permanently-degraded) audio into an uncompressed container."}},{"@type":"Question","name":"What about 24-bit AIFF?","acceptedAnswer":{"@type":"Answer","text":"We output 16-bit, which is the standard for music delivery. 24-bit is useful during mixing but unnecessary for finished tracks. For 24-bit specifically, contact us — we'll add the option."}},{"@type":"Question","name":"Can I convert AIFF back to MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes — use our universal converter or WAV → MP3 page (it accepts AIFF too)."}},{"@type":"Question","name":"Will GarageBand on iPad / iOS read this AIFF?","acceptedAnswer":{"@type":"Answer","text":"Yes. iOS GarageBand reads AIFF from Files. Drag it from the Files app into the Tracks view."}},{"@type":"Question","name":"Does it upload?","acceptedAnswer":{"@type":"Answer","text":"No. Conversion runs in your browser."}},{"@type":"Question","name":"Will the AIFF be higher quality than the MP3?","acceptedAnswer":{"@type":"Answer","text":"No. MP3 is lossy compression — the data thrown away during MP3 encoding is gone permanently. Converting to AIFF makes the file uncompressed (larger), but the audio quality is identical to the source MP3. AIFF is useful for the format compatibility, not for restoring quality."}},{"@type":"Question","name":"What's the difference between AIFF and WAV?","acceptedAnswer":{"@type":"Answer","text":"Both are uncompressed PCM audio containers, both lossless, both about the same file size. WAV uses little-endian byte order (Intel/Windows native), AIFF uses big-endian (older Mac native). For all practical purposes in 2026, they're interchangeable — both open in Pro Tools, Logic, Reaper, Ableton, etc."}},{"@type":"Question","name":"Should I use this or convert to WAV?","acceptedAnswer":{"@type":"Answer","text":"If you're working in Logic Pro or GarageBand and want native-feeling files, AIFF. If your project mixes Mac and PC contributors, WAV. They're functionally identical otherwise."}},{"@type":"Question","name":"Can it batch a folder?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple MP3s, get a zip of AIFF files back. Useful for converting a whole album for Apple Music's GarageBand import."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much bigger will the AIFF be?","acceptedAnswer":{"@type":"Answer","text":"Roughly 10× the MP3 size — same scale as WAV. A 5 MB MP3 becomes a ~50 MB AIFF."}},{"@type":"Question","name":"Why is AIFF bigger if it doesn't sound better?","acceptedAnswer":{"@type":"Answer","text":"It's uncompressed. MP3 throws away audio data to be small. Converting to AIFF just unpacks the (now-permanently-degraded) audio into an uncompressed container."}},{"@type":"Question","name":"What about 24-bit AIFF?","acceptedAnswer":{"@type":"Answer","text":"Pick 24-bit in the bit depth menu. From an MP3 it holds nothing the 16-bit file does not, but it saves a conversion if your Logic session runs at 24-bit. A 24-bit WAV or FLAC dropped here stays 24-bit by default."}},{"@type":"Question","name":"Can I convert AIFF back to MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes — use our universal converter or WAV → MP3 page (it accepts AIFF too)."}},{"@type":"Question","name":"Will GarageBand on iPad / iOS read this AIFF?","acceptedAnswer":{"@type":"Answer","text":"Yes. iOS GarageBand reads AIFF from Files. Drag it from the Files app into the Tracks view."}},{"@type":"Question","name":"Does it upload?","acceptedAnswer":{"@type":"Answer","text":"No. Conversion runs in your browser."}},{"@type":"Question","name":"Will the AIFF be higher quality than the MP3?","acceptedAnswer":{"@type":"Answer","text":"No. MP3 is lossy compression — the data thrown away during MP3 encoding is gone permanently. Converting to AIFF makes the file uncompressed (larger), but the audio quality is identical to the source MP3. AIFF is useful for the format compatibility, not for restoring quality."}},{"@type":"Question","name":"What's the difference between AIFF and WAV?","acceptedAnswer":{"@type":"Answer","text":"Both are uncompressed PCM audio containers, both lossless, both about the same file size. WAV uses little-endian byte order (Intel/Windows native), AIFF uses big-endian (older Mac native). For all practical purposes in 2026, they're interchangeable — both open in Pro Tools, Logic, Reaper, Ableton, etc."}},{"@type":"Question","name":"Should I use this or convert to WAV?","acceptedAnswer":{"@type":"Answer","text":"If you're working in Logic Pro or GarageBand and want native-feeling files, AIFF. If your project mixes Mac and PC contributors, WAV. They're functionally identical otherwise."}},{"@type":"Question","name":"Can it batch a folder?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop multiple MP3s, get a zip of AIFF files back. Useful for converting a whole album for Apple Music's GarageBand import."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -91,7 +91,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <main class="container">
   <section class="page-intro">
     <h1>MP3 to <span class="ital">AIFF</span>. Apple-native for Logic, GarageBand, Final Cut.</h1>
-    <p>AIFF is what Logic and GarageBand prefer when you drag music in from outside a project. WAV works too, but AIFF is the older native format and some Apple Loops / Final Cut workflows behave better with it. Drop your MP3, get a 16-bit AIFF back. Same audio, different container.</p>
+    <p>AIFF is what Logic and GarageBand prefer when you drag music in from outside a project. WAV works too, but AIFF is the older native format and some Apple Loops / Final Cut workflows behave better with it. Drop your MP3, get an AIFF back: 16-bit by default, 24-bit if your session wants it. Same audio, different container.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -107,11 +107,20 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <div class="file-list" id="fileList"></div>
 
     <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Bit depth
+          <select id="depth">
+            <option value="" selected>Match the source (16 or 24-bit)</option>
+            <option value="16">16-bit</option>
+            <option value="24">24-bit</option>
+          </select>
+        </label>
+      </div>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Convert to AIFF</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
-      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output: 16-bit PCM AIFF, original sample rate and channels preserved.</p>
+      <p style="color:var(--ink-soft);font-size:.92rem;margin-top:8px">Output: PCM AIFF, 16-bit by default or 24-bit from the menu, original sample rate and channels preserved.</p>
     </div>
 
     <div class="status hidden" id="status"></div>
@@ -151,7 +160,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>Converting to AIFF resolves all of that into a plain array of samples, so an edit lands exactly where you put it and a loop is seamless. If you have ever lined up an MP3 loop in Logic and found it drifting slightly, that padding is the reason.</p>
 
     <h3>Bit depth and sample rate</h3>
-    <p>The output is 16-bit at the source's own sample rate — no resampling, because resampling an already lossy file adds a second unnecessary transformation. 16-bit is the right choice here: the source is an MP3, its noise floor is far above the point where 24-bit would matter, and the extra depth would only make the file half again as large. If your project runs at 24-bit, your DAW will convert on import without complaint.</p>
+    <p>By default the output is 16-bit at the source's own sample rate — no resampling, because resampling an already lossy file adds a second unnecessary transformation. 16-bit is the right choice here: the source is an MP3, its noise floor is far above the point where 24-bit would matter, and the extra depth would only make the file half again as large. If your project runs at 24-bit, your DAW will convert on import without complaint.</p>
   </section>
 
   <section class="faq">
@@ -159,7 +168,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <!-- AS:faq -->
       <details><summary>How much bigger will the AIFF be?</summary><p>Roughly 10× the MP3 size — same scale as WAV. A 5 MB MP3 becomes a ~50 MB AIFF.</p></details>
       <details><summary>Why is AIFF bigger if it doesn't sound better?</summary><p>It's uncompressed. MP3 throws away audio data to be small. Converting to AIFF just unpacks the (now-permanently-degraded) audio into an uncompressed container.</p></details>
-      <details><summary>What about 24-bit AIFF?</summary><p>We output 16-bit, which is the standard for music delivery. 24-bit is useful during mixing but unnecessary for finished tracks. For 24-bit specifically, contact us — we'll add the option.</p></details>
+      <details><summary>What about 24-bit AIFF?</summary><p>Pick 24-bit in the bit depth menu. From an MP3 it holds nothing the 16-bit file does not, but it saves a conversion if your Logic session runs at 24-bit. A 24-bit WAV or FLAC dropped here stays 24-bit by default.</p></details>
       <details><summary>Can I convert AIFF back to MP3?</summary><p>Yes — use our universal converter or <a href="/wav-to-mp3">WAV → MP3</a> page (it accepts AIFF too).</p></details>
       <details><summary>Will GarageBand on iPad / iOS read this AIFF?</summary><p>Yes. iOS GarageBand reads AIFF from Files. Drag it from the Files app into the Tracks view.</p></details>
       <details><summary>Does it upload?</summary><p>No. Conversion runs in your browser.</p></details>
@@ -291,12 +300,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'aiff', accept: ['.mp3','.wav','.m4a','.aac','.flac','.ogg','.opus'] };</script>
-<script src="/js/common.js?v=2026-09-24a"></script>
-<script src="/js/tool-graph.js?v=2026-09-24a"></script>
-<script src="/js/flow.js?v=2026-09-24a"></script>
-<script src="/js/audio-core.js?v=2026-09-24a"></script>
-<script src="/js/tool-converter.js?v=2026-09-24a"></script>
-<script src="/js/consent.js?v=2026-09-24a"></script>
-<script src="/js/pwa.js?v=2026-09-24a"></script>
+<script src="/js/common.js?v=2026-09-25a"></script>
+<script src="/js/tool-graph.js?v=2026-09-25a"></script>
+<script src="/js/flow.js?v=2026-09-25a"></script>
+<script src="/js/audio-core.js?v=2026-09-25a"></script>
+<script src="/js/tool-converter.js?v=2026-09-25a"></script>
+<script src="/js/consent.js?v=2026-09-25a"></script>
+<script src="/js/pwa.js?v=2026-09-25a"></script>
 </body>
 </html>
