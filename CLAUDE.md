@@ -156,8 +156,13 @@ carrying a separate tone per channel, not because the coefficient tables say
   all 72 must read right. It also *reports* the natural-minor pop loop
   (Am–F–C–G). That loop reads as the relative major in 12 of 12 keys, with the
   minor as runner-up in 11. It is inherently ambiguous, so the page always
-  shows the runner-up. Do not quote a real-music accuracy figure we have not
-  measured.
+  shows the runner-up. The one real-music figure is
+  `node tools/measure-key-real.js` (network + ffmpeg, not in check-all):
+  Bach WTC Book 1, 48 CC0 piano recordings, key from the title. 41/48, the
+  runner-up right in 6 of the 7 misses, "clear" readings 35/36. Misses were
+  fifths and parallel mode, not relative. Only inner-movement-free pieces
+  work as truth: a sonata's slow movement is usually in another key. There
+  is still no real-music figure for chords or downbeats.
 - `ASKey.chords` + `js/chord-page.js`: `/chord-finder` and the editor's
   "Detect chords", which stores `source.chords` in source time and draws them
   in a strip at the bottom of the clip.
@@ -171,17 +176,31 @@ carrying a separate tone per channel, not because the coefficient tables say
     0.3 of the note a fifth below, compares with the third (the voice the
     bass does not feed), and needs the seventh 1.5x any other non-chord
     note, which is what keeps a melody's passing notes out.
+  - **Inversions.** A bass note's overtones spell a chord (an E bass brings
+    B and G#: Em), which is why C/E read as Em. Each frame's lowest strong
+    note is its bass (`fr.bass`); `fr.alt` is the chroma with that note's
+    3rd, 5th and 6th harmonics at 0.3. After merging, a chord is re-scored
+    on `alt`, and switched only if the new chord has the bass as its third
+    or fifth. It has to be per merged chord: per beat, passing notes made a
+    root-position C read as Am/C, and no margin separated those (161 right
+    switches, 6 wrong over five seeds, all under a melody). Ducking the
+    overtones globally instead wrecked root-position chords, because upper
+    voices sit on the bass's overtones. The name gets `/E` when the bass is
+    the third or fifth.
   - **Checked by** `tools/check-chords.js`, which requires ≥90% on random
     progressions (clean, band, melody) and measured 100%. Sevenths: the
     triad must be right ≥90% (100%) and the whole chord ≥80% (91.7%), and
     plain triads may be given a seventh ≤5% of the time (1.8%). On four
-    other seeds: 85–95% and ≤1.6%. It reports slash chords (third in the
-    bass) at 74%, and caps drums-only at 0.8 s of 8 named. That cap holds
-    on the committed seed only; seeds 101, 2024 and 77777 give 1.0–1.5 s.
-  - **Drums.** Three things keep drums from being named as chords: the
-    0.7 score floor, the 100 Hz analysis floor, and the rule that the root
-    and third are present. A kick's falling pitch otherwise reads as a
-    chord.
+    other seeds: 85–95% and ≤1.6%. Slash chords (third in the bass): the
+    chord ≥90% (98.3%), named with its bass ≥80% (97.8%), and a slash on a
+    root-position chord ≤5% (0.2%); other seeds 95–99.6%. The melody set
+    measures 99.5% (94.4% on seed 3); the inversion switch is what costs
+    it. Drums alone are tested on eight seeds, capped at 0.8 s (measure 0).
+  - **Drums.** Four things keep drums from being named as chords: the
+    0.7 score floor, the 100 Hz analysis floor, the rule that the root
+    and third are present, and `IN_TUNE`: at least 0.7 of a segment's peak
+    weight near a semitone (real chords ≥0.82 at p5, drums ≤0.63). The
+    score floor alone let drums through at 0.70–0.76 on some seeds.
 - `js/slicer.js` (`ASSlicer`) + `js/slicer-page.js`: `/sample-slicer`, and
   the editor's "Slice at the hits". Onsets are band flux (24 log bands,
   2048/512 frames) against 1.8x the local median, with a 12%-of-peak floor
@@ -377,6 +396,47 @@ carrying a separate tone per channel, not because the coefficient tables say
     which is what loop recording cuts the takes by. Restarting the graph at
     the end, as it used to, left about 0.1 s of silence. check-grid step 7
     asserts the passes are exactly one bar apart and nothing was late.
+
+- **MIDI in the editor.** `js/midi-read.js` (`ASMidiRead`, SMF reader),
+  `js/editor-synth.js` (`ASEditSynth`, the instruments) and
+  `js/editor-midi.js` (`ASEditMidi`: import, note editor, instrument,
+  .mid download, bounce, audio-to-MIDI, new clip).
+  - **A MIDI clip is an ordinary clip** on a source with `kind: 'midi'` and
+    `notes: [[midi, start, dur, vel]]` in source time, kept in the project
+    JSON (`M.packNotes`, `M.clipNotes`). So trim, split, move, carve,
+    ripple, takes and loop need nothing new. A note that begins before a
+    clip's offset is not re-struck (split mid-note: the right half is
+    silent until its next note). Editing notes writes a new source.
+    `track.inst` picks the instrument; unset means keys, or drums for a
+    channel-10 part.
+  - **The engine** schedules each note as a few oscillator/filter/gain
+    nodes into one gain per clip (clip gain and fades), in at -3 dB like a
+    mono clip. No worklet, so export equals playback. `E.previewNotes` is
+    the note editor's Play.
+  - **Notes are built just ahead of when they sound** (`feedMidi`): 1 s
+    ahead from `pump()` live (2.5 s in a hidden tab), and from suspends
+    every second in `render()`, and each note's chain is disconnected
+    when its sources end. Building every note up front made a 3-minute,
+    5,000-note part take 5.6 minutes to export (13 under load); now 6.7 s,
+    and Play starts in 97 ms instead of 481. check-midi-track step 8 needs
+    a 1,700-note minute to export faster than real time (measures ~2 s).
+    `render()` keeps one suspend per time for both this and fx lanes;
+    two suspends at the same time throw.
+  - **Audio-only paths** refuse a MIDI clip with "Bounce to audio first"
+    (`refuseMidi` in editor-ui: Process, Send to a tool), the MIDI clip
+    menu leaves them out, and tempo/key detection reads audio clips only.
+    The store writes no file for a MIDI source.
+  - **Checked by** `tools/check-midi.js` (the reader: tempo map, running
+    status, velocity-0 offs, sysex, hung notes, drums, sustain pedal,
+    truncated files) and `tools/check-midi-track.js` (headless Chrome:
+    import, live play, export pitch within 17 cents (measured 2.4),
+    every instrument at 440 Hz, drum spectra, project files, bounce
+    within 5 cents and 0.5 dB with undo, audio to MIDI, the note editor).
+    A headless AudioContext only runs after real input, so that check
+    clicks with CDP before pressing Play.
+  - **Known gaps:** notes are in seconds, so a tempo change does not move
+    them; pitch bend and controllers other than the pedal are dropped;
+    no velocity lane; the voices are simple synths, not samples.
 
 - `js/project-link.js` + `js/editor-link.js` — the project that follows you
   onto tool pages. "Send to a tool…" on a clip in `/audio-editor` hands it to a

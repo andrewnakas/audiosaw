@@ -154,5 +154,52 @@ console.log('\nempty input');
 const emptyParsed = parseMidi(M.build([], { bpm: 120 }));
 check('valid file with no notes', emptyParsed.notes.length === 0);
 
+/* ------------------------------------------- js/midi-read.js, for the editor */
+// The editor's reader has to take files other programs wrote, so it is fed a
+// type 1 file built by hand here, byte by byte, with the things real files do.
+const R = require(path.join(__dirname, '..', 'js', 'midi-read.js'));
+console.log('\nmidi-read.js: our own files');
+const back = R.parse(bytes);
+check('reads what midi-write.js writes, note for note', back.parts.length === 1 && back.parts[0].notes.length === parsed.notes.length &&
+  back.parts[0].notes.every((n, k) => n.midi === parsed.notes[k].midi && Math.abs(n.start - parsed.notes[k].start) < 1e-6 && Math.abs(n.duration - parsed.notes[k].duration) < 1e-6));
+
+console.log('\nmidi-read.js: a type 1 file from elsewhere');
+{
+  const v = (n) => M.vlq(n);
+  const chunk = (id, body) => [...id].map((c) => c.charCodeAt(0)).concat([(body.length >>> 24) & 255, (body.length >>> 16) & 255, (body.length >>> 8) & 255, body.length & 255], body);
+  // Track 0: 120 BPM, 4/4... then 60 BPM from beat 2 (tick 960 at 480 ppq).
+  const t0 = [].concat(v(0), [0xff, 0x51, 3, 0x07, 0xa1, 0x20], v(0), [0xff, 0x58, 4, 3, 2, 24, 8],
+    v(960), [0xff, 0x51, 3, 0x0f, 0x42, 0x40], v(0), [0xff, 0x2f, 0]);
+  // Track 1, "Piano": program change, a sysex, running status, note-on with
+  // velocity 0 as the off, the same pitch struck again while sounding, and
+  // a note left on at the end.
+  const t1 = [].concat(v(0), [0xff, 0x03, 5], [...'Piano'].map((c) => c.charCodeAt(0)),
+    v(0), [0xc0, 0], v(0), [0xf0, 3, 0x7e, 0x09, 0xf7],
+    v(0), [0x90, 60, 100], v(480), [60, 0],            // C4: beat 0-1 at 120 = 0-0.5 s
+    v(0), [64, 90], v(960), [64, 0],                   // E4: tick 480-1440, across the tempo change: 0.5-2.0 s
+    v(0), [67, 80], v(240), [67, 70], v(240), [0x80, 67, 0],   // G4 struck twice; the second ends the first
+    v(0), [0x90, 72, 64], v(480), [0xff, 0x2f, 0]);    // C5 never turned off
+  // Track 2: drums on channel 10.
+  const t2 = [].concat(v(0), [0x99, 36, 110], v(120), [0x89, 36, 0], v(0), [0xff, 0x2f, 0]);
+  const file = new Uint8Array([].concat(chunk('MThd', [0, 1, 0, 3, 0x01, 0xe0]), chunk('MTrk', t0), chunk('MTrk', t1), chunk('MTrk', t2)));
+  const r = R.parse(file);
+  const piano = r.parts.find((p) => p.name === 'Piano'), drums = r.parts.find((p) => p.drums);
+  check('tempo and time signature read', Math.abs(r.bpm - 120) < 1e-9 && r.sig && r.sig.join('/') === '3/4', r.bpm + ' BPM, ' + (r.sig && r.sig.join('/')));
+  check('the named track and the drum channel are separate parts', !!piano && !!drums && r.parts.length === 2, r.parts.map((p) => p.name).join(', '));
+  const want = [[60, 0, 0.5], [64, 0.5, 1.5], [67, 2, 0.5], [67, 2.5, 0.5], [72, 3, 1]];   // 480 ticks = 0.5 s before tick 960, 1 s after
+  const got = piano ? piano.notes.map((n) => [n.midi, +n.start.toFixed(6), +n.duration.toFixed(6)]) : [];
+  check('ticks become seconds through the tempo change', JSON.stringify(got) === JSON.stringify(want), JSON.stringify(got));
+  check('running status, velocity-0 offs and a sysex are read', piano && piano.notes[0].velocity === 100 && piano.program === 0);
+  check('drums on channel 10 are marked', drums && drums.notes.length === 1 && drums.notes[0].midi === 36 && Math.abs(drums.notes[0].duration - 0.125) < 1e-9);
+  // The sustain pedal: C4 released under the pedal sounds until it lifts.
+  const t3 = [].concat(v(0), [0xb0, 64, 127], v(0), [0x90, 60, 90], v(240), [0x80, 60, 0], v(720), [0xb0, 64, 0], v(0), [0xff, 0x2f, 0]);
+  const ped = R.parse(new Uint8Array([].concat(chunk('MThd', [0, 1, 0, 1, 0x01, 0xe0]), chunk('MTrk', t3))));
+  check('a note released under the sustain pedal lasts until the pedal lifts', ped.parts[0].notes.length === 1 && Math.abs(ped.parts[0].notes[0].duration - 1) < 1e-9, ped.parts[0].notes[0].duration + ' s');
+  let threw = false; try { R.parse(new Uint8Array([0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1])); } catch (e) { threw = true; }
+  check('a file cut short is refused, not half read', threw);
+  threw = false; try { R.parse(new TextEncoder().encode('RIFF....WAVE')); } catch (e) { threw = /not a MIDI/.test(e.message); }
+  check('a WAV is refused as not MIDI', threw);
+}
+
 console.log(failures ? `\n${failures} check(s) failed` : '\nall checks passed');
 process.exit(failures ? 1 : 0);

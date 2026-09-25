@@ -609,6 +609,38 @@ function fixture() {
   }
 }
 
+/* ---------------------------------------------------------------- MIDI */
+{
+  const p = M.create('midi');
+  const notes = [];
+  for (let k = 0; k < 8; k++) notes.push({ midi: 60 + k, start: k * 0.5, duration: 0.4, velocity: 70 + k });
+  const s = M.addSource(p, { kind: 'midi', name: 'riff', notes: notes.concat([{ midi: 200, start: 1, duration: 1 }, { midi: 61, start: 1, duration: 0 }]) });
+  ok(p.sources[s].notes.length === 8, 'notes out of range or of no length are dropped');
+  near(p.sources[s].duration, 3.9, 1e-9, 'a MIDI source lasts until its last note ends');
+  const t = M.addTrack(p), t2 = M.addTrack(p);
+  M.setTrack(p, t, { inst: 'pad' });
+  ok(p.tracks[0].inst === 'pad', 'a track keeps its instrument');
+  const c = M.addClip(p, t, { sourceId: s, start: 1 });
+  valid(p, 'a project with a MIDI clip');
+  const h = new M.History(), before = M.serialize(p);
+  h.push(before);
+  const right = M.splitAt(p, 2.25, [c])[0];
+  const L = M.clipNotes(p, M.findClip(p, c).clip), R = M.clipNotes(p, M.findClip(p, right).clip);
+  ok(L.length === 3 && R.length === 5, 'a split gives each half the notes that start in it (' + L.length + ' + ' + R.length + ')');
+  ok(Math.abs(L[2].start - 2) < 1e-9 && Math.abs(L[2].duration - 0.25) < 1e-9, 'a note running over the split is cut at it, not struck again');
+  ok(Math.abs(R[0].start - 2.5) < 1e-9 && R[0].midi === 63, 'the right half plays on in time');
+  M.moveClips(p, [right], 1, 1);
+  ok(M.clipNotes(p, M.findClip(p, right).clip)[0].start === 3.5, 'a moved MIDI clip plays its notes at the new time');
+  M.trimEnd(p, c, 1.7);
+  ok(M.clipNotes(p, M.findClip(p, c).clip).length === 2, 'trimming a MIDI clip drops the notes past its end');
+  valid(p, 'after editing MIDI clips');
+  ok(h.undo(M.serialize(p)) === before, 'MIDI edits undo byte for byte');
+  const s2 = M.addSource(p, { kind: 'midi', name: 'riff', notes: M.notesOf(p.sources[s]).map((n) => Object.assign(n, { midi: n.midi + 12 })) });
+  ok(p.sources[s].notes[0][0] === 60 && p.sources[s2].notes[0][0] === 72, 'an edit writes a new source and leaves the old one alone');
+  const bad = JSON.parse(M.serialize(p)); bad.sources[s].notes[2][2] = -1;
+  ok(M.validate(bad).some((e) => /bad note/.test(e)), 'validate catches a broken note');
+}
+
 if (failures) {
   console.error('check-editor: ' + failures + ' failure(s).');
   process.exit(1);

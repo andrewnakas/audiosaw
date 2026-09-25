@@ -14,6 +14,8 @@
  *   melody   plus a melody line that mixes chord tones with passing notes
  *            from the chord's own scale, a quarter of a beat each
  *
+ * and two more sets for sevenths and slash chords (the third in the bass).
+ *
  * Accuracy is the share of time labelled with the right chord, measured every
  * 50 ms, ignoring 0.25 s either side of each real change, since no detector
  * can know a chord has changed before the new one has sounded.
@@ -118,7 +120,7 @@ function falseSevenths(truth, got) {
 }
 
 const fails = [], lines = [];
-let fsBad = 0, fsNamed = 0;
+let fsBad = 0, fsNamed = 0, slashBad = 0, slashNamed = 0;
 for (const variant of ['clean', 'band', 'melody']) {
   let sum = 0, worst = 1;
   for (let k = 0; k < 12; k++) {
@@ -127,6 +129,7 @@ for (const variant of ['clean', 'band', 'melody']) {
     const a = accuracy(p.chords, got, p.dur);
     sum += a; worst = Math.min(worst, a);
     const f = falseSevenths(p.chords, got); fsBad += f.bad; fsNamed += f.named;
+    got.forEach((c) => { if (c.quality === 'N') return; slashNamed += c.t1 - c.t0; if (c.bass >= 0) slashBad += c.t1 - c.t0; });
   }
   const mean = sum / 12;
   lines.push(variant + ': ' + (mean * 100).toFixed(1) + '% of the time right (worst progression ' + (worst * 100).toFixed(1) + '%)');
@@ -146,26 +149,52 @@ for (const variant of ['clean', 'band', 'melody']) {
   lines.push('triads given a seventh they do not have: ' + (fsBad / fsNamed * 100).toFixed(1) + '% of the named time');
   if (fsBad / fsNamed > 0.05) fails.push('plain triads named as sevenths ' + (fsBad / fsNamed * 100).toFixed(1) + '% of the time, allowed 5%');
 }
-// Reported, not required.
+// Slash chords: the third in the bass (C/E). A bass note's own overtones
+// spell another chord (an E bass brings B and G#: E minor), which is what
+// pulled these to 74% before the inversion check. Required: the chord right
+// 90% of the time and the bass named with it (C/E) 80%; and on the plain
+// sets, a slash named at most 5% of the time, since their bass is the root.
 {
-  let sum = 0;
-  for (let k = 0; k < 12; k++) { const p = progression('slash'); sum += accuracy(p.chords, K.chords([p.audio], SR), p.dur); }
-  lines.push('slash (reported): ' + (sum / 12 * 100).toFixed(1) + '% of the time right');
+  let tri = 0, named = 0;
+  for (let k = 0; k < 12; k++) {
+    const p = progression('slash'), got = K.chords([p.audio], SR);
+    tri += accuracy(p.chords, got, p.dur);
+    let r = 0, n = 0;
+    for (let t = 0.05; t < p.dur; t += 0.05) {
+      if (p.chords.some((c) => Math.abs(t - c.t0) < 0.25) || Math.abs(t - p.dur) < 0.25) continue;
+      const w = p.chords.filter((c) => t >= c.t0 && t < c.t0 + c.dur)[0], h = got.filter((c) => t >= c.t0 && t < c.t1)[0];
+      n++;
+      if (w && h && h.pc === w.pc && h.quality === w.q && h.bass === (w.pc + (w.q === 'maj' ? 4 : 3)) % 12) r++;
+    }
+    named += n ? r / n : 0;
+  }
+  tri /= 12; named /= 12;
+  lines.push('slash: the chord right ' + (tri * 100).toFixed(1) + '% of the time, with its bass named (C/E) ' + (named * 100).toFixed(1) + '%');
+  if (tri < 0.9) fails.push('slash chords right only ' + (tri * 100).toFixed(1) + '%, needs 90%');
+  if (named < 0.8) fails.push('slash chords named with their bass only ' + (named * 100).toFixed(1) + '%, needs 80%');
+  lines.push('plain triads named as slash chords: ' + (slashBad / slashNamed * 100).toFixed(1) + '% of the named time');
+  if (slashBad / slashNamed > 0.05) fails.push('plain triads named as slash chords ' + (slashBad / slashNamed * 100).toFixed(1) + '% of the time, allowed 5%');
 }
 
-// Drums alone have no chord. A kick's falling pitch can pass for one; the
-// 0.7 score threshold and the 100 Hz floor in chords() are what keep it to
-// under a tenth of the time.
+// Drums alone have no chord. A kick's falling pitch and a snare's noise can
+// pass for one. Eight seeds, each with its own snare noise: a cap that held
+// on one seed once hid 1.0-1.5 s of false chords on three others.
 {
-  const d = new Float32Array(SR * 8);
-  for (let b = 0; b < 16; b++) {
-    const i0 = Math.round(b * 0.5 * SR);
-    for (let i = 0; i < SR * 0.15; i++) { const x = i / SR; d[i0 + i] += 0.6 * Math.exp(-x / 0.05) * Math.sin(2 * Math.PI * (50 + 90 * Math.exp(-x / 0.03)) * x); }
-    if (b % 2) for (let i = 0; i < SR * 0.12; i++) d[i0 + i] += 0.3 * (rnd() * 2 - 1) * Math.exp(-i / (SR * 0.04));
+  let worstNamed = 0, worstNames = '';
+  for (const sd of [11, 3, 101, 2024, 77777, 5, 99, 1234]) {
+    let s2 = sd;
+    const r2 = () => { s2 = (s2 * 16807) % 2147483647; return s2 / 2147483647; };
+    const d = new Float32Array(SR * 8);
+    for (let b = 0; b < 16; b++) {
+      const i0 = Math.round(b * 0.5 * SR);
+      for (let i = 0; i < SR * 0.15; i++) { const x = i / SR; d[i0 + i] += 0.6 * Math.exp(-x / 0.05) * Math.sin(2 * Math.PI * (50 + 90 * Math.exp(-x / 0.03)) * x); }
+      if (b % 2) for (let i = 0; i < SR * 0.12; i++) d[i0 + i] += 0.3 * (r2() * 2 - 1) * Math.exp(-i / (SR * 0.04));
+    }
+    const got = K.chords([d], SR), named = got.filter((c) => c.name !== 'N').reduce((a, c) => a + c.t1 - c.t0, 0);
+    if (named > worstNamed) { worstNamed = named; worstNames = got.filter((c) => c.name !== 'N').map((c) => c.name).join(' '); }
   }
-  const got = K.chords([d], SR), named = got.filter((c) => c.name !== 'N').reduce((a, c) => a + c.t1 - c.t0, 0);
-  if (named > 0.8) fails.push('drums alone were given ' + named.toFixed(1) + ' s of chords: ' + got.filter((c) => c.name !== 'N').map((c) => c.name).join(' '));
-  lines.push('drums alone: ' + named.toFixed(1) + ' s of 8 named as a chord');
+  if (worstNamed > 0.8) fails.push('drums alone were given ' + worstNamed.toFixed(1) + ' s of chords: ' + worstNames);
+  lines.push('drums alone, 8 seeds: at most ' + worstNamed.toFixed(1) + ' s of 8 named as a chord');
 }
 
 // Beat-aligned segments: with beats given, changes land on beats.
@@ -185,4 +214,4 @@ if (fails.length) {
   console.error('check-chords: ' + fails.length + ' failure(s).');
   process.exit(1);
 }
-console.log('check-chords: major and minor triads read right at least 90% of the time, clean, over a band and under a melody; sevenths named, and seldom invented.');
+console.log('check-chords: major and minor triads read right at least 90% of the time, clean, over a band and under a melody; sevenths and inversions named, and seldom invented.');

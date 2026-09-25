@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-23o">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-24a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -58,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my song uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding and analysis both run in your browser tab. You can load the page, go offline and still get a key."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real songs the usual miss is the relative major or minor, which shares every note, so that one is always shown as the alternative."}},{"@type":"Question","name":"It says C major but the song sounds minor. Which is right?","acceptedAnswer":{"@type":"Answer","text":"Probably A minor, the alternative. C major and A minor use the same seven notes, and a minor-key pop loop like Am–F–C–G read as the relative major in every key tested. Click the alternative to switch the result."}},{"@type":"Question","name":"What is the Camelot code?","acceptedAnswer":{"@type":"Answer","text":"A number from 1 to 12 plus A for minor or B for major, arranged round the circle of fifths. Tracks with the same code, a neighbouring number, or the same number in the other letter mix together without clashing."}},{"@type":"Question","name":"Does it work on a song that changes key?","acceptedAnswer":{"@type":"Answer","text":"It gives one key for the whole file, whichever the music spends most time in. Cut out the section you care about and analyse that on its own."}},{"@type":"Question","name":"What does the tuning number mean?","acceptedAnswer":{"@type":"Answer","text":"How far the recording is from A = 440 Hz, in hundredths of a semitone. A song tuned to 432 Hz reads about −32 cents; a vinyl rip on a fast turntable reads sharp."}},{"@type":"Question","name":"Does it find the tempo too?","acceptedAnswer":{"@type":"Answer","text":"Yes, with the same detector as the BPM finder. If there is no steady beat, it says so instead of guessing."}},{"@type":"Question","name":"How long can the file be?","acceptedAnswer":{"@type":"Answer","text":"Any length that your browser can decode, but only the first four minutes are read. That is plenty for a song and keeps the analysis to a few seconds."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my song uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding and analysis both run in your browser tab. You can load the page, go offline and still get a key."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real piano recordings of Bach's 48 preludes and fugues in Book 1 of the Well-Tempered Clavier, it named the key in the title for 41 (85%), and the right key was the runner-up for six of the other seven. When it said the reading was clear, it was right 35 times out of 36."}},{"@type":"Question","name":"It says C major but the song sounds minor. Which is right?","acceptedAnswer":{"@type":"Answer","text":"Probably A minor, the alternative. C major and A minor use the same seven notes, and a minor-key pop loop like Am–F–C–G read as the relative major in every key tested. Click the alternative to switch the result."}},{"@type":"Question","name":"What is the Camelot code?","acceptedAnswer":{"@type":"Answer","text":"A number from 1 to 12 plus A for minor or B for major, arranged round the circle of fifths. Tracks with the same code, a neighbouring number, or the same number in the other letter mix together without clashing."}},{"@type":"Question","name":"Does it work on a song that changes key?","acceptedAnswer":{"@type":"Answer","text":"It gives one key for the whole file, whichever the music spends most time in. Cut out the section you care about and analyse that on its own."}},{"@type":"Question","name":"What does the tuning number mean?","acceptedAnswer":{"@type":"Answer","text":"How far the recording is from A = 440 Hz, in hundredths of a semitone. A song tuned to 432 Hz reads about −32 cents; a vinyl rip on a fast turntable reads sharp."}},{"@type":"Question","name":"Does it find the tempo too?","acceptedAnswer":{"@type":"Answer","text":"Yes, with the same detector as the BPM finder. If there is no steady beat, it says so instead of guessing."}},{"@type":"Question","name":"How long can the file be?","acceptedAnswer":{"@type":"Answer","text":"Any length that your browser can decode, but only the first four minutes are read. That is plenty for a song and keeps the analysis to a few seconds."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -154,6 +154,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h3>What was measured</h3>
     <p>Every release is checked against synthesized music in all 24 keys. Each fixture is eight seconds of bass, chords and melody in harmonic tones, which have overtones the way real instruments do. Each is played clean, with a drum kit and a noise floor added, and tuned 30 cents sharp. All 72 come out as the right key, and the tuning reads within 5 cents of what it was built with. Temperley's profiles and Krumhansl's older ones both got all 72 right, but Temperley's won by a wider margin, so that is what the page uses.</p>
     <p>A real recording is harder. Beethoven's Sixth Symphony is in F major, but its first movement spends long stretches in C major, the key a fifth above. Given only the first minute, the page reads F major, with C major as the runner-up. Given the first four minutes, it reads C major. Both answers describe what is sounding. A song that changes key gets one answer for its whole length, so when that matters, cut out the section you care about with <a href="/audio-cutter">the cutter</a> and analyse just that.</p>
+    <p>To get a figure for real recordings, the page was run on all 48 preludes and fugues of Book 1 of Bach's Well-Tempered Clavier, in Kimiko Ishizaka's public-domain piano recording. There are two pieces in every major and minor key, and each piece's key is in its title. It named the key in the title for 41 of the 48 (85%), and for six of the other seven the right key was the runner-up. The confidence line means something: the 36 readings it called clear were right 35 times. The misses were mostly a fifth away (G major read as D major, F minor as C minor), which is where a fugue spends its middle, and twice the wrong mode on the right note. That is one composer on one instrument, so treat it as a real-world figure, not a promise for every genre.</p>
 
     <h3>Major or minor: the one it gets wrong</h3>
     <p>Every major key has a relative minor with exactly the same notes: C major and A minor, G major and E minor. What tells them apart is which note the music treats as home, and that is far subtler than which notes are present. The check measures this case too. A loop of A minor, F, C and G, the most common chord loop in pop, uses only the notes of C major. In all 12 keys it read as the relative major, and in 11 of them the minor key was the runner-up. So if the answer is a major key and the song sounds sad, the alternative button is probably right. For DJs this matters less than it seems: relative keys share a Camelot number (C major is 8B, A minor is 8A), and they mix together cleanly either way.</p>
@@ -175,7 +176,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2>FAQ</h2>
     <!-- AS:faq -->
       <details><summary>Is my song uploaded anywhere?</summary><p>No. Decoding and analysis both run in your browser tab. You can load the page, go offline and still get a key.</p></details>
-      <details><summary>How accurate is it?</summary><p>On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real songs the usual miss is the relative major or minor, which shares every note, so that one is always shown as the alternative.</p></details>
+      <details><summary>How accurate is it?</summary><p>On synthesized music in all 24 keys, played clean, over drums and noise, and tuned 30 cents sharp, it named all 72 correctly. On real piano recordings of Bach's 48 preludes and fugues in Book 1 of the Well-Tempered Clavier, it named the key in the title for 41 (85%), and the right key was the runner-up for six of the other seven. When it said the reading was clear, it was right 35 times out of 36.</p></details>
       <details><summary>It says C major but the song sounds minor. Which is right?</summary><p>Probably A minor, the alternative. C major and A minor use the same seven notes, and a minor-key pop loop like Am–F–C–G read as the relative major in every key tested. Click the alternative to switch the result.</p></details>
       <details><summary>What is the Camelot code?</summary><p>A number from 1 to 12 plus A for minor or B for major, arranged round the circle of fifths. Tracks with the same code, a neighbouring number, or the same number in the other letter mix together without clashing.</p></details>
       <details><summary>Does it work on a song that changes key?</summary><p>It gives one key for the whole file, whichever the music spends most time in. Cut out the section you care about and analyse that on its own.</p></details>
@@ -307,15 +308,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-23o"></script>
-<script src="/js/tool-graph.js?v=2026-09-23o"></script>
-<script src="/js/flow.js?v=2026-09-23o"></script>
-<script src="/js/audio-core.js?v=2026-09-23o"></script>
-<script src="/js/bpm-detector.js?v=2026-09-23o"></script>
-<script src="/js/spectral.js?v=2026-09-23o"></script>
-<script src="/js/key-detect.js?v=2026-09-23o"></script>
-<script src="/js/key-page.js?v=2026-09-23o"></script>
-<script src="/js/consent.js?v=2026-09-23o"></script>
-<script src="/js/pwa.js?v=2026-09-23o"></script>
+<script src="/js/common.js?v=2026-09-24a"></script>
+<script src="/js/tool-graph.js?v=2026-09-24a"></script>
+<script src="/js/flow.js?v=2026-09-24a"></script>
+<script src="/js/audio-core.js?v=2026-09-24a"></script>
+<script src="/js/bpm-detector.js?v=2026-09-24a"></script>
+<script src="/js/spectral.js?v=2026-09-24a"></script>
+<script src="/js/key-detect.js?v=2026-09-24a"></script>
+<script src="/js/key-page.js?v=2026-09-24a"></script>
+<script src="/js/consent.js?v=2026-09-24a"></script>
+<script src="/js/pwa.js?v=2026-09-24a"></script>
 </body>
 </html>

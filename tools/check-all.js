@@ -33,7 +33,9 @@ const CHECKS = [
   ['check-pitch.js'],
   ['check-fx.js'],
   ['check-project-link.js'],
-  ['check-grid.js']
+  ['check-grid.js'],
+  ['check-midi.js'],
+  ['check-midi-track.js']
 ];
 
 let failed = 0;

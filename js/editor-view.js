@@ -313,7 +313,9 @@
     g.save();
     roundRect(g, x0, top, x1 - x0, hh, 4); g.clip();
     var labelH = hh > 44 ? 16 : 0;
-    this.drawWave(g, c, cx0, cx1, top + labelH, hh - labelH, dim ? css.waveDim : (selected ? css.waveSel : css.wave));
+    var msrc = this.state.project.sources[c.sourceId];
+    if (msrc && msrc.kind === 'midi') this.drawNotes(g, c, msrc, cx0, cx1, top + labelH, hh - labelH, dim ? css.waveDim : (selected ? css.waveSel : css.wave));
+    else this.drawWave(g, c, cx0, cx1, top + labelH, hh - labelH, dim ? css.waveDim : (selected ? css.waveSel : css.wave));
 
     // Fade shading: the region under the gain curve stays clear, above it is shaded.
     var st = this;
@@ -454,6 +456,30 @@
       var fg = fadeAt(c, this.t(p + 0.5) - c.start);
       g.fillRect(p, mid - Math.min(1, hi) * amp * fg, 1, Math.max(1, (Math.min(1, hi) - Math.max(-1, lo)) * amp * fg));
     }
+  };
+
+  // A MIDI clip draws its notes, as a small piano roll: time across, pitch
+  // up, over the source's own range so a bass line and a melody both fill
+  // the clip. Brighter is louder.
+  View.prototype.drawNotes = function (g, c, src, px0, px1, top, h, color) {
+    if (h < 6 || !src.notes.length) return;
+    var lo = 127, hi = 0;
+    src.notes.forEach(function (n) { if (n[0] < lo) lo = n[0]; if (n[0] > hi) hi = n[0]; });
+    lo -= 1; hi += 1;
+    var rows = Math.max(12, hi - lo + 1), rh = Math.max(1, Math.min(6, (h - 4) / rows));
+    var y0 = top + 2 + (h - 4 - rh * rows) / 2;
+    var a = c.offset, b = c.offset + c.duration;
+    g.fillStyle = color;
+    for (var i = 0; i < src.notes.length; i++) {
+      var n = src.notes[i];
+      if (n[1] >= b) break;
+      if (n[1] + n[2] <= a || n[1] < a - 1e-9) continue;
+      var xa = this.x(c.start + n[1] - a), xb = this.x(c.start + Math.min(n[1] + n[2], b) - a);
+      if (xb < px0 || xa > px1) continue;
+      g.globalAlpha = 0.45 + 0.55 * n[3] / 127;
+      g.fillRect(xa, y0 + (hi - n[0]) * (rh * rows / (hi - lo + 1)), Math.max(1.5, xb - xa - 0.5), Math.max(1, rh - (rh > 2 ? 0.5 : 0)));
+    }
+    g.globalAlpha = 1;
   };
 
   // The fade part of a clip's gain, so the waveform shrinks under a fade the

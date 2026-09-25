@@ -204,7 +204,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 
 ## Cut, trim & arrange
 
-- [Audio Editor](https://audiosaw.com/audio-editor): A multitrack timeline with live effects, patches and automation: cut, mix, record and export, on a phone or a laptop.
+- [Audio Editor](https://audiosaw.com/audio-editor): A multitrack timeline with live effects, automation and MIDI tracks: cut, mix, record and export, on a phone or a laptop.
 - [Audio Cutter](https://audiosaw.com/audio-cutter): Drag handles on a waveform and keep only the part you want.
 - [Audio Joiner](https://audiosaw.com/audio-joiner): Concatenate several files into one, in the order you choose.
 - [Ringtone Maker](https://audiosaw.com/ringtone-maker): A 30-second clip from any song, in the format your phone wants.

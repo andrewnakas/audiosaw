@@ -16,7 +16,7 @@
 
   var CV = global.CV, M = global.ASEditModel, E = global.ASEditEngine;
   var V = global.ASEditView, FX = global.ASEditFx, ST = global.ASEditStore;
-  var D = global.ASEditDsp, FXUI = global.ASEditFxUI, LINK = global.ASEditLink, L = global.ASLink;
+  var D = global.ASEditDsp, FXUI = global.ASEditFxUI, LINK = global.ASEditLink, L = global.ASLink, MIDI = global.ASEditMidi;
   if (!CV || !M || !E || !V || !FX || !ST || !D || !FXUI || !LINK || !L) {
     console.error('[audio-editor] a script is missing or loaded out of order; the editor cannot start.');
     return;
@@ -25,7 +25,7 @@
 
   var ACCEPT = ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus', '.aif', '.aiff',
     '.m4b', '.m4r', '.wma', '.caf', '.ac3', '.weba', '.amr', '.3gp',
-    '.mp4', '.mov', '.webm', '.mkv', '.avi', '.audiosaw'];
+    '.mp4', '.mov', '.webm', '.mkv', '.avi', '.audiosaw', '.mid', '.midi'];
 
   /* ----------------------------------------------------------------- state */
 
@@ -900,7 +900,7 @@
       case 'rangeExport': openExport('range'); break;
       case 'clipExport': openExport('clip'); break;
       case 'fx': fxSheet(); break;
-      case 'tool': LINK.toolSheet(S.range ? 'range' : 'clip'); break;
+      case 'tool': if (!S.range && refuseMidi('Sending to a tool')) break; LINK.toolSheet(S.range ? 'range' : 'clip'); break;
       case 'trackfx': { var ff = M.findClip(S.project, ids[0]); if (ff) FXUI.open(ff.track.id); break; }
       case 'clear': clearSelection(); break;
       case 'rippleDelete': doDelete(true); break;
@@ -986,6 +986,7 @@
   function clipMenu(clipId) {
     if (!S.sel[clipId]) { S.sel = {}; S.sel[clipId] = true; S.range = null; refresh(); }
     var c = M.findClip(S.project, clipId).clip;
+    if (MIDI.isMidiClip(clipId)) { midiClipMenu(clipId); return; }
     openSheet(c.name, menuHtml([
       { v: 'split', label: 'Split at playhead', hint: 'S' },
       { v: 'dup', label: 'Duplicate', hint: '⌘D' },
@@ -999,6 +1000,7 @@
       { v: 'slice', label: 'Slice at the hits', hint: 'splits the clip' },
       { v: 'chords', label: (S.project.sources[c.sourceId] || {}).chords ? 'Detect chords again' : 'Detect chords', hint: 'shown on the clip' },
       { v: 'fitkey', label: 'Match the project key…', hint: S.project.key && global.ASKey ? global.ASKey.keyName(S.project.key.pc, S.project.key.mode) : 'set a key first' },
+      { v: 'tomidi', label: 'Convert to MIDI', hint: 'one voice or instrument' },
       { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
       { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
       { v: 'export', label: 'Export this clip' },
@@ -1018,6 +1020,7 @@
       if (v === 'chords') detectChords(clipId);
       if (v === 'slice') sliceAtHits(clipId);
       if (v === 'takes') takesSheet(clipId);
+      if (v === 'tomidi') MIDI.convert(clipId);
       if (v === 'trackfx') FXUI.open(M.findClip(S.project, clipId).track.id);
       if (v === 'fadein') quickFade('in');
       if (v === 'fadeout') quickFade('out');
@@ -1025,6 +1028,66 @@
       if (v === 'del') doDelete(false);
       if (v === 'ripple') doDelete(true);
     });
+  }
+
+  // A MIDI clip's menu: the same clip edits, with the MIDI ones in place of
+  // those that need samples (Process, tools, tempo fit, slicing, chords).
+  function midiClipMenu(clipId) {
+    var f = M.findClip(S.project, clipId), c = f.clip, nk = M.takesAt(S.project, f.track.id, c.start, M.clipEnd(c)).length;
+    openSheet(c.name, menuHtml([
+      { v: 'notes', label: 'Edit notes…', hint: M.clipNotes(S.project, c).length + ' notes' },
+      { v: 'inst', label: 'Instrument…', hint: MIDI.instLabel(MIDI.instOf(f.track, S.project.sources[c.sourceId])) },
+      { v: 'mid', label: 'Download .mid' },
+      { v: 'bounce', label: 'Bounce to audio', hint: 'for effects and tools' },
+      '-',
+      { v: 'split', label: 'Split at playhead', hint: 'S' },
+      { v: 'dup', label: 'Duplicate', hint: '⌘D' },
+      { v: 'copy', label: 'Copy', hint: '⌘C' },
+      { v: 'cut', label: 'Cut', hint: '⌘X' },
+      { v: 'trackfx', label: 'Track effects…', hint: 'live' },
+      { v: 'takes', label: 'Takes…', hint: nk + ' kept', disabled: !nk },
+      { v: 'fadein', label: c.fadeIn ? 'Remove fade in' : 'Fade in' },
+      { v: 'fadeout', label: c.fadeOut ? 'Remove fade out' : 'Fade out' },
+      { v: 'export', label: 'Export this clip as audio' },
+      '-',
+      { v: 'del', label: 'Delete', hint: 'Del', danger: true },
+      { v: 'ripple', label: 'Delete and close the gap', hint: '⇧Del', danger: true }
+    ]), function (v) {
+      closeSheet();
+      if (v === 'notes') MIDI.editNotes(clipId);
+      if (v === 'inst') MIDI.instrumentSheet(f.track.id);
+      if (v === 'mid') MIDI.downloadMid(clipId);
+      if (v === 'bounce') MIDI.bounce(clipId);
+      if (v === 'split') doSplit();
+      if (v === 'dup') doDuplicate();
+      if (v === 'copy') doCopy();
+      if (v === 'cut') doCopy(true);
+      if (v === 'trackfx') FXUI.open(f.track.id);
+      if (v === 'takes') takesSheet(clipId);
+      if (v === 'fadein') quickFade('in');
+      if (v === 'fadeout') quickFade('out');
+      if (v === 'export') openExport('clip');
+      if (v === 'del') doDelete(false);
+      if (v === 'ripple') doDelete(true);
+    });
+  }
+
+  // Process and "Send to a tool" work on samples. A MIDI clip in the
+  // selection has none until it is bounced, so say that instead of failing.
+  function midiInSelection() {
+    if (S.range) {
+      var r = loopRange(), tr = S.range.tracks;
+      return S.project.tracks.some(function (t) {
+        if (tr && tr.length && tr.indexOf(t.id) < 0) return false;
+        return t.clips.some(function (c) { return c.start < r[1] && M.clipEnd(c) > r[0] && M.isMidi(S.project, c.sourceId); });
+      });
+    }
+    return MIDI.anyMidi(selIds());
+  }
+  function refuseMidi(what) {
+    if (!midiInSelection()) return false;
+    status('warn', what + ' works on audio. Right-click the MIDI clip and choose Bounce to audio first; undo turns it back into notes.');
+    return true;
   }
 
   /* ------------------------------------------------ fit a clip to the song */
@@ -1188,6 +1251,8 @@
         { v: 'up', label: 'Move up' },
         { v: 'down', label: 'Move down' },
         { v: 'selall', label: 'Select all clips on this track' },
+        { v: 'inst', label: 'Instrument for MIDI…', hint: MIDI.instLabel(t.inst || 'keys') },
+        { v: 'midi', label: 'New MIDI clip here', hint: 'at the playhead' },
         '-',
         { v: 'remove', label: 'Delete track', danger: true }
       ]);
@@ -1199,6 +1264,8 @@
       if (v === 'fx') { closeSheet(); FXUI.open(id); return; }
       if (v === 'auto') { closeSheet(); toggleAuto(id); return; }
       if (v === 'lane') { closeSheet(); laneSheet(id); return; }
+      if (v === 'inst') { closeSheet(); MIDI.instrumentSheet(id); return; }
+      if (v === 'midi') { closeSheet(); S.selTrack = id; MIDI.newClip(); return; }
       if (v === 'mute') edit(function (p) { M.setTrack(p, id, { mute: !t.mute }); }, { noRestart: true });
       if (v === 'solo') edit(function (p) { M.setTrack(p, id, { solo: !t.solo }); }, { noRestart: true });
       if (v === 'up') edit(function (p) { M.moveTrack(p, id, -1); });
@@ -1261,6 +1328,7 @@
   }
 
   function fxSheet() {
+    if (refuseMidi('Process')) return;
     var html = '<div class="ed-fx-grid">' + FX.ORDER.map(function (id) {
       var f = FX.FX[id];
       return '<button type="button" class="ed-fx" data-v="' + id + '"><strong>' + esc(f.label) + '</strong><small>' + esc(f.hint) + '</small></button>';
@@ -1375,6 +1443,32 @@
   }
   ST.decode = function (f) { return decodeFile(f); };
 
+  // .mid files: each part on a new track, starting at the playhead or where
+  // the file was dropped (at 0:00 into an empty project).
+  function importMidi(mids, place) {
+    busy = true;
+    var before = M.serialize(S.project), added = [], notes = 0, chain = Promise.resolve();
+    mids.forEach(function (f) {
+      chain = chain.then(function () {
+        return MIDI.importFile(f, { t: place.mode === 'at' || place.mode === 'tracks' ? place.t : 0 }).then(function (r) {
+          added = added.concat(r.ids); notes += r.notes;
+        }).catch(function (err) {
+          status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'not a MIDI file') + '.');
+        });
+      });
+    });
+    return chain.then(function () {
+      busy = false;
+      if (M.serialize(S.project) === before) return;
+      hist.push(before);
+      S.sel = {}; added.forEach(function (id) { S.sel[id] = true; });
+      var wasEmpty = M.parse(before).tracks.every(function (t) { return !t.clips.length; });
+      changed();
+      if (wasEmpty) zoomFit();
+      status('success', 'Added ' + notes + ' notes on ' + added.length + ' MIDI track' + (added.length === 1 ? '' : 's') + '. Right-click a clip to edit its notes or choose the instrument.');
+    });
+  }
+
   // place: { mode: 'end' | 'tracks' | 'at', t, ti }
   function importFiles(list, place) {
     list = list.filter(Boolean);
@@ -1382,6 +1476,12 @@
     var proj = list.filter(function (f) { return /\.audiosaw$/i.test(f.name); });
     if (proj.length) { openProjectFile(proj[0]); return; }
     if (busy) return;
+    var mids = list.filter(MIDI.isMidiFile);
+    if (mids.length) {
+      list = list.filter(function (f) { return !MIDI.isMidiFile(f); });
+      importMidi(mids, place).then(function () { if (list.length) importFiles(list, place); });
+      return;
+    }
     busy = true;
     var before = M.serialize(S.project);
     var added = [];
@@ -1480,7 +1580,7 @@
     if (!hasClips()) return;
     e.preventDefault();
     var split = CV.filterAccepted(Array.from(e.dataTransfer.files || []), ACCEPT);
-    if (split.rejected.length) status('error', 'Wrong file type: .' + split.rejected[0].name.split('.').pop() + ' — the editor takes audio and video files.');
+    if (split.rejected.length) status('error', 'Wrong file type: .' + split.rejected[0].name.split('.').pop() + ' — the editor takes audio, video and MIDI files.');
     if (!split.ok.length) return;
     var rect = el.lanes.getBoundingClientRect();
     var h = view.hitTest(e.clientX - rect.left, e.clientY - rect.top, {});
@@ -2434,6 +2534,7 @@
     openSheet('Project', menuHtml([
       { v: 'add', label: 'Add audio…' },
       { v: 'track', label: 'Add an empty track' },
+      { v: 'midi', label: 'New MIDI clip', hint: 'at the playhead' },
       { v: 'save', label: 'Save project file (.audiosaw)', hint: '⌘S', disabled: !hasClips() },
       { v: 'open', label: 'Open project file…' },
       '-',
@@ -2449,6 +2550,7 @@
       closeSheet();
       if (v === 'add') el.fileInput.click();
       if (v === 'track') edit(function (p) { S.selTrack = M.addTrack(p); });
+      if (v === 'midi') MIDI.newClip();
       if (v === 'save') saveProjectFile();
       if (v === 'open') $('#edProjectInput').click();
       if (v === 'full') toggleFull();
@@ -2475,6 +2577,13 @@
   // delays, tremolos and filter sweeps follow the tempo too. Type it, tap it,
   // or let the BPM finder read it off the audio.
   var SIGS = [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [3, 8], [5, 8], [6, 8], [7, 8], [9, 8], [12, 8]];
+  // The selected clip, or the longest; audio only, since detection listens.
+  function audioClipToRead() {
+    var ids = selIds().filter(function (id) { return !MIDI.isMidiClip(id); }), f = ids.length ? M.findClip(S.project, ids[0]) : null, clip = f ? f.clip : null;
+    if (!clip) M.allClips(S.project).forEach(function (c) { if (buffers.get(c.clip.sourceId) && (!clip || c.clip.duration > clip.duration)) clip = c.clip; });
+    return clip;
+  }
+
   function tempoSheet() {
     var taps = [], p0 = S.project, offset = p0.gridOffset, sigNow = p0.sig.join('/'), K = global.ASKey;
     var keyNow = p0.key ? p0.key.pc + '-' + p0.key.mode : '';
@@ -2529,10 +2638,9 @@
         return;
       }
       if (v === 'detectkey') {
-        var kids = selIds(), kf = kids.length ? M.findClip(S.project, kids[0]) : null, kclip = kf ? kf.clip : null;
-        if (!kclip) M.allClips(S.project).forEach(function (c) { if (!kclip || c.clip.duration > kclip.duration) kclip = c.clip; });
+        var kclip = audioClipToRead();
         var kbuf = kclip && buffers.get(kclip.sourceId);
-        if (!kbuf) return;
+        if (!kbuf) { note.textContent = 'Detection listens to audio clips, and there are none to read a key from.'; return; }
         note.textContent = 'Listening for the key…';
         setTimeout(function () {
           var part = slice(kbuf, kclip.offset, Math.min(kclip.duration, 240)), ch = [];
@@ -2546,10 +2654,9 @@
         return;
       }
       if (v === 'detect') {
-        var ids = selIds(), f = ids.length ? M.findClip(S.project, ids[0]) : null, clip = f ? f.clip : null;
-        if (!clip) M.allClips(S.project).forEach(function (c) { if (!clip || c.clip.duration > clip.duration) clip = c.clip; });
+        var clip = audioClipToRead();
         var buf = clip && buffers.get(clip.sourceId);
-        if (!buf || !global.ASBpm) return;
+        if (!buf || !global.ASBpm) { note.textContent = 'Detection listens to audio clips, and there are none. Tap along instead.'; return; }
         note.textContent = 'Listening…';
         setTimeout(function () {
           var res = global.ASBpm.analyse(slice(buf, clip.offset, Math.min(clip.duration, 90)));
@@ -2778,6 +2885,12 @@
     menuHtml: menuHtml, isTouchUI: isTouchUI, layout: applyLayout, tempoSheet: tempoSheet
   });
   $('#edMixerBtn').addEventListener('click', function () { if (FXUI.isOpen()) FXUI.close(); else FXUI.open(S.selTrack); });
+
+  MIDI.init({
+    S: S, buffers: buffers, edit: edit, status: status, toast: toast, openSheet: openSheet, closeSheet: closeSheet, menuHtml: menuHtml,
+    isBusy: function () { return busy; }, setBusy: function (b) { busy = b; },
+    select: function (cid) { if (cid) { S.sel = {}; S.sel[cid] = true; S.range = null; refresh(); } }
+  });
 
   LINK.init({
     S: S, buffers: buffers, esc: esc, edit: edit, refresh: refresh, status: status,

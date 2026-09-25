@@ -253,6 +253,8 @@
   overflow: auto; box-shadow: var(--shadow-lg); padding: 16px 16px 12px; user-select: none;
 }
 .ed-sheet-wide .ed-sheet-card { width: min(640px, 100%); }
+.ed-sheet-roll .ed-sheet-card { width: min(1040px, 100%); }
+.ed-roll { height: min(52vh, 420px); margin-top: 8px; }
 .ed-sheet-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
 .ed-sheet-top h3 { margin: 0; font: 600 1.05rem/1.25 var(--serif); overflow: hidden; text-overflow: ellipsis; }
 .ed-sheet-note { font-size: 0.8rem; color: var(--muted); margin: 10px 4px 2px; }

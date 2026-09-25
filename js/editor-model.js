@@ -97,9 +97,53 @@
       duration: meta.duration,
       channels: meta.channels || 1,
       sampleRate: meta.sampleRate || 48000,
-      kind: meta.kind || 'file'      // 'file' | 'derived' | 'recording'
+      kind: meta.kind || 'file'      // 'file' | 'derived' | 'recording' | 'midi'
     };
+    if (meta.kind === 'midi') {
+      var notes = packNotes(meta.notes || []);
+      p.sources[id].notes = notes;
+      p.sources[id].channels = 2;
+      p.sources[id].duration = Math.max(meta.duration || 0, notesEnd(notes), MIN_LEN);
+      if (meta.drums) p.sources[id].drums = true;
+    }
     return id;
+  }
+
+  /* ----------------------------------------------------------------- midi */
+
+  // A MIDI source is notes instead of samples: [midi, start, duration,
+  // velocity] in source time, kept in the project JSON itself, so autosave,
+  // undo and project files carry them with no audio to store. Clips on it
+  // are ordinary clips (trim, split, move, carve and ripple all work on
+  // time), and a note edit writes a new source, the same rule as an effect:
+  // undo snapshots still point at the old one.
+  function packNotes(list) {
+    return list.map(function (n) {
+      return Array.isArray(n) ? n.slice(0, 4) : [n.midi, n.start, n.duration, n.velocity == null ? 96 : n.velocity];
+    }).filter(function (n) {
+      return n[0] >= 0 && n[0] <= 127 && isFinite(n[1]) && n[1] >= -EPS && n[2] > 1e-4 && isFinite(n[2]);
+    }).map(function (n) {
+      return [Math.round(n[0]), r5(Math.max(0, n[1])), r5(n[2]), clamp(Math.round(n[3]) || 96, 1, 127)];
+    }).sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
+  }
+  function r5(x) { return Math.round(x * 1e5) / 1e5; }
+  function notesEnd(notes) { var e = 0; notes.forEach(function (n) { e = Math.max(e, n[1] + n[2]); }); return e; }
+  function isMidi(p, sourceId) { var s = p.sources[sourceId]; return !!(s && s.kind === 'midi'); }
+  // As objects, for the piano roll and the MIDI writer.
+  function notesOf(src) {
+    return (src && src.notes || []).map(function (n) { return { midi: n[0], start: n[1], duration: n[2], velocity: n[3] }; });
+  }
+  // The notes a clip plays, in timeline time, cut to the clip.
+  function clipNotes(p, clip) {
+    var src = p.sources[clip.sourceId];
+    if (!src || src.kind !== 'midi') return [];
+    var a = clip.offset, b = clip.offset + clip.duration, out = [];
+    src.notes.forEach(function (n) {
+      var s0 = Math.max(n[1], a), s1 = Math.min(n[1] + n[2], b);
+      if (n[1] >= b - EPS || s1 - s0 < 1e-4 || n[1] < a - EPS) return;   // a note begun before the clip is not re-struck
+      out.push({ midi: n[0], start: clip.start + (s0 - a), duration: s1 - s0, velocity: n[3] });
+    });
+    return out;
   }
 
   function addTrack(p, opts) {
@@ -132,7 +176,7 @@
     var i = trackIndex(p, trackId);
     if (i < 0) return;
     var t = p.tracks[i];
-    ['name', 'volDb', 'pan', 'mute', 'solo'].forEach(function (k) {
+    ['name', 'volDb', 'pan', 'mute', 'solo', 'inst'].forEach(function (k) {
       if (patch[k] !== undefined) t[k] = patch[k];
     });
     t.volDb = clamp(+t.volDb || 0, -60, 12);
@@ -1224,6 +1268,14 @@
         if (c.offset + c.duration > sl + 1e-4) errs.push(where + 'runs past its source (' + (c.offset + c.duration) + ' > ' + sl + ')');
         if (c.fadeIn < -EPS || c.fadeOut < -EPS || c.fadeIn + c.fadeOut > c.duration + 1e-4) errs.push(where + 'fades out of range');
         if (!p.sources[c.sourceId]) errs.push(where + 'missing source ' + c.sourceId);
+        else if (p.sources[c.sourceId].kind === 'midi') {
+          var ns = p.sources[c.sourceId].notes;
+          if (!Array.isArray(ns)) errs.push(where + 'MIDI source without notes');
+          else ns.forEach(function (n, k) {
+            if (!(n[0] >= 0 && n[0] <= 127 && n[1] >= 0 && n[2] > 0 && n[3] >= 1 && n[3] <= 127)) errs.push(where + 'bad note ' + k + ' ' + JSON.stringify(n));
+            if (k && ns[k - 1][1] > n[1] + EPS) errs.push(where + 'notes not sorted');
+          });
+        }
         if (i > 0) {
           var prev = t.clips[i - 1];
           if (prev.start > c.start + EPS) errs.push(where + 'not sorted');
@@ -1299,7 +1351,7 @@
     uid: uid, create: create, serialize: serialize, parse: parse, copy: copy,
     trackIndex: trackIndex, findClip: findClip, allClips: allClips, duration: duration,
     clipEnd: clipEnd, dbToGain: dbToGain,
-    addSource: addSource, addTrack: addTrack, removeTrack: removeTrack, moveTrack: moveTrack, setTrack: setTrack,
+    addSource: addSource, packNotes: packNotes, notesOf: notesOf, clipNotes: clipNotes, isMidi: isMidi, addTrack: addTrack, removeTrack: removeTrack, moveTrack: moveTrack, setTrack: setTrack,
     addClip: addClip, setClip: setClip, trimStart: trimStart, trimEnd: trimEnd, setFade: setFade,
     moveClips: moveClips, splitAt: splitAt, deleteClips: deleteClips, deleteRange: deleteRange,
     cropTo: cropTo, insertGap: insertGap, duplicate: duplicate, copyClips: copyClips, paste: paste,

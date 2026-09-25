@@ -166,15 +166,36 @@
     // Pass 2: per-frame chroma, tuning removed, normalised.
     var chroma = frames.map(function (pk, fi) {
       if (energies[fi] < emax * 1e-5 || !pk.length) return null;
-      var fr = new Float64Array(12), tot = 0;
+      var fr = new Float64Array(12), tot = 0, raw = 0, onGrid = 0;
+      // opts.bassDuck: also make fr.alt, the same chroma with the lowest
+      // strong note's non-octave overtones counted this much, and keep that
+      // note's pitch class as fr.bass. See chords() for why.
+      var bassM = null, duck = opts.bassDuck, alt = new Float64Array(12), altTot = 0;
+      if (duck != null) {
+        var wmax = 0;
+        for (var k0 = 1; k0 < pk.length; k0 += 2) if (pk[k0] > wmax) wmax = pk[k0];
+        for (k0 = 0; k0 < pk.length; k0 += 2) if (pk[k0 + 1] >= 0.5 * wmax) { bassM = pk[k0]; break; }
+        if (bassM != null) { var bm = bassM - tune; fr.bass = ((Math.round(bm) % 12) + 12) % 12; }
+      }
       for (var k = 0; k < pk.length; k += 2) {
         var mm = pk[k] - tune, r = Math.round(mm), dev = mm - r;
         var w = Math.cos(Math.PI * dev); w *= w;
         var pc = ((r % 12) + 12) % 12;
+        raw += pk[k + 1]; onGrid += w * pk[k + 1];
         fr[pc] += w * pk[k + 1]; tot += w * pk[k + 1];
+        if (bassM != null) {
+          // Harmonic h of the bass sits 12*log2(h) semitones above it.
+          var up = pk[k] - bassM, wa = w;
+          for (var hi = 0; hi < BASS_H.length; hi++) if (Math.abs(up - 12 * Math.log(BASS_H[hi]) / Math.LN2) < 0.3) { wa *= duck; break; }
+          alt[pc] += wa * pk[k + 1]; altTot += wa * pk[k + 1];
+        }
       }
+      if (bassM != null && altTot > 0) { for (var q1 = 0; q1 < 12; q1++) alt[q1] /= altTot; fr.alt = alt; }
       if (tot <= 0) return null;
       for (var q = 0; q < 12; q++) fr[q] /= tot;
+      // How much of the frame's peak weight sits on the semitone grid:
+      // near 1 for notes, about 0.5 for noise, whose peaks fall anywhere.
+      fr.inTune = onGrid / raw;
       return fr;
     });
     // A frame's time is the centre of its window.
@@ -230,6 +251,8 @@
    * A segment scoring under 0.7 is 'N': real triads measured 0.76 to 0.96,
    * and the tail of a song, drums over a fading chord, 0.62.
    *
+   * A segment must also be mostly notes: see IN_TUNE.
+   *
    * Nothing below 100 Hz is counted. A kick drum's falling pitch lives there
    * and can pass for a chord. The chord's upper voices name it without the
    * bass. A named chord must also have its root and third each at least a
@@ -242,8 +265,16 @@
    * as, which removes the flicker a passing note causes.
    *
    * Returns [{t0, t1, pc, quality: 'maj'|'min'|'N', ext: ''|'7'|'maj7'|'m7',
-   * name, score}] in seconds.
+   * bass (pitch class, or -1 unless it is the third or fifth), name ('C',
+   * 'Am7', 'C/E'), score}] in seconds.
    */
+  // Notes sit on the semitone grid; the peaks of noise (a snare, cymbals, a
+  // kick's sweep) fall anywhere on it. Measured as the share of a segment's
+  // peak weight near a semitone: real chords 0.82 and up at the 5th
+  // percentile (clean, band, melody, sevenths, slash), drums alone at most
+  // 0.63 over eight seeds. Drum segments that scored as chords (0.70-0.76)
+  // overlapped real triads (from 0.76), so the score alone could not tell.
+  var IN_TUNE = 0.7, BASS_DUCK = 0.3, BASS_H = [3, 5, 6];
   var CHORD_ROOTS = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
   var TEMPLATES = (function () {
     var out = [];
@@ -324,7 +355,7 @@
 
   function chords(channels, sr, opts) {
     opts = opts || {};
-    var cf = chromaFrames(channels, sr, { N: 4096, hop: 1024, loHz: opts.loHz || 100, maxSec: opts.maxSec || 600 });
+    var cf = chromaFrames(channels, sr, { N: 4096, hop: 1024, loHz: opts.loHz || 100, maxSec: opts.maxSec || 600, bassDuck: opts.bassDuck != null ? opts.bassDuck : BASS_DUCK });
     if (!cf) return [];
     var nFrames = cf.chroma.length, dur = (cf.hopSec * (nFrames - 1)) + 2 * cf.centreSec;
     var edges = [];
@@ -339,16 +370,18 @@
     }
     var segs = [];
     for (var k = 0; k + 1 < edges.length; k++) {
-      var t0 = edges[k], t1 = edges[k + 1], v = new Float64Array(12), used = 0;
+      var t0 = edges[k], t1 = edges[k + 1], v = new Float64Array(12), va = new Float64Array(12), bass = new Float64Array(12), used = 0, inTune = 0;
       for (var fi = 0; fi < nFrames; fi++) {
-        var tc = fi * cf.hopSec + cf.centreSec;
-        if (tc < t0 || tc >= t1 || !cf.chroma[fi]) continue;
-        for (var q = 0; q < 12; q++) v[q] += cf.chroma[fi][q];
+        var tc = fi * cf.hopSec + cf.centreSec, fr = cf.chroma[fi];
+        if (tc < t0 || tc >= t1 || !fr) continue;
+        for (var q = 0; q < 12; q++) { v[q] += fr[q]; va[q] += fr.alt ? fr.alt[q] : fr[q]; }
+        if (fr.bass != null) bass[fr.bass]++;
+        inTune += fr.inTune;
         used++;
       }
       var sc = used ? scoreChord(v) : { pc: 0, quality: 'N', score: 0 };
-      if (sc.score < (opts.minScore || 0.7) || !triadPresent(v, sc)) sc = { pc: 0, quality: 'N', score: sc.score };
-      segs.push({ t0: t0, t1: t1, pc: sc.pc, quality: sc.quality, score: sc.score, v: v });
+      if (sc.score < (opts.minScore || 0.7) || !triadPresent(v, sc) || inTune / used < IN_TUNE) sc = { pc: 0, quality: 'N', score: sc.score };
+      segs.push({ t0: t0, t1: t1, pc: sc.pc, quality: sc.quality, score: sc.score, v: v, va: va, b: bass, n: used });
     }
     function same(a, b) { return a.quality === b.quality && (a.quality === 'N' || a.pc === b.pc); }
     function merge(list) {
@@ -357,12 +390,36 @@
         var last = out[out.length - 1];
         if (last && same(last, sg)) {
           last.t1 = sg.t1;
-          for (var q = 0; q < 12; q++) last.v[q] += sg.v[q];
-        } else out.push({ t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, score: sg.score, v: Float64Array.from(sg.v) });
+          for (var q = 0; q < 12; q++) { last.v[q] += sg.v[q]; last.va[q] += sg.va[q]; last.b[q] += sg.b[q]; }
+          last.n += sg.n;
+        } else out.push({ t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, score: sg.score, v: Float64Array.from(sg.v), va: Float64Array.from(sg.va), b: Float64Array.from(sg.b), n: sg.n });
       });
       return out;
     }
-    var list = merge(segs), minSec = opts.minSec == null ? 0.4 : opts.minSec, changed = true;
+    // An inversion. A bass note's overtones spell a chord of their own: an
+    // E bass under C major brings B (its 3rd harmonic) and G# (its 5th), and
+    // reads as E minor. So each chord, once merged, is scored again with the
+    // bass's non-octave overtones turned down, and that reading is taken if
+    // it differs and has the bass as its third or fifth. It is decided on
+    // the whole chord, not per beat: a melody's passing notes can make one
+    // beat of a root-position C read as Am over its C bass, but they do not
+    // last, and on single beats no measure separated those from real
+    // inversions. Over five seeds of check-chords, 161 switches were right
+    // and 6 wrong (all under a melody); no score margin separated those 6.
+    var pre = merge(segs);
+    pre.forEach(function (sg) {
+      if (sg.quality === 'N') return;
+      var bpc = -1, bn = 0;
+      for (var q = 0; q < 12; q++) if (sg.b[q] > bn) { bn = sg.b[q]; bpc = q; }
+      if (bn < sg.n * 0.5) return;
+      var al = scoreChord(sg.va);
+      if (al.pc === sg.pc && al.quality === sg.quality) return;
+      var third = (al.pc + (al.quality === 'maj' ? 4 : 3)) % 12;
+      if (bpc !== third && bpc !== (al.pc + 7) % 12) return;
+      if (al.score < (opts.minScore || 0.7) || !triadPresent(sg.v, al)) return;
+      sg.pc = al.pc; sg.quality = al.quality; sg.score = al.score;
+    });
+    var list = merge(pre), minSec = opts.minSec == null ? 0.4 : opts.minSec, changed = true;
     while (changed) {
       changed = false;
       for (var j = 0; j < list.length; j++) {
@@ -375,7 +432,8 @@
           into = fitN > fitP ? next : prev;
         }
         if (into === prev) { prev.t1 = sgm.t1; } else { next.t0 = sgm.t0; }
-        for (var q2 = 0; q2 < 12; q2++) into.v[q2] += sgm.v[q2];
+        for (var q2 = 0; q2 < 12; q2++) { into.v[q2] += sgm.v[q2]; into.va[q2] += sgm.va[q2]; into.b[q2] += sgm.b[q2]; }
+        into.n += sgm.n;
         list.splice(j, 1);
         list = merge(list);
         changed = true;
@@ -384,7 +442,11 @@
     }
     return list.map(function (sg) {
       var ext = sg.quality === 'N' ? '' : seventhOf(sg.v, sg.pc, sg.quality);
-      return { t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, ext: ext, name: chordName(sg.pc, sg.quality, ext), score: Math.round(sg.score * 1000) / 1000 };
+      // The bass under it, when that is the third or the fifth: C/E, C/G.
+      var bass = -1, bn = 0;
+      for (var q4 = 0; q4 < 12; q4++) if (sg.b[q4] > bn) { bn = sg.b[q4]; bass = q4; }
+      if (sg.quality === 'N' || bn < sg.n * 0.5 || (bass !== (sg.pc + (sg.quality === 'maj' ? 4 : 3)) % 12 && bass !== (sg.pc + 7) % 12)) bass = -1;
+      return { t0: sg.t0, t1: sg.t1, pc: sg.pc, quality: sg.quality, ext: ext, bass: bass, name: chordName(sg.pc, sg.quality, ext) + (bass >= 0 ? '/' + CHORD_ROOTS[bass] : ''), score: Math.round(sg.score * 1000) / 1000 };
     });
   }
   // A chord needs its root and its third actually sounding, each at least a

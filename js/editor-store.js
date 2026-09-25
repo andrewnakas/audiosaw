@@ -10,6 +10,7 @@
  * kept as the original file — an hour of MP3 is 60 MB as a file and well over a
  * gigabyte as decoded float samples — and decoded again on restore. A recording
  * or an effect's output has no file, so its samples are kept as Float32 arrays.
+ * A MIDI source has neither: its notes are part of the project JSON.
  *
  * A project file is a plain zip (written by AudioSaw.zipBlobs, stored rather
  * than deflated) holding project.json and one file per source, so it can be
@@ -174,6 +175,7 @@
     var entries = [];
     Object.keys(slim.sources).forEach(function (id) {
       if (!used[id]) { delete slim.sources[id]; return; }
+      if (slim.sources[id].kind === 'midi') return;     // its notes are in project.json
       var f = files.get(id);
       var ext = f ? ((f.name.split('.').pop() || 'bin').toLowerCase()) : 'wav';
       var path = 'sources/' + id + '.' + ext;
@@ -210,7 +212,7 @@
         if (i >= ids.length) return Promise.resolve();
         var id = ids[i++], meta = p.sources[id], bytes = z[meta.path];
         onProgress && onProgress(i, ids.length);
-        if (!bytes) return next();
+        if (!bytes || meta.kind === 'midi') return next();
         var f = new File([bytes], meta.name || meta.path.split('/').pop());
         if (meta.kind === 'file') files.set(id, f);
         return decode(f).then(function (b) {

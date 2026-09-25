@@ -210,6 +210,8 @@
       t.clips.forEach(function (clip) {
         var ce = M.clipEnd(clip);
         if (ce <= from || clip.start >= to) return;
+        var msrc = project.sources[clip.sourceId];
+        if (msrc && msrc.kind === 'midi') { scheduleMidi(G, project, t, clip, msrc, from, to, when, into); return; }
         var buf = buffers.get(clip.sourceId);
         if (!buf) return;
         var cs = Math.max(clip.start, from);
@@ -232,6 +234,61 @@
         into.push(src);
         if (into !== G.nodes) G.nodes.push(src);
       });
+    });
+  }
+
+  // A MIDI clip: each note through the track's instrument, into one gain
+  // per clip that carries the clip's gain and fades, exactly as a sample
+  // clip's does. A note already sounding at `from` (playback started in the
+  // middle of it) starts there, so a held pad is not silent until its next
+  // note. Notes are cut at `to`, and ring on for their release after it.
+  function instOf(track, src) { return track.inst || (src.drums ? 'drums' : 'keys'); }
+  function scheduleMidi(G, project, track, clip, src, from, to, when, into) {
+    var S = global.ASEditSynth, c = G.ctx, T = G.tracks[track.id];
+    if (!S || !T) return;
+    var cs = Math.max(clip.start, from), ce = Math.min(M.clipEnd(clip), to);
+    if (ce - cs <= 0.0005) return;
+    var g = c.createGain();
+    scheduleClipGain(g.gain, clip, cs - clip.start, when + (cs - from), when + (ce - from));
+    // The instruments are mono: in at -3 dB, like a mono clip (the pan law).
+    var m3 = c.createGain(); m3.gain.value = Math.SQRT1_2;
+    g.connect(m3); m3.connect(T.in);
+    var inst = instOf(track, src), list = [];
+    M.clipNotes(project, clip).forEach(function (n) {
+      var a = Math.max(n.start, from), b = Math.min(n.start + n.duration, to);
+      if (b - a < 0.001 || a >= to) return;
+      if (inst === 'drums' && a > n.start + 1e-6) return;     // a drum hit is its start
+      list.push({ at: when + (a - from), dur: b - a, midi: n.midi, vel: n.velocity });
+    });
+    list.sort(function (x, y) { return x.at - y.at; });
+    // The notes are built a little ahead of when they sound (feedMidi), not
+    // all now: a finished note's nodes are cheap, but thousands of waiting
+    // ones are not. Measured on a 3-minute part of 5,000 notes: building
+    // them all up front took 5.6 minutes to export.
+    var rec = { g: g, inst: inst, list: list, i: 0, into: into, dead: false };
+    var handle = { rec: rec, stop: function () { rec.dead = true; }, disconnect: function () {} };
+    into.push(handle);
+    if (into !== G.nodes) G.nodes.push(handle);
+    (G.midi = G.midi || []).push(rec);
+  }
+
+  // Build every pending note that starts before context time `until`.
+  function feedMidi(G, until) {
+    if (!G || !G.midi || !G.midi.length) return;
+    var S = global.ASEditSynth;
+    G.midi = G.midi.filter(function (rec) {
+      if (rec.dead) return false;
+      var started = [];
+      while (rec.i < rec.list.length && rec.list[rec.i].at < until) {
+        var n = rec.list[rec.i++];
+        S.note(G.ctx, rec.g, rec.inst, n.midi, n.at, n.dur, n.vel, started);
+      }
+      started.forEach(function (x) {
+        x.onended = function () { x.done = true; try { x.disconnect(); } catch (e) {} };
+        rec.into.push(x);
+        if (rec.into !== G.nodes) G.nodes.push(x);
+      });
+      return rec.i < rec.list.length;
     });
   }
 
@@ -486,6 +543,8 @@
 
   function pump() {
     advanceLoop();
+    // A hidden tab's timers can be held to once a second.
+    if (playing) feedMidi(playing.G, ctx.currentTime + ((global.document && global.document.hidden) ? 2.5 : 1));
     scheduleClicks();
   }
 
@@ -500,7 +559,7 @@
       p.prev = { from: p.from, to: p.to, t0: p.t0 };
       p.from = n.from; p.to = n.to; p.t0 = n.t0; p.clickT = n.clickT; p.next = null;
       p.passes.push({ from: p.from, t0: p.t0 });
-      p.G.nodes = p.G.nodes.filter(function (x) { return !x.done; });
+      p.G.nodes = p.G.nodes.filter(function (x) { return !x.done && !(x.rec && x.rec.i >= x.rec.list.length); });
     }
     if (!p.loop || p.next) return;
     var end = p.t0 + (p.to - p.from);
@@ -750,6 +809,25 @@
     src.start(t, Math.max(0, offset), dur);
   }
 
+  // Notes not yet saved, through an instrument, straight to the speakers:
+  // the note editor's Play. Returns the context time they start at.
+  var preview = [];
+  function previewNotes(notes, inst) {
+    ensureCtx();
+    stopPreview();
+    var S = global.ASEditSynth, t = ctx.currentTime + 0.05, g = ctx.createGain();
+    g.gain.value = Math.SQRT1_2;
+    g.connect(master);
+    notes.forEach(function (n) { S.note(ctx, g, inst, n.midi, t + n.start, n.duration, n.velocity, preview); });
+    preview.gain = g;
+    return t;
+  }
+  function stopPreview() {
+    preview.forEach(function (n) { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+    if (preview.gain) try { preview.gain.disconnect(); } catch (e) {}
+    preview = [];
+  }
+
   /* --------------------------------------------------------------- export */
 
   // How long the effects keep ringing after the last clip stops.
@@ -778,18 +856,23 @@
       var bus = off.createGain();
       bus.connect(off.destination);
       var G = build(off, bus, project, t0, t1, 0, { noMaster: opts.noMaster });
-      if (G.fxLanes.length) {
-        // Step plugin automation at render-quantum boundaries.
-        var seen = {}, stepT = 0.025, span = t1 - t0 + extra;
-        for (var x = 0; x < span; x += stepT) {
+      // Work to do partway through, at render-quantum boundaries: one
+      // suspend per time, since a second one at the same time throws.
+      var at = {}, span = t1 - t0 + extra;
+      function every(stepT, fn) {
+        for (var x = stepT; x < span; x += stepT) {
           var q = Math.round(x * sr / 128) * 128 / sr;
-          if (q <= 0 || q >= len / sr || seen[q]) continue;
-          seen[q] = true;
-          (function (tq) {
-            off.suspend(tq).then(function () { applyFxLanes(G, t0 + tq); off.resume(); });
-          })(q);
+          if (q <= 0 || q >= len / sr) continue;
+          (at[q] = at[q] || []).push(fn);
         }
       }
+      // Step plugin automation; build MIDI notes two seconds ahead.
+      if (G.fxLanes.length) every(0.025, function (tq) { applyFxLanes(G, t0 + tq); });
+      if (G.midi && G.midi.length) { feedMidi(G, 2); every(1, function (tq) { feedMidi(G, tq + 2); }); }
+      Object.keys(at).forEach(function (k) {
+        var tq = +k;
+        off.suspend(tq).then(function () { at[k].forEach(function (fn) { fn(tq); }); off.resume(); });
+      });
       return off.startRendering().then(function (out) { return finish(out, G.latency, t1 - t0, !!opts.tails); });
     }).then(function (out) {
       var peak = 0;
@@ -974,6 +1057,7 @@
   global.ASEditEngine = {
     buffers: buffers,
     unlock: unlock,
+    previewNotes: previewNotes, stopPreview: stopPreview,
     play: play, stop: stop, isPlaying: isPlaying, position: position, playEnd: playEnd, playInfo: playInfo,
     setLoop: setLoop, isLooping: isLooping, passes: passes,
     updateTracks: updateTracks, syncFx: syncFx, relane: relane, hold: hold, probe: probe, trackPeak: trackPeak, meter: meter, audition: audition,
