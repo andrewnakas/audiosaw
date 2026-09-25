@@ -111,7 +111,7 @@
       if (trackIds.indexOf(t.id) === -1) return;
       t.clips.forEach(function (c) { var s = p.sources[c.sourceId]; if (s && s.sampleRate > sr) sr = s.sampleRate; });
     });
-    return Math.min(96000, Math.max(22050, sr || 44100));
+    return Math.min(192000, Math.max(22050, sr || 44100));
   }
 
   function render(spec) {

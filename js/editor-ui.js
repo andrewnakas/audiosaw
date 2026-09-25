@@ -2212,6 +2212,76 @@
     }, 30);
   }
 
+  // Recording input and quality: preferences of the person and the machine,
+  // not the project, so they live in localStorage. rate 0 is the device's own.
+  var recPrefs = { deviceId: '', channels: 2, rate: 0 };
+  try {
+    recPrefs.deviceId = localStorage.getItem('as_ed_indev') || '';
+    recPrefs.channels = localStorage.getItem('as_ed_inch') === '1' ? 1 : 2;
+    recPrefs.rate = parseInt(localStorage.getItem('as_ed_rate'), 10) || 0;
+  } catch (e) {}
+  if (recPrefs.rate) E.setSampleRate(recPrefs.rate);
+  var lastDelivered = null;
+
+  function kHz(r) { return (r / 1000).toString() + ' kHz'; }
+  function describeInput(d) {
+    if (!d) return '';
+    return (d.label ? '“' + d.label + '”, ' : '') +
+      (d.channels === 1 ? 'mono' : d.channels === 2 ? 'stereo' : (d.channels ? d.channels + ' channels' : 'stereo')) +
+      ' at ' + kHz(d.engineRate) + (d.processing ? ', with the browser’s voice processing on' : '');
+  }
+
+  function inputSheet() {
+    if (S.rec) { toast('Stop recording first.'); return; }
+    var md = navigator.mediaDevices;
+    var listing = md && md.enumerateDevices ? md.enumerateDevices().catch(function () { return []; }) : Promise.resolve([]);
+    listing.then(function (devs) {
+      var ins = devs.filter(function (d) { return d.kind === 'audioinput' && d.deviceId && d.deviceId !== 'default' && d.deviceId !== 'communications'; });
+      var named = ins.some(function (d) { return d.label; });
+      var devOpts = '<option value="">The default input</option>' + ins.map(function (d, i) {
+        return '<option value="' + esc(d.deviceId) + '"' + (d.deviceId === recPrefs.deviceId ? ' selected' : '') + '>' + esc(d.label || 'Input ' + (i + 1)) + '</option>';
+      }).join('');
+      var now = E.sampleRate();
+      var RATES = [[0, 'The device’s own rate'], [44100, '44.1 kHz'], [48000, '48 kHz'], [88200, '88.2 kHz'], [96000, '96 kHz'], [176400, '176.4 kHz'], [192000, '192 kHz']];
+      openSheet('Recording input and quality', '<div class="ed-form">' +
+        '<label>Input <select data-k="dev">' + devOpts + '</select></label>' +
+        '<label>Channels <select data-k="ch">' +
+          '<option value="2"' + (recPrefs.channels === 2 ? ' selected' : '') + '>Stereo: both inputs of an interface, or a stereo mic</option>' +
+          '<option value="1"' + (recPrefs.channels === 1 ? ' selected' : '') + '>Mono</option>' +
+        '</select></label>' +
+        '<label>Engine sample rate <select data-k="rate">' + RATES.map(function (r) {
+          return '<option value="' + r[0] + '"' + (r[0] === recPrefs.rate ? ' selected' : '') + '>' + r[1] + (r[0] === 0 && !recPrefs.rate ? ' (now ' + kHz(now) + ')' : '') + '</option>';
+        }).join('') + '</select></label>' +
+        '</div>' +
+        '<p class="ed-sheet-note">Takes are captured as 32-bit float with echo cancellation, noise suppression and automatic gain off. ' +
+        'The browser converts the input to the engine rate, so to record at your interface’s own rate (96 kHz, say) set the engine to it. ' +
+        'Playback and export are unaffected: export can still be any rate.' +
+        (named ? '' : ' Input names appear once the browser has been allowed to use the microphone.') + '</p>' +
+        (lastDelivered ? '<p class="ed-sheet-note">Last take: ' + esc(describeInput(lastDelivered)) + (lastDelivered.sampleRate && lastDelivered.sampleRate !== lastDelivered.engineRate ? '; the input itself runs at ' + kHz(lastDelivered.sampleRate) : '') + '.</p>' : '') +
+        '<div class="ed-sheet-actions"><button type="button" class="ed-btn ed-btn-primary" data-v="ok">Done</button></div>', function (v) {
+        if (v !== 'ok') return;
+        var q = function (k) { return el.sheetBody.querySelector('[data-k="' + k + '"]'); };
+        recPrefs.deviceId = q('dev').value;
+        recPrefs.channels = q('ch').value === '1' ? 1 : 2;
+        var rate = parseInt(q('rate').value, 10) || 0;
+        try {
+          localStorage.setItem('as_ed_indev', recPrefs.deviceId);
+          localStorage.setItem('as_ed_inch', String(recPrefs.channels));
+          localStorage.setItem('as_ed_rate', String(rate));
+        } catch (e) {}
+        closeSheet();
+        if (rate !== recPrefs.rate) {
+          recPrefs.rate = rate;
+          E.setSampleRate(rate || null);
+          E.unlock();
+          updateTransport();
+          toast('Engine at ' + kHz(E.sampleRate()));
+        }
+      });
+    });
+  }
+  $('#edRecSet').addEventListener('click', inputSheet);
+
   function startRecording() {
     if (S.rec || busy) return;
     if (!global.isSecureContext || !navigator.mediaDevices) { status('error', 'Recording needs a secure (https) page and microphone support.'); return; }
@@ -2248,7 +2318,8 @@
         }
         r.length += d.length / r.sr;
         if (r.loop) r.length = Math.min(r.length, r.loop.r1 - r.loop.r0);
-      }).then(function () {
+      }, { deviceId: recPrefs.deviceId, channels: recPrefs.channels }).then(function (delivered) {
+        S.rec.delivered = delivered;
         // Always run the timeline, even over an empty project: the click and
         // the count-in are scheduled on it, and the take is placed by it.
         var pre = countIn * M.barSec(S.project);
@@ -2257,7 +2328,7 @@
         S.rec.playing = E.isPlaying();
         S.rec.info = E.playInfo();
         if (pre && S.rec.info) { status('info', 'Count-in — recording starts on the downbeat.'); showCountIn(S.rec.info.t0); }
-        else status('info', 'Recording — press stop or Space when you are done.');
+        else status('info', 'Recording ' + describeInput(delivered) + ' — press stop or Space when you are done.');
         refresh();
       }).catch(function (err) {
         S.project = M.parse(before);
@@ -2269,6 +2340,14 @@
       });
     };
     begin();
+  }
+
+  // What is worth saying about a take beyond its length.
+  function takeNote(res) {
+    var d = res.delivered || {}, out = '';
+    if (res.dualMono) out += 'Both input channels carried the same signal, so the take is mono. ';
+    if (d.sampleRate && d.sampleRate > res.buffer.sampleRate) out += 'Your input runs at ' + kHz(d.sampleRate) + '; set the engine to it in recording settings to record at that rate. ';
+    return out;
   }
 
   function stopRecording() {
@@ -2305,7 +2384,8 @@
       S.sel = {}; S.sel[cid] = true;
       S.playhead = r.start;
       changed();
-      status('success', 'Recorded ' + res.buffer.duration.toFixed(1) + ' s. Press play to hear it with everything else.');
+      lastDelivered = res.delivered;
+      status('success', 'Recorded ' + res.buffer.duration.toFixed(1) + ' s, ' + (res.buffer.numberOfChannels === 1 ? 'mono' : 'stereo') + ' at ' + kHz(res.buffer.sampleRate) + '. ' + takeNote(res) + 'Press play to hear it with everything else.');
     }).catch(function (err) {
       S.rec = null;
       refresh();
@@ -2420,6 +2500,9 @@
   function syncExportForm() {
     var fmtv = $('#edExFmt').value, what = $('#edExWhat').value;
     $('#edExBitrateWrap').hidden = !/^(mp3|m4a|ogg)$/.test(fmtv);
+    // Name the rate "Match the audio" stands for, and warn that MP3 stops at 48 kHz.
+    var opt = $('#edExRate').querySelector('option[value="project"]'), pr = E.projectRate(S.project);
+    if (opt) opt.textContent = 'Match the audio · ' + (pr / 1000) + ' kHz';
     $('#edExStemMasterWrap').hidden = what !== 'stems';
     var anyFx = S.project.master.fx.length || S.project.tracks.some(function (t) { return t.fx.length || Object.keys(t.sends).length; });
     $('#edExTailsWrap').hidden = what === 'markers' || !anyFx;
@@ -2438,15 +2521,15 @@
   CV.remember($('#edExRate'), 'ed_rate');
   CV.remember($('#edExTails'), 'ed_tails');
 
+  // The mix is rendered in 32-bit float and goes to the encoder as it is:
+  // PCM and FLAC are dithered to their depth, LAME and the ffmpeg codecs take
+  // the float directly. `bitrate` is the select's raw value ('v0' picks LAME).
   function encode(buf, fmtv, bitrate, onProgress) {
-    if (fmtv === 'mp3') return global.AudioSaw.audioBufferToMp3(buf, bitrate, onProgress);
-    if (fmtv === 'wav') return Promise.resolve(global.AudioSaw.audioBufferToWav(buf));
-    if (fmtv === 'wav32') return Promise.resolve(ST.floatWav(buf));
-    var wav = global.AudioSaw.audioBufferToWav(buf);
-    return global.AudioSaw.convertViaFFmpeg(new File([wav], 'mix.wav', { type: 'audio/wav' }), fmtv,
-      fmtv === 'flac' ? {} : { bitrate: bitrate }, onProgress);
+    return global.AudioSaw.encode(buf, global.AudioSaw.resolveFormat(fmtv, bitrate), {
+      bitrate: global.AudioSaw.bitrateOf(bitrate), onProgress: onProgress
+    });
   }
-  function extFor(fmtv) { return fmtv === 'wav32' ? 'wav' : fmtv; }
+  function extFor(fmtv) { return global.AudioSaw.extFor(fmtv); }
 
   // One track on its own. For stems the others stay in the project, muted,
   // so a ducker on this track still hears what it listens to.
@@ -2460,8 +2543,8 @@
   $('#edExGo').addEventListener('click', function () {
     if (busy) return;
     var what = $('#edExWhat').value, fmtv = $('#edExFmt').value;
-    var bitrate = parseInt($('#bitrate').value, 10) || 192;
-    var sr = parseInt($('#edExRate').value, 10) || 44100;
+    var bitrate = $('#bitrate').value;
+    var sr = $('#edExRate').value === 'project' ? 'project' : (parseInt($('#edExRate').value, 10) || 'project');
     var name = ($('#edExName').value || 'audiosaw-mix').replace(/[\\/:*?"<>|]+/g, '-').trim() || 'audiosaw-mix';
     var protect = $('#edExProtect').checked;
     var channels = $('#edExMono').checked ? 1 : 2;
@@ -2503,7 +2586,7 @@
         status('info', 'Mixing' + (jobs.length > 1 ? ' ' + (idx + 1) + ' of ' + jobs.length : '') + '…');
         return E.render(job.project, job.t0, job.t1, { sampleRate: sr, channels: channels, protect: protect, tails: tails, noMaster: noMaster });
       }).then(function (res) {
-        status('info', 'Encoding ' + fmtv.replace('wav32', 'WAV') .toUpperCase() + (jobs.length > 1 ? ' ' + (idx + 1) + ' of ' + jobs.length : '') + '…');
+        status('info', 'Encoding ' + extFor(fmtv).toUpperCase() + (jobs.length > 1 ? ' ' + (idx + 1) + ' of ' + jobs.length : '') + '…');
         return encode(res.buffer, fmtv, bitrate, function (pct) {
           progress(((idx + Math.min(99, pct) / 100) / jobs.length) * 100);
         }).then(function (blob) {

@@ -203,7 +203,9 @@
     p1.master.fx = []; p1.master.auto = {}; p1.master.volDb = 0; p1.buses = [];
     X.setBusy(true);
     X.status('info', 'Bouncing “' + c.name + '” to audio…');
-    return global.ASEditEngine.render(p1, c.start, M.clipEnd(c), { sampleRate: 44100, channels: 2, noMaster: true }).then(function (res) {
+    // At the project's own rate, so the bounce sits with the audio around it
+    // without a conversion.
+    return global.ASEditEngine.render(p1, c.start, M.clipEnd(c), { sampleRate: global.ASEditEngine.projectRate(S.project), channels: 2, noMaster: true }).then(function (res) {
       X.edit(function (p) {
         var sid = M.addSource(p, { name: c.name + ' (audio)', duration: res.buffer.duration, channels: 2, sampleRate: res.buffer.sampleRate, kind: 'derived' });
         X.buffers.set(sid, res.buffer);

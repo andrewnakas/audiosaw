@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-25a">
-<link rel="stylesheet" href="/css/editor.css?v=2026-09-25a">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25b">
+<link rel="stylesheet" href="/css/editor.css?v=2026-09-25b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +59,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out."}},{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source."}},{"@type":"Question","name":"Does it work on iPhone and Android?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record."}},{"@type":"Question","name":"Will I lose my work if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file."}},{"@type":"Question","name":"How many tracks can I have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded."}},{"@type":"Question","name":"Can I undo an effect?","acceptedAnswer":{"@type":"Answer","text":"Yes. Adding, removing, reordering and bypassing effects, every knob turn, every patch and every automation point is one step of undo. Process effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original."}},{"@type":"Question","name":"What is the difference between Track effects and Process?","acceptedAnswer":{"@type":"Answer","text":"Track effects run live on a whole track as it plays, never change the audio, and can be adjusted or switched off at any time. Process renders an effect into one clip or a selected range, which suits things that need the whole file at once, like noise removal, a loudness target or a speed change."}},{"@type":"Question","name":"What effects are there?","acceptedAnswer":{"@type":"Answer","text":"25 of them: Channel EQ, filter, exciter, compressor, limiter, noise gate, de-esser, multiband compressor, transient shaper, sidechain ducker, drive, bitcrusher, tape, chorus, flanger, phaser, tremolo, auto-pan, ring modulator, stereo delay, tape echo, reverb, pitch shifter, utility and an analyzer. They come with 89 presets, plus 20 patches that load a whole chain at once."}},{"@type":"Question","name":"Can I automate volume or an effect over time?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press A on a track to show its automation lane and pick volume, pan, a send or any effect setting on that track, then tap to add points. Or turn on Auto in the mixer and move the control while the song plays to record the movement."}},{"@type":"Question","name":"How do I make music dip under a voice automatically?","acceptedAnswer":{"@type":"Answer","text":"Put the Music under voice patch on the music track and choose the voice track in its ducker. The music turns down whenever the voice plays and comes back up in the pauses, with no automation to draw."}},{"@type":"Question","name":"Does the export sound exactly like playback?","acceptedAnswer":{"@type":"Answer","text":"It runs the same effect code, so it matches what you heard. There are two differences. Chorus, phaser and tremolo sweeps start from the beginning of the export rather than from wherever you pressed play. And a reverb or echo tail carries on past the end only when Let reverb and echo ring out is ticked."}},{"@type":"Question","name":"Why does my recording sound late against the backing track?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one."}},{"@type":"Question","name":"Is there a metronome or click track?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press K or the Click button. It follows the project tempo and time signature, accents the downbeat, and plays while you play back or record. It is never in the exported file. For recording, set a one- or two-bar count-in in the tempo sheet."}},{"@type":"Question","name":"Can the timeline show bars and beats and snap to them?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click the tempo in the ruler's corner or press G. The ruler then counts bars and beats in the time signature you set, and moves, trims and selections snap to the grid. If the song does not start on a downbeat at 0:00, use Bar 1 at the playhead to line the grid up with it."}},{"@type":"Question","name":"Can I record several takes and pick the best parts?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select a range, turn on Loop and record: every pass is kept as a take. Right-click the clip and choose Takes to listen and swap one in, for the whole clip or just a selected range. Nothing is deleted when you swap."}},{"@type":"Question","name":"Does it do MIDI?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a .mid file on it and each part becomes a track of notes, played on a simple built-in instrument you can change per track. Edit the notes in a piano roll, download them as .mid again, or bounce them to audio. Convert to MIDI on an audio clip turns a single voice or instrument into notes on a new track."}},{"@type":"Question","name":"Can I make a loop match my song's tempo and key?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set the project tempo and key in the tempo sheet, or detect them from a clip. Then right-click the loop and choose Fit to the project tempo, which stretches it without changing its pitch, and Match the project key, which shifts it by the fewest semitones."}},{"@type":"Question","name":"Can I open the project in Audacity or another editor?","acceptedAnswer":{"@type":"Answer","text":"Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Decoding, editing, effects and export all run in your browser tab. The only download is ffmpeg, the first time you use an effect or format that needs it, and that brings code to you rather than sending audio out."}},{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark, no length limit beyond your device's memory, and no ads. The code is open source."}},{"@type":"Question","name":"Does it work on iPhone and Android?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything is touch-driven: tap to select, drag to move and trim, pinch to zoom, hold for the clip menu. Recording needs microphone permission, which the browser asks for the first time you press Record."}},{"@type":"Question","name":"Will I lose my work if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"Usually not. The project saves itself in this browser as you edit, and the editor offers to restore it next time. Private browsing and clearing site data both erase it, so for anything important use Project, then Save project file."}},{"@type":"Question","name":"How many tracks can I have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit. Every track plays at once, so a phone will struggle before a laptop does, and each file you add is held in memory decoded."}},{"@type":"Question","name":"Can I undo an effect?","acceptedAnswer":{"@type":"Answer","text":"Yes. Adding, removing, reordering and bypassing effects, every knob turn, every patch and every automation point is one step of undo. Process effects write a new copy of the audio and point the clip at it, so undo puts the clip back on the original."}},{"@type":"Question","name":"What is the difference between Track effects and Process?","acceptedAnswer":{"@type":"Answer","text":"Track effects run live on a whole track as it plays, never change the audio, and can be adjusted or switched off at any time. Process renders an effect into one clip or a selected range, which suits things that need the whole file at once, like noise removal, a loudness target or a speed change."}},{"@type":"Question","name":"What effects are there?","acceptedAnswer":{"@type":"Answer","text":"25 of them: Channel EQ, filter, exciter, compressor, limiter, noise gate, de-esser, multiband compressor, transient shaper, sidechain ducker, drive, bitcrusher, tape, chorus, flanger, phaser, tremolo, auto-pan, ring modulator, stereo delay, tape echo, reverb, pitch shifter, utility and an analyzer. They come with 89 presets, plus 20 patches that load a whole chain at once."}},{"@type":"Question","name":"Can I automate volume or an effect over time?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press A on a track to show its automation lane and pick volume, pan, a send or any effect setting on that track, then tap to add points. Or turn on Auto in the mixer and move the control while the song plays to record the movement."}},{"@type":"Question","name":"How do I make music dip under a voice automatically?","acceptedAnswer":{"@type":"Answer","text":"Put the Music under voice patch on the music track and choose the voice track in its ducker. The music turns down whenever the voice plays and comes back up in the pauses, with no automation to draw."}},{"@type":"Question","name":"Does the export sound exactly like playback?","acceptedAnswer":{"@type":"Answer","text":"It runs the same effect code, so it matches what you heard. There are two differences. Chorus, phaser and tremolo sweeps start from the beginning of the export rather than from wherever you pressed play. And a reverb or echo tail carries on past the end only when Let reverb and echo ring out is ticked."}},{"@type":"Question","name":"Why does my recording sound late against the backing track?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones, whose delay browsers do not always report correctly. Select the take and press the left arrow to move it earlier 10 ms at a time, and use wired headphones for the next one."}},{"@type":"Question","name":"Is there a metronome or click track?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press K or the Click button. It follows the project tempo and time signature, accents the downbeat, and plays while you play back or record. It is never in the exported file. For recording, set a one- or two-bar count-in in the tempo sheet."}},{"@type":"Question","name":"Can the timeline show bars and beats and snap to them?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click the tempo in the ruler's corner or press G. The ruler then counts bars and beats in the time signature you set, and moves, trims and selections snap to the grid. If the song does not start on a downbeat at 0:00, use Bar 1 at the playhead to line the grid up with it."}},{"@type":"Question","name":"Can I record several takes and pick the best parts?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select a range, turn on Loop and record: every pass is kept as a take. Right-click the clip and choose Takes to listen and swap one in, for the whole clip or just a selected range. Nothing is deleted when you swap."}},{"@type":"Question","name":"Does it do MIDI?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a .mid file on it and each part becomes a track of notes, played on a simple built-in instrument you can change per track. Edit the notes in a piano roll, download them as .mid again, or bounce them to audio. Convert to MIDI on an audio clip turns a single voice or instrument into notes on a new track."}},{"@type":"Question","name":"Can I make a loop match my song's tempo and key?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set the project tempo and key in the tempo sheet, or detect them from a clip. Then right-click the loop and choose Fit to the project tempo, which stretches it without changing its pitch, and Match the project key, which shifts it by the fewest semitones."}},{"@type":"Question","name":"What quality does it record and export at?","acceptedAnswer":{"@type":"Answer","text":"Recording asks the browser for a stereo input with echo cancellation, noise suppression and automatic gain turned off, and keeps the take as 32-bit float. Browsers default to mono with all three on, which suits a video call and damages music. The status line reports what the browser actually delivered. The microphone button next to Record picks the input, stereo or mono, and the engine's sample rate: set it to your interface's rate to record at 96 kHz. Export can be 16-bit, 24-bit or 32-bit float WAV or FLAC at up to 192 kHz."}},{"@type":"Question","name":"Can I open the project in Audacity or another editor?","acceptedAnswer":{"@type":"Answer","text":"Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -105,6 +105,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <div class="ed-group">
           <button type="button" class="ed-btn ed-btn-primary" id="edAdd" title="Add audio files">＋ <span>Add<span class="ed-hide-sm"> audio</span></span></button>
           <button type="button" class="ed-btn ed-rec" id="edRec" title="Record from the microphone (R)"><span>Record</span></button>
+          <button type="button" class="ed-icon" id="edRecSet" title="Recording input and quality" aria-label="Recording input and quality"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
         </div>
         <div class="ed-transport">
           <button type="button" class="ed-icon" id="edHome" title="Back to the start (Home)" aria-label="Back to the start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5L9 12l10 7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
@@ -184,10 +185,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           <label>Format
             <select id="edExFmt">
               <option value="mp3" selected>MP3</option>
-              <option value="wav">WAV · 16-bit</option>
-              <option value="wav32">WAV · 32-bit float (for more editing)</option>
+              <option value="wav16">WAV · 16-bit</option>
+              <option value="wav24">WAV · 24-bit</option>
+              <option value="wav32f">WAV · 32-bit float (for more editing)</option>
+              <option value="flac16">FLAC · 16-bit</option>
+              <option value="flac24">FLAC · 24-bit</option>
               <option value="m4a">M4A / AAC</option>
-              <option value="flac">FLAC (lossless, smaller)</option>
               <option value="ogg">OGG Vorbis</option>
             </select>
           </label>
@@ -203,8 +206,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </label>
           <label>Sample rate
             <select id="edExRate">
-              <option value="44100" selected>44.1 kHz · music, most uses</option>
+              <option value="project" selected>Match the audio</option>
+              <option value="44100">44.1 kHz · CD, streaming</option>
               <option value="48000">48 kHz · video</option>
+              <option value="88200">88.2 kHz</option>
+              <option value="96000">96 kHz · hi-res</option>
+              <option value="176400">176.4 kHz</option>
+              <option value="192000">192 kHz</option>
             </select>
           </label>
           <label>File name <input type="text" id="edExName" maxlength="80" autocomplete="off"></label>
@@ -295,7 +303,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p><strong>Process…</strong> keeps the one-off effects that need to see the whole file. They run the same code as the matching single-purpose page: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a>, <a href="/auto-cut-silence">pause shortening</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
 
     <h3>Exporting</h3>
-    <p>Export mixes every audible track together at 44.1 or 48 kHz and writes MP3, 16-bit or 32-bit WAV, M4A, FLAC or OGG. You can export the whole mix, the selected range, one clip, every track as a separate stem, or the timeline split at its markers, which is how you turn one long recording into numbered files. If the mix would clip, it is turned down so its loudest peak sits at -1 dB; if it would not, it is left exactly as you heard it. For a file going back into another editor, choose 32-bit WAV, which keeps levels above 0 dB intact instead of flattening them.</p>
+    <p>Export mixes every audible track together in 32-bit float, at the audio's own rate by default: a 96 kHz session exports at 96 kHz. You can pick any rate from 44.1 to 192 kHz instead. A clip at a different rate from the export is converted with the same windowed-sinc resampler as <a href="/change-sample-rate">the sample rate converter</a>, not the browser's own conversion. The formats are MP3 (the fast encoder, or LAME at V0 or 320 kbps), WAV at 16-bit, 24-bit or 32-bit float, FLAC at 16 or 24-bit, M4A and OGG. 16- and 24-bit files get triangular dither. An untouched 24-bit clip exported as 24-bit WAV comes out sample for sample the same as the file you put in; that is checked on every release. You can export the whole mix, the selected range, one clip, every track as a separate stem, or the timeline split at its markers, which is how you turn one long recording into numbered files. If the mix would clip, it is turned down so its loudest peak sits at -1 dB; if it would not, it is left exactly as you heard it. For a file going back into another editor, choose 32-bit WAV, which keeps levels above 0 dB intact instead of flattening them.</p>
     <p>The export runs the same effect code as playback, offline and faster than real time. With <em>Let reverb and echo ring out</em> ticked, it keeps rendering after the last clip until the tails fall below −90 dB. A 2-second reverb on an 8-second clip ends up about 10.4 seconds long, instead of stopping dead. Stems include each track's own effects and its sends into the buses, and leave out the master chain unless you ask for it, so they can be mastered together somewhere else.</p>
 
     <h3>On a phone</h3>
@@ -325,6 +333,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Can I record several takes and pick the best parts?</summary><p>Yes. Select a range, turn on Loop and record: every pass is kept as a take. Right-click the clip and choose Takes to listen and swap one in, for the whole clip or just a selected range. Nothing is deleted when you swap.</p></details>
       <details><summary>Does it do MIDI?</summary><p>Yes. Drop a .mid file on it and each part becomes a track of notes, played on a simple built-in instrument you can change per track. Edit the notes in a piano roll, download them as .mid again, or bounce them to audio. Convert to MIDI on an audio clip turns a single voice or instrument into notes on a new track.</p></details>
       <details><summary>Can I make a loop match my song's tempo and key?</summary><p>Yes. Set the project tempo and key in the tempo sheet, or detect them from a clip. Then right-click the loop and choose Fit to the project tempo, which stretches it without changing its pitch, and Match the project key, which shifts it by the fewest semitones.</p></details>
+      <details><summary>What quality does it record and export at?</summary><p>Recording asks the browser for a stereo input with echo cancellation, noise suppression and automatic gain turned off, and keeps the take as 32-bit float. Browsers default to mono with all three on, which suits a video call and damages music. The status line reports what the browser actually delivered. The microphone button next to Record picks the input, stereo or mono, and the engine's sample rate: set it to your interface's rate to record at 96 kHz. Export can be 16-bit, 24-bit or 32-bit float WAV or FLAC at up to 192 kHz.</p></details>
       <details><summary>Can I open the project in Audacity or another editor?</summary><p>Not the project itself, but export each track as a stem in 32-bit WAV and every other editor will open them, lined up from the same start point.</p></details>
       <!-- /AS:faq -->
   </section>
@@ -450,36 +459,36 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-25a"></script>
-<script src="/js/tool-graph.js?v=2026-09-25a"></script>
-<script src="/js/flow.js?v=2026-09-25a"></script>
-<script src="/js/audio-core.js?v=2026-09-25a"></script>
-<script src="/js/tool-shell.js?v=2026-09-25a"></script>
-<script src="/js/loudness.js?v=2026-09-25a"></script>
-<script src="/js/silence-gaps.js?v=2026-09-25a"></script>
-<script src="/js/slowed-reverb.js?v=2026-09-25a"></script>
-<script src="/js/noise-reduction.js?v=2026-09-25a"></script>
-<script src="/js/editor-model.js?v=2026-09-25a"></script>
-<script src="/js/editor-dsp.js?v=2026-09-25a"></script>
-<script src="/js/editor-synth.js?v=2026-09-25a"></script>
-<script src="/js/editor-engine.js?v=2026-09-25a"></script>
-<script src="/js/editor-view.js?v=2026-09-25a"></script>
-<script src="/js/editor-fx.js?v=2026-09-25a"></script>
-<script src="/js/editor-store.js?v=2026-09-25a"></script>
-<script src="/js/project-link.js?v=2026-09-25a"></script>
-<script src="/js/editor-link.js?v=2026-09-25a"></script>
-<script src="/js/bpm-detector.js?v=2026-09-25a"></script>
-<script src="/js/spectral.js?v=2026-09-25a"></script>
-<script src="/js/key-detect.js?v=2026-09-25a"></script>
-<script src="/js/slicer.js?v=2026-09-25a"></script>
-<script src="/js/pitch-track.js?v=2026-09-25a"></script>
-<script src="/js/midi-write.js?v=2026-09-25a"></script>
-<script src="/js/midi-read.js?v=2026-09-25a"></script>
-<script src="/js/piano-roll.js?v=2026-09-25a"></script>
-<script src="/js/editor-midi.js?v=2026-09-25a"></script>
-<script src="/js/editor-fxui.js?v=2026-09-25a"></script>
-<script src="/js/editor-ui.js?v=2026-09-25a"></script>
-<script src="/js/consent.js?v=2026-09-25a"></script>
-<script src="/js/pwa.js?v=2026-09-25a"></script>
+<script src="/js/common.js?v=2026-09-25b"></script>
+<script src="/js/tool-graph.js?v=2026-09-25b"></script>
+<script src="/js/flow.js?v=2026-09-25b"></script>
+<script src="/js/audio-core.js?v=2026-09-25b"></script>
+<script src="/js/tool-shell.js?v=2026-09-25b"></script>
+<script src="/js/loudness.js?v=2026-09-25b"></script>
+<script src="/js/silence-gaps.js?v=2026-09-25b"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-25b"></script>
+<script src="/js/noise-reduction.js?v=2026-09-25b"></script>
+<script src="/js/editor-model.js?v=2026-09-25b"></script>
+<script src="/js/editor-dsp.js?v=2026-09-25b"></script>
+<script src="/js/editor-synth.js?v=2026-09-25b"></script>
+<script src="/js/editor-engine.js?v=2026-09-25b"></script>
+<script src="/js/editor-view.js?v=2026-09-25b"></script>
+<script src="/js/editor-fx.js?v=2026-09-25b"></script>
+<script src="/js/editor-store.js?v=2026-09-25b"></script>
+<script src="/js/project-link.js?v=2026-09-25b"></script>
+<script src="/js/editor-link.js?v=2026-09-25b"></script>
+<script src="/js/bpm-detector.js?v=2026-09-25b"></script>
+<script src="/js/spectral.js?v=2026-09-25b"></script>
+<script src="/js/key-detect.js?v=2026-09-25b"></script>
+<script src="/js/slicer.js?v=2026-09-25b"></script>
+<script src="/js/pitch-track.js?v=2026-09-25b"></script>
+<script src="/js/midi-write.js?v=2026-09-25b"></script>
+<script src="/js/midi-read.js?v=2026-09-25b"></script>
+<script src="/js/piano-roll.js?v=2026-09-25b"></script>
+<script src="/js/editor-midi.js?v=2026-09-25b"></script>
+<script src="/js/editor-fxui.js?v=2026-09-25b"></script>
+<script src="/js/editor-ui.js?v=2026-09-25b"></script>
+<script src="/js/consent.js?v=2026-09-25b"></script>
+<script src="/js/pwa.js?v=2026-09-25b"></script>
 </body>
 </html>

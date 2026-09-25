@@ -133,6 +133,14 @@ function flacOf(wav) {
   } catch (e) { return null; }
 }
 
+// 1 s of a 19 kHz tone at 44.1 kHz / 16-bit: exported at 96 kHz, a poor
+// conversion leaves an image at 44.1 - 19 = 25.1 kHz.
+function fixture19k() {
+  const n = 44100, L = new Int32Array(n);
+  for (let i = 0; i < n; i++) L[i] = Math.round(0.5 * 32767 * Math.sin(2 * Math.PI * 19000 * i / 44100));
+  return wavInt([L, L], 44100, 16);
+}
+
 const f96 = fixture96(), f44 = fixture44(), sweepWav = fixtureSweep(), sweepFlac = flacOf(sweepWav);
 
 // Every tool page that writes audio, driven with the 96 kHz / 24-bit file and
@@ -179,6 +187,7 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>fidelity check</title>
         '/__f51.wav': fixture51(),
         '/__core.wasm': () => core || Buffer.alloc(0),
         '/__sweep.wav': sweepWav,
+        '/__t19k.wav': fixture19k(),
         '/__sweep.flac': sweepFlac || Buffer.alloc(0)
       }
     }, async (page) => {
@@ -196,6 +205,10 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>fidelity check</title>
       out.notes.forEach((n) => console.log('  ' + n));
       out.fails.forEach((f) => console.error('  FAIL ' + f));
       page.logs.forEach((l) => console.error('  ' + l));
+      const ed = process.env.FID_SKIP_PAGES || process.env.FID_PAGES ? { fails: [], notes: [], passed: 0 } : await editorChecks(page);
+      ed.notes.forEach((n) => console.log('  ' + n));
+      ed.fails.forEach((f) => console.error('  FAIL ' + f));
+      out.fails = out.fails.concat(ed.fails); out.passed += ed.passed;
       const sw = process.env.FID_SKIP_PAGES ? { fails: [], rows: [] } : await sweep(page, !!core);
       if (sw.rows.length) console.log('  pages: ' + sw.rows.join('; '));
       sw.fails.forEach((f) => console.error('  FAIL ' + f));
@@ -208,6 +221,100 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>fidelity check</title>
   }
   process.exit(code);
 })();
+
+/* ------------------------------------------------------------ the editor */
+
+// The editor through its own UI: import, the export dialog, recording.
+async function editorChecks(page) {
+  const fails = [], notes = [];
+  let passed = 0;
+  const ok = (c, m) => { if (c) passed++; else fails.push(m); };
+  async function fresh() {
+    await page.goto('/audio-editor', 1500);
+    await page.eval('new Promise((r) => { const q = indexedDB.deleteDatabase("audiosaw-editor"); q.onsuccess = q.onerror = q.onblocked = () => r(); })');
+    await page.goto('/audio-editor', 1500);
+  }
+  // Import `url` as `name`, export with the given format/rate, return the file's header and samples.
+  const exportOf = (url, name, fmt, rate) => page.eval(`(async () => {
+    const wait = async (fn, ms) => { const end = Date.now() + (ms || 30000); while (!fn()) { if (Date.now() > end) throw new Error('timed out: ' + fn + ' / ' + document.getElementById('status').textContent); await new Promise((r) => setTimeout(r, 100)); } };
+    const f = new File([await (await fetch(${JSON.stringify(url)})).arrayBuffer()], ${JSON.stringify(name)});
+    const dt = new DataTransfer(); dt.items.add(f);
+    const i = document.getElementById('fileInput'); i.files = dt.files; i.dispatchEvent(new Event('change', { bubbles: true }));
+    await wait(() => !document.getElementById('ed').classList.contains('is-empty'));
+    await new Promise((r) => setTimeout(r, 500));
+    let out = null;
+    const orig = CV.downloadBlob;
+    CV.downloadBlob = function (b, n) { out = { b, n }; };
+    document.getElementById('edExport').click();
+    document.getElementById('edExWhat').value = 'mix';
+    document.getElementById('edExFmt').value = ${JSON.stringify(fmt)};
+    document.getElementById('edExRate').value = ${JSON.stringify(String(rate))};
+    document.getElementById('edExMono').checked = false;
+    document.getElementById('edExGo').click();
+    await wait(() => out, 120000);
+    CV.downloadBlob = orig;
+    const u = new Uint8Array(await out.b.arrayBuffer());
+    const info = AudioSaw.sniffFormat(u);
+    const ab = await AudioSaw.decodeToAudioBuffer(new File([u], 'x.wav'));
+    return { info, sr: ab.sampleRate, L: Array.from(ab.getChannelData(0)) };
+  })()`, 300000);
+  const db = (x) => 20 * Math.log10(Math.max(1e-15, x));
+  function amp(y, f, sr) {
+    const a = Math.floor(y.length * 0.25), n = Math.floor(y.length * 0.5);
+    let re = 0, im = 0, ws = 0;
+    for (let i = 0; i < n; i++) {
+      const t = i / (n - 1);
+      const w = 0.35875 - 0.48829 * Math.cos(2 * Math.PI * t) + 0.14128 * Math.cos(4 * Math.PI * t) - 0.01168 * Math.cos(6 * Math.PI * t);
+      ws += w; const ph = 2 * Math.PI * f * (a + i) / sr;
+      re += y[a + i] * w * Math.cos(ph); im += y[a + i] * w * Math.sin(ph);
+    }
+    return 2 * Math.hypot(re, im) / ws;
+  }
+  try {
+    // 1. A 96 kHz / 24-bit clip exports at 96 kHz / 24-bit by default, and
+    //    an untouched clip comes out sample for sample.
+    await fresh();
+    const a = await exportOf('/__f96.wav', 'hi.wav', 'wav24', 'project');
+    ok(a.info && a.info.sampleRate === 96000 && a.info.bits === 24 && a.info.channels === 2, 'editor: 96k/24 clip exported as ' + JSON.stringify(a.info));
+    let same = a.L.length >= f96.L.length;
+    for (let i = 0; same && i < f96.L.length; i++) if (Math.round(a.L[i] * 8388608) !== f96.L[i]) same = false;
+    ok(same, 'editor: an untouched 24-bit clip does not export bit-identical');
+    notes.push('editor: a 96k/24 clip exports at 96k/24 by default' + (same ? ', bit-identical to the source' : ''));
+
+    // 2. A 44.1 kHz clip exported at 96 kHz goes through the sinc resampler:
+    //    no image of 19 kHz at 25.1 kHz.
+    await fresh();
+    const b = await exportOf('/__t19k.wav', 'cd.wav', 'wav32f', 96000);
+    const img = db(amp(b.L, 25100, 96000) / 0.5), sig = db(amp(b.L, 19000, 96000) / 0.5);
+    ok(b.sr === 96000 && Math.abs(sig) < 0.01 && img < -100, 'editor: 44.1k clip at 96k export: 19 kHz at ' + sig.toFixed(2) + ' dB, image at 25.1 kHz ' + img.toFixed(1) + ' dB');
+    notes.push('editor: a 44.1k clip exported at 96k keeps 19 kHz at ' + sig.toFixed(3) + ' dB with its 25.1 kHz image at ' + img.toFixed(1) + ' dB');
+
+    // 3. Recording: Chrome's defaults are a phone call's, what we ask for is not.
+    await fresh();
+    const r = await page.eval(`(async () => {
+      const E = ASEditEngine;
+      const plain = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const d0 = plain.getAudioTracks()[0].getSettings(); plain.getTracks().forEach((t) => t.stop());
+      const c = E.micConstraints({}).audio;
+      E.setSampleRate(96000); await E.unlock();
+      const got = await E.startRecording(null, { channels: 2 });
+      await new Promise((res) => setTimeout(res, 800));
+      const res = await E.stopRecording();
+      E.setSampleRate(null);
+      return { d0: { ch: d0.channelCount, ec: d0.echoCancellation, ns: d0.noiseSuppression, agc: d0.autoGainControl },
+        c: { ch: c.channelCount.ideal, ec: c.echoCancellation, ns: c.noiseSuppression, agc: c.autoGainControl },
+        got, sr: res && res.buffer.sampleRate, len: res && res.buffer.length };
+    })()`, 60000);
+    ok(r.d0.ch === 1 && r.d0.ec && r.d0.ns && r.d0.agc, 'Chrome\'s default microphone is no longer mono with processing on (' + JSON.stringify(r.d0) + '); the editor page says it is');
+    ok(r.c.ch === 2 && r.c.ec === false && r.c.ns === false && r.c.agc === false, 'editor: microphone constraints ' + JSON.stringify(r.c));
+    ok(r.got && r.got.channels === 2 && !r.got.processing, 'editor: the browser delivered ' + JSON.stringify(r.got));
+    ok(r.sr === 96000 && r.len > 96000 * 0.3, 'editor: a take with the engine at 96 kHz came back at ' + r.sr + ' Hz, ' + r.len + ' samples');
+    notes.push('editor: Chrome\'s default mic is mono with echo cancellation, noise suppression and AGC on; the editor asks for and gets stereo with all three off, and records at the engine rate (96 kHz here)');
+  } catch (e) {
+    fails.push('editor: ' + String(e.message || e).split('\n')[0].slice(0, 300));
+  }
+  return { fails, notes, passed };
+}
 
 /* ------------------------------------------------------ the page sweep */
 

@@ -31,10 +31,11 @@
   var master = null, meterL = null, meterR = null;
   var playing = null;          // { from, to, t0, G, project, loop, next, prev, passes }
   var buffers = new Map();     // sourceId -> AudioBuffer
+  var engineRate = null;       // null: the device's own rate
 
   function ensureCtx() {
     if (ctx) return ctx;
-    ctx = new Ctx({ latencyHint: 'interactive' });
+    ctx = engineRate ? new Ctx({ latencyHint: 'interactive', sampleRate: engineRate }) : new Ctx({ latencyHint: 'interactive' });
     master = ctx.createGain();
     var split = ctx.createChannelSplitter(2);
     meterL = ctx.createAnalyser(); meterL.fftSize = 1024;
@@ -47,6 +48,23 @@
     // before they are ready is rebuilt the moment they are.
     D.ensureWorklet(ctx).then(function (ok) { if (ok && playing) replay(); });
     return ctx;
+  }
+
+  // The rate everything plays and records at. Recording captures at this rate
+  // (the browser converts the microphone to it), so a 96 kHz interface only
+  // records at 96 kHz with the engine at 96 kHz. Changing it closes the
+  // context; the next play or record builds a new one. Call from a user
+  // gesture, followed by unlock(), for iOS's sake.
+  function setSampleRate(rate) {
+    rate = rate || null;
+    if (rate === engineRate && (ctx || !rate)) return false;
+    engineRate = rate;
+    if (!ctx) return true;
+    if (playing) stop();
+    try { ctx.close(); } catch (e) {}
+    ctx = null; master = meterL = meterR = null;
+    workletReady = null;
+    return true;
   }
 
   // Resume inside the user gesture that started playback: iOS keeps a context
@@ -212,7 +230,7 @@
         if (ce <= from || clip.start >= to) return;
         var msrc = project.sources[clip.sourceId];
         if (msrc && msrc.kind === 'midi') { scheduleMidi(G, project, t, clip, msrc, from, to, when, into); return; }
-        var buf = buffers.get(clip.sourceId);
+        var buf = (G.bufs && G.bufs.get(clip.sourceId)) || buffers.get(clip.sourceId);
         if (!buf) return;
         var cs = Math.max(clip.start, from);
         var local = cs - clip.start;
@@ -298,7 +316,7 @@
     M.normalize(project);
     panCurves();
     var audible = M.audibleTracks(project);
-    var G = { ctx: c, nodes: [], owners: {}, tracks: {}, buses: {}, lanes: [], project: project, from: from, when: when };
+    var G = { ctx: c, nodes: [], owners: {}, tracks: {}, buses: {}, lanes: [], project: project, from: from, when: when, bufs: opts.bufs || null };
     var env = { bpm: project.bpm, key: function (id) { return G.tracks[id] ? G.tracks[id].in : null; } };
     G.env = env;
     var mix = c.createGain();
@@ -840,22 +858,57 @@
     return Math.min(60, t + (noMaster ? 0 : chain(project.master.fx)));
   }
 
-  // opts: sampleRate, channels, protect (turn a clipping mix down to -1 dBFS),
-  // tails (render past t1 until the effects have died away), noMaster (stems).
+  // The project's own rate: the highest rate among the audio it uses, so a
+  // 96 kHz session exports at 96 kHz unless asked otherwise. A project with no
+  // audio (MIDI only) uses the engine's rate.
+  function projectRate(project) {
+    var sr = 0;
+    project.tracks.forEach(function (t) {
+      t.clips.forEach(function (c) { var b = buffers.get(c.sourceId); if (b && b.sampleRate > sr) sr = b.sampleRate; });
+    });
+    return sr ? Math.max(8000, Math.min(192000, sr)) : (ctx ? ctx.sampleRate : 48000);
+  }
+
+  // Sources at another rate than the render are converted with the sinc
+  // resampler first (js/resample.js via AudioSaw), not by the buffer source
+  // node, which in Chrome decimates without a filter. Kept between renders:
+  // sources never change, so a copy never goes stale.
+  var converted = new Map();   // sourceId@rate -> AudioBuffer
+  function convertSources(project, sr) {
+    var A = global.AudioSaw, need = [];
+    if (!A || !A.resampleBuffer) return Promise.resolve(null);
+    var map = new Map();
+    project.tracks.forEach(function (t) {
+      t.clips.forEach(function (c) {
+        var b = buffers.get(c.sourceId);
+        if (!b || b.sampleRate === sr || map.has(c.sourceId)) return;
+        var key = c.sourceId + '@' + sr;
+        if (converted.has(key)) { map.set(c.sourceId, converted.get(key)); return; }
+        map.set(c.sourceId, null);
+        need.push(A.resampleBuffer(b, sr).then(function (rb) { converted.set(key, rb); map.set(c.sourceId, rb); }));
+      });
+    });
+    return Promise.all(need).then(function () { return map; });
+  }
+
+  // opts: sampleRate (a number, or 'project' for projectRate), channels,
+  // protect (turn a clipping mix down to -1 dBFS), tails (render past t1
+  // until the effects have died away), noMaster (stems).
   function render(project, t0, t1, opts) {
     opts = opts || {};
     project = M.normalize(M.copy(project));
-    var sr = opts.sampleRate || 44100;
+    var sr = opts.sampleRate === 'project' || !opts.sampleRate ? projectRate(project) : opts.sampleRate;
     var ch = opts.channels || 2;
     var extra = opts.tails ? tailOf(project, opts.noMaster) : 0;
     // Room for the look-ahead too, which is trimmed off the front afterwards.
     var pad = 0.05;
     var len = Math.max(1, Math.ceil((t1 - t0 + extra + pad) * sr));
     var off = new Octx(ch, len, sr);
-    return D.ensureWorklet(off).then(function () {
+    var bufs = null;
+    return convertSources(project, sr).then(function (m) { bufs = m; return D.ensureWorklet(off); }).then(function () {
       var bus = off.createGain();
       bus.connect(off.destination);
-      var G = build(off, bus, project, t0, t1, 0, { noMaster: opts.noMaster });
+      var G = build(off, bus, project, t0, t1, 0, { noMaster: opts.noMaster, bufs: bufs });
       // Work to do partway through, at render-quantum boundaries: one
       // suspend per time, since a second one at the same time throws.
       var at = {}, span = t1 - t0 + extra;
@@ -947,18 +1000,40 @@
 
   var rec = null;
 
+  // The microphone constraints. Asked for explicitly, because the defaults
+  // are a phone call's: Chrome opens a mono track with echo cancellation,
+  // noise suppression and auto gain on unless told otherwise (checked in
+  // tools/check-fidelity.js). Those three are off because every one damages
+  // music: AGC pumps, noise suppression eats sustained notes, echo
+  // cancellation ducks the take whenever the backing track is loud.
+  function micConstraints(opts) {
+    opts = opts || {};
+    var a = {
+      channelCount: { ideal: opts.channels === 1 ? 1 : 2 },
+      sampleRate: { ideal: ctx ? ctx.sampleRate : 48000 },
+      sampleSize: { ideal: 24 },
+      echoCancellation: false, noiseSuppression: false, autoGainControl: false
+    };
+    if (opts.deviceId) a.deviceId = { exact: opts.deviceId };
+    return { audio: a };
+  }
+
   // Starts capturing. `onChunk(channels)` receives raw Float32 arrays as they
-  // arrive, for the live waveform. Resolves once the microphone is open.
-  function startRecording(onChunk) {
+  // arrive, for the live waveform. opts: { deviceId, channels: 1 | 2 }.
+  // Resolves, once the microphone is open, with what the browser actually
+  // delivered: { label, channels, sampleRate, engineRate, processing }.
+  function startRecording(onChunk, opts) {
     ensureCtx();
+    opts = opts || {};
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       return Promise.reject(new Error('This browser cannot record audio.'));
     }
-    return navigator.mediaDevices.getUserMedia({
-      // Off, because every one of these is designed for calls and damages music:
-      // AGC pumps, noise suppression eats sustained notes, echo cancellation
-      // ducks the take whenever the backing track is loud.
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+    return navigator.mediaDevices.getUserMedia(micConstraints(opts)).catch(function (err) {
+      // An input that was unplugged since it was chosen: fall back to the default.
+      if (opts.deviceId && err && (err.name === 'OverconstrainedError' || err.name === 'NotFoundError')) {
+        return navigator.mediaDevices.getUserMedia(micConstraints({ channels: opts.channels }));
+      }
+      throw err;
     }).then(function (stream) {
       return loadWorklet().then(function (hasWorklet) {
         var srcNode = ctx.createMediaStreamSource(stream);
@@ -984,15 +1059,23 @@
         }
         srcNode.connect(node);
         node.connect(sink);
-        var settings = {};
-        try { settings = stream.getAudioTracks()[0].getSettings() || {}; } catch (e) {}
+        var settings = {}, label = '';
+        try { var tr = stream.getAudioTracks()[0]; settings = tr.getSettings() || {}; label = tr.label || ''; } catch (e) {}
+        var delivered = {
+          label: label,
+          channels: settings.channelCount || null,
+          sampleRate: settings.sampleRate || null,
+          engineRate: ctx.sampleRate,
+          processing: !!(settings.echoCancellation || settings.noiseSuppression || settings.autoGainControl)
+        };
         rec = {
           stream: stream, node: node, srcNode: srcNode, sink: sink, chunks: chunks,
           firstT: function () { return firstT; }, worklet: hasWorklet,
           inputLatency: typeof settings.latency === 'number' ? settings.latency : 0.01,
-          mono: settings.channelCount === 1
+          mono: settings.channelCount === 1 || opts.channels === 1,
+          delivered: delivered
         };
-        return true;
+        return delivered;
       });
     });
   }
@@ -1030,7 +1113,11 @@
       return {
         buffer: buf,
         firstT: r.firstT(),
-        latency: (ctx.outputLatency || 0) + (ctx.baseLatency || 0) + r.inputLatency
+        latency: (ctx.outputLatency || 0) + (ctx.baseLatency || 0) + r.inputLatency,
+        // Two channels asked for and delivered, but identical: a mono
+        // microphone on a stereo input. Kept as one.
+        dualMono: nch === 1 && !r.mono,
+        delivered: r.delivered
       };
     });
   }
@@ -1056,6 +1143,10 @@
 
   global.ASEditEngine = {
     buffers: buffers,
+    setSampleRate: setSampleRate,
+    engineRate: function () { return engineRate; },
+    projectRate: projectRate,
+    micConstraints: micConstraints,
     unlock: unlock,
     previewNotes: previewNotes, stopPreview: stopPreview,
     play: play, stop: stop, isPlaying: isPlaying, position: position, playEnd: playEnd, playInfo: playInfo,
