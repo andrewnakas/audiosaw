@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-25c">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -195,6 +195,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h3>True peak, and why the ceiling is -1</h3>
     <p>The waveform between two samples can rise above both of them. A converter or a lossy encoder reconstructing that curve will clip on it even though no stored sample was ever over full scale, which is why a master that looked clean can distort after it has been turned into an AAC stream.</p>
     <p>True-peak measurement oversamples before looking, so it catches those inter-sample peaks. The -1&nbsp;dBTP ceiling is the standard allowance, and it exists precisely to leave room for what encoding will do. If your file is going to be encoded again after this — which it will be, by the platform — that headroom is not optional.</p>
+    <p>When you save as MP3 here, the ceiling holds for the MP3 itself, not just for the audio before it was encoded. The encoder rebuilds the waveform and can raise its peaks, so the page decodes the file it just wrote and measures its true peak. If that passed the ceiling, it turns the gain down by the overshoot and encodes again. The report shows the peak of the file you download.</p>
 
     <h3>What this tool will not do to your file</h3>
     <p>It applies one gain figure to the whole file and nothing else. No compression, no limiting, no EQ, no dynamic adjustment of any kind. Turn it down and it is the same recording, quieter. Turn it up and it is the same recording, louder.</p>
@@ -344,15 +345,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-25c"></script>
-<script src="/js/tool-graph.js?v=2026-09-25c"></script>
-<script src="/js/flow.js?v=2026-09-25c"></script>
-<script src="/js/project-link.js?v=2026-09-25c"></script>
-<script src="/js/audio-core.js?v=2026-09-25c"></script>
-<script src="/js/tool-shell.js?v=2026-09-25c"></script>
-<script src="/js/loudness.js?v=2026-09-25c"></script>
-<script src="/js/loudness-page.js?v=2026-09-25c"></script>
-<script src="/js/consent.js?v=2026-09-25c"></script>
-<script src="/js/pwa.js?v=2026-09-25c"></script>
+<script src="/js/common.js?v=2026-09-25d"></script>
+<script src="/js/tool-graph.js?v=2026-09-25d"></script>
+<script src="/js/flow.js?v=2026-09-25d"></script>
+<script src="/js/project-link.js?v=2026-09-25d"></script>
+<script src="/js/audio-core.js?v=2026-09-25d"></script>
+<script src="/js/tool-shell.js?v=2026-09-25d"></script>
+<script src="/js/loudness.js?v=2026-09-25d"></script>
+<script src="/js/loudness-page.js?v=2026-09-25d"></script>
+<script src="/js/consent.js?v=2026-09-25d"></script>
+<script src="/js/pwa.js?v=2026-09-25d"></script>
 </body>
 </html>

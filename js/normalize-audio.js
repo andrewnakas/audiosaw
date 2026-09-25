@@ -74,6 +74,10 @@
     return out;
   }
 
+  function usesTruePeak() { var m = $('#peakMode'); return !!(m && m.value === 'true' && window.ASLoudness); }
+  function channelsOf(b) { var o = []; for (var c = 0; c < b.numberOfChannels; c++) o.push(b.getChannelData(c)); return o; }
+  if ($('#peakMode')) CV.remember($('#peakMode'));
+
   function dbToAmp(db) { return Math.pow(10, db / 20); }
   function ampToDb(amp) { return amp > 0 ? 20 * Math.log10(amp) : -Infinity; }
 
@@ -102,7 +106,10 @@
         CV.setProgress(progressBar, ((i + 0.1) / files.length) * 100);
 
         var ab = await AudioSaw.decodeToAudioBuffer(f);
-        var peak = findPeak(ab);
+        // True peak counts the peaks between samples, which a D/A converter
+        // or an MP3 encoder will reproduce and can clip on even when every
+        // stored sample is under the target.
+        var peak = usesTruePeak() ? ASLoudness.truePeak(channelsOf(ab)) : findPeak(ab);
         if (peak === 0) throw new Error('File is silent — nothing to normalize.');
 
         var gain = targetAmp / peak;

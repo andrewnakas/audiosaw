@@ -169,7 +169,11 @@ const SWEEP = [
   { page: '/wav-to-flac', depth: '24', ffmpeg: true },
   { page: '/mp3-to-aiff', depth: '24', aiff: true },
   { page: '/davinci-resolve-audio', depth: '24', rate: 48000 },
-  { page: '/wav-to-mp3', mp3: 'v0', ffmpeg: true, rate: 48000 }
+  { page: '/wav-to-mp3', mp3: 'v0', ffmpeg: true, rate: 48000 },
+  // Level claims, measured on the written file (true peak, BS.1770 4x).
+  { page: '/amplify-audio', label: '/amplify-audio +15 dB', sel: 'targetFormat', set: 'document.getElementById("gainDb").value = "15";', tpMax: -1.0, untouched: 15 },
+  { page: '/normalize-audio', label: '/normalize-audio true peak', set: 'document.getElementById("targetDb").value = "-1"; document.getElementById("peakMode").value = "true";', tpNear: -1.0 },
+  { page: '/loudness-normalizer', label: '/loudness-normalizer MP3, ceiling-bound', sel: false, mp3: '320', rate: 48000, set: 'document.getElementById("outFormat").value = "mp3"; const t = document.getElementById("target"); t.value = "custom"; t.dispatchEvent(new Event("change")); document.getElementById("customTarget").value = "-5";', tpMax: -1.0 }
 ];
 const PAGE = `<!doctype html><meta charset="utf-8"><title>fidelity check</title>
 <script src="/js/audio-core.js?v=check"></script>
@@ -209,6 +213,10 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>fidelity check</title>
       ed.notes.forEach((n) => console.log('  ' + n));
       ed.fails.forEach((f) => console.error('  FAIL ' + f));
       out.fails = out.fails.concat(ed.fails); out.passed += ed.passed;
+      const st = process.env.FID_SKIP_PAGES || process.env.FID_PAGES ? { fails: [], notes: [], passed: 0 } : await stemCheck(page);
+      st.notes.forEach((n) => console.log('  ' + n));
+      st.fails.forEach((f) => console.error('  FAIL ' + f));
+      out.fails = out.fails.concat(st.fails); out.passed += st.passed;
       const sw = process.env.FID_SKIP_PAGES ? { fails: [], rows: [] } : await sweep(page, !!core);
       if (sw.rows.length) console.log('  pages: ' + sw.rows.join('; '));
       sw.fails.forEach((f) => console.error('  FAIL ' + f));
@@ -339,6 +347,73 @@ async function editorChecks(page) {
   return { fails, notes, passed };
 }
 
+/* ------------------------------------------------------ the stem splitter */
+
+// /stem-splitter without its 64 MB model: a stand-in worker returns half the
+// (44.1 kHz) input as the "vocal", which is all the page's rate handling needs.
+// A 96 kHz / 24-bit file must come back as 96 kHz stems whose sum is the
+// original, with the 30 kHz tone in the right channel kept in the instrumental.
+async function stemCheck(page) {
+  const fails = [], notes = [];
+  let passed = 0;
+  const ok = (c, m) => { if (c) passed++; else fails.push(m); };
+  const fake = `if (location.pathname === '/stem-splitter') {
+    window.Worker = function () {
+      const self = this;
+      this.postMessage = function (msg) {
+        if (msg.type !== 'separate') return;
+        setTimeout(function () {
+          const v = [msg.left.map((x) => x * 0.5), msg.right.map((x) => x * 0.5)];
+          const i = [msg.left.map((x, k) => x - v[0][k]), msg.right.map((x, k) => x - v[1][k])];
+          self.onmessage({ data: { type: 'done', sampleRate: 44100, vocals: v, instrumental: i } });
+        }, 10);
+      };
+      this.terminate = function () {};
+    };
+  }`;
+  const reg = await page.send('Page.addScriptToEvaluateOnNewDocument', { source: fake });
+  try {
+    await page.goto('/stem-splitter', 1500);
+    const r = await page.eval(`(async () => {
+      const wait = async (fn, ms) => { const e = Date.now() + (ms || 30000); while (!fn()) { if (Date.now() > e) throw new Error('timeout ' + fn + ' ' + document.getElementById('status').textContent); await new Promise((r) => setTimeout(r, 100)); } };
+      let out = null; CV.downloadBlob = function (b, n) { out = { b, n }; };
+      const f = new File([await (await fetch('/__f96.wav')).arrayBuffer()], 'song.wav');
+      const dt = new DataTransfer(); dt.items.add(f);
+      const i = document.getElementById('fileInput'); i.files = dt.files; i.dispatchEvent(new Event('change', { bubbles: true }));
+      await wait(() => !document.getElementById('convertBtn').disabled);
+      document.getElementById('wantInstrumental').checked = true; document.getElementById('wantAcapella').checked = true;
+      document.getElementById('outFmt').value = 'wav32f';
+      document.getElementById('convertBtn').click();
+      await wait(() => out, 120000);
+      const u = new Uint8Array(await out.b.arrayBuffer()), dv = new DataView(u.buffer), files = [];
+      for (let o = 0; o + 30 < u.length && dv.getUint32(o, true) === 0x04034b50;) {
+        const nl = dv.getUint16(o + 26, true), size = dv.getUint32(o + 18, true);
+        files.push(u.slice(o + 30 + nl, o + 30 + nl + size)); o += 30 + nl + size;
+      }
+      const bufs = await Promise.all(files.map((b) => AudioSaw.decodeToAudioBuffer(new File([b], 'x.wav'))));
+      const src = await AudioSaw.decodeToAudioBuffer(f);
+      let err = 0;
+      for (let c = 0; c < 2; c++) {
+        const a = bufs[0].getChannelData(c), b = bufs[1].getChannelData(c), x = src.getChannelData(c);
+        for (let k = 0; k < x.length; k++) err = Math.max(err, Math.abs(a[k] + b[k] - x[k]));
+      }
+      const amp = (y, f, sr) => { let re = 0, im = 0; for (let k = 0; k < y.length; k++) { re += y[k] * Math.cos(2 * Math.PI * f * k / sr); im += y[k] * Math.sin(2 * Math.PI * f * k / sr); } return 2 * Math.hypot(re, im) / y.length; };
+      return { rates: bufs.map((b) => b.sampleRate), ch: bufs.map((b) => b.numberOfChannels), lens: bufs.map((b) => b.length), srcLen: src.length,
+        err, hi: amp(bufs[0].getChannelData(1), 30000, 96000), hiV: amp(bufs[1].getChannelData(1), 30000, 96000) };
+    })()`, 180000);
+    ok(r.rates.every((x) => x === 96000) && r.ch.every((x) => x === 2) && r.lens.every((x) => x === r.srcLen), 'stems: ' + JSON.stringify(r));
+    ok(r.err < 1e-6, 'stems: instrumental + vocal differ from the original by ' + r.err);
+    const hiDb = 20 * Math.log10(r.hi / 0.3);
+    ok(Math.abs(hiDb) < 0.1 && r.hiV < 1e-4, 'stems: the 30 kHz tone is ' + hiDb.toFixed(2) + ' dB in the instrumental, ' + r.hiV + ' in the vocal');
+    notes.push('stems: a 96k/24 file gives 96 kHz stems that sum to the original within ' + r.err.toExponential(1) + ', with its 30 kHz content in the instrumental (' + hiDb.toFixed(2) + ' dB)');
+  } catch (e) {
+    fails.push('stems: ' + String(e.message || e).split('\n')[0].slice(0, 300));
+  } finally {
+    await page.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: reg.result.identifier });
+  }
+  return { fails, notes, passed };
+}
+
 /* ------------------------------------------------------ the page sweep */
 
 async function sweep(page, haveCore) {
@@ -380,7 +455,21 @@ async function sweep(page, haveCore) {
         }
         const info = AudioSaw.sniffFormat(u);
         const status = (document.getElementById('status') || {}).textContent || '';
-        return { name: out.n, info, status };
+        let tp = null, untouched = null;
+        if (${!!(t.tpMax != null || t.tpNear != null)} && window.ASLoudness) {
+          const d = await AudioSaw.decodeToAudioBuffer(new File([u], 'o.' + AudioSaw.extFor(info.container === 'mp3' ? 'mp3' : 'wav')));
+          const ch = []; for (let c = 0; c < d.numberOfChannels; c++) ch.push(d.getChannelData(c));
+          tp = ASLoudness.toDb(ASLoudness.truePeak(ch));
+          if (${t.untouched || 0}) {
+            // In the quiet gap (1.40-1.70 s) the output must be the input times the gain.
+            const src = await AudioSaw.decodeToAudioBuffer(file), g = Math.pow(10, ${t.untouched || 0} / 20);
+            const a0 = Math.round(1.4 * d.sampleRate), a1 = Math.round(1.7 * d.sampleRate);
+            let worst = 0; const x = src.getChannelData(0), y = d.getChannelData(0);
+            for (let k = a0; k < a1; k++) worst = Math.max(worst, Math.abs(y[k] - x[k] * g));
+            untouched = worst * 8388608;
+          }
+        }
+        return { name: out.n, info, status, tp, untouched };
       })()`, 300000);
       const i = got.info || {};
       const wantRate = t.rate || 96000, wantCh = t.ch || 2, wantBits = t.mp3 ? 0 : 24;
@@ -390,8 +479,13 @@ async function sweep(page, haveCore) {
       if (!t.mp3 && i.bits !== wantBits) bad.push(i.bits + '-bit');
       if (t.aiff && i.container !== 'aiff') bad.push(i.container);
       if (t.page === '/wav-to-flac' && i.container !== 'flac') bad.push(i.container);
+      if (t.tpMax != null && !(got.tp <= t.tpMax + 0.005)) bad.push('true peak ' + (got.tp == null ? '?' : got.tp.toFixed(3)) + ' dBTP (max ' + t.tpMax + ')');
+      if (t.tpNear != null && !(Math.abs(got.tp - t.tpNear) < 0.05)) bad.push('true peak ' + (got.tp == null ? '?' : got.tp.toFixed(3)) + ' dBTP (want ' + t.tpNear + ')');
+      // 24-bit TPDF dither is +-1 LSB and rounding half of one: 1.5 at most.
+      if (t.untouched && !(got.untouched <= 1.5 + 1e-6)) bad.push('quiet passage changed by ' + got.untouched + ' LSB beyond the gain');
       if (bad.length) fails.push(label + ': wrote ' + bad.join(', ') + ' (' + got.name + ')');
-      else rows.push(label + ' ' + (i.sampleRate / 1000) + 'k/' + (i.bits || i.codec) + '/' + i.channels + 'ch');
+      else rows.push(label + ' ' + (i.sampleRate / 1000) + 'k/' + (i.bits || i.codec) + '/' + i.channels + 'ch' +
+        (got.tp != null ? ' ' + got.tp.toFixed(2) + ' dBTP' : '') + (got.untouched != null ? ', gap exact to ' + got.untouched.toFixed(2) + ' LSB' : ''));
     } catch (e) {
       fails.push(label + ': ' + String(e.message || e).split('\n')[0].slice(0, 300) + (page.logs.length ? ' | ' + page.logs.slice(-3).join(' | ') : ''));
     }

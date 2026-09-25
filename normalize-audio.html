@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-25c">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -116,6 +116,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
             <option value="-1" selected>-1 dB (safe headroom)</option>
             <option value="-3">-3 dB (conservative)</option>
             <option value="-6">-6 dB (broadcast safe)</option>
+          </select>
+        </label>
+        <label>Measure
+          <select id="peakMode">
+            <option value="sample" selected>Sample peak (dBFS)</option>
+            <option value="true">True peak (dBTP), for lossy encoding</option>
           </select>
         </label>
         <label>Output format
@@ -314,13 +320,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-25c"></script>
-<script src="/js/tool-graph.js?v=2026-09-25c"></script>
-<script src="/js/flow.js?v=2026-09-25c"></script>
-<script src="/js/project-link.js?v=2026-09-25c"></script>
-<script src="/js/audio-core.js?v=2026-09-25c"></script>
-<script src="/js/normalize-audio.js?v=2026-09-25c"></script>
-<script src="/js/consent.js?v=2026-09-25c"></script>
-<script src="/js/pwa.js?v=2026-09-25c"></script>
+<script src="/js/common.js?v=2026-09-25d"></script>
+<script src="/js/tool-graph.js?v=2026-09-25d"></script>
+<script src="/js/flow.js?v=2026-09-25d"></script>
+<script src="/js/project-link.js?v=2026-09-25d"></script>
+<script src="/js/audio-core.js?v=2026-09-25d"></script>
+<script src="/js/loudness.js?v=2026-09-25d"></script>
+<script src="/js/normalize-audio.js?v=2026-09-25d"></script>
+<script src="/js/consent.js?v=2026-09-25d"></script>
+<script src="/js/pwa.js?v=2026-09-25d"></script>
 </body>
 </html>

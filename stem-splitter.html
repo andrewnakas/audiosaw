@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-25c">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -167,6 +167,7 @@ window.AS_VERSION = '2026-09-22';
         <tr><th>Acceleration</th><td>WebGPU where available, CPU fallback otherwise</td></tr>
         <tr><th>Speed</th><td>About the length of the track on a GPU; roughly ten times that on a CPU</td></tr>
         <tr><th>Processing</th><td>Overlapping 5.9-second parts, cross-faded</td></tr>
+        <tr><th>Output</th><td>At your file's own sample rate and bit depth: the model runs at 44.1 kHz, and the stems are returned to 96 kHz, 24-bit or whatever came in. WAV up to 32-bit float, FLAC, or MP3</td></tr>
         <tr><th>Length limit</th><td>About ten minutes — both stems are held in memory</td></tr>
         <tr><th>Uploads your file</th><td>No — only the model is fetched, and it holds none of your audio</td></tr>
         </tbody>
@@ -187,6 +188,7 @@ window.AS_VERSION = '2026-09-22';
     <h2>What it gets wrong</h2>
     <p>Separation is very good, not perfect, and the artefacts are characteristic. Cymbals and vocal sibilance live in the same frequencies, so a harsh "s" can leave a trace in the instrumental and a hi-hat can bleed into the acapella. Heavy reverb on a voice tends to stay behind in the instrumental, because the tail no longer looks much like a voice. Backing vocals and vocal samples usually go with the lead, whether you wanted them to or not.</p>
     <p>The two outputs sum back to the original exactly, because the instrumental is produced by subtracting the vocal rather than being estimated separately. That is a feature — nothing goes missing — but it also means anything the model fails to catch stays audible in the other file.</p>
+    <p>The model itself only works at 44.1 kHz, so a high-resolution file is converted down for it. The results are not left there. The vocal is converted back up to your file's rate with a windowed-sinc resampler, and the instrumental is your original, at its own rate and depth, minus that vocal. A 96 kHz, 24-bit master gives 96 kHz stems that still add back to the original. Anything above 22 kHz, which the model never saw, stays in the instrumental rather than being thrown away. That is checked on every release.</p>
 
     <h2>Making it faster</h2>
     <p>The page tells you before you start whether it is using your GPU, and estimates how long your file will take. WebGPU is where the speed is: measured on the same machine and the same track, the GPU path runs at about the length of the audio and the CPU path at roughly ten times that. Chrome and Edge on a modern desktop are the safest bet for WebGPU.</p>
@@ -331,14 +333,14 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-25c"></script>
-<script src="/js/tool-graph.js?v=2026-09-25c"></script>
-<script src="/js/flow.js?v=2026-09-25c"></script>
-<script src="/js/project-link.js?v=2026-09-25c"></script>
-<script src="/js/audio-core.js?v=2026-09-25c"></script>
-<script src="/js/tool-shell.js?v=2026-09-25c"></script>
-<script src="/js/consent.js?v=2026-09-25c"></script>
-<script src="/js/stem-separator.js?v=2026-09-25c"></script>
-<script src="/js/pwa.js?v=2026-09-25c"></script>
+<script src="/js/common.js?v=2026-09-25d"></script>
+<script src="/js/tool-graph.js?v=2026-09-25d"></script>
+<script src="/js/flow.js?v=2026-09-25d"></script>
+<script src="/js/project-link.js?v=2026-09-25d"></script>
+<script src="/js/audio-core.js?v=2026-09-25d"></script>
+<script src="/js/tool-shell.js?v=2026-09-25d"></script>
+<script src="/js/consent.js?v=2026-09-25d"></script>
+<script src="/js/stem-separator.js?v=2026-09-25d"></script>
+<script src="/js/pwa.js?v=2026-09-25d"></script>
 </body>
 </html>

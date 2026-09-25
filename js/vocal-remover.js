@@ -73,6 +73,9 @@
       // Cancellation usually drops the level a long way; bring it back so the
       // result is comparable to the source rather than mysteriously quiet.
       if (opts.normalise) CV.peakNormalise([outL, outR], 0.97);
+      // Without levelling, the re-widened sides can pass full scale: limit
+      // to -1 dBTP rather than let the encoder clip.
+      else if (window.ASLoudness && ASLoudness.truePeak([outL, outR]) > 1) ASLoudness.limit([outL, outR], sr, Math.pow(10, -1 / 20));
 
       var outBuf = CV.bufferFrom([outL, outR], sr);
       onProgress(70, 'Encoding…');

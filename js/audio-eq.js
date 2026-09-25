@@ -66,6 +66,9 @@
     }).then(function (rendered) {
       var chans = CV.channelsOf(rendered);
       if (opts.normalise) CV.peakNormalise(chans, 0.97);
+      // Left at its own level, a boost can still pass full scale: limit it
+      // to -1 dBTP rather than let the encoder clip it.
+      else if (window.ASLoudness && ASLoudness.truePeak(chans) > 1) ASLoudness.limit(chans, rendered.sampleRate, Math.pow(10, -1 / 20));
       onProgress(65, 'Encoding…');
       return CV.encodeBuffer(rendered, opts.fmt, opts.bitrate, function (pct) {
         onProgress(65 + pct * 0.35);

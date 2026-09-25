@@ -3,6 +3,12 @@
  *
  * Decodes the dropped file, resamples to the 44.1 kHz the model expects, hands
  * the channels to the inference worker, then encodes what comes back.
+ *
+ * The stems go back to the file's own rate and channel count. The model's
+ * vocal is resampled up (the sinc resampler in js/resample.js) and the
+ * instrumental is the original, at its own rate, minus that vocal. So a
+ * 96 kHz / 24-bit file gives 96 kHz stems, whatever sits above 22 kHz stays
+ * in the instrumental, and the two stems still add back to the original.
  */
 (function () {
   'use strict';
@@ -26,6 +32,7 @@
   if (!dropzone) return;
 
   var files = [];
+  var nativeBuf = null;       // the decoded file, at its own rate
   var worker = null;
   var startedAt = 0;
   var warmed = false;
@@ -166,8 +173,9 @@
         'Both stems are held in memory at once, so past ' + Math.round(MAX_SECONDS / 60) +
         ' minutes the tab runs out of room — split it into parts first.');
     }
+    nativeBuf = buf;
     if (buf.sampleRate !== SR) {
-      CV.setStatus(statusEl, 'info', 'Resampling to 44.1 kHz…');
+      CV.setStatus(statusEl, 'info', 'Resampling to 44.1 kHz for the model…');
       buf = await AudioSaw.resampleBuffer(buf, SR);
     }
     var l = buf.getChannelData(0);
@@ -177,7 +185,32 @@
 
   /* ------------------------------------------------------------- rendering */
 
+  // The model's stems, moved to the source's rate and channel count.
+  async function toNative(m) {
+    var src = nativeBuf;
+    if (!src || (src.sampleRate === m.sampleRate && src.numberOfChannels === 2)) return m;
+    CV.setStatus(statusEl, 'info', 'Returning the stems to ' + (src.sampleRate / 1000) + ' kHz…');
+    var voc = [m.vocals[0], m.vocals[1]];
+    if (src.sampleRate !== m.sampleRate) {
+      var vb = await AudioSaw.resampleBuffer(AudioSaw.makeBuffer(voc, m.sampleRate), src.sampleRate);
+      voc = [vb.getChannelData(0), vb.getChannelData(1)];
+    }
+    var n = src.length, nch = Math.min(2, src.numberOfChannels);
+    var vocals = [], inst = [];
+    for (var c = 0; c < nch; c++) {
+      var v = new Float32Array(n), x = src.getChannelData(c), ins = new Float32Array(n);
+      for (var i = 0; i < n; i++) {
+        var vv = nch === 1 ? ((voc[0][i] || 0) + (voc[1][i] || 0)) / 2 : (voc[c][i] || 0);
+        v[i] = vv;
+        ins[i] = x[i] - vv;
+      }
+      vocals.push(v); inst.push(ins);
+    }
+    return { sampleRate: src.sampleRate, vocals: vocals, instrumental: inst };
+  }
+
   async function onDone(m) {
+    m = await toNative(m);
     var opts = readOpts();
     var wanted = [];
     if (opts.instrumental) wanted.push({ key: 'instrumental', ch: m.instrumental });
@@ -191,7 +224,7 @@
       var w = wanted[i];
       CV.setStatus(statusEl, 'info', 'Encoding the ' + w.key + '…');
       CV.setProgress(progressBar, 95 + (i / wanted.length) * 5);
-      var buffer = CV.bufferFrom([w.ch[0], w.ch[1]], m.sampleRate);
+      var buffer = CV.bufferFrom(w.ch, m.sampleRate);
       var blob = await CV.encodeBuffer(buffer, opts.fmt, opts.bitrate);
       outputs.push({ name: base + '-' + w.key + '.' + AudioSaw.extFor(opts.fmt), blob: blob });
     }

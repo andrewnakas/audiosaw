@@ -201,9 +201,106 @@
 
   function toDb(x) { return x > 0 ? 20 * Math.log10(x) : -Infinity; }
 
+  // A true-peak limiter for whole files: gain, then this, and no sample or
+  // inter-sample peak passes `ceiling` (linear). Used by /amplify-audio and
+  // as the clip guard on the EQ and vocal remover. Checked in
+  // tools/check-fidelity.js: +12 dB into a full-scale mix measures at or
+  // under the ceiling, and audio that never nears it is not touched at all.
+  //
+  //  - Detection is the 4x interpolation truePeak() uses, per sample, taking
+  //    the loudest of the sample and its three in-between points, across all
+  //    channels (the gain is linked, so the stereo image does not move).
+  //  - Look-ahead: the gain needed at a peak is reached `lookahead` seconds
+  //    before it, by a moving minimum then a moving average of that length.
+  //    The average of values that are each at most the need at the peak is
+  //    itself at most that need, so the peak is always under.
+  //  - Release is a straight line back up to exactly 1, over `release`
+  //    seconds for a full swing, never above the attack curve. A region the
+  //    limiter never touches keeps gain 1.0 exactly: bit-for-bit untouched.
+  function limit(channels, sampleRate, ceiling, opts) {
+    // Heavy limiting moves the gain within the span an inter-sample peak is
+    // interpolated from, and the first pass can leave a hundredth of a dB
+    // over; a second pass over what is left is tiny and clears it.
+    var total = 0;
+    for (var pass = 0; pass < 3; pass++) {
+      var res = limitOnce(channels, sampleRate, ceiling, opts);
+      total += res.reduced;
+      if (!res.reduced) break;
+    }
+    return { reduced: total };
+  }
+
+  function limitOnce(channels, sampleRate, ceiling, opts) {
+    opts = opts || {};
+    var n = channels[0].length, nch = channels.length;
+    var W = Math.max(1, Math.round((opts.lookahead || 0.0015) * sampleRate));
+    var step = 1 / Math.max(1, (opts.release || 0.08) * sampleRate);
+    var OS = 4, T = 24, kernels = [];
+    for (var p = 1; p < OS; p++) {
+      var t = p / OS, kern = new Float64Array(2 * T);
+      for (var k = -T + 1, idx = 0; k <= T; k++, idx++) {
+        var x = t - k;
+        var sinc = (x < 1e-9 && x > -1e-9) ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+        var dist = (k - t) / T;
+        kern[idx] = sinc * ((dist <= 1 && dist >= -1) ? 0.5 * (1 + Math.cos(Math.PI * dist)) : 0);
+      }
+      kernels.push(kern);
+    }
+    // The gain moves a little between the samples an inter-sample peak is
+    // built from, which measured up to 0.005 dB over; aim 0.02 dB under.
+    var aim = ceiling * Math.pow(10, -0.02 / 20);
+    // Needed gain per sample. Interpolation only near loud samples: an
+    // inter-sample peak cannot reach the ceiling between samples that are
+    // both far under it.
+    var need = new Float32Array(n), any = false, thresh = ceiling * 0.5;
+    for (var i = 0; i < n; i++) {
+      var pk = 0;
+      for (var c = 0; c < nch; c++) {
+        var d = channels[c], v = d[i] < 0 ? -d[i] : d[i];
+        if (v > pk) pk = v;
+        if (v >= thresh && i >= T - 1 && i + T < n) {
+          for (var q = 0; q < kernels.length; q++) {
+            var kk = kernels[q], sum = 0;
+            for (var m = 0, kj = i - T + 1; m < kk.length; m++, kj++) sum += d[kj] * kk[m];
+            if (sum < 0) sum = -sum;
+            if (sum > pk) pk = sum;
+          }
+        }
+      }
+      need[i] = pk > aim ? aim / pk : 1;
+      if (need[i] < 1) any = true;
+    }
+    if (!any) return { reduced: 0 };
+    // Moving minimum over the past W samples, then the average of the next W.
+    var M = new Float32Array(n), dq = new Int32Array(n), h = 0, tl = 0;
+    for (var j = 0; j < n; j++) {
+      while (tl > h && need[dq[tl - 1]] >= need[j]) tl--;
+      dq[tl++] = j;
+      if (dq[h] <= j - W) h++;
+      M[j] = need[dq[h]];
+    }
+    var g = new Float32Array(n), acc = 0;
+    for (var a2 = 0; a2 < W && a2 < n; a2++) acc += M[a2];
+    for (var j2 = 0; j2 < n; j2++) {
+      var cnt = Math.min(W, n - j2);
+      g[j2] = acc / cnt;
+      acc -= M[j2];
+      if (j2 + W < n) acc += M[j2 + W];
+    }
+    // Release, and apply.
+    var r = 1, most = 1;
+    for (var j3 = 0; j3 < n; j3++) {
+      r = Math.min(g[j3], r + step, 1);
+      if (r < most) most = r;
+      if (r !== 1) for (var c2 = 0; c2 < nch; c2++) channels[c2][j3] *= r;
+    }
+    return { reduced: -20 * Math.log10(most) };
+  }
+
   global.ASLoudness = {
     integratedLoudness: integratedLoudness,
     truePeak: truePeak,
+    limit: limit,
     toDb: toDb,
     SPEC_RATE: SPEC_RATE
   };

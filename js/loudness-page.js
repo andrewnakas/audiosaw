@@ -129,9 +129,44 @@
       if (report) report.hidden = false;
 
       onProgress(88, 'Encoding…');
-      var blob = await CV.encodeBuffer(outBuf, opts.format, opts.bitrate, function (pct) {
-        onProgress(88 + Math.max(0, Math.min(10, (pct - 55) * 0.25)), 'Encoding…');
-      });
+      var enc = function () {
+        return CV.encodeBuffer(outBuf, opts.format, opts.bitrate, function (pct) {
+          onProgress(88 + Math.max(0, Math.min(8, (pct - 55) * 0.2)), 'Encoding…');
+        });
+      };
+      var blob = await enc();
+
+      // A lossy encoder rebuilds the waveform, and its peaks can land higher
+      // than the ones we measured: decode what was written, measure its true
+      // peak, and if it passed the ceiling, turn down by the overshoot and
+      // encode again. The ceiling is a promise about the file, not about the
+      // samples before the encoder.
+      var fmtTok = AudioSaw.resolveFormat(opts.format, opts.bitrate);
+      if (!AudioSaw.isLossless(fmtTok)) {
+        for (var attempt = 0; attempt < 3; attempt++) {
+          onProgress(96, 'Checking the peak of the encoded file…');
+          var dec = await AudioSaw.decodeToAudioBuffer(new File([blob], 'check.' + AudioSaw.extFor(fmtTok)));
+          var dch = [];
+          for (var dc = 0; dc < dec.numberOfChannels; dc++) dch.push(dec.getChannelData(dc));
+          var encPeak = global.ASLoudness.toDb(global.ASLoudness.truePeak(dch));
+          setRow('#peakAfter', fmt(encPeak) + ' dBTP');
+          if (encPeak <= opts.ceiling + 0.02) break;
+          var back = encPeak - opts.ceiling + 0.1;
+          var g = Math.pow(10, -back / 20);
+          outChans.forEach(function (d) { for (var k = 0; k < d.length; k++) d[k] *= g; });
+          outBuf = CV.bufferFrom(outChans, buffer.sampleRate);
+          applied -= back;
+          setRow('#loudAfter', fmt(loud.integrated + applied) + ' LUFS');
+          setRow('#gainApplied', fmt(applied) + ' dB');
+          if (note) {
+            note.textContent = 'The encoder raised the peak ' + (encPeak - (peakDb + applied + back)).toFixed(2) +
+              ' dB, so the gain came down ' + back.toFixed(2) + ' dB to keep the encoded file under ' + opts.ceiling + ' dBTP.';
+            note.hidden = false;
+          }
+          onProgress(88, 'Encoding again, ' + back.toFixed(2) + ' dB lower…');
+          blob = await enc();
+        }
+      }
       return blob;
     },
 
