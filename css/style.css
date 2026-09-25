@@ -635,6 +635,8 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 .rec-meter-bar.hot { background: var(--error); }
 .rec-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .btn-record { background: var(--amber); border-color: var(--amber); color: #fff; }
+.rec-setup { justify-content: center; margin-bottom: 8px; }
+.rec-stage .control-note { text-align: center; margin: 0 auto; max-width: 560px; }
 
 /* Tag editor: field grid + artwork. */
 .tag-grid {

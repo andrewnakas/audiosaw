@@ -309,6 +309,29 @@ async function editorChecks(page) {
     ok(r.c.ch === 2 && r.c.ec === false && r.c.ns === false && r.c.agc === false, 'editor: microphone constraints ' + JSON.stringify(r.c));
     ok(r.got && r.got.channels === 2 && !r.got.processing, 'editor: the browser delivered ' + JSON.stringify(r.got));
     ok(r.sr === 96000 && r.len > 96000 * 0.3, 'editor: a take with the engine at 96 kHz came back at ' + r.sr + ' Hz, ' + r.len + ' samples');
+    // 4. /voice-recorder: studio mode keeps float samples; voice mode still works.
+    await page.goto('/voice-recorder', 1200);
+    const vr = await page.eval(`(async () => {
+      const wait = async (fn, ms) => { const e = Date.now() + (ms || 15000); while (!fn()) { if (Date.now() > e) throw new Error('timeout ' + fn + ' ' + document.getElementById('status').textContent); await new Promise((r) => setTimeout(r, 100)); } };
+      const res = {};
+      for (const q of ['studio', 'clean']) {
+        document.getElementById('resetBtn').click();
+        const s = document.getElementById('cleanup'); s.value = q; s.dispatchEvent(new Event('change'));
+        document.getElementById('recordBtn').click();
+        await wait(() => !document.getElementById('stopBtn').disabled);
+        await new Promise((r) => setTimeout(r, 1200));
+        document.getElementById('stopBtn').click();
+        await wait(() => document.getElementById('controls').style.display === '');
+        let out = null; const o = CV.downloadBlob; CV.downloadBlob = function (b, n) { out = { b, n }; };
+        document.getElementById('outFmt').value = 'wav'; document.getElementById('saveBtn').click();
+        await wait(() => out, 30000); CV.downloadBlob = o;
+        res[q] = AudioSaw.sniffFormat(new Uint8Array(await out.b.arrayBuffer()));
+      }
+      return res;
+    })()`, 90000);
+    ok(vr.studio && vr.studio.float && vr.studio.bits === 32, '/voice-recorder studio take saved as ' + JSON.stringify(vr.studio) + ' (want 32-bit float for "match the source")');
+    ok(vr.clean && vr.clean.bits === 16, '/voice-recorder voice take saved as ' + JSON.stringify(vr.clean));
+    notes.push('/voice-recorder: studio saves the float capture at ' + (vr.studio.sampleRate / 1000) + ' kHz; voice mode decodes and writes ' + vr.clean.bits + '-bit');
     notes.push('editor: Chrome\'s default mic is mono with echo cancellation, noise suppression and AGC on; the editor asks for and gets stereo with all three off, and records at the engine rate (96 kHz here)');
   } catch (e) {
     fails.push('editor: ' + String(e.message || e).split('\n')[0].slice(0, 300));
