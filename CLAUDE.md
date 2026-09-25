@@ -17,6 +17,10 @@ Shortening the header does nothing for responses already in a cache.
 URLs, so it has to move with them — miss it and the worker precaches the old
 filenames.
 
+`js/resample.js` is included by no page: `audio-core.js` loads it on first use
+with the token from its own `<script src>` (`document.currentScript`), so the
+bump reaches it without a separate edit. `sw.js` precaches it for offline use.
+
 ```bash
 # after editing js/ or css/
 grep -rl '?v=2026-09-05' *.html sw.js | xargs sed -i '' 's/?v=2026-09-05/?v=2026-10-01/g'
@@ -114,11 +118,104 @@ about 4 dB down in the stereo downmix because that was measured with a 5.1 file
 carrying a separate tone per channel, not because the coefficient tables say
 -3 dB. Same for the BPM confidence thresholds.
 
+## Audio quality: no hidden ceilings
+
+The hi-fi pass (Sep 2026) made every tool keep the source's sample rate,
+channels and precision unless asked otherwise, and offer a maximum-quality
+output. `node tools/check-fidelity.js` holds all of it and runs in check-all.
+It measures the core (below) and drives 33 real tool pages, the editor, the
+recorder and the stem splitter with a 96 kHz / 24-bit file. Pages quote its
+numbers; tighten the check before quoting a new one.
+
+- **Decoding is at the file's own rate.** `decodeAudioData` resamples to the
+  rate of the context that calls it, and a plain `AudioContext` runs at the
+  device rate: every tool turned 96 kHz into 48, and on a 48 kHz Mac every
+  44.1 kHz file into 48. `AudioSaw.sniffFormat` reads rate, channels and depth
+  from the header (WAV/RF64, AIFF, FLAC, Ogg, CAF, WebM, MP4, ADTS, MP3), and
+  `decodeToAudioBuffer` decodes in an `OfflineAudioContext` at that rate, with
+  the device path as the fallback. The buffer carries `srcInfo`.
+  - **MP4:** the sample entry's 16.16 rate field cannot hold 96000 (ffmpeg
+    writes 48000), so the track's `mdhd` timescale wins above 65535.
+  - **AAC:** at 24 kHz or less it is decoded at double, since HE-AAC signals
+    half its output rate, sometimes only implicitly.
+- **Format tokens.** Every writer is `AudioSaw.encode(buffer, token, opts)`,
+  and page selects hold tokens:
+  - `wav16/24/32f`, `aiff16/24`, `flac16/24`;
+  - `mp3` (lamejs) and `mp3-v0`/`mp3-320` (LAME in the ffmpeg core, joint
+    stereo, reservoir, LAME header);
+  - `m4a`, `ogg`;
+  - plain `wav`/`flac`/`aiff`: match the source. That gives 24-bit (or float
+    for WAV) when the decoded file was lossless and deeper than 16, else 16.
+    It reads `srcInfo`, then `opts.srcInfo`, then the last decoded file's
+    header.
+  - The bitrate selects also offer `v0` and `lame320`. `resolveFormat(fmt,
+    bitrate)` folds them into the token, and `bitrateOf` takes the number.
+    Pages pass the select's raw value; `convert()`, `CV.encodeBuffer` and the
+    editor do the folding. `extFor`/`rename` give the extension.
+- **Dither and the two grids.** 16- and 24-bit get TPDF dither (-90 dBFS tone:
+  harmonics -135 dBFS dithered, -105 truncated). A signal already on the target
+  grid is written bit-exact with no dither, and there are two grids. Chrome
+  decodes 16-bit WAV as positive/32767, negative/32768; 24-bit and other
+  browsers divide by 2^(n-1) both ways. `gridOf` detects either and writes back
+  on the same one. The asymmetric one needs a tolerance, because float32
+  cannot hold n/32767.
+- **Resampling is `js/resample.js`**, not Web Audio: a Kaiser windowed-sinc,
+  120 dB, UMD. It gives an exact polyphase bank when the reduced ratio has at
+  most 2048 phases and a 4096-per-crossing table otherwise.
+  - It is flat within 0.0001 dB to 20 kHz. 96 -> 48 puts a 30 kHz tone more
+    than 140 dB down; Chrome's own conversion (a buffer source into a slower
+    context) passes it at full level, because it just takes every other
+    sample.
+  - `AudioSaw.varispeed` is the same resampler used for tape-style speed
+    (audio-speed, nightcore, slowed+reverb).
+  - Where ffmpeg resamples (pitch shifter, `convertViaFFmpeg`) it gets
+    `aresample` at filter_size 64 with triangular dither. soxr and rubberband
+    are not in the core.
+- **MP3 limits.** MP3 carries at most 48 kHz and two channels. Higher rates
+  are resampled first (88.2/176.4 to 44.1, anything else to 48). 3 to 8
+  channels fold with BS.775 coefficients (centre and surrounds -3 dB, LFE
+  dropped) instead of keeping channels 0 and 1, which used to drop a film's
+  dialogue.
+- **ffmpeg hazards.**
+  - libopus in the 0.12.6 core dies with "memory access out of bounds" on
+    every input, so there is no Opus output. Opus input decodes in the
+    browser.
+  - libvorbis refuses a managed bitrate at 96 kHz, so OGG uses `-q:a` mapped
+    from the bitrate.
+  - Any failed `exec` corrupts the wasm heap for the next one. `runFFmpeg`
+    terminates the instance after a failure, and pages reuse `runFFmpeg`
+    rather than calling `exec` themselves.
+- **Clip handling.** `ASLoudness.limit` (loudness.js) is a true-peak limiter
+  for whole files:
+  - 4x detection, 1.5 ms look-ahead, a linear release to exactly 1.0 (a region
+    it never touches is bit-exact), and a second pass for heavy limiting.
+  - /amplify-audio uses it at -1 dBTP. The EQ and vocal remover use it when
+    their unlevelled output would pass 0 dBTP.
+  - /loudness-normalizer decodes its own MP3 and turns down if the encoder
+    pushed the true peak over the ceiling.
+- **/voice-recorder has two paths.**
+  - Voice is MediaRecorder with processing, asking for 256 kbps.
+  - Studio skips MediaRecorder. An AudioWorklet copies float samples
+    (stereo requested, processing off) in a context opened at the
+    microphone's own rate, and they go straight to the encoder. "Match the
+    source" on a studio take means float WAV and 24-bit FLAC.
+- **Project audio defaults to `wav32f`.** When a tool page takes project
+  audio (`project-link.js`), its output select moves to float WAV. The
+  editor's own send path, ffmpeg effects and import fallback are all float.
+- **Harness.** `tools/chrome-harness.js` is the shared headless-Chrome setup
+  for new checks: routes, CDP events, fake media devices.
+  - check-fidelity serves the ffmpeg core from `~/.cache/audiosaw/`,
+    downloading it once, by rewriting the unpkg request with CDP `Fetch`.
+    Without the core, the ffmpeg parts are skipped.
+  - `FID_PAGES=/a,/b` runs only those sweep pages, and `FID_SKIP_PAGES=1`
+    only the core.
+
 ## Architecture
 
-- `js/audio-core.js` — `window.AudioSaw`. Web Audio fast path for MP3 (lamejs)
-  and WAV; a WebAssembly FFmpeg build, lazily loaded, for m4a/aac/ogg/flac and
-  video demuxing.
+- `js/audio-core.js` — `window.AudioSaw`. Decode at the source's rate, the
+  format tokens and writers, the resampler loader, and a WebAssembly FFmpeg
+  build, lazily loaded, for m4a/ogg/flac/LAME and video demuxing (see "Audio
+  quality" above).
 - `js/tool-shell.js` — `CV.shell({process})`, the driver for tools that do
   custom processing, plus shared DSP helpers (`CV.lowpass`, `CV.highpass`,
   `CV.peakNormalise`, `CV.bufferFrom`, `CV.channelsOf`, `CV.encodeBuffer`).
@@ -301,6 +398,21 @@ carrying a separate tone per channel, not because the coefficient tables say
   the `audiosaw` one shared by flow.js and sw.js (see the share-target section).
   Imported files are stored as the original file and re-decoded on restore;
   effect outputs and recordings are stored as Float32 samples.
+
+  **Rates and recording.**
+  - `E.setSampleRate(rate)` sets the engine rate (the recording sheet next
+    to Record; `as_ed_rate` in localStorage). It closes the context, and the
+    next play or record builds one at that rate. Takes are captured at the
+    engine rate, so a 96 kHz interface records at 96 kHz only with the engine
+    there.
+  - `micConstraints` asks for stereo, sampleSize 24 and all processing off.
+    Chrome's default is mono with echo cancellation, noise suppression and
+    AGC on; check-fidelity asserts both. `startRecording` resolves with what
+    the browser delivered, and the status line says it.
+  - Export defaults to `'project'`, which is `E.projectRate`: the highest
+    rate among the audio in use. Before the render, clips at another rate are
+    converted with the sinc resampler (`convertSources`, cached per
+    source@rate). An untouched 96k/24 clip exports bit-identical.
 
   Touch and mouse differ in one deliberate place: a finger on an *unselected*
   clip pans the timeline, because on a phone one clip often fills the screen.
@@ -652,6 +764,13 @@ outcome, and counting it would be the heartbeat this site does not have.
 including which GA4 key events to star and why `file_selected` must not be one.
 
 ## The stem splitter
+
+The model runs at 44.1 kHz, but the stems go back to the file's own rate and
+channel count (`toNative` in stem-separator.js). The vocal is resampled up,
+and the instrumental is the original, at its own rate, minus that vocal. So
+the two still sum to the source, and content above 22 kHz stays in the
+instrumental. check-fidelity tests this with a stand-in worker, since the
+64 MB model is too heavy for a check.
 
 `/stem-splitter` runs neural source separation through onnxruntime-web. Three
 things about it are load-bearing:
