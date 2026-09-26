@@ -108,7 +108,7 @@
       }).then(function (data) {
         try { ff.off('progress', prog); } catch (e) {}
         try { ff.deleteFile(inName); ff.deleteFile(outName); } catch (e) {}
-        return global.AudioSaw.decodeToAudioBuffer(new File([data.buffer], 'fx.wav', { type: 'audio/wav' }));
+        return global.AudioSaw.decodeToAudioBuffer(new File([data.buffer], 'fx.wav', { type: 'audio/wav' }), null, { quiet: true });
       });
     });
   }

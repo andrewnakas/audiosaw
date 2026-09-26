@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-09-25d">
-<link rel="stylesheet" href="/css/editor.css?v=2026-09-25d">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25e">
+<link rel="stylesheet" href="/css/editor.css?v=2026-09-25e">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -111,6 +111,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           <button type="button" class="ed-icon" id="edHome" title="Back to the start (Home)" aria-label="Back to the start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5L9 12l10 7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
           <button type="button" class="ed-btn ed-play" id="edPlay" title="Play / pause (Space)" aria-label="Play"></button>
           <div class="ed-clock"><span class="ed-time" id="edTime">0:00.00</span><span class="ed-total" id="edTotal">0:00</span></div>
+          <button type="button" class="ed-rate" id="edRate" title="The rate the editor plays and records at. Click to change it, or the input.">— kHz</button>
           <div class="ed-meter" aria-hidden="true"><span><i id="edMeterL"></i></span><span><i id="edMeterR"></i></span></div>
           <button type="button" class="ed-icon ed-loop" id="edLoop" aria-pressed="false" title="Loop the selection (L)" aria-label="Loop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a6 6 0 0 1 6-6h8l-3-3M20 12a6 6 0 0 1-6 6H6l3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
@@ -459,36 +460,36 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-09-25d"></script>
-<script src="/js/tool-graph.js?v=2026-09-25d"></script>
-<script src="/js/flow.js?v=2026-09-25d"></script>
-<script src="/js/audio-core.js?v=2026-09-25d"></script>
-<script src="/js/tool-shell.js?v=2026-09-25d"></script>
-<script src="/js/loudness.js?v=2026-09-25d"></script>
-<script src="/js/silence-gaps.js?v=2026-09-25d"></script>
-<script src="/js/slowed-reverb.js?v=2026-09-25d"></script>
-<script src="/js/noise-reduction.js?v=2026-09-25d"></script>
-<script src="/js/editor-model.js?v=2026-09-25d"></script>
-<script src="/js/editor-dsp.js?v=2026-09-25d"></script>
-<script src="/js/editor-synth.js?v=2026-09-25d"></script>
-<script src="/js/editor-engine.js?v=2026-09-25d"></script>
-<script src="/js/editor-view.js?v=2026-09-25d"></script>
-<script src="/js/editor-fx.js?v=2026-09-25d"></script>
-<script src="/js/editor-store.js?v=2026-09-25d"></script>
-<script src="/js/project-link.js?v=2026-09-25d"></script>
-<script src="/js/editor-link.js?v=2026-09-25d"></script>
-<script src="/js/bpm-detector.js?v=2026-09-25d"></script>
-<script src="/js/spectral.js?v=2026-09-25d"></script>
-<script src="/js/key-detect.js?v=2026-09-25d"></script>
-<script src="/js/slicer.js?v=2026-09-25d"></script>
-<script src="/js/pitch-track.js?v=2026-09-25d"></script>
-<script src="/js/midi-write.js?v=2026-09-25d"></script>
-<script src="/js/midi-read.js?v=2026-09-25d"></script>
-<script src="/js/piano-roll.js?v=2026-09-25d"></script>
-<script src="/js/editor-midi.js?v=2026-09-25d"></script>
-<script src="/js/editor-fxui.js?v=2026-09-25d"></script>
-<script src="/js/editor-ui.js?v=2026-09-25d"></script>
-<script src="/js/consent.js?v=2026-09-25d"></script>
-<script src="/js/pwa.js?v=2026-09-25d"></script>
+<script src="/js/common.js?v=2026-09-25e"></script>
+<script src="/js/tool-graph.js?v=2026-09-25e"></script>
+<script src="/js/flow.js?v=2026-09-25e"></script>
+<script src="/js/audio-core.js?v=2026-09-25e"></script>
+<script src="/js/tool-shell.js?v=2026-09-25e"></script>
+<script src="/js/loudness.js?v=2026-09-25e"></script>
+<script src="/js/silence-gaps.js?v=2026-09-25e"></script>
+<script src="/js/slowed-reverb.js?v=2026-09-25e"></script>
+<script src="/js/noise-reduction.js?v=2026-09-25e"></script>
+<script src="/js/editor-model.js?v=2026-09-25e"></script>
+<script src="/js/editor-dsp.js?v=2026-09-25e"></script>
+<script src="/js/editor-synth.js?v=2026-09-25e"></script>
+<script src="/js/editor-engine.js?v=2026-09-25e"></script>
+<script src="/js/editor-view.js?v=2026-09-25e"></script>
+<script src="/js/editor-fx.js?v=2026-09-25e"></script>
+<script src="/js/editor-store.js?v=2026-09-25e"></script>
+<script src="/js/project-link.js?v=2026-09-25e"></script>
+<script src="/js/editor-link.js?v=2026-09-25e"></script>
+<script src="/js/bpm-detector.js?v=2026-09-25e"></script>
+<script src="/js/spectral.js?v=2026-09-25e"></script>
+<script src="/js/key-detect.js?v=2026-09-25e"></script>
+<script src="/js/slicer.js?v=2026-09-25e"></script>
+<script src="/js/pitch-track.js?v=2026-09-25e"></script>
+<script src="/js/midi-write.js?v=2026-09-25e"></script>
+<script src="/js/midi-read.js?v=2026-09-25e"></script>
+<script src="/js/piano-roll.js?v=2026-09-25e"></script>
+<script src="/js/editor-midi.js?v=2026-09-25e"></script>
+<script src="/js/editor-fxui.js?v=2026-09-25e"></script>
+<script src="/js/editor-ui.js?v=2026-09-25e"></script>
+<script src="/js/consent.js?v=2026-09-25e"></script>
+<script src="/js/pwa.js?v=2026-09-25e"></script>
 </body>
 </html>

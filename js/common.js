@@ -93,6 +93,7 @@
   function clearStatus(el) {
     el.className = 'status hidden';
     el.textContent = '';
+    if (signalEl && el.id === 'status') { sigRow('in', ''); sigRow('out', ''); }
   }
   function setProgress(barEl, pct) {
     var v = Math.max(0, Math.min(100, pct));
@@ -146,6 +147,7 @@
       var size = document.createElement('span');
       size.className = 'size'; size.textContent = fmtBytes(f.size);
       span.appendChild(name); span.appendChild(size);
+      describeFile(f, span);
       item.appendChild(span);
       if (onRemove) {
         var rm = document.createElement('button');
@@ -158,6 +160,60 @@
       listEl.appendChild(item);
     });
   }
+
+  // The file's real format next to its name: "FLAC · 96 kHz · 24-bit ·
+  // stereo", read from its header (AudioSaw.sniffFormat). Nothing is shown
+  // for a format the sniffer does not know rather than a guess.
+  function describeFile(f, into) {
+    var A = global.AudioSaw;
+    if (!A || !A.sniffFormat || !f || !f.slice) return;
+    var tag = document.createElement('span');
+    tag.className = 'fmt';
+    into.appendChild(tag);
+    f.slice(0, 1 << 20).arrayBuffer().then(function (buf) {
+      var info = A.sniffFormat(buf);
+      if (info) tag.textContent = A.describeFormat(info);
+    }).catch(function () {});
+  }
+
+  // What went in and what came out, measured, under the status line on every
+  // tool page: audio-core announces 'as:decoded' when it reads the picked
+  // file and 'as:encoded' with the header of the file it wrote. The editor
+  // has its own readouts and is left out.
+  var signalEl = null;
+  function signalPanel() {
+    if (signalEl && signalEl.isConnected) return signalEl;
+    var host = document.getElementById('status');
+    if (!host || document.getElementById('ed')) return null;
+    signalEl = document.createElement('div');
+    signalEl.className = 'signal-path';
+    signalEl.id = 'signalPath';
+    signalEl.hidden = true;
+    signalEl.setAttribute('aria-live', 'polite');
+    signalEl.innerHTML = '<div class="sig-row" data-sig="in"><span class="sig-k">Your file</span><span class="sig-v"></span></div>' +
+      '<div class="sig-row" data-sig="out" hidden><span class="sig-k">Saved as</span><span class="sig-v"></span></div>';
+    host.parentNode.insertBefore(signalEl, host.nextSibling);
+    return signalEl;
+  }
+  function sigRow(which, text) {
+    var el = signalPanel();
+    if (!el) return;
+    var row = el.querySelector('[data-sig="' + which + '"]');
+    row.hidden = !text;
+    row.querySelector('.sig-v').textContent = text || '';
+    el.hidden = !el.querySelector('.sig-row:not([hidden])');
+  }
+  document.addEventListener('as:decoded', function (e) {
+    var d = e.detail || {};
+    var t = d.text || '';
+    if (d.converted && d.sampleRate) t += ' → decoded at ' + (d.sampleRate / 1000) + ' kHz (the browser could not keep its rate)';
+    sigRow('in', t);
+    sigRow('out', '');
+  });
+  document.addEventListener('as:encoded', function (e) {
+    var d = e.detail || {};
+    sigRow('out', (d.text || '') + (d.notes && d.notes.length ? ' · ' + d.notes.join(' · ') : ''));
+  });
 
   // Natural ordering so "file2" sorts before "file10".
   function naturalCompare(a, b) {
@@ -209,6 +265,8 @@
     setProgress: setProgress,
     downloadBlob: downloadBlob,
     renderFileList: renderFileList,
+    describeFile: describeFile,
+    signal: { input: function (t) { sigRow('in', t); sigRow('out', ''); }, output: function (t) { sigRow('out', t); } },
     naturalCompare: naturalCompare,
     guessMime: guessMime,
     isTextLike: isTextLike,

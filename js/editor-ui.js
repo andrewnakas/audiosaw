@@ -567,6 +567,17 @@
     draw();
   }
 
+  // The clip's source as it really is, and whether the engine converts it to
+  // play it. Exports convert with the sinc resampler, not this path.
+  function sourceLine(c) {
+    var s = S.project.sources[c.sourceId], b = buffers.get(c.sourceId);
+    if (!s) return '';
+    var fmtTxt = s.format || [(s.sampleRate / 1000) + ' kHz', s.kind === 'recording' || s.kind === 'derived' ? '32-bit float' : '', s.channels === 1 ? 'mono' : 'stereo'].filter(Boolean).join(' · ');
+    if (s.kind === 'midi') fmtTxt = 'MIDI notes, played by the track’s instrument';
+    var er = E.currentRate(), note = er && b && b.sampleRate !== er ? ' · played through the ' + (er / 1000) + ' kHz engine (exports keep ' + (b.sampleRate / 1000) + ' kHz)' : '';
+    return '<p class="ed-insp-src">' + esc((s.kind === 'recording' ? 'Recording' : s.kind === 'derived' ? 'Processed' : 'Source') + ': ' + fmtTxt + note) + '</p>';
+  }
+
   function updateTransport() {
     var playing = E.isPlaying();
     el.play.classList.toggle('is-playing', playing);
@@ -579,6 +590,8 @@
     el.loop.classList.toggle('on', S.loop);
     el.rec.classList.toggle('is-rec', !!S.rec);
     el.rec.innerHTML = S.rec ? ICON.stop + '<span>Stop</span>' : ICON.rec + '<span>Record</span>';
+    var rb = $('#edRate');
+    if (rb) { var er = E.currentRate(); rb.textContent = er ? (er / 1000) + ' kHz' : 'Device rate'; rb.disabled = !!S.rec; }
   }
 
   el.play.addEventListener('click', togglePlay);
@@ -847,7 +860,7 @@
         '</div>';
     } else if (ids.length === 1) {
       var f = M.findClip(S.project, ids[0]), c = f.clip;
-      html = '<div class="ed-insp-head"><label class="ed-name"><span class="sr-only">Clip name</span><input type="text" data-i="name" value="' + esc(c.name) + '" maxlength="80"></label>' +
+      html = sourceLine(c) + '<div class="ed-insp-head"><label class="ed-name"><span class="sr-only">Clip name</span><input type="text" data-i="name" value="' + esc(c.name) + '" maxlength="80"></label>' +
         '<span class="ed-mono">' + fmt(c.start) + ' · ' + c.duration.toFixed(2) + ' s</span></div>' +
         '<div class="ed-insp-grid">' +
         '<label>Volume <output data-o="gain">' + (c.gainDb > 0 ? '+' : '') + (c.gainDb || 0).toFixed(1) + ' dB</output>' +
@@ -1494,7 +1507,8 @@
       status('info', 'Opening ' + f.name + '…');
       return decodeFile(f, function (m) { status('info', m); }).then(function (buf) {
         var sid = M.addSource(S.project, {
-          name: baseName(f.name), duration: buf.duration, channels: buf.numberOfChannels, sampleRate: buf.sampleRate, kind: 'file'
+          name: baseName(f.name), duration: buf.duration, channels: buf.numberOfChannels, sampleRate: buf.sampleRate, kind: 'file',
+          format: buf.srcInfo ? global.AudioSaw.describeFormat(buf.srcInfo) : null
         });
         buffers.set(sid, buf);
         files.set(sid, f);
@@ -2281,6 +2295,7 @@
     });
   }
   $('#edRecSet').addEventListener('click', inputSheet);
+  $('#edRate').addEventListener('click', inputSheet);
 
   function startRecording() {
     if (S.rec || busy) return;
@@ -2530,6 +2545,12 @@
     });
   }
   function extFor(fmtv) { return global.AudioSaw.extFor(fmtv); }
+  // The format of the last file written, as audio-core read it back.
+  var lastExport = '';
+  document.addEventListener('as:encoded', function (e) {
+    var d = e.detail || {};
+    lastExport = (d.text || '') + (d.notes && d.notes.length ? ' · ' + d.notes.join(' · ') : '');
+  });
 
   // One track on its own. For stems the others stay in the project, muted,
   // so a ducker on this track still hears what it listens to.
@@ -2602,7 +2623,7 @@
       progress(100);
       CV.downloadBlob(out.blob, out.name);
       var clipped = outputs.some(function (o) { return o.peak > Math.pow(10, -1 / 20); });
-      status('success', 'Exported ' + out.name + ' (' + CV.fmtBytes(out.blob.size) + ')' +
+      status('success', 'Exported ' + out.name + ' (' + CV.fmtBytes(out.blob.size) + (lastExport && !out.many ? ', ' + lastExport : '') + ')' +
         (clipped && protect ? '. The mix peaked above 0 dB, so it was turned down to peak at -1 dB instead of clipping.' : '.'));
       setTimeout(function () { progress(null); }, 600);
     }).catch(function (err) {

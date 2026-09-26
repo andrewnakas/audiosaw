@@ -352,6 +352,7 @@
     releaseStream();
     if (!buf) { CV.setStatus(statusEl, 'error', 'Nothing was recorded.'); return; }
     recordedBuf = buf;
+    if (CV.signal) CV.signal.input(AudioSaw.describeFormat(buf.srcInfo) + (delivered && delivered.label ? ' · ' + delivered.label : ''));
     if (controls) controls.style.display = '';
     CV.setStatus(statusEl, 'info', 'Recorded ' + fmtTime(buf.duration * 1000) + ', ' + (buf.numberOfChannels === 1 ? 'mono' : 'stereo') +
       ' at ' + (buf.sampleRate / 1000) + ' kHz, 32-bit float' +

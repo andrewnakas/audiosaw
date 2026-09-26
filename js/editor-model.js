@@ -99,6 +99,9 @@
       sampleRate: meta.sampleRate || 48000,
       kind: meta.kind || 'file'      // 'file' | 'derived' | 'recording' | 'midi'
     };
+    // What the file was, as read from its header ("FLAC · 96 kHz · 24-bit ·
+    // stereo"), for the clip inspector. Display only.
+    if (meta.format) p.sources[id].format = meta.format;
     if (meta.kind === 'midi') {
       var notes = packNotes(meta.notes || []);
       p.sources[id].notes = notes;

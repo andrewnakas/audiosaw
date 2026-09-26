@@ -202,6 +202,22 @@ numbers; tighten the check before quoting a new one.
 - **Project audio defaults to `wav32f`.** When a tool page takes project
   audio (`project-link.js`), its output select moves to float WAV. The
   editor's own send path, ffmpeg effects and import fallback are all float.
+- **The readout.** Every tool shows what went in and what came out, and the
+  sweep asserts it matches the file:
+  - Each picked file gets a format badge in the file list
+    (`CV.describeFile`).
+  - After a run, a "Your file / Saved as" panel sits under `#status`
+    (`CV.signal` in common.js).
+  - The panel is fed by `as:decoded` and `as:encoded`, which audio-core
+    dispatches with `AudioSaw.describeFormat` text. The "Saved as" line comes
+    from the written file's own header, plus notes: bit-exact or dithered,
+    resampled, folded, encoder, bitrate.
+  - Decodes of intermediate files pass `{ quiet: true }`, as do the loudness
+    page's check decode and the pitch and speed float files, or they would
+    replace the real input.
+  - In the editor: an engine-rate badge by the clock (`E.currentRate()`,
+    which never creates a context), the source format on the clip inspector
+    (`source.format`), and the written format in the export message.
 - **Harness.** `tools/chrome-harness.js` is the shared headless-Chrome setup
   for new checks: routes, CDP events, fake media devices.
   - check-fidelity serves the ffmpeg core from `~/.cache/audiosaw/`,

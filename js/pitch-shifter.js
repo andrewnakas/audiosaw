@@ -56,7 +56,7 @@
       return AudioSaw.runFFmpeg(file, ext, ['-af', filter, '-c:a', 'pcm_f32le', '-vn'], 'wav', 'audio/wav',
         function (pct) { onProgress(30 + Math.min(55, pct * 0.55), 'Shifting pitch…'); }, 'Shifting pitch…');
     }).then(function (wav) {
-      return AudioSaw.decodeToAudioBuffer(new File([wav], 'shifted.wav'));
+      return AudioSaw.decodeToAudioBuffer(new File([wav], 'shifted.wav'), null, { quiet: true });
     }).then(function (buf) {
       onProgress(88, 'Encoding…');
       return AudioSaw.encode(buf, AudioSaw.resolveFormat(opts.fmt, opts.bitrate), {

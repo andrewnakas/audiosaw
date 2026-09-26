@@ -1145,6 +1145,9 @@
     buffers: buffers,
     setSampleRate: setSampleRate,
     engineRate: function () { return engineRate; },
+    // The rate now, without creating a context (which on iOS must only happen
+    // in a gesture): null before the first play or record at the device rate.
+    currentRate: function () { return ctx ? ctx.sampleRate : engineRate; },
     projectRate: projectRate,
     micConstraints: micConstraints,
     unlock: unlock,

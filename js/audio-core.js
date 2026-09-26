@@ -394,6 +394,28 @@
     return walk(0, u.length);
   }
 
+  /* ------------------------------------------------------- the readout */
+
+  // What a file is, in one line: "FLAC · 96 kHz · 24-bit · stereo". The
+  // pages show this for the file you picked and the file you get
+  // (CV.signal in common.js), so the rates and depths are never hidden.
+  var CODEC_NAMES = { pcm: 'PCM', float: 'PCM float', flac: 'FLAC', vorbis: 'Vorbis', opus: 'Opus', aac: 'AAC', alac: 'ALAC',
+    mp3: 'MP3', ac3: 'AC-3', eac3: 'E-AC-3' };
+  var CONTAINER_NAMES = { wav: 'WAV', aiff: 'AIFF', flac: 'FLAC', ogg: 'Ogg', caf: 'CAF', webm: 'WebM', mp4: 'MP4', adts: 'AAC', mp3: 'MP3', capture: 'Microphone' };
+  function chName(n) { return n === 1 ? 'mono' : n === 2 ? 'stereo' : n ? n + ' channels' : ''; }
+  function kHz(r) { return r ? (r / 1000) + ' kHz' : ''; }
+  function describeFormat(info, extra) {
+    if (!info) return '';
+    var c = CONTAINER_NAMES[info.container] || String(info.container || '').toUpperCase();
+    var k = CODEC_NAMES[info.codec] || info.codec;
+    var name = (c === 'MP4' || c === 'Ogg' || c === 'WebM' || c === 'CAF') && k ? c + ' ' + k : (c || k);
+    var depth = info.lossless ? (info.float ? '32-bit float' : (info.bits ? info.bits + '-bit' : '')) : '';
+    return [name, kHz(info.sampleRate), depth, chName(info.channels)].concat(extra || []).filter(Boolean).join(' · ');
+  }
+  function announce(type, detail) {
+    try { document.dispatchEvent(new CustomEvent(type, { detail: detail })); } catch (e) {}
+  }
+
   /* ------------------------------------------------------------ decoding */
 
   var nativeRateOk = {};
@@ -416,7 +438,8 @@
   // property (the sniffed header, or null) so an encoder can match the source.
   // Works for: mp3, wav, m4a/aac, flac, ogg (browser support varies),
   // and the audio track of mp4/mov/webm files.
-  function decodeToAudioBuffer(file, onProgress) {
+  function decodeToAudioBuffer(file, onProgress, opts) {
+    opts = opts || {};
     if (onProgress) onProgress(5, 'Reading file…');
     return file.arrayBuffer().then(function (buf) {
       if (onProgress) onProgress(20, 'Decoding…');
@@ -447,7 +470,18 @@
       }
       return run.then(function (ab) {
         try { ab.srcInfo = info; } catch (e) {}
-        lastInfo = info;
+        // Intermediate files (a time-stretch's float output, a check decode)
+        // are quiet: they are not the file the person picked.
+        if (!opts.quiet) {
+          lastInfo = info;
+          announce('as:decoded', {
+            name: file.name, info: info, sampleRate: ab.sampleRate, channels: ab.numberOfChannels, duration: ab.duration,
+            text: describeFormat(info) || (kHz(ab.sampleRate) + ' · ' + chName(ab.numberOfChannels)),
+            // Decoded at another rate than the file's: only when the header
+            // was unreadable or the browser refused the rate.
+            converted: !!(info && info.sampleRate && info.sampleRate !== ab.sampleRate) || !info
+          });
+        }
         if (onProgress) onProgress(50, 'Decoded ' + ab.numberOfChannels + 'ch ' + ab.sampleRate + 'Hz');
         return ab;
       });
@@ -585,12 +619,14 @@
     return sym ? 'sym' : (asym ? 'asym' : null);
   }
 
+  var lastQuant = null;
   function quantise(chans, bits, dither) {
     var scale = Math.pow(2, bits - 1), max = scale - 1, min = -scale;
     var nch = chans.length, len = chans[0].length;
     var out = new Int32Array(len * nch);
     var grid = gridOf(chans, bits);
     var useDither = dither !== false && !grid;
+    lastQuant = { bits: bits, exact: !!grid, dithered: useDither };
     var pos = grid === 'asym' ? max : scale;
     var seed = 0x9E3779B9 | 0;
     function rnd() {    // xorshift32, uniform in [0, 1)
@@ -915,6 +951,34 @@
   // onProgress }. Returns a Blob.
   async function encode(buffer, fmt, opts) {
     opts = opts || {};
+    var inRate = buffer.sampleRate, inCh = buffer.numberOfChannels, dur = buffer.duration;
+    lastQuant = null;
+    var blob = await encodeInner(buffer, fmt, opts);
+    if (!opts.quiet) {
+      var notes = [];
+      var out = null;
+      try { out = sniffFormat(new Uint8Array(await blob.slice(0, 1 << 20).arrayBuffer())); } catch (e) { out = null; }
+      if (out && out.sampleRate && out.sampleRate !== inRate) notes.push('resampled from ' + kHz(inRate) + (/mp3/.test(fmt) ? ', the most MP3 carries' : ''));
+      if (out && out.channels && out.channels < inCh) notes.push('folded from ' + inCh + ' channels');
+      if (lastQuant) notes.push(lastQuant.exact ? 'bit-exact' : (lastQuant.dithered ? 'dithered to ' + lastQuant.bits + '-bit' : 'rounded to ' + lastQuant.bits + '-bit'));
+      var spec = formatOf(fmt), extra = [];
+      if (spec.ext === 'mp3' || spec.lossy) {
+        // Fixed-rate encoders are named by their setting; VBR by what it averaged.
+        var vbr = (spec.lame && spec.lame[0] === '-q:a') || spec.vbr;
+        var kbps = vbr ? Math.round(blob.size * 8 / Math.max(0.001, dur) / 1000)
+          : (spec.lame ? 320 : (opts.bitrate || 192));
+        extra.push(vbr ? 'VBR, ≈' + kbps + ' kbps' : kbps + ' kbps');
+        extra.push(spec.lame ? 'LAME' : spec.ext === 'mp3' ? 'lamejs' : spec.ext === 'ogg' ? 'libvorbis' : 'ffmpeg AAC');
+      }
+      announce('as:encoded', {
+        format: fmt, info: out, size: blob.size, notes: notes,
+        text: describeFormat(out, extra) || spec.ext.toUpperCase()
+      });
+    }
+    return blob;
+  }
+
+  async function encodeInner(buffer, fmt, opts) {
     var spec = formatOf(fmt);
     var onProgress = opts.onProgress;
     var info = buffer.srcInfo || opts.srcInfo || lastInfo;
@@ -959,7 +1023,15 @@
     if (options.durationSec != null) args.push('-t', String(options.durationSec));
     args.push('-vn');
     var mime = spec.mime || (spec.flac ? 'audio/flac' : (spec.pcm === 'aiff' ? 'audio/aiff' : 'audio/wav'));
-    return runFFmpeg(file, (file.name.split('.').pop() || 'bin'), args, spec.ext, mime, onProgress);
+    var blob = await runFFmpeg(file, (file.name.split('.').pop() || 'bin'), args, spec.ext, mime, onProgress);
+    // Straight through ffmpeg: the browser never decoded it, so say both ends here.
+    if (!options.quiet) {
+      announce('as:decoded', { name: file.name, info: info, text: describeFormat(info) || 'read by ffmpeg' });
+      var out = null;
+      try { out = sniffFormat(new Uint8Array(await blob.slice(0, 1 << 20).arrayBuffer())); } catch (e) { out = null; }
+      announce('as:encoded', { format: outExt, info: out, size: blob.size, notes: ['by ffmpeg'], text: describeFormat(out) || spec.ext.toUpperCase() });
+    }
+    return blob;
   }
 
   // High-level convert function used by every tool page.
@@ -1111,6 +1183,7 @@
     sniffFormat: sniffFormat,
     encode: encode,
     extFor: extFor,
+    describeFormat: describeFormat,
     resolveFormat: resolveFormat,
     bitrateOf: bitrateOf,
     isLossless: isLossless,

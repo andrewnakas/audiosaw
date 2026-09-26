@@ -71,7 +71,7 @@
     var ext = (file.name.split('.').pop() || 'bin');
     var wav = await AudioSaw.runFFmpeg(file, ext, ['-filter:a', buildAtempoChain(speed), '-c:a', 'pcm_f32le', '-vn'],
       'wav', 'audio/wav', function (pct) { if (onProgress) onProgress(20 + pct * 0.5, 'Time-stretching…'); }, 'Time-stretching…');
-    return AudioSaw.decodeToAudioBuffer(new File([wav], 'stretched.wav'));
+    return AudioSaw.decodeToAudioBuffer(new File([wav], 'stretched.wav'), null, { quiet: true });
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles);

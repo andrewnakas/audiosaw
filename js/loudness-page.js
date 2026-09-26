@@ -145,7 +145,7 @@
       if (!AudioSaw.isLossless(fmtTok)) {
         for (var attempt = 0; attempt < 3; attempt++) {
           onProgress(96, 'Checking the peak of the encoded file…');
-          var dec = await AudioSaw.decodeToAudioBuffer(new File([blob], 'check.' + AudioSaw.extFor(fmtTok)));
+          var dec = await AudioSaw.decodeToAudioBuffer(new File([blob], 'check.' + AudioSaw.extFor(fmtTok)), null, { quiet: true });
           var dch = [];
           for (var dc = 0; dc < dec.numberOfChannels; dc++) dch.push(dec.getChannelData(dc));
           var encPeak = global.ASLoudness.toDb(global.ASLoudness.truePeak(dch));

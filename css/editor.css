@@ -87,6 +87,12 @@
 .ed-total { font: 0.72rem/1.2 var(--mono); color: var(--muted); }
 .ed-total::before { content: 'of '; }
 .ed-total.is-now::before { content: ''; }
+/* The engine's rate, always in view; opens the recording sheet. */
+.ed-rate { font: 0.72rem/1 var(--mono); color: var(--ink-soft); background: none; border: 1px solid var(--rule); border-radius: 3px;
+  padding: 4px 6px; cursor: pointer; white-space: nowrap; }
+.ed-rate:hover { color: var(--ink); border-color: var(--ink-soft); }
+.ed-rate:disabled { opacity: 0.6; cursor: default; }
+.ed-insp-src { font: 0.75rem/1.4 var(--mono); color: var(--ink-soft); margin: 0 0 6px; overflow-wrap: anywhere; }
 .ed-loop.on, .ed-icon[aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); color: #7c2d12; }
 
 .ed-meter { display: flex; flex-direction: column; gap: 3px; width: 56px; }

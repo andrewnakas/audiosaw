@@ -455,6 +455,7 @@ async function sweep(page, haveCore) {
         }
         const info = AudioSaw.sniffFormat(u);
         const status = (document.getElementById('status') || {}).textContent || '';
+        const sig = (document.getElementById('signalPath') || {}).innerText || '';
         let tp = null, untouched = null;
         if (${!!(t.tpMax != null || t.tpNear != null)} && window.ASLoudness) {
           const d = await AudioSaw.decodeToAudioBuffer(new File([u], 'o.' + AudioSaw.extFor(info.container === 'mp3' ? 'mp3' : 'wav')));
@@ -469,7 +470,7 @@ async function sweep(page, haveCore) {
             untouched = worst * 8388608;
           }
         }
-        return { name: out.n, info, status, tp, untouched };
+        return { name: out.n, info, status, tp, untouched, sig };
       })()`, 300000);
       const i = got.info || {};
       const wantRate = t.rate || 96000, wantCh = t.ch || 2, wantBits = t.mp3 ? 0 : 24;
@@ -478,6 +479,10 @@ async function sweep(page, haveCore) {
       if ((i.channels || 0) !== wantCh) bad.push(i.channels + ' ch');
       if (!t.mp3 && i.bits !== wantBits) bad.push(i.bits + '-bit');
       if (t.aiff && i.container !== 'aiff') bad.push(i.container);
+      // The readout under the status line must say what was really written.
+      const sigOut = (got.sig.split(/Saved as\s*/)[1] || '');
+      if (!/Your file[\s\S]*96 kHz/.test(got.sig) || sigOut.indexOf((wantRate / 1000) + ' kHz') < 0 || (!t.mp3 && sigOut.indexOf(wantBits + '-bit') < 0))
+        bad.push('readout says "' + got.sig.replace(/\s+/g, ' ').trim() + '"');
       if (t.page === '/wav-to-flac' && i.container !== 'flac') bad.push(i.container);
       if (t.tpMax != null && !(got.tp <= t.tpMax + 0.005)) bad.push('true peak ' + (got.tp == null ? '?' : got.tp.toFixed(3)) + ' dBTP (max ' + t.tpMax + ')');
       if (t.tpNear != null && !(Math.abs(got.tp - t.tpNear) < 0.05)) bad.push('true peak ' + (got.tp == null ? '?' : got.tp.toFixed(3)) + ' dBTP (want ' + t.tpNear + ')');
