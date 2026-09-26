@@ -165,7 +165,7 @@
   // stereo", read from its header (AudioSaw.sniffFormat). Nothing is shown
   // for a format the sniffer does not know rather than a guess.
   function describeFile(f, into) {
-    var A = global.AudioSaw;
+    var A = global.AudioSaw || null;   // optional: pages without audio-core get no badge
     if (!A || !A.sniffFormat || !f || !f.slice) return;
     var tag = document.createElement('span');
     tag.className = 'fmt';
