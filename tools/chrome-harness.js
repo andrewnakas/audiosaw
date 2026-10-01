@@ -100,9 +100,6 @@ async function withPage(opts, fn) {
       port, logs, send,
       listen(method, fn) { (listeners[method] = listeners[method] || []).push(fn); },
       url: (p) => 'http://127.0.0.1:' + port + p,
-      // Waits `wait` ms and then for the load to finish. A fixed 800 ms was
-      // enough on an idle machine; at load average 40 check-fidelity called
-      // window.__run before its inline script had run.
       async goto(p, wait) {
         await send('Page.navigate', { url: page.url(p) });
         await new Promise((r) => setTimeout(r, wait || 800));
