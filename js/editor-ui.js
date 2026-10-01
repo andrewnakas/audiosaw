@@ -82,7 +82,7 @@
   function hasClips() { return M.allClips(S.project).length > 0; }
   function isTouchUI() { return global.matchMedia && global.matchMedia('(pointer: coarse)').matches; }
   function lanesWidth() { return el.lanes.clientWidth || 600; }
-  function status(kind, msg) { CV.setStatus(el.status, kind, msg); }
+  function status(kind, msg, err) { CV.setStatus(el.status, kind, msg, err); }
   function clearStatus() { CV.clearStatus(el.status); }
   function progress(pct) {
     if (pct == null) { el.progWrap.style.display = 'none'; CV.setProgress(el.prog, 0); return; }
@@ -1426,7 +1426,7 @@
     }).catch(function (err) {
       progress(null);
       if (M.serialize(S.project) !== before) { hist.push(before); changed(); }
-      status('error', f.label + ' failed: ' + ((err && err.message) || 'unknown error'));
+      status('error', f.label + ' failed: ' + ((err && err.message) || 'unknown error'), err);
     }).then(function () { busy = false; });
   }
 
@@ -1442,16 +1442,13 @@
 
   /* ---------------------------------------------------------------- import */
 
+  // WMA, AC-3, AMR and anything else the browser cannot read go through
+  // ffmpeg inside decodeToAudioBuffer (as float WAV at the file's own rate),
+  // so the progress callback is all this needs to add.
   function decodeFile(file, onProgress) {
-    return global.AudioSaw.decodeToAudioBuffer(file).catch(function () {
-      // Video containers, WMA, AC3 and friends: let ffmpeg pull the audio out.
-      if (onProgress) onProgress('Opening ' + file.name + ' with ffmpeg (first time: a 30 MB download)…');
-      return global.AudioSaw.convert(file, 'wav32f', {}, function (pct, msg) {
-        progress(pct);
-        if (msg && onProgress) onProgress(msg);
-      }).then(function (wav) {
-        return global.AudioSaw.decodeToAudioBuffer(new File([wav], baseName(file.name) + '.wav', { type: 'audio/wav' }));
-      });
+    return global.AudioSaw.decodeToAudioBuffer(file, function (pct, msg) {
+      if (pct > 20) progress(pct);
+      if (msg && onProgress && pct > 20) onProgress(msg);
     });
   }
   ST.decode = function (f) { return decodeFile(f); };
@@ -1534,7 +1531,7 @@
         if (!p.name || p.name === 'Untitled project') p.name = baseName(f.name);
         progress(i / list.length * 100);
       }).catch(function (err) {
-        status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'unsupported file') + '. If it is a video or an unusual format, converting it to WAV first usually works.');
+        status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'unsupported file') + '.', err);
         throw err;
       }).then(next);
     }
@@ -2351,7 +2348,7 @@
         refresh();
         status('error', err && err.name === 'NotAllowedError'
           ? 'Microphone permission was refused. Allow it in the address bar and try again.'
-          : 'Could not start recording: ' + ((err && err.message) || 'no microphone found') + '.');
+          : 'Could not start recording: ' + ((err && err.message) || 'no microphone found') + '.', err);
       });
     };
     begin();
@@ -2404,7 +2401,7 @@
     }).catch(function (err) {
       S.rec = null;
       refresh();
-      status('error', 'Recording failed: ' + ((err && err.message) || 'unknown error'));
+      status('error', 'Recording failed: ' + ((err && err.message) || 'unknown error'), err);
     });
     updateTransport();
   }
@@ -2628,7 +2625,7 @@
       setTimeout(function () { progress(null); }, 600);
     }).catch(function (err) {
       progress(null);
-      status('error', 'Export failed: ' + ((err && err.message) || 'unknown error'));
+      status('error', 'Export failed: ' + ((err && err.message) || 'unknown error'), err);
     }).then(function () { busy = false; });
   });
 

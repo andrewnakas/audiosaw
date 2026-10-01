@@ -23,6 +23,11 @@
   var FFMPEG_UTIL = '/vendor/ffmpeg/util.js?v=0.12.1';
   var FFMPEG_CORE = '/vendor/ffmpeg/ffmpeg-core.js?v=0.12.6';
   var FFMPEG_WASM = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
+  // The same file on a second CDN (checked byte-identical, sha256 2390efa7…),
+  // tried when unpkg fails. unpkg is unreachable or throttled on some
+  // networks, and a failed core download ends every ffmpeg conversion and
+  // every ffmpeg decode. FFMPEG_WASM stays the cache key either way.
+  var FFMPEG_WASM_MIRROR = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm';
 
   // unpkg serves the core gzipped and sends no Content-Length, so there is no
   // header to read a total from. This is the decoded size of core@0.12.6 —
@@ -89,8 +94,16 @@
       } catch (e) { /* a miss is just a download */ }
     }
 
-    var res = await fetch(FFMPEG_WASM, { mode: 'cors', credentials: 'omit' });
-    if (!res.ok) throw new Error('Failed to load codec (' + res.status + ')');
+    var res = null, firstErr = null;
+    var urls = [FFMPEG_WASM, FFMPEG_WASM_MIRROR];
+    for (var u = 0; u < urls.length && !res; u++) {
+      try {
+        var r = await fetch(urls[u], { mode: 'cors', credentials: 'omit' });
+        if (r.ok) res = r;
+        else firstErr = firstErr || new Error('Failed to load codec (' + r.status + ')');
+      } catch (e) { firstErr = firstErr || e; }
+    }
+    if (!res) throw new Error('Failed to load codec' + (firstErr && firstErr.message ? ' (' + firstErr.message + ')' : ''));
 
     var bytes;
     if (!res.body || !res.body.getReader) {
@@ -280,6 +293,15 @@
       return null;
     }
 
+    // AMR voice notes (old Android phones, WhatsApp exports): text magic,
+    // fixed rate. No browser decodes them; ffmpeg does (decodeViaFFmpeg).
+    if (n >= 9 && String.fromCharCode.apply(null, u.subarray(0, 9)) === '#!AMR-WB\n') {
+      return { container: 'amr', codec: 'amr-wb', sampleRate: 16000, channels: 1, bits: 0, lossless: false };
+    }
+    if (String.fromCharCode.apply(null, u.subarray(0, 6)) === '#!AMR\n') {
+      return { container: 'amr', codec: 'amr', sampleRate: 8000, channels: 1, bits: 0, lossless: false };
+    }
+
     // MP4 / M4A / MOV
     if (tag(4) === 'ftyp' || tag(4) === 'moov' || tag(4) === 'mdat' || tag(4) === 'wide' || tag(4) === 'free') {
       return sniffMp4(u, be16, be32, tag);
@@ -338,7 +360,7 @@
   function sniffMp4(u, be16, be32, tag) {
     var CONTAINERS = { moov: 1, trak: 1, mdia: 1, minf: 1, stbl: 1 };
     var AUDIO = { mp4a: 'aac', alac: 'alac', fLaC: 'flac', Opus: 'opus', 'ac-3': 'ac3', 'ec-3': 'eac3', lpcm: 'pcm',
-      sowt: 'pcm', twos: 'pcm', fl32: 'float', in24: 'pcm', in32: 'pcm', '.mp3': 'mp3' };
+      sowt: 'pcm', twos: 'pcm', fl32: 'float', in24: 'pcm', in32: 'pcm', '.mp3': 'mp3', samr: 'amr', sawb: 'amr-wb' };
     // The track's timescale is its sample rate for audio, and it is the only
     // place a rate above 65535 fits: the sample entry's 16.16 field cannot hold
     // 96000 (ffmpeg writes 48000 there for a 96 kHz AAC).
@@ -378,6 +400,8 @@
               if (timescale > 65535 && timescale <= 768000 && codec !== 'alac') info.sampleRate = timescale;
               if (!info.sampleRate && timescale >= 8000) info.sampleRate = timescale;
               if (codec === 'opus') info.sampleRate = 48000;
+              if (codec === 'amr') { info.sampleRate = 8000; info.channels = 1; }
+              if (codec === 'amr-wb') { info.sampleRate = 16000; info.channels = 1; }
               // HE-AAC is signalled at half its output rate (sometimes only
               // implicitly), and decodes at double. Decoding a genuine
               // low-rate AAC-LC at double is only a harmless upsample; the
@@ -400,8 +424,8 @@
   // pages show this for the file you picked and the file you get
   // (CV.signal in common.js), so the rates and depths are never hidden.
   var CODEC_NAMES = { pcm: 'PCM', float: 'PCM float', flac: 'FLAC', vorbis: 'Vorbis', opus: 'Opus', aac: 'AAC', alac: 'ALAC',
-    mp3: 'MP3', ac3: 'AC-3', eac3: 'E-AC-3' };
-  var CONTAINER_NAMES = { wav: 'WAV', aiff: 'AIFF', flac: 'FLAC', ogg: 'Ogg', caf: 'CAF', webm: 'WebM', mp4: 'MP4', adts: 'AAC', mp3: 'MP3', capture: 'Microphone' };
+    mp3: 'MP3', ac3: 'AC-3', eac3: 'E-AC-3', amr: 'AMR', 'amr-wb': 'AMR-WB' };
+  var CONTAINER_NAMES = { wav: 'WAV', aiff: 'AIFF', flac: 'FLAC', ogg: 'Ogg', caf: 'CAF', webm: 'WebM', mp4: 'MP4', adts: 'AAC', mp3: 'MP3', amr: 'AMR', capture: 'Microphone' };
   function chName(n) { return n === 1 ? 'mono' : n === 2 ? 'stereo' : n ? n + ' channels' : ''; }
   function kHz(r) { return r ? (r / 1000) + ' kHz' : ''; }
   function describeFormat(info, extra) {
@@ -433,14 +457,61 @@
     return ok;
   }
 
+  // Bytes that are certainly not audio or video, so a failed browser decode
+  // is not worth a 30 MB codec download: text (an HTML error page saved as
+  // .mp3 is common), zip, PDF and the image formats.
+  function plainlyNotMedia(u) {
+    if (!u.length) return true;
+    var t = String.fromCharCode.apply(null, u.subarray(0, 4));
+    if (t === 'PK\u0003\u0004' || t === '%PDF' || t === 'GIF8' || t === '\u0089PNG' || (u[0] === 0xFF && u[1] === 0xD8 && u[2] === 0xFF)) return true;
+    if (t === '#!AM') return false;                     // AMR's magic is text
+    var n = Math.min(u.length, 256);
+    for (var i = 0; i < n; i++) {
+      var c = u[i];
+      if (c < 9 || (c > 13 && c < 32) || c > 126) return false;
+    }
+    return true;
+  }
+
+  // The browser could not decode it: AMR and 3GP voice notes, WMA, AC-3, and
+  // whatever else a particular browser lacks. ffmpeg reads it to 32-bit float
+  // WAV at the file's own rate, and that decodes everywhere. Every tool that
+  // reads audio goes through here, so this one fallback covers them all.
+  async function decodeViaFFmpeg(file, onProgress) {
+    var ext = (file.name && file.name.indexOf('.') >= 0 ? file.name.split('.').pop() : 'bin') || 'bin';
+    if (onProgress) onProgress(25, 'Your browser cannot read this format, so ffmpeg is decoding it…');
+    var wav = await runFFmpeg(file, ext, ['-vn', '-c:a', 'pcm_f32le'], 'wav', 'audio/wav', onProgress
+      ? function (pct, msg) { onProgress(25 + Math.max(0, pct - 55) * 0.5, msg); } : null, 'Decoding with ffmpeg…');
+    var bytes = await wav.arrayBuffer();
+    var winfo = sniffFormat(bytes);
+    var O = global.OfflineAudioContext || global.webkitOfflineAudioContext;
+    var rate = winfo && canDecodeAt(winfo.sampleRate) ? winfo.sampleRate : 0;
+    if (rate) {
+      var off = new O(1, 1, rate);
+      return new Promise(function (res, rej) {
+        var pr = off.decodeAudioData(bytes, res, rej);
+        if (pr && pr.then) pr.then(res, rej);
+      });
+    }
+    var Ctor = global.AudioContext || global.webkitAudioContext;
+    var ctx = new Ctor();
+    try { return await ctx.decodeAudioData(bytes); } finally { try { ctx.close(); } catch (e) {} }
+  }
+
   // Decode any audio/video file to a Web Audio AudioBuffer, at the file's own
   // sample rate whenever the header says what it is. The buffer gets a `srcInfo`
   // property (the sniffed header, or null) so an encoder can match the source.
   // Works for: mp3, wav, m4a/aac, flac, ogg (browser support varies),
-  // and the audio track of mp4/mov/webm files.
+  // and the audio track of mp4/mov/webm files; anything the browser refuses
+  // goes through ffmpeg instead (opts.ffmpeg: false turns that off).
   function decodeToAudioBuffer(file, onProgress, opts) {
     opts = opts || {};
+    // Checked before anything else: a 0-byte file is a download or a share
+    // that never finished, and "Unable to decode audio data" sent people
+    // looking for a different converter instead of a new copy.
+    if (file && file.size === 0) return Promise.reject(new Error('That file is empty (0 bytes).'));
     if (onProgress) onProgress(5, 'Reading file…');
+    var viaFF = false;
     return file.arrayBuffer().then(function (buf) {
       if (onProgress) onProgress(20, 'Decoding…');
       var info = null;
@@ -468,6 +539,20 @@
       } else {
         run = viaDevice();
       }
+      if (opts.ffmpeg !== false) {
+        run = run.catch(function (err) {
+          // A failed decode of memory, not of format, is not ffmpeg's to fix.
+          if (err && err.name === 'RangeError') throw err;
+          if (plainlyNotMedia(new Uint8Array(buf, 0, Math.min(buf.byteLength, 256)))) throw err;
+          var head = new Uint8Array(buf.slice(0, Math.min(buf.byteLength, 1 << 16)));
+          buf = null;                           // let the copy go before ffmpeg makes its own
+          viaFF = true;
+          return decodeViaFFmpeg(file, onProgress).then(function (ab) {
+            info = info || sniffFormat(head);
+            return ab;
+          });
+        });
+      }
       return run.then(function (ab) {
         try { ab.srcInfo = info; } catch (e) {}
         // Intermediate files (a time-stretch's float output, a check decode)
@@ -476,10 +561,11 @@
           lastInfo = info;
           announce('as:decoded', {
             name: file.name, info: info, sampleRate: ab.sampleRate, channels: ab.numberOfChannels, duration: ab.duration,
-            text: describeFormat(info) || (kHz(ab.sampleRate) + ' · ' + chName(ab.numberOfChannels)),
+            text: (describeFormat(info) || (kHz(ab.sampleRate) + ' · ' + chName(ab.numberOfChannels))) + (viaFF ? ' · read by ffmpeg' : ''),
             // Decoded at another rate than the file's: only when the header
-            // was unreadable or the browser refused the rate.
-            converted: !!(info && info.sampleRate && info.sampleRate !== ab.sampleRate) || !info
+            // was unreadable or the browser refused the rate. ffmpeg always
+            // keeps the file's own rate.
+            converted: !!(info && info.sampleRate && info.sampleRate !== ab.sampleRate) || (!info && !viaFF)
           });
         }
         if (onProgress) onProgress(50, 'Decoded ' + ab.numberOfChannels + 'ch ' + ab.sampleRate + 'Hz');
@@ -495,6 +581,24 @@
     var out = off.createBuffer(chans.length, len, sampleRate);
     for (var c = 0; c < chans.length; c++) out.getChannelData(c).set(chans[c]);
     return out;
+  }
+
+  // A window onto part of a buffer, without copying it: what encode() needs
+  // (rate, channels, length, getChannelData) over subarrays of the original.
+  // Splitting a 75-minute file used to copy each part into a new
+  // AudioBuffer first, which with the quantiser's copies took peak memory
+  // past 3.5 GB, and the cutter rendered its selection through an
+  // OfflineAudioContext, which took minutes on a long file.
+  function view(buffer, start, end) {
+    start = Math.max(0, Math.floor(start || 0));
+    end = Math.min(buffer.length, Math.floor(end == null ? buffer.length : end));
+    var len = Math.max(0, end - start), sr = buffer.sampleRate, nch = buffer.numberOfChannels;
+    var chans = [];
+    for (var c = 0; c < nch; c++) chans.push(buffer.getChannelData(c).subarray(start, end));
+    return {
+      sampleRate: sr, numberOfChannels: nch, length: len, duration: len / sr, srcInfo: buffer.srcInfo,
+      getChannelData: function (c) { return chans[c]; }
+    };
   }
 
   function channelsOf(ab) {
@@ -620,10 +724,16 @@
   }
 
   var lastQuant = null;
-  function quantise(chans, bits, dither) {
+  // Block-wise, so a long file is never held a second time as integers:
+  // quantising 75 minutes of stereo in one go allocated an 800 MB Int32Array
+  // on top of the decoded audio, the slice and the output, and a phone's tab
+  // was killed before the encoder started. Blocks must be taken in order
+  // (the dither generator runs on), which gives exactly the samples the
+  // one-shot version gave.
+  var QBLOCK = 65536;
+  function quantiser(chans, bits, dither) {
     var scale = Math.pow(2, bits - 1), max = scale - 1, min = -scale;
-    var nch = chans.length, len = chans[0].length;
-    var out = new Int32Array(len * nch);
+    var nch = chans.length;
     var grid = gridOf(chans, bits);
     var useDither = dither !== false && !grid;
     lastQuant = { bits: bits, exact: !!grid, dithered: useDither };
@@ -633,16 +743,22 @@
       seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
       return (seed >>> 0) / 4294967296;
     }
-    for (var i = 0, o = 0; i < len; i++) {
-      for (var c = 0; c < nch; c++, o++) {
-        var x = chans[c][i];
-        var v = x > 0 ? x * pos : x * scale;
-        if (useDither) v += rnd() - rnd();
-        v = Math.round(v);
-        out[o] = v > max ? max : (v < min ? min : v);
+    var out = null;
+    // Interleaved integers for frames [i0, i1). The array is reused.
+    return function (i0, i1) {
+      var need = (i1 - i0) * nch;
+      if (!out || out.length < need) out = new Int32Array(need);
+      for (var i = i0, o = 0; i < i1; i++) {
+        for (var c = 0; c < nch; c++, o++) {
+          var x = chans[c][i];
+          var v = x > 0 ? x * pos : x * scale;
+          if (useDither) v += rnd() - rnd();
+          v = Math.round(v);
+          out[o] = v > max ? max : (v < min ? min : v);
+        }
       }
-    }
-    return out;
+      return need === out.length ? out : out.subarray(0, need);
+    };
   }
 
   function writeStr(view, off, s) { for (var i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); }
@@ -687,16 +803,19 @@
     writeStr(v, o, 'data'); v.setUint32(o + 4, dataSize, true); o += 8;
 
     if (isFloat) {
-      var f = new Float32Array(len * nch);
+      // Straight into the file: the data offset is 56 or 80, so 4-aligned.
+      var f = new Float32Array(buf, o, len * nch);
       for (var i = 0, k = 0; i < len; i++) for (var c = 0; c < nch; c++) f[k++] = chans[c][i];
-      new Uint8Array(buf, o).set(new Uint8Array(f.buffer));
     } else {
-      var q = quantise(chans, bits, opts.dither);
-      var u8 = new Uint8Array(buf, o);
-      if (bits === 16) {
-        for (var j = 0, b = 0; j < q.length; j++) { var s = q[j]; u8[b++] = s & 0xff; u8[b++] = (s >> 8) & 0xff; }
-      } else {
-        for (var j2 = 0, b2 = 0; j2 < q.length; j2++) { var s2 = q[j2]; u8[b2++] = s2 & 0xff; u8[b2++] = (s2 >> 8) & 0xff; u8[b2++] = (s2 >> 16) & 0xff; }
+      var next = quantiser(chans, bits, opts.dither);
+      var u8 = new Uint8Array(buf, o), b = 0;
+      for (var i0 = 0; i0 < len; i0 += QBLOCK) {
+        var q = next(i0, Math.min(len, i0 + QBLOCK));
+        if (bits === 16) {
+          for (var j = 0; j < q.length; j++) { var s = q[j]; u8[b++] = s & 0xff; u8[b++] = (s >> 8) & 0xff; }
+        } else {
+          for (var j2 = 0; j2 < q.length; j2++) { var s2 = q[j2]; u8[b++] = s2 & 0xff; u8[b++] = (s2 >> 8) & 0xff; u8[b++] = (s2 >> 16) & 0xff; }
+        }
       }
     }
     return new Blob([buf], { type: 'audio/wav' });
@@ -716,11 +835,14 @@
     var e = Math.floor(Math.log2(sampleRate)), mant = sampleRate / Math.pow(2, e - 31);
     v.setUint16(28, 16383 + e); v.setUint32(30, Math.floor(mant) >>> 0); v.setUint32(34, 0);
     writeStr(v, 38, 'SSND'); v.setUint32(42, 8 + dataSize); v.setUint32(46, 0); v.setUint32(50, 0);
-    var q = quantise(chans, bits, opts.dither), u8 = new Uint8Array(buf, 54);
-    for (var j = 0, b = 0; j < q.length; j++) {
-      var s = q[j];
-      if (bits === 24) u8[b++] = (s >> 16) & 0xff;
-      u8[b++] = (s >> 8) & 0xff; u8[b++] = s & 0xff;
+    var next = quantiser(chans, bits, opts.dither), u8 = new Uint8Array(buf, 54), b = 0;
+    for (var i0 = 0; i0 < len; i0 += QBLOCK) {
+      var q = next(i0, Math.min(len, i0 + QBLOCK));
+      for (var j = 0; j < q.length; j++) {
+        var s = q[j];
+        if (bits === 24) u8[b++] = (s >> 16) & 0xff;
+        u8[b++] = (s >> 8) & 0xff; u8[b++] = s & 0xff;
+      }
     }
     return new Blob([buf], { type: 'audio/aiff' });
   }
@@ -834,26 +956,29 @@
     var left = audioBuffer.getChannelData(0);
     var right = channels === 2 ? audioBuffer.getChannelData(1) : null;
 
-    // lamejs takes 16-bit input.
-    var q = quantise(right ? [left, right] : [left], 16);
-    var leftI16 = new Int16Array(left.length);
-    var rightI16 = right ? new Int16Array(right.length) : null;
-    for (var i = 0, k = 0; i < left.length; i++) {
-      leftI16[i] = q[k++];
-      if (right) rightI16[i] = q[k++];
-    }
-
-    var blockSize = 1152;
+    // lamejs takes 16-bit input, quantised a block at a time (see quantiser)
+    // rather than as two whole-file Int16 copies plus an interleaved Int32 one.
+    var next = quantiser(right ? [left, right] : [left], 16);
+    var blockSize = 1152, group = blockSize * 64;
+    var leftI16 = new Int16Array(group), rightI16 = right ? new Int16Array(group) : null;
     var chunks = [];
-    var total = leftI16.length;
+    var total = left.length;
     var last = -1;
-    for (var pos = 0; pos < total; pos += blockSize) {
-      var endL = leftI16.subarray(pos, pos + blockSize);
-      var endR = rightI16 ? rightI16.subarray(pos, pos + blockSize) : null;
-      var data = endR ? enc.encodeBuffer(endL, endR) : enc.encodeBuffer(endL);
-      if (data && data.length) chunks.push(data);
+    for (var g0 = 0; g0 < total; g0 += group) {
+      var g1 = Math.min(total, g0 + group), q = next(g0, g1);
+      for (var i = 0, k = 0; i < g1 - g0; i++) {
+        leftI16[i] = q[k++];
+        if (right) rightI16[i] = q[k++];
+      }
+      for (var pos = 0; pos < g1 - g0; pos += blockSize) {
+        var e = Math.min(g1 - g0, pos + blockSize);
+        var endL = leftI16.subarray(pos, e);
+        var endR = rightI16 ? rightI16.subarray(pos, e) : null;
+        var data = endR ? enc.encodeBuffer(endL, endR) : enc.encodeBuffer(endL);
+        if (data && data.length) chunks.push(data);
+      }
       if (onProgress) {
-        var pct = 55 + Math.floor((pos / total) * 40);
+        var pct = 55 + Math.floor((g1 / total) * 40);
         if (pct !== last) { onProgress(pct, 'Encoding MP3…'); last = pct; }
       }
     }
@@ -893,15 +1018,29 @@
     }
     ffmpeg.on('progress', onFFProgress);
 
+    // ffmpeg says why it failed only in its log. Kept per call, and only the
+    // lines that tell an unreadable input from a failing encoder.
+    var inputBad = false;
+    function onFFLog(e) {
+      var m = (e && e.message) || '';
+      // "in_<stamp>.mp3: Invalid argument" — an error ffmpeg pins on the input.
+      if (m.indexOf(inName + ':') === 0 ||
+        /Invalid data found|does not contain any stream|matches no streams|could not find codec parameters|Error opening input|moov atom not found|misdetection possible/i.test(m)) inputBad = true;
+    }
+    ffmpeg.on('log', onFFLog);
+
     var data, ret, failed = false;
     try {
       ret = await ffmpeg.exec(['-i', inName].concat(args, [outName]));
-      data = await ffmpeg.readFile(outName);
+      // A failed run leaves no output file, and readFile then throws a bare
+      // "ErrnoError: FS error" that says nothing about the file.
+      if (!ret) data = await ffmpeg.readFile(outName);
     } catch (e) {
       failed = true;
       throw e;
     } finally {
       try { ffmpeg.off('progress', onFFProgress); } catch (e) {}
+      try { ffmpeg.off('log', onFFLog); } catch (e) {}
       try { await ffmpeg.deleteFile(inName); } catch (e) {}
       try { await ffmpeg.deleteFile(outName); } catch (e) {}
       // A failed run leaves the wasm heap in a state where the next exec dies
@@ -911,6 +1050,7 @@
         ffmpegPromise = null;
       }
     }
+    if (inputBad && (ret || !data || !data.length)) throw new Error('Could not decode this file: ffmpeg found no audio it can read in it.');
     if (ret || !data || !data.length) throw new Error('The encoder could not write ' + outExt.toUpperCase() + ' with these settings');
     return new Blob([data.buffer], { type: mime || 'application/octet-stream' });
   }
@@ -1051,7 +1191,12 @@
 
     if (ownEncoder && !isVideo) {
       var ab = null;
-      try { ab = await decodeToAudioBuffer(file, onProgress); } catch (err) { ab = null; }
+      // ffmpeg: false — when the browser cannot decode it, ffmpeg converts
+      // straight to the target below rather than to an intermediate WAV.
+      try { ab = await decodeToAudioBuffer(file, onProgress, { ffmpeg: false }); } catch (err) {
+        if (file.size === 0) throw err;
+        ab = null;
+      }
       // Fall through to ffmpeg for codecs Web Audio can't decode (rare).
       if (ab) {
         var info = ab.srcInfo;
@@ -1192,6 +1337,7 @@
     floatWav: floatWav,
     downmixStereo: downmixStereo,
     makeBuffer: makeBuffer,
+    view: view,
     ensureResampler: ensureResampler,
     resampleBuffer: resampleBuffer,
     varispeed: varispeed,

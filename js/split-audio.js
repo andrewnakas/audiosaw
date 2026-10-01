@@ -51,14 +51,11 @@
     return cuts;
   }
 
+  // A view, not a copy: a long recording is exactly what this tool gets, and
+  // copying each part on top of the decoded file is what ran phones out of
+  // memory (see AudioSaw.view).
   function sliceBuffer(buffer, startSample, endSample) {
-    var chans = CV.channelsOf(buffer);
-    var len = endSample - startSample;
-    var out = [];
-    for (var c = 0; c < chans.length; c++) {
-      out.push(chans[c].slice(startSample, endSample));
-    }
-    return CV.bufferFrom(out, buffer.sampleRate);
+    return AudioSaw.view(buffer, startSample, endSample);
   }
 
   function pad(num, width) {
