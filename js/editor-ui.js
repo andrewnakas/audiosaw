@@ -1531,7 +1531,7 @@
         if (!p.name || p.name === 'Untitled project') p.name = baseName(f.name);
         progress(i / list.length * 100);
       }).catch(function (err) {
-        status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'unsupported file') + '.', err);
+        status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'unsupported file').replace(/\.$/, '') + '.', err);
         throw err;
       }).then(next);
     }
