@@ -814,6 +814,16 @@
         ['loudness-normalizer', 'Level the narration for a podcast feed']
       ]
     },
+    'dictation': {
+      cat: 'voice', label: 'dictation', title: 'Dictation (speech to text)',
+      blurb: 'Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.',
+      next: [
+        ['audio-to-text', 'Already recorded it? Transcribe the file, with subtitles'],
+        ['text-to-speech', 'The other way: have text read aloud'],
+        ['voice-recorder', 'Keep the recording as well as the words'],
+        ['noise-reduction', 'Clean a noisy recording before transcribing it']
+      ]
+    },
     'audio-to-text-prep': {
       cat: 'apps', label: 'for transcription', title: 'Prep audio for transcription',
       blurb: 'The format each transcription service actually wants.',
@@ -1019,7 +1029,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'audio-to-text', 'dictation', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

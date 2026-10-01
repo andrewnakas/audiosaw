@@ -23,7 +23,9 @@
  * ~/.cache/audiosaw/kokoro (TTS_DOWNLOAD=1 fetches them once, 420 MB), the
  * page on both backends. check-audiobook.js parses books (text, EPUB) in
  * Node and, with those files and the ffmpeg core cached, makes an M4B and
- * reads its chapters back with ffprobe. All of them skip their browser parts on a machine
+ * reads its chapters back with ffprobe. check-dictation.js holds the
+ * phrase splitter behind /dictation (DICTATION_BROWSER=1 adds the page with
+ * a spoken sentence through Whisper). All of them skip their browser parts on a machine
  * without Chrome.
  */
 const { execFileSync } = require('child_process');
@@ -54,7 +56,8 @@ const CHECKS = [
   ['check-errors.js'],
   ['check-voice.js'],
   ['check-tts.js'],
-  ['check-audiobook.js']
+  ['check-audiobook.js'],
+  ['check-dictation.js']
 ];
 
 let failed = 0;

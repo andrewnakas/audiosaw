@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dictation — private speech to text in your browser (Whisper), free</title>
+<meta name="description" content="Speak and get text with punctuation, using OpenAI's Whisper running in your browser. Your voice is never uploaded. 99 languages, or translate to English as you talk. Free, no signup.">
+<meta name="keywords" content="dictation, online dictation, speech to text, voice typing, private dictation, offline speech recognition, whisper dictation, talk to text, voice to text free">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/dictation">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Dictation — Whisper speech to text that stays on your machine">
+<meta property="og:description" content="Talk, and the words appear with punctuation. Whisper runs in the tab, so nothing you say is uploaded. Free.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/dictation">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Dictation (Whisper in the browser)",
+  "url": "https://audiosaw.com/dictation",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Live dictation from the microphone with OpenAI Whisper running locally in the browser; phrase-by-phrase text with punctuation; 99 languages; translate to English; no upload; text kept in the browser",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.dict-box{width:100%;min-height:16em;padding:.9rem 1rem;border:1px solid var(--line,#d9cdb8);border-radius:8px;font:inherit;font-size:1.05rem;line-height:1.6;background:var(--paper,#fff);color:inherit;resize:vertical;box-sizing:border-box}
+.mic-row{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;margin:0 0 1rem}
+#micBtn.recording{background:#b3261e;border-color:#b3261e}
+.meter{flex:1 1 10rem;height:.5rem;border-radius:4px;background:var(--line,#e8dfcf);overflow:hidden}
+.meter span{display:block;height:100%;width:0;background:#9a8f7c;transition:width .05s linear}
+.meter span.on{background:#2e7d32}
+.live-line{min-height:1.5em;color:var(--ink-soft,#5b5346);font-style:italic;margin:.5rem 0}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model runs in your browser; the audio never leaves the tab and is thrown away once it has been turned into text. Only the model download touches the network, once."}},{"@type":"Question","name":"Why does the text appear after I pause rather than word by word?","acceptedAnswer":{"@type":"Answer","text":"Each phrase is transcribed as a whole when you pause, which is what gives Whisper enough context to punctuate it. Word-by-word recognition needs a different kind of model that today only runs on servers."}},{"@type":"Question","name":"Which languages can I dictate in?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages. Choose yours from the list for the best results, or choose \"An English translation\" to speak another language and get English text."}},{"@type":"Question","name":"Is the text saved if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"The text is kept in this browser and comes back when you return to the page, until you clear it. Download it as a .txt file to keep it anywhere else."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, with the tiny or base model. Text arrives a little slower than on a laptop."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Dictation (speech to text)"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Dictation (speech to text)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Dictation. <span class="ital">Speak</span>, and it types.</h1>
+    <p>Press the button, talk, and your words appear as text, with punctuation, after each phrase. The speech recognition is OpenAI's Whisper running inside this browser tab, so nothing you say is sent to a server. That is the difference from the dictation built into Chrome, Google Docs and most phones, which stream your voice to the cloud.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="mic-row">
+      <button class="btn" id="micBtn" data-track="convert" aria-pressed="false">● Start dictating</button>
+      <div class="meter" aria-hidden="true"><span id="meter"></span></div>
+    </div>
+    <div class="controls">
+      <label>Model
+        <select id="model">
+          <option value="onnx-community/whisper-tiny">Fast — Whisper tiny (90 MB)</option>
+          <option value="onnx-community/whisper-base" selected>Balanced — Whisper base (135 MB, recommended)</option>
+          <option value="onnx-community/whisper-small">Accurate — Whisper small (285 MB)</option>
+        </select>
+      </label>
+      <label>Language
+        <select id="language">
+          <option value="auto">Detect automatically</option>
+          <option value="en" selected>English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="it">Italian</option>
+          <option value="pt">Portuguese</option>
+          <option value="nl">Dutch</option>
+          <option value="pl">Polish</option>
+          <option value="ru">Russian</option>
+          <option value="uk">Ukrainian</option>
+          <option value="tr">Turkish</option>
+          <option value="ar">Arabic</option>
+          <option value="hi">Hindi</option>
+          <option value="id">Indonesian</option>
+          <option value="vi">Vietnamese</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+        </select>
+      </label>
+      <label>Write
+        <select id="task">
+          <option value="transcribe" selected>What I say</option>
+          <option value="translate">An English translation</option>
+        </select>
+      </label>
+    </div>
+    <p class="control-note" id="envNote">The first time, the speech model downloads (135 MB for the recommended one) and is kept for next time.</p>
+    <div class="status hidden" id="status"></div>
+    <div class="live-line" id="liveLine" hidden aria-live="off"></div>
+    <label for="dictText" class="control-note">Your text — edit it as you go</label>
+    <textarea id="dictText" class="dict-box" spellcheck="true"></textarea>
+    <div class="result-actions">
+      <button class="btn" id="dlBtn">Download .txt</button>
+      <button class="btn btn-secondary" id="copyBtn">copy text</button>
+      <button class="btn btn-secondary" id="clearBtn">clear</button>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Recognition</th><td>OpenAI Whisper (tiny, base or small) through transformers.js, running in the tab</td></tr>
+        <tr><th>Languages</th><td>99 to write in the language spoken, or any of them translated into English</td></tr>
+        <tr><th>How text arrives</th><td>A phrase at a time: after each pause of about 0.7 seconds, with punctuation and capitals</td></tr>
+        <tr><th>Uploads your voice</th><td>No. Audio goes from the microphone to the model in this tab and is then discarded</td></tr>
+        <tr><th>Keeps</th><td>Only the text, in this browser, so a reload does not lose it</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>The microphone is read in small blocks and measured every 30 milliseconds against the room's own background level, which the page keeps learning while you're quiet. Anything 10 dB above that background is speech. When you pause for about seven-tenths of a second, the phrase you just said is handed to Whisper, the same speech model the <a href="/audio-to-text">audio to text</a> page uses for recordings, and the text it returns is added to the box. The 300 milliseconds before you started speaking are included, so the soft start of a word like "first" or "hello" isn't clipped. A phrase that runs past 25 seconds is cut there, inside the 30-second window Whisper listens through.</p>
+    <p>Whisper is given whole phrases rather than fixed slices of time, which is why the text arrives with sensible punctuation: it sees the sentence it's punctuating. That is also why it lags by a phrase rather than showing each word as you say it. Streaming word-by-word recognisers exist, but they run in the cloud.</p>
+
+    <h2>Getting accurate text</h2>
+    <p>Speak in phrases and pause at the end of each sentence; the pause is what sends the phrase. A headset or a laptop's built-in microphone in a quiet room works well; a phone on a desk across the room does not. Say punctuation only if you want the words: Whisper adds commas and full stops from your intonation, and "comma" is written as the word. Pick your language rather than leaving it on automatic for short phrases, because a two-word phrase is not much to identify a language from.</p>
+    <p><strong>Base</strong> is the right model for most people. <strong>Tiny</strong> keeps up better on an older laptop or a phone, with more mistakes on names and numbers. <strong>Small</strong> is noticeably better with accents and for languages other than English, but on a computer without a GPU it may fall several phrases behind; it catches up when you stop.</p>
+
+    <h2>Private by construction</h2>
+    <p>Most dictation is a cloud service. The microphone button in Google Docs, Chrome's speech API, Windows voice typing in its default mode and most phone keyboards send the audio to the vendor's servers to be recognised. That is fine for a shopping list. It is less fine for a patient note, a legal memo, a diary or a draft that isn't public yet. Here the model is downloaded once and runs on your machine; the audio is discarded as soon as it has been transcribed, and only the text is kept, in your browser, until you clear it.</p>
+
+    <h2>What it can't do</h2>
+    <p>It does not type into other apps: the text appears in this box, and you copy it from there or download it as a .txt file. It does not take voice commands such as "new paragraph" or "delete that" — a long pause starts a new paragraph, and you edit in the box like any text. It does not label different speakers. For a recording you already have, use <a href="/audio-to-text">audio to text</a>, which also writes SRT and VTT subtitles. To hear text read aloud instead, there is <a href="/text-to-speech">text to speech</a>.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my voice sent anywhere?</summary><p>No. The speech model runs in your browser; the audio never leaves the tab and is thrown away once it has been turned into text. Only the model download touches the network, once.</p></details>
+      <details><summary>Why does the text appear after I pause rather than word by word?</summary><p>Each phrase is transcribed as a whole when you pause, which is what gives Whisper enough context to punctuate it. Word-by-word recognition needs a different kind of model that today only runs on servers.</p></details>
+      <details><summary>Which languages can I dictate in?</summary><p>Whisper covers 99 languages. Choose yours from the list for the best results, or choose "An English translation" to speak another language and get English text.</p></details>
+      <details><summary>Is the text saved if I close the tab?</summary><p>The text is kept in this browser and comes back when you return to the page, until you clear it. Download it as a .txt file to keep it anywhere else.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>On recent phones, with the tiny or base model. Text arrives a little slower than on a laptop.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>Already recorded it? Transcribe the file, with subtitles.</p></a>
+      <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>The other way: have text read aloud.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Keep the recording as well as the words.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean a noisy recording before transcribing it.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/resample.js?v=2026-10-01c"></script>
+<script src="/js/dictation-vad.js?v=2026-10-01c"></script>
+<script src="/js/dictation-page.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
+</body>
+</html>

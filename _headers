@@ -133,6 +133,15 @@
   Cross-Origin-Embedder-Policy: credentialless
 /js/tts-worker.js
   Cross-Origin-Embedder-Policy: credentialless
+
+# /dictation reuses /audio-to-text's Whisper worker and runtime, which carry
+# their own COEP/CORP above; the page needs isolation for the worker's threads.
+/dictation
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/dictation.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
 /vendor/phonemizer/*
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin

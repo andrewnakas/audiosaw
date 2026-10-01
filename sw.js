@@ -10,7 +10,7 @@
  *  - Everything cross-origin. The 30 MB ffmpeg core is fetched and cached by
  *    audio-core.js, which hands the worker a blob: URL this file never sees;
  *    opaque responses from anything else are unbounded quota padding.
- *  - /stem-splitter, /audio-to-text, /text-to-speech, /vendor/ort/*,
+ *  - /stem-splitter, /audio-to-text, /text-to-speech, /dictation, /vendor/ort/*,
  *    /vendor/transformers/* and /vendor/phonemizer/*.
  *    Those must arrive with their real
  *    COOP/COEP/CORP headers or ONNX Runtime's nested pthread workers hang
@@ -57,7 +57,7 @@ var STATIC_PATHS = /^\/(css|js|vendor|assets)\//;
 // /stemflipper is a separate single-page app proxied in by functions/stemflipper/. It
 // owns its own routing and its own asset versioning, so this worker must stay out of the
 // way entirely — caching its HTML here would pin visitors to a stale build.
-var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/)/;
+var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|dictation(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/)/;
 
 // Where a shared file should land. Anything unlisted goes to the homepage,
 // whose converter accepts everything and picks a target.
