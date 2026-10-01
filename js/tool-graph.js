@@ -777,7 +777,7 @@
     },
     'text-to-speech': {
       cat: 'voice', label: 'text → speech', title: 'Text to speech',
-      blurb: 'Natural AI voices that run in your browser: 28 voices, voice mixing, MP3 download, nothing uploaded.',
+      blurb: 'Natural AI voices that run in your browser: 41 voices in 7 languages, voice mixing, MP3 download, nothing uploaded.',
       next: [
         ['audio-editor', 'Line the voice-over up against music and video'],
         ['loudness-normalizer', 'Bring the narration to podcast or YouTube loudness'],
