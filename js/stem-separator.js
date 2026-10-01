@@ -104,16 +104,22 @@
 
   // Read the duration from metadata rather than decoding, so the estimate can
   // appear as soon as the file is picked.
+  // Kept as a promise so Separate can wait for it (briefly) before deciding
+  // whether to decode at all.
+  var durationKnown = Promise.resolve();
   function measureDuration(file) {
-    var url = URL.createObjectURL(file);
-    var probe = new Audio();
-    probe.preload = 'metadata';
-    probe.onloadedmetadata = function () {
-      if (isFinite(probe.duration)) { trackSeconds = probe.duration; describeEnvironment(null); }
-      URL.revokeObjectURL(url);
-    };
-    probe.onerror = function () { URL.revokeObjectURL(url); };
-    probe.src = url;
+    durationKnown = new Promise(function (resolve) {
+      var url = URL.createObjectURL(file);
+      var probe = new Audio();
+      probe.preload = 'metadata';
+      probe.onloadedmetadata = function () {
+        if (isFinite(probe.duration) && files[0] === file) { trackSeconds = probe.duration; describeEnvironment(null); }
+        URL.revokeObjectURL(url);
+        resolve();
+      };
+      probe.onerror = function () { URL.revokeObjectURL(url); resolve(); };
+      probe.src = url;
+    });
   }
 
   /* ------------------------------------------------------------- worker io */
@@ -177,6 +183,7 @@
   async function decodeTo441(file) {
     // Refused before decoding when the metadata already says so: decoding a
     // 75-minute file just to say it is too long took 1.6 GB and 20 seconds.
+    await Promise.race([durationKnown, new Promise(function (r) { setTimeout(r, 3000); })]);
     if (trackSeconds && trackSeconds > MAX_SECONDS) throw tooLong(trackSeconds);
     CV.setStatus(statusEl, 'info', 'Decoding…');
     // No ffmpeg fallback on this page: it is cross-origin isolated, and the
