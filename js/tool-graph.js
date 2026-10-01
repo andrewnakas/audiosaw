@@ -824,6 +824,17 @@
         ['noise-reduction', 'Clean a noisy recording before transcribing it']
       ]
     },
+    'video-dubbing': {
+      cat: 'voice', label: 'video dubbing', title: 'Video dubbing (to English)',
+      blurb: 'Translate a video\'s speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.',
+      next: [
+        ['audio-to-text', 'Just the English subtitles, without a voice-over'],
+        ['stem-splitter', 'Take the original voice out of the music before dubbing'],
+        ['extract-audio', 'Pull the new soundtrack back out of the video'],
+        ['text-to-speech', 'Write your own narration instead'],
+        ['audio-editor', 'Fine-tune the timing of each line by hand']
+      ]
+    },
     'audio-to-text-prep': {
       cat: 'apps', label: 'for transcription', title: 'Prep audio for transcription',
       blurb: 'The format each transcription service actually wants.',
@@ -1029,7 +1040,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text', 'dictation', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {
