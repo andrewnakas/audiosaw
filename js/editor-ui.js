@@ -1463,7 +1463,7 @@
         return MIDI.importFile(f, { t: place.mode === 'at' || place.mode === 'tracks' ? place.t : 0 }).then(function (r) {
           added = added.concat(r.ids); notes += r.notes;
         }).catch(function (err) {
-          status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'not a MIDI file') + '.');
+          status('error', 'Could not open ' + f.name + ': ' + ((err && err.message) || 'not a MIDI file') + '.', err);
         });
       });
     });
@@ -2836,7 +2836,7 @@
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
       status('success', 'Saved ' + a.download + ' (' + CV.fmtBytes(zip.size) + '). Drop it back on this page to carry on editing.');
-    }).catch(function (err) { status('error', 'Could not save the project: ' + err.message); });
+    }).catch(function (err) { status('error', 'Could not save the project: ' + err.message, err); });
   }
 
   function openProjectFile(file) {
@@ -2848,7 +2848,7 @@
       adopt(res);
       status('success', 'Opened ' + file.name + '.');
     }).catch(function (err) {
-      status('error', 'Could not open that project: ' + err.message);
+      status('error', 'Could not open that project: ' + err.message, err);
     }).then(function () { progress(null); busy = false; });
   }
   $('#edProjectInput').addEventListener('change', function (e) {
@@ -2953,7 +2953,7 @@
       status('success', 'Restored — everything is where you left it.');
       return true;
     }).catch(function (err) {
-      status('error', 'Could not restore the last session: ' + err.message);
+      status('error', 'Could not restore the last session: ' + err.message, err);
       return false;
     }).then(function (ok) { progress(null); busy = false; return ok; });
   }

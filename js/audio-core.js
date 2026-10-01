@@ -543,6 +543,14 @@
         run = run.catch(function (err) {
           // A failed decode of memory, not of format, is not ffmpeg's to fix.
           if (err && err.name === 'RangeError') throw err;
+          // A large file in a format every browser decodes (MP3, AAC, FLAC,
+          // Vorbis, Opus) that this one refused has most likely run out of
+          // memory: decoded, it is ten to twenty times its size. ffmpeg would
+          // need more again, after a 30 MB download, so say so instead.
+          if (info && /^(mp3|aac|flac|vorbis|opus)$/.test(info.codec) && file.size > 48 * 1024 * 1024) {
+            throw new Error('Could not decode this ' + Math.round(file.size / 1048576) + ' MB file: decoded, it needs far more ' +
+              'memory than the browser gave this page. Split it into shorter parts first.');
+          }
           if (plainlyNotMedia(new Uint8Array(buf, 0, Math.min(buf.byteLength, 256)))) throw err;
           var head = new Uint8Array(buf.slice(0, Math.min(buf.byteLength, 1 << 16)));
           buf = null;                           // let the copy go before ffmpeg makes its own

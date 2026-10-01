@@ -214,7 +214,7 @@
       });
       X.status('success', 'Bounced “' + c.name + '” to audio with the ' + instLabel(t.inst) + '. Effects, tools and detection work on it now; undo brings the notes back.');
     }).catch(function (e) {
-      X.status('error', 'Bounce failed: ' + ((e && e.message) || e));
+      X.status('error', 'Bounce failed: ' + ((e && e.message) || e), e);
     }).then(function () { X.setBusy(false); });
   }
 
@@ -251,7 +251,7 @@
         X.select(cid);
         X.status('success', notes.length + ' notes from “' + c.name + '” on a new MIDI track under it. Mute one to compare; right-click the new clip to edit the notes or change the instrument.');
       } catch (e) {
-        X.status('error', 'Could not convert “' + c.name + '”: ' + ((e && e.message) || e));
+        X.status('error', 'Could not convert “' + c.name + '”: ' + ((e && e.message) || e), e);
       } finally { X.setBusy(false); }
     }, 30);
   }

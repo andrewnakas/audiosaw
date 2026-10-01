@@ -76,6 +76,7 @@ const TABLE = [
   ['Could not process that file. memory access out of bounds', dom('RuntimeError', 'memory access out of bounds'), 'codec_crash'],
   ['Separation failed. That track is 75 minutes long. Both stems are held in memory at once, so past 10 minutes the tab runs out of room — split it into parts first.', null, 'too_long'],
   ['Could not split that file. Array buffer allocation failed', dom('RangeError', 'Array buffer allocation failed'), 'memory'],
+  ['Could not decode: Could not decode this 70 MB file: decoded, it needs far more memory than the browser gave this page. Split it into shorter parts first.', null, 'memory'],
   ['Could not split that file. No gaps long enough were found. Try a shorter minimum gap, or split by duration instead.', null, 'no_content'],
   ['Nothing was recorded.', null, 'no_content'],
   ['Could not open song.mid: That is not a MIDI file..', null, 'bad_file'],
