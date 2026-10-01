@@ -106,7 +106,10 @@ async function withPage(opts, fn) {
 
 async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
-  for (let i = 0; i < 300 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
+  // 30 s by default; CHROME_WAIT_MS for a loaded machine, where a headless
+  // start was measured at 72 s.
+  const tries = Math.ceil((+process.env.CHROME_WAIT_MS || 30000) / 100);
+  for (let i = 0; i < tries && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
   let list = [];
   for (let i = 0; i < 50 && !list.some((t) => t.type === 'page'); i++) {
