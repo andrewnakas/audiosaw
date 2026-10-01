@@ -15,8 +15,10 @@
  * editor round trip through the real pages, about fifteen more. check-fidelity.js
  * measures the decode/encode/resample layer and drives thirty tool pages with a
  * 96 kHz / 24-bit file, about a minute. check-record-computer.js records a real
- * tab through /record-computer-audio, about fifteen seconds. All of them skip
- * themselves on a machine without Chrome.
+ * tab through /record-computer-audio, about fifteen seconds. check-errors.js
+ * pins the convert_error buckets and drives the failures behind them (0-byte,
+ * unreadable and ffmpeg-only files, refused microphones). All of them skip
+ * their browser parts on a machine without Chrome.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
@@ -42,7 +44,8 @@ const CHECKS = [
   ['check-midi.js'],
   ['check-midi-track.js'],
   ['check-record-computer.js'],
-  ['check-fidelity.js']
+  ['check-fidelity.js'],
+  ['check-errors.js']
 ];
 
 let failed = 0;

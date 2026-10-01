@@ -47,6 +47,18 @@
   }
 
   // Map a raw exception onto a small enum plus a recovery suggestion.
+  //
+  // The id is what GA4 receives as `error_type` (a registered dimension), so
+  // it must stay a short, fixed word: the raw message never leaves the page.
+  // Order matters — the first match wins — so the specific kinds sit above
+  // the broad ones ("Microphone access was blocked" must not read as decode).
+  //
+  // `test` runs against "<ErrorName>: <message>" when the page passed the
+  // error object to CV.setStatus, so a DOMException is recognised by its
+  // name (NotAllowedError, QuotaExceededError…) even where its message
+  // differs between browsers. The file's own name is removed first: "Could
+  // not open empty_room.wav" was being filed under `empty`.
+  var LIMIT_ACTION = { href: '/split-audio', label: 'Split it into shorter parts first' };
   var ERROR_KINDS = [
     {
       // A UI hint, not a failure: "Selection too short", "pick a region first".
@@ -65,21 +77,111 @@
       action: { href: '/', label: 'Use the universal converter' }
     },
     {
-      id: 'decode',
-      test: /decodeAudioData|EncodingError|Unable to decode|unsupported|could not decode/i,
-      message: 'Your browser could not decode this file directly.',
+      // A 0-byte file: a download or share that never finished. Nothing any
+      // decoder can do, and it used to be reported as a decode failure.
+      id: 'empty_file',
+      test: /file is empty|0 bytes/i,
+      message: 'That file is empty (0 bytes). It usually means it did not finish downloading or copying — fetch it again from wherever it came from.',
+      action: null
+    },
+    {
+      id: 'mic_denied',
+      test: /NotAllowedError|PermissionDenied|Permission denied|microphone access was blocked|permission dismissed/i,
+      message: 'The browser is not letting this page use the microphone. Tap the icon to the left of the address bar, set Microphone to Allow, and reload. ' +
+        'On Android, also check Settings → Apps → your browser → Permissions → Microphone; on iPhone, Settings → Safari → Microphone.',
+      action: null
+    },
+    {
+      id: 'mic_missing',
+      test: /NotFoundError|Requested device not found|no microphone|DevicesNotFound/i,
+      message: 'No microphone was found. Plug one in (or connect the headset), then press record again.',
+      action: null
+    },
+    {
+      id: 'mic_busy',
+      test: /NotReadableError|Could not start audio source|TrackStartError|device in use|already in use/i,
+      message: 'The microphone is busy or blocked by the system. Close any call, voice-note or video app that may be holding it, then try again.',
+      action: null
+    },
+    {
+      id: 'mic_constraints',
+      test: /OverconstrainedError|ConstraintNotSatisfied/i,
+      message: 'The chosen input cannot record in that mode. Pick “The default input”, or switch to Voice mode.',
+      action: null
+    },
+    {
+      id: 'insecure',
+      test: /secure \(https\)|SecurityError|insecure/i,
+      message: 'This needs the secure version of the page. Open it as https://audiosaw.com.',
+      action: null
+    },
+    {
+      // A browser without a feature the tool relies on: AudioWorklet,
+      // OfflineAudioContext, MediaRecorder, WebAssembly, workers, WebGPU.
+      // Named APIs only: a generic TypeError is far more often our own bug,
+      // and goes to script_error below so the two stay apart.
+      id: 'unsupported_api',
+      test: /NotSupportedError|(AudioWorkletNode|AudioWorklet|MediaRecorder|OfflineAudioContext|AudioContext|SharedArrayBuffer|WebAssembly|Worker|ReadableStream|CompressionStream)( is not defined| is not a constructor)|reading 'addModule'|audioWorklet|cannot record audio|worker could not start|not supported in this browser|missing a feature|no available backend/i,
+      message: 'This browser is missing a feature the tool needs. An up-to-date Chrome, Edge, Firefox or Safari runs it.',
+      action: null
+    },
+    {
+      id: 'storage',
+      test: /QuotaExceeded|quota|too little storage|IndexedDB|storage refused|open in another tab/i,
+      message: 'The browser refused to store the audio — usually because the device is low on space, or the page is in a private window.',
+      action: null
+    },
+    {
+      // A wasm module that crashed rather than refused: the ffmpeg core's
+      // heap, or onnxruntime's.
+      id: 'codec_crash',
+      test: /memory access out of bounds|Aborted\(|RuntimeError|unreachable/i,
+      message: 'The decoder crashed on this file. Reloading the page and trying once more often works; if not, the file is probably damaged.',
       action: { href: '/extract-audio', label: 'Try the heavier converter' }
     },
     {
+      // A deliberate cap, hit: the stem splitter's 10 minutes.
+      id: 'too_long',
+      test: /minutes long|over \d+ minutes/i,
+      message: null,
+      action: LIMIT_ACTION
+    },
+    {
       id: 'memory',
-      test: /RangeError|allocation|out of memory|Array buffer/i,
-      message: 'The file is too large for the browser to hold in memory (the practical ceiling is around 500 MB).',
-      action: { href: '/audio-cutter', label: 'Split it into shorter pieces first' }
+      test: /RangeError|allocation|out of memory|Array buffer|runs out of room|memory/i,
+      message: 'The file is too large for this device to hold in memory. Phones run out far sooner than computers.',
+      action: LIMIT_ACTION
+    },
+    {
+      // The file decoded but holds nothing this tool can work with: no gap
+      // to split at, no pitch, silence. A content limit, not a bug.
+      id: 'no_content',
+      test: /no gaps|nothing long enough|no clear|no steady|no speech|nothing tonal|silent|nothing was recorded|could not find a pulse|has no notes|no tracks/i,
+      message: null,
+      action: null
+    },
+    {
+      id: 'bad_file',
+      test: /not a MIDI file|MIDI file|not an audiosaw project|project file is compressed|zip held no audio/i,
+      message: null,
+      action: null
     },
     {
       id: 'codec_load',
-      test: /Failed to load|NetworkError|importScripts|Loading chunk|fetch/i,
-      message: 'The codec could not be downloaded. An ad blocker or a dropped connection is the usual cause.',
+      test: /Failed to load|NetworkError|importScripts|Loading chunk|fetch|Load failed|download the model|network/i,
+      message: 'Part of the tool could not be downloaded. An ad blocker or a dropped connection is the usual cause; reload and try again.',
+      action: null
+    },
+    {
+      id: 'decode',
+      test: /decodeAudioData|EncodingError|Unable to decode|unsupported|could not decode|Invalid data/i,
+      message: 'This file could not be read. It may be damaged, or not really the format its name says.',
+      action: { href: '/extract-audio', label: 'Try the heavier converter' }
+    },
+    {
+      id: 'encode',
+      test: /encoder could not write/i,
+      message: 'The encoder failed with these settings. A different output format usually works.',
       action: null
     },
     {
@@ -87,12 +189,52 @@
       test: /no audio|zero|empty|0 channels/i,
       message: 'No audio track was found in that file.',
       action: { href: '/extract-audio', label: 'Try the video extractor' }
+    },
+    {
+      id: 'aborted',
+      test: /AbortError|aborted|cancel/i,
+      message: null,
+      action: null
+    },
+    {
+      // A TypeError or ReferenceError from our own code (or an API missing
+      // under a name not listed above). Kept apart from `other` so a
+      // regression shows up as a spike here rather than in the noise.
+      id: 'script_error',
+      test: /TypeError|ReferenceError|is not a function|is not defined|is not a constructor|Cannot read propert|Cannot set propert|undefined is not an object|null is not an object/i,
+      message: null,
+      action: { href: '/contact', label: 'Tell us what happened' }
     }
   ];
 
-  function classifyError(msg) {
+  // The names of the files picked on this page, so they can be cut out of
+  // a message before it is classified. Bounded: the last batch only.
+  // Whole names, plus a bare name in quotes (the editor names clips
+  // “like this”); never a bare word, or a file called audio.mp3 would hide
+  // "no audio" from the classifier.
+  var pickedNames = [];
+  function scrub(msg) {
+    var s = String(msg || '');
+    pickedNames.forEach(function (n) {
+      if (!n) return;
+      s = s.split(n).join('<file>');
+      s = s.split('\u201c' + n.replace(/\.[^.]+$/, '') + '\u201d').join('<file>');
+    });
+    return s;
+  }
+
+  // "<name>: <message>" for an Error or DOMException; '' for anything else.
+  function errText(err) {
+    if (!err) return '';
+    if (typeof err === 'string') return err;
+    var name = err.name && err.name !== 'Error' ? err.name : '';
+    return (name ? name + ': ' : '') + (err.message || '');
+  }
+
+  function classifyError(msg, err) {
+    var text = scrub(errText(err) + ' ' + (msg || ''));
     for (var i = 0; i < ERROR_KINDS.length; i++) {
-      if (ERROR_KINDS[i].test.test(msg || '')) return ERROR_KINDS[i];
+      if (ERROR_KINDS[i].test.test(text)) return ERROR_KINDS[i];
     }
     return { id: 'other', message: null, action: { href: '/contact', label: 'Tell us about this file' } };
   }
@@ -354,7 +496,7 @@
     } catch (e) {}
   }
 
-  function errorPanel(rawMessage) {
+  function errorPanel(rawMessage, err) {
     var slug = currentTool();
     var host = document.getElementById('status');
     if (!host) return;
@@ -362,7 +504,7 @@
     var existing = document.getElementById('errorHelp');
     if (existing) existing.remove();
 
-    var kind = classifyError(rawMessage);
+    var kind = classifyError(rawMessage, err);
     if (kind.silent) return;
 
     // wrong_type used to offer "/" — the homepage — which asks somebody whose
@@ -380,6 +522,8 @@
         action = { href: '/' + alt, label: G.TOOLS[alt].title };
       }
     }
+    // "Split it into shorter parts first", shown on the splitter itself.
+    if (action && action.href === '/' + slug) action = null;
     var box = document.createElement('div');
     box.className = 'error-recovery';
     box.id = 'errorHelp';
@@ -457,15 +601,18 @@
     try { nextStepsPanel({ name: filename, blob: blob }); } catch (e) { /* never break the download */ }
   };
 
+  // `err`, optional, is the exception behind an error status. Passing it
+  // lets the classifier read a DOMException's name, which the message alone
+  // often does not carry ("Permission denied" vs NotAllowedError).
   var _setStatus = CV.setStatus;
-  CV.setStatus = function (el, kind, msg) {
+  CV.setStatus = function (el, kind, msg, err) {
     _setStatus(el, kind, msg);
     if (kind === 'error') {
-      var k = classifyError(msg);
+      var k = classifyError(msg, err);
       // A validation hint is not a conversion failure; counting it as one
       // buried the real error rate.
       if (!k.silent) track('convert_error', { tool: currentTool(), error_type: k.id });
-      try { errorPanel(msg); } catch (e) {}
+      try { errorPanel(msg, err); } catch (e) {}
     }
   };
 
@@ -511,6 +658,7 @@
     // no event, no way to know the site had seen the file.
     function rejected(files, acc) {
       lastRejectedExt = files && files[0] ? extOf(files[0].name) : null;
+      if (files && files[0]) pickedNames = [files[0].name];
       if (onRejected) return onRejected(files, acc);
       var statusEl = document.getElementById('status');
       if (!statusEl) return;
@@ -522,6 +670,7 @@
 
     _bindDropzone(dropzoneEl, fileInputEl, function (files) {
       if (files && files.length) {
+        pickedNames = files.slice(0, 20).map(function (f) { return f.name; });
         track('file_selected', {
           tool: currentTool(),
           file_ext: extOf(files[0].name),
@@ -672,6 +821,8 @@
       return !pageAccept || pageAccept.indexOf(String(ext).replace(/^\./, '').toLowerCase()) !== -1;
     },
     done: function (o) { nextStepsPanel(o && o.outputs ? o.outputs[0] : o); },
-    fail: function (o) { errorPanel(o && o.error); }
+    fail: function (o) { errorPanel(o && o.error); },
+    // Exposed for tools/check-errors.js, which pins the buckets.
+    classify: function (msg, err) { return classifyError(msg, err).id; }
   };
 })(window);

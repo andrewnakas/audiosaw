@@ -106,10 +106,12 @@ async function withPage(opts, fn) {
       async goto(p, wait) {
         await send('Page.navigate', { url: page.url(p) });
         await new Promise((r) => setTimeout(r, wait || 800));
-        for (let i = 0; i < 600; i++) {
+        // On a loaded machine the fixed wait is not enough for the scripts at
+        // the bottom of the page; wait for the load as well (up to a minute).
+        for (let i = 0; i < 300; i++) {
           const r = await send('Runtime.evaluate', { expression: 'document.readyState', returnByValue: true });
           if (r.result && r.result.result && r.result.result.value === 'complete') break;
-          await new Promise((res) => setTimeout(res, 100));
+          await new Promise((res) => setTimeout(res, 200));
         }
       },
       async eval(expression, timeout) {
@@ -132,9 +134,10 @@ async function withPage(opts, fn) {
 
 async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
-  // Two minutes, not thirty seconds: on a loaded machine (load average 43, with
-  // several Chromes running) a profile with a 2 GB model cache took 69 s.
-  for (let i = 0; i < 1200 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
+  // Two minutes by default; CHROME_WAIT_MS overrides. On a loaded machine
+  // (load average 40-70) a headless start was measured at 69-72 s.
+  const tries = Math.ceil((+process.env.CHROME_WAIT_MS || 120000) / 100);
+  for (let i = 0; i < tries && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
   let list = [];
   for (let i = 0; i < 50 && !list.some((t) => t.type === 'page'); i++) {

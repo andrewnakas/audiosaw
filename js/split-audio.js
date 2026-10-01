@@ -51,14 +51,11 @@
     return cuts;
   }
 
+  // A view, not a copy: a long recording is exactly what this tool gets, and
+  // copying each part on top of the decoded file is what ran phones out of
+  // memory (see AudioSaw.view).
   function sliceBuffer(buffer, startSample, endSample) {
-    var chans = CV.channelsOf(buffer);
-    var len = endSample - startSample;
-    var out = [];
-    for (var c = 0; c < chans.length; c++) {
-      out.push(chans[c].slice(startSample, endSample));
-    }
-    return CV.bufferFrom(out, buffer.sampleRate);
+    return AudioSaw.view(buffer, startSample, endSample);
   }
 
   function pad(num, width) {
@@ -67,9 +64,60 @@
     return s;
   }
 
+  // The file's length from its metadata, without decoding it.
+  function durationOf(file) {
+    return new Promise(function (resolve) {
+      var url = URL.createObjectURL(file), a = new Audio(), done = false;
+      function end(v) { if (done) return; done = true; URL.revokeObjectURL(url); resolve(v); }
+      a.preload = 'metadata';
+      a.onloadedmetadata = function () { end(isFinite(a.duration) ? a.duration : 0); };
+      a.onerror = function () { end(0); };
+      setTimeout(function () { end(0); }, 15000);
+      a.src = url;
+    });
+  }
+
+  // When the whole file will not fit in memory decoded — a two-hour MP3 is
+  // 2.5 GB of samples, and phones give a tab far less — equal parts and fixed
+  // lengths can still be cut without decoding: ffmpeg copies the compressed
+  // stream between the cut points. The parts keep the original's format and
+  // quality (no re-encode), so the format choice is set aside and said so.
+  // Silence mode needs the samples, so it cannot take this path.
+  function splitByCopy(file, opts, onProgress, cause) {
+    if (opts.mode === 'silence') return Promise.reject(cause);
+    return durationOf(file).then(function (dur) {
+      if (!dur) throw cause;
+      var cuts = [0];
+      if (opts.mode === 'parts') { for (var p = 1; p < opts.parts; p++) cuts.push(dur * p / opts.parts); }
+      else { for (var t = opts.seconds; t < dur - 0.05; t += opts.seconds) cuts.push(t); }
+      cuts.push(dur);
+      var inExt = (file.name.split('.').pop() || 'mp3').toLowerCase();
+      var outExt = /^(mp4|mov|m4a|m4b|3gp|aac)$/.test(inExt) ? 'm4a' : inExt;
+      var base = file.name.replace(/\.[^.]+$/, ''), width = String(cuts.length - 1).length, outputs = [];
+      function next(i) {
+        if (i >= cuts.length - 1) return Promise.resolve(outputs);
+        onProgress(10 + (i / (cuts.length - 1)) * 88, 'Too large to decode here, so cutting without re-encoding: part ' + (i + 1) + ' of ' + (cuts.length - 1) + '…');
+        return AudioSaw.runFFmpeg(file, inExt, ['-ss', cuts[i].toFixed(3), '-t', (cuts[i + 1] - cuts[i]).toFixed(3), '-map', '0:a:0', '-c', 'copy'],
+          outExt, AudioSaw.formats[outExt] ? AudioSaw.formats[outExt].mime : 'application/octet-stream').then(function (blob) {
+          outputs.push({ name: base + '-' + pad(i + 1, width) + '.' + outExt, blob: blob });
+          return next(i + 1);
+        });
+      }
+      return next(0);
+    });
+  }
+
+  function isMemory(e) {
+    return e && (e.name === 'RangeError' || /memory|allocation/i.test(e.message || ''));
+  }
+
   function process(file, opts, onProgress) {
     onProgress(5, 'Decoding…');
-    return AudioSaw.decodeToAudioBuffer(file).then(function (buf) {
+    return AudioSaw.decodeToAudioBuffer(file).catch(function (e) {
+      if (isMemory(e)) return splitByCopy(file, opts, onProgress, e);
+      throw e;
+    }).then(function (buf) {
+      if (Array.isArray(buf)) return buf;      // split without decoding
       var sr = buf.sampleRate;
       var n = buf.length;
       var bounds = [0];

@@ -112,16 +112,22 @@
 
   // Read the duration from metadata rather than decoding, so the estimate can
   // appear as soon as the file is picked.
+  // Kept as a promise so Separate can wait for it (briefly) before deciding
+  // whether to decode at all.
+  var durationKnown = Promise.resolve();
   function measureDuration(file) {
-    var url = URL.createObjectURL(file);
-    var probe = new Audio();
-    probe.preload = 'metadata';
-    probe.onloadedmetadata = function () {
-      if (isFinite(probe.duration)) { trackSeconds = probe.duration; describeEnvironment(null); }
-      URL.revokeObjectURL(url);
-    };
-    probe.onerror = function () { URL.revokeObjectURL(url); };
-    probe.src = url;
+    durationKnown = new Promise(function (resolve) {
+      var url = URL.createObjectURL(file);
+      var probe = new Audio();
+      probe.preload = 'metadata';
+      probe.onloadedmetadata = function () {
+        if (isFinite(probe.duration) && files[0] === file) { trackSeconds = probe.duration; describeEnvironment(null); }
+        URL.revokeObjectURL(url);
+        resolve();
+      };
+      probe.onerror = function () { URL.revokeObjectURL(url); resolve(); };
+      probe.src = url;
+    });
   }
 
   /* ------------------------------------------------------------- worker io */
@@ -135,7 +141,10 @@
       else if (m.type === 'ready') describeEnvironment(m);
       else if (m.type === 'done') onDone(m);
       else if (m.type === 'note') { gpuUsable = false; describeEnvironment(null); }
-      else if (m.type === 'error') onError(m.message);
+      // A failed warm-up is not a failed separation: nothing was asked for
+      // yet, and 'separate' retries the download. Reporting it put an error
+      // (and a convert_error) on the page of someone who had only picked a file.
+      else if (m.type === 'error' && m.phase !== 'warmup') onError(m.message, { name: m.name, message: m.message });
     };
     worker.onerror = function () {
       onError('The separation worker could not start. Your browser may be blocking it.');
@@ -163,9 +172,9 @@
     setTitleProgress(pct);
   }
 
-  function onError(message) {
+  function onError(message, err) {
     setTitleProgress(null);
-    CV.setStatus(statusEl, 'error', 'Separation failed. ' + message);
+    CV.setStatus(statusEl, 'error', 'Separation failed. ' + message, err);
     goBtn.disabled = files.length === 0;
     resetBtn.disabled = false;
     CV.setProgress(progressBar, 100);
@@ -173,14 +182,24 @@
 
   /* -------------------------------------------------------------- decoding */
 
+  function tooLong(seconds) {
+    return new Error('That track is ' + Math.round(seconds / 60) + ' minutes long. ' +
+      'Both stems are held in memory at once, so past ' + Math.round(MAX_SECONDS / 60) +
+      ' minutes the tab runs out of room — split it into parts first.');
+  }
+
   async function decodeTo441(file) {
+    // Refused before decoding when the metadata already says so: decoding a
+    // 75-minute file just to say it is too long took 1.6 GB and 20 seconds.
+    await Promise.race([durationKnown, new Promise(function (r) { setTimeout(r, 3000); })]);
+    if (trackSeconds && trackSeconds > MAX_SECONDS) throw tooLong(trackSeconds);
     CV.setStatus(statusEl, 'info', 'Decoding…');
-    var buf = await AudioSaw.decodeToAudioBuffer(file);
-    if (buf.duration > MAX_SECONDS) {
-      throw new Error('That track is ' + Math.round(buf.duration / 60) + ' minutes long. ' +
-        'Both stems are held in memory at once, so past ' + Math.round(MAX_SECONDS / 60) +
-        ' minutes the tab runs out of room — split it into parts first.');
-    }
+    // No ffmpeg fallback on this page: it is cross-origin isolated, and the
+    // ffmpeg worker under /vendor/ffmpeg is not served with the COEP header a
+    // worker of an isolated page needs. Formats only ffmpeg reads are turned
+    // away at the dropzone instead, with a link to a converter.
+    var buf = await AudioSaw.decodeToAudioBuffer(file, null, { ffmpeg: false });
+    if (buf.duration > MAX_SECONDS) throw tooLong(buf.duration);
     nativeBuf = buf;
     if (buf.sampleRate !== SR) {
       CV.setStatus(statusEl, 'info', 'Resampling to 44.1 kHz for the model…');
@@ -217,7 +236,13 @@
     return { sampleRate: src.sampleRate, vocals: vocals, instrumental: inst };
   }
 
-  async function onDone(m) {
+  // Encoding the stems can fail too (memory, the codec download). It used to
+  // be an unhandled rejection: the bar sat at 95% and nothing was reported.
+  function onDone(m) {
+    return finish(m).catch(function (e) { onError(e.message || String(e), e); });
+  }
+
+  async function finish(m) {
     m = await toNative(m);
     var opts = readOpts();
     var wanted = [];
@@ -300,6 +325,7 @@
     controls.style.display = '';
     goBtn.disabled = false;
     CV.renderFileList(fileList, files, function () { reset(); });
+    trackSeconds = null;
     measureDuration(files[0]);
     // Start pulling the model down while they pick options.
     if (!warmed) { warmed = true; try { ensureWorker().postMessage({ type: 'warmup' }); } catch (e) {} }
@@ -334,7 +360,7 @@
       ensureWorker().postMessage({ type: 'separate', left: audio.left, right: audio.right },
         [audio.left.buffer, audio.right.buffer]);
     } catch (e) {
-      onError(e.message || String(e));
+      onError(e.message || String(e), e);
     }
   });
 
