@@ -78,9 +78,8 @@ ok(run(build([], 0.01, 8), 4096).length === 0, 'noise alone gives nothing');
 ok(V.phantom(' Thank you.') && V.phantom('[BLANK_AUDIO]') && V.phantom('(music)') && !V.phantom('Thank you for the report.'), "Whisper's stock silence lines are recognised, real sentences are not");
 
 // The page itself, with a spoken sentence as the microphone. Needs macOS
-// `say`, ffmpeg and the network for the Whisper model the first time (the
-// Chrome profile in ~/.cache/audiosaw keeps it), so it runs only with
-// DICTATION_BROWSER=1.
+// `say`, ffmpeg and Whisper base in the local mirror (model-mirror.js fetches
+// it once), so it runs only with DICTATION_BROWSER=1.
 async function browser() {
   if (!process.env.DICTATION_BROWSER) { console.log('  skip: page test (DICTATION_BROWSER=1 runs it)'); return; }
   const fs = require('fs'), os = require('os'), path = require('path');
@@ -92,13 +91,14 @@ async function browser() {
   execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=mono', '-t', '1.5', path.join(dir, 'z.wav')]);
   execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', path.join(dir, 'z.wav'), '-i', path.join(dir, 's.aiff'), '-i', path.join(dir, 'z.wav'), '-i', path.join(dir, 'z.wav'),
     '-filter_complex', '[0][1][2][3]concat=n=4:v=0:a=1,aresample=48000', '-ac', '1', '-c:a', 'pcm_s16le', path.join(dir, 'in.wav')]);
-  const profile = path.join(os.homedir(), '.cache', 'audiosaw', 'chrome-dictation');
-  fs.mkdirSync(profile, { recursive: true });
   // The microphone is a MediaStream playing the spoken file. Chrome's
   // --use-file-for-fake-audio-capture delivered only zeros in headless mode
   // (any WAV, any path), while its default fake device beeps fine; from the
   // stream onward this is the page's own path.
-  await withPage({ headers: true, profile, port: 8771, routes: { '/__speech.wav': () => fs.readFileSync(path.join(dir, 'in.wav')) } }, async (page) => {
+  const mirror = require('./model-mirror');
+  mirror.fetch('onnx-community/whisper-base', mirror.WHISPER_BASE);
+  await withPage({ headers: true, routes: Object.assign(mirror.routes(['onnx-community/whisper-base']), { '/__speech.wav': () => fs.readFileSync(path.join(dir, 'in.wav')) }) }, async (page) => {
+    await mirror.attach(page, ['onnx-community/whisper-base']);
     await page.goto('/dictation', 1500);
     await page.eval(`(() => {
       navigator.mediaDevices.getUserMedia = async () => {

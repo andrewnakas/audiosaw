@@ -57,8 +57,8 @@ ok(lines[1].text === 'First, the flour' && lines[2].text === 'goes in.', 'a sent
   ok(m.length === 2 && m[0].length === 100 && Math.abs(m[0][10] - 0.35) < 1e-6 && Math.abs(m[1][80] + 0.25) < 1e-6, 'mix keeps length and channels and adds the dub to each');
 }
 // The page end to end, with DUBBING_BROWSER=1: a 9 s test video (a blue
-// frame and a sentence from macOS `say`), Whisper base from the Chrome
-// profile check-dictation.js fills, Kokoro q8 and the ffmpeg core from
+// frame and a sentence from macOS `say`), Whisper base from the local mirror
+// (model-mirror.js, fetched once), Kokoro q8 and the ffmpeg core from
 // ~/.cache/audiosaw. The output is read back with ffprobe: the video stream
 // must be copied (same codec, size and frame count), the length kept, and
 // each line placed at its phrase's start.
@@ -75,21 +75,24 @@ async function browser() {
     '-filter_complex', '[1:a]adelay=1000|1000,apad=whole_dur=10[a]', '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', '-ac', '2', '-t', '10', vid]);
   const probe = (f) => JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-count_frames', '-of', 'json', f], { encoding: 'utf8' }));
   const before = probe(vid);
+  const mirror = require('./model-mirror');
+  mirror.fetch('onnx-community/whisper-base', mirror.WHISPER_BASE);
   await withPage({
-    headers: true, profile: path.join(cache, 'chrome-dictation'), port: 8771,
-    routes: {
+    headers: true,
+    routes: Object.assign(mirror.routes(['onnx-community/whisper-base']), {
       '/__in.mp4': () => fs.readFileSync(vid),
       '/__kokoro/model_quantized.onnx': () => fs.readFileSync(path.join(cache, 'kokoro', 'model_quantized.onnx')),
       '/__kokoro/am_michael.bin': () => fs.readFileSync(path.join(cache, 'kokoro', 'am_michael.bin')),
       '/__core.wasm': () => fs.readFileSync(path.join(cache, 'ffmpeg-core-0.12.6.wasm'))
-    }
+    })
   }, async (page) => {
     page.listen('Fetch.requestPaused', (p) => {
       const u = p.request.url;
-      const to = /ffmpeg-core\.wasm/.test(u) ? '/__core.wasm' : '/__kokoro/' + u.split('?')[0].split('/').pop();
+      const wb = /onnx-community\/whisper-base\/resolve\/[^/]+\/([^?]+)/.exec(u);
+      const to = wb ? '/__hf/onnx-community/whisper-base/' + wb[1] : /ffmpeg-core\.wasm/.test(u) ? '/__core.wasm' : '/__kokoro/' + u.split('?')[0].split('/').pop();
       page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(to) });
     });
-    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/Kokoro*' }, { urlPattern: '*unpkg.com*ffmpeg-core.wasm*' }] });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/Kokoro*' }, { urlPattern: '*unpkg.com*ffmpeg-core.wasm*' }, { urlPattern: '*huggingface.co/onnx-community/whisper-base/*' }] });
     await page.goto('/video-dubbing?backend=wasm', 1500);
     const r = await page.eval(`(async () => {
       const f = new File([await (await fetch('/__in.mp4')).blob()], 'kitchen.mp4', { type: 'video/mp4' });

@@ -39,16 +39,19 @@ function wer(ref, hyp) {
 }
 
 (async () => {
-  const routes = {};
+  const mirror = require('./model-mirror');
+  mirror.fetch('onnx-community/whisper-base', mirror.WHISPER_BASE);
+  const routes = mirror.routes(['onnx-community/whisper-base']);
   fs.readdirSync(CACHE).forEach((f) => { routes['/__kokoro/' + f] = () => fs.readFileSync(path.join(CACHE, f)); });
   const table = {};
-  await withPage({ headers: true, routes, profile: path.join(os.homedir(), '.cache', 'audiosaw', 'chrome-dictation'), port: 8771,
+  await withPage({ headers: true, routes,
     args: ['--enable-unsafe-webgpu', '--use-angle=metal', '--ignore-gpu-blocklist'] }, async (page) => {
     page.listen('Fetch.requestPaused', (p) => {
-      const name = p.request.url.split('?')[0].split('/').pop();
-      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__kokoro/' + name) });
+      const u = p.request.url;
+      const wb = /onnx-community\/whisper-base\/resolve\/[^/]+\/([^?]+)/.exec(u);
+      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(wb ? '/__hf/onnx-community/whisper-base/' + wb[1] : '/__kokoro/' + u.split('?')[0].split('/').pop()) });
     });
-    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/Kokoro*' }] });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/Kokoro*' }, { urlPattern: '*huggingface.co/onnx-community/whisper-base/*' }] });
     for (const mode of modes) {
       await page.goto('/text-to-speech?ph=' + mode, 1500);
       await page.eval(`window.__asr = new Worker('/js/transcribe-worker.js', { type: 'module' });

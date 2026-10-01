@@ -31,6 +31,7 @@
   if (!consent || !goBtn) return;
 
   var worker = null, ready = false, refAudio = null, refEncoded = false, seq = 0, waiting = {};
+  var lastStats = null, lastRaw = null;
   var ctx = null, playAt = 0, playing = [], result = null, running = false, downloadedOnce = false;
   var baseTitle = document.title;
 
@@ -47,7 +48,7 @@
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker('/js/clone-worker.js?v=' + ASSET_V);
+    worker = new Worker('/js/clone-worker.js?v=' + ASSET_V, { type: 'module' });
     worker.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') { progressWrap.style.display = ''; CV.setProgress(progressBar, m.pct * 0.5); CV.setStatus(statusEl, 'info', m.detail); }
@@ -183,6 +184,7 @@
         document.title = '(' + Math.round(100 * i / chunks.length) + '%) ' + baseTitle;
         var k = ++seq;
         var m = await call(k, { type: 'synth', seq: k, text: chunks[i].text });
+        lastStats = { tokens: m.tokens, seconds: m.samples.length / SR, ms: m.ms }; lastRaw = m.samples.slice();
         var x = ASTTS.trimSilence(m.samples), piece = new Float32Array(x.length);
         piece.set(x);
         parts.push(piece, new Float32Array(Math.round(chunks[i].pause * SR)));
@@ -232,6 +234,6 @@
 
   window.__clone = {
     setReference: function (x, rate) { consent.checked = true; return useReference(AudioSaw.makeBuffer([x], rate), 'test'); },
-    generate: generate, result: function () { return result; }, state: function () { return { running: !!running, ready: ready, ref: !!refAudio }; }
+    generate: generate, result: function () { return result; }, stats: function () { return lastStats; }, raw: function () { return lastRaw && Array.from(lastRaw); }, state: function () { return { running: !!running, ready: ready, ref: !!refAudio }; }
   };
 })();

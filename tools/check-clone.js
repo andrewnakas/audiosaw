@@ -31,8 +31,9 @@ const CACHE = path.join(os.homedir(), '.cache', 'audiosaw', 'chatterbox');
 const REV = 'd21799bd0354adb85e348b8a0442a8405110a2cf';
 const REPO = 'https://huggingface.co/ResembleAI/chatterbox-turbo-ONNX/resolve/' + REV + '/';
 const NAMES = ['speech_encoder', 'embed_tokens', 'language_model', 'conditional_decoder'];
-const FILES = ['tokenizer.json', 'tokenizer_config.json', 'config.json']
-  .concat(...NAMES.map((n) => ['onnx/' + n + '_q4f16.onnx', 'onnx/' + n + '_q4f16.onnx_data']));
+const FILES = ['tokenizer.json', 'tokenizer_config.json', 'config.json', 'generation_config.json', 'preprocessor_config.json']
+  .concat(...NAMES.map((n) => ['onnx/' + n + '_q4f16.onnx', 'onnx/' + n + '_q4f16.onnx_data']))
+  .concat(['onnx/embed_tokens_q4.onnx', 'onnx/embed_tokens_q4.onnx_data']);
 const TEXT = 'The weather today is bright and clear, so we will walk down to the harbour after lunch.';
 
 function median(x, sr) {
@@ -74,15 +75,30 @@ async function ensure() {
   }
   const routes = {};
   FILES.forEach((f) => { routes['/__cb/' + path.basename(f)] = () => fs.readFileSync(path.join(CACHE, path.basename(f))); });
+  // Whisper base, to hear what the clone said, from a local mirror if there
+  // is one (~/.cache/audiosaw/hf/onnx-community/whisper-base/...).
+  const WB = path.join(os.homedir(), '.cache', 'audiosaw', 'hf', 'onnx-community', 'whisper-base');
+  const haveWhisper = ['config.json', 'tokenizer.json', 'onnx/encoder_model_q4.onnx', 'onnx/decoder_model_merged_q4.onnx'].every((f) => fs.existsSync(path.join(WB, f)));
+  if (haveWhisper) {
+    const walk = (d, pre) => fs.readdirSync(d).forEach((f) => {
+      const full = path.join(d, f);
+      if (fs.statSync(full).isDirectory()) walk(full, pre + f + '/');
+      else routes['/__wb/' + pre + f] = () => fs.readFileSync(full);
+    });
+    walk(WB, '');
+  }
   await withPage({
     headers: true, routes,
     args: ['--enable-unsafe-webgpu', '--use-angle=metal', '--ignore-gpu-blocklist']
   }, async (page) => {
     page.listen('Fetch.requestPaused', (p) => {
-      const name = p.request.url.split('?')[0].split('/').pop();
-      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__cb/' + name) });
+      const u = p.request.url.split('?')[0];
+      const wb = /whisper-base\/resolve\/[^/]+\/(.+)$/.exec(u);
+      const to = wb ? '/__wb/' + wb[1] : '/__cb/' + u.split('/').pop();
+      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(to) });
     });
-    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/ResembleAI/chatterbox-turbo-ONNX*' }] });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/ResembleAI/chatterbox-turbo-ONNX*' }]
+      .concat(haveWhisper ? [{ urlPattern: '*huggingface.co/onnx-community/whisper-base/*' }] : []) });
     await page.goto('/voice-cloning', 1500);
 
     const gate = await page.eval(`({ rec: document.querySelector('#recBtn').disabled, file: document.querySelector('#fileInput').disabled,
@@ -104,6 +120,25 @@ async function ensure() {
       })()`, 1200000);
       if (r.err) { ok(false, v + ': ' + r.err); continue; }
       out[v] = r;
+      // What it actually said, by Whisper (cached in the profile by the
+      // dictation check; skipped if it is not there and the network is slow).
+      if (haveWhisper) r.heard = await page.eval(`(async () => {
+        const y = Float32Array.from(${JSON.stringify(r.y)});
+        const b = await AudioSaw.resampleBuffer(AudioSaw.makeBuffer([y], 24000), 16000);
+        const a = Float32Array.from(b.getChannelData(0));
+        const w = new Worker('/js/transcribe-worker.js', { type: 'module' });
+        return await new Promise((res) => {
+          const t = setTimeout(() => res('(no transcript)'), 300000);
+          w.onmessage = (e) => { if (e.data.type === 'done') { clearTimeout(t); res(e.data.text); w.terminate(); } if (e.data.type === 'error') res('(error ' + e.data.message + ')'); };
+          w.postMessage({ type: 'run', model: 'onnx-community/whisper-base', audio: a, language: 'en', task: 'transcribe' }, [a.buffer]);
+        });
+      })()`, 400000);
+      if (haveWhisper) {
+        const norm = (t) => t.toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(Boolean);
+        const want = norm(TEXT), got = new Set(norm(r.heard));
+        const hit = want.filter((w) => got.has(w)).length / want.length;
+        ok(hit >= 0.8, `${v} clone is intelligible: Whisper heard "${r.heard.trim()}" (${Math.round(hit * 100)}% of the words)`);
+      } else console.log('    skip: no local Whisper base to check the words');
       const words = TEXT.split(/\s+/).length;
       ok(r.rms > 0.02 && r.peak <= 1 && r.secs > words / 4.5 && r.secs < words / 1.2,
         `${v} clone: ${r.secs.toFixed(2)} s for ${words} words, rms ${r.rms.toFixed(3)}, made in ${(r.ms / 1000).toFixed(1)} s (${(r.ms / 1000 / r.secs).toFixed(2)}x the speech)`);
