@@ -28,6 +28,8 @@ const CHECKS = [
   ['build-sitemap.js', '--check'],
   ['build-llms.js', '--check'],
   ['check-includes.js'],
+  ['check-srt.js'],
+  ['check-model-fetch.js'],
   ['check-editor.js'],
   ['check-key.js'],
   ['check-chords.js'],

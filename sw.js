@@ -10,7 +10,8 @@
  *  - Everything cross-origin. The 30 MB ffmpeg core is fetched and cached by
  *    audio-core.js, which hands the worker a blob: URL this file never sees;
  *    opaque responses from anything else are unbounded quota padding.
- *  - /stem-splitter and /vendor/ort/*. Those must arrive with their real
+ *  - /stem-splitter, /audio-to-text, /vendor/ort/* and /vendor/transformers/*.
+ *    Those must arrive with their real
  *    COOP/COEP/CORP headers or ONNX Runtime's nested pthread workers hang
  *    session creation forever. A synthesised or fallback response drops the
  *    headers, and the failure is silent and intermittent — the exact bug
@@ -22,7 +23,7 @@
  */
 'use strict';
 
-var Q = '?v=2026-09-25f';
+var Q = '?v=2026-10-01';
 var V = Q.slice(3);
 
 var STATIC = 'audiosaw-static-' + V;   // immutable assets, keyed on the full URL
@@ -55,7 +56,7 @@ var STATIC_PATHS = /^\/(css|js|vendor|assets)\//;
 // /stemflipper is a separate single-page app proxied in by functions/stemflipper/. It
 // owns its own routing and its own asset versioning, so this worker must stay out of the
 // way entirely — caching its HTML here would pin visitors to a stale build.
-var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/)/;
+var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|vendor\/transformers\/)/;
 
 // Where a shared file should land. Anything unlisted goes to the homepage,
 // whose converter accepts everything and picks a target.

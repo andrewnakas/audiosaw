@@ -22,7 +22,8 @@ const { spawn } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const TYPES = {
   '.js': 'application/javascript', '.html': 'text/html', '.css': 'text/css', '.json': 'application/json',
-  '.wav': 'audio/wav', '.flac': 'audio/flac', '.mp3': 'audio/mpeg', '.wasm': 'application/wasm', '.svg': 'image/svg+xml'
+  '.wav': 'audio/wav', '.flac': 'audio/flac', '.mp3': 'audio/mpeg', '.wasm': 'application/wasm', '.svg': 'image/svg+xml',
+  '.mjs': 'application/javascript'
 };
 
 function findChrome() {
@@ -39,8 +40,12 @@ function findChrome() {
 // permission prompt, so a capture flag can pick a real source.
 // args: extra Chrome switches (check-record-computer passes the ones that let
 // getDisplayMedia pick a tab by its title without showing the picker).
+// headers: apply _headers to repo files, as Pages does (needed for the
+// cross-origin isolated pages). profile: a Chrome profile directory kept
+// between runs (model caches), instead of a fresh temporary one.
 async function withPage(opts, fn) {
   const routes = opts.routes || {};
+  const rules = opts.headers ? require('./serve').parseHeaders() : [];
   const server = http.createServer((req, res) => {
     const url = decodeURIComponent(req.url.split('?')[0]);
     if (Object.prototype.hasOwnProperty.call(routes, url)) {
@@ -56,12 +61,21 @@ async function withPage(opts, fn) {
     let file = path.join(ROOT, url === '/' ? '/index.html' : url);
     if (!path.extname(file) && fs.existsSync(file + '.html')) file += '.html';
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); res.end(); return; }
-    res.writeHead(200, { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' });
+    const headers = { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' };
+    rules.forEach((r) => { if (r.re.test(url)) r.headers.forEach(([k, v]) => { headers[k.toLowerCase()] = v; }); });
+    if (opts.headers) headers['cache-control'] = 'no-store';
+    res.writeHead(200, headers);
     fs.createReadStream(file).pipe(res);
   });
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const port = server.address().port;
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-chk-'));
+  const dir = opts.profile || fs.mkdtempSync(path.join(os.tmpdir(), 'as-chk-'));
+  // A killed Chrome leaves its Singleton* lock behind, and the next launch on
+  // the same profile exits at once.
+  if (opts.profile) {
+    fs.mkdirSync(dir, { recursive: true });
+    ['DevToolsActivePort', 'SingletonLock', 'SingletonSocket', 'SingletonCookie'].forEach((f) => { try { fs.unlinkSync(path.join(dir, f)); } catch (e) {} });
+  }
   const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--user-data-dir=' + dir,
     '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required'
   ].concat(opts.fakeMedia === false ? [] : ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'], opts.args || [], ['about:blank']), { stdio: 'ignore' });
@@ -86,9 +100,17 @@ async function withPage(opts, fn) {
       port, logs, send,
       listen(method, fn) { (listeners[method] = listeners[method] || []).push(fn); },
       url: (p) => 'http://127.0.0.1:' + port + p,
+      // Waits `wait` ms and then for the load to finish. A fixed 800 ms was
+      // enough on an idle machine; at load average 40 check-fidelity called
+      // window.__run before its inline script had run.
       async goto(p, wait) {
         await send('Page.navigate', { url: page.url(p) });
         await new Promise((r) => setTimeout(r, wait || 800));
+        for (let i = 0; i < 600; i++) {
+          const r = await send('Runtime.evaluate', { expression: 'document.readyState', returnByValue: true });
+          if (r.result && r.result.result && r.result.result.value === 'complete') break;
+          await new Promise((res) => setTimeout(res, 100));
+        }
       },
       async eval(expression, timeout) {
         const res = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, timeout: timeout || 300000 });
@@ -104,13 +126,15 @@ async function withPage(opts, fn) {
     try { ws && ws.close(); } catch (e) {}
     chrome.kill();
     server.close();
-    try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) {}
+    if (!opts.profile) try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) {}
   }
 }
 
 async function connect(dir) {
   const f = path.join(dir, 'DevToolsActivePort');
-  for (let i = 0; i < 300 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
+  // Two minutes, not thirty seconds: on a loaded machine (load average 43, with
+  // several Chromes running) a profile with a 2 GB model cache took 69 s.
+  for (let i = 0; i < 1200 && !fs.existsSync(f); i++) await new Promise((r) => setTimeout(r, 100));
   const port = fs.readFileSync(f, 'utf8').split('\n')[0];
   let list = [];
   for (let i = 0; i < 50 && !list.some((t) => t.type === 'page'); i++) {

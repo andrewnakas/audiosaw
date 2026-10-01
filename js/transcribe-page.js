@@ -1,0 +1,286 @@
+/*
+ * /audio-to-text page controller.
+ *
+ * Decodes the file, folds it to mono, resamples it to the 16 kHz Whisper was
+ * trained on (the sinc resampler, not Web Audio), and hands it to
+ * transcribe-worker.js. What comes back is a list of timed segments, written
+ * out as plain text, SRT or VTT by subtitles.js.
+ *
+ * The transcript is editable before download: Whisper gets names wrong, and
+ * fixing three words in the page is quicker than fixing them in three files.
+ * Edits to the text box apply to the .txt download only; subtitles keep their
+ * timing and come from the segment list.
+ */
+(function () {
+  'use strict';
+
+  // The worker's ?v= comes from this script's own src, which the release bump
+  // rewrites. window.AS_VERSION is not touched by the bump and sat at
+  // 2026-09-22 for weeks, pinning the worker to whatever was cached first.
+  var ASSET_V = (function () {
+    var m = document.currentScript && /[?&]v=([^&]+)/.exec(document.currentScript.src);
+    return m ? m[1] : (window.AS_VERSION || '1');
+  })();
+
+  if (typeof CV === 'undefined' || typeof AudioSaw === 'undefined' || typeof ASSubs === 'undefined') {
+    console.error('[audio-to-text] the /js/* includes must come before transcribe-page.js');
+    return;
+  }
+
+  var $ = CV.$;
+  var SR = 16000;
+  var MAX_SECONDS = 2 * 3600;
+
+  // Measured speed relative to the audio's length, per model and backend, on
+  // the reference machine (Apple GPU, 8 cores). Used only for the estimate.
+  var COST = {
+    'onnx-community/whisper-tiny': { webgpu: 0.06, wasm: 0.12 },
+    'onnx-community/whisper-base': { webgpu: 0.16, wasm: 0.29 },
+    'onnx-community/whisper-small': { webgpu: 0.4, wasm: 1.0 }
+  };
+
+  var dropzone = $('#dropzone');
+  var fileInput = $('#fileInput');
+  var fileList = $('#fileList');
+  var controls = $('#controls');
+  var goBtn = $('#convertBtn');
+  var resetBtn = $('#resetBtn');
+  var statusEl = $('#status');
+  var progressWrap = $('#progressWrap');
+  var progressBar = $('#progressBar');
+  var envEl = $('#envNote');
+  var liveEl = $('#liveText');
+  var resultEl = $('#result');
+  var textEl = $('#transcript');
+  var modelSel = $('#model');
+  var langSel = $('#language');
+  var taskSel = $('#task');
+  var tsBox = $('#withTimes');
+
+  if (!dropzone) return;
+
+  var files = [];
+  var worker = null;
+  var gpuUsable = null;
+  var trackSeconds = null;
+  var segments = null;
+  var duration = 0;
+  var downloadedOnce = false;
+  var baseTitle = document.title;
+
+  /* --------------------------------------------------------- environment */
+
+  function probeGpu() {
+    if (!navigator.gpu) { gpuUsable = false; describe(); return; }
+    navigator.gpu.requestAdapter({ powerPreference: 'high-performance' })
+      .then(function (a) { gpuUsable = !!a; describe(); })
+      .catch(function () { gpuUsable = false; describe(); });
+  }
+
+  function fmtDuration(s) {
+    if (s < 90) return Math.round(s) + ' seconds';
+    if (s < 3600) return Math.round(s / 60) + ' minutes';
+    return (s / 3600).toFixed(1) + ' hours';
+  }
+
+  function describe(ready) {
+    if (!envEl) return;
+    var parts = [];
+    var backend = ready ? ready.backend : (gpuUsable ? 'webgpu' : 'wasm');
+    if (ready) {
+      parts.push(ready.backend === 'webgpu' ? 'Running on your GPU (WebGPU).'
+        : 'Running on the CPU' + (ready.threads > 1 ? ' across ' + ready.threads + ' threads.' : ' on one thread.'));
+    } else if (gpuUsable === null) parts.push('Checking whether your browser can use the GPU…');
+    else if (gpuUsable) parts.push('Your browser can use the GPU, which is the fast path.');
+    else parts.push('No usable GPU here, so this runs on the CPU — slower, same words.');
+    var cost = COST[modelSel.value] && COST[modelSel.value][backend];
+    if (cost && trackSeconds) {
+      // Threads are the difference between the measured CPU figure and a
+      // much slower one; say so rather than promise the fast number.
+      if (backend === 'wasm' && !self.crossOriginIsolated) cost *= 4;
+      parts.push('Estimated ' + fmtDuration(Math.max(5, trackSeconds * cost)) + ' for this file, after the model download.');
+    }
+    envEl.textContent = parts.join(' ');
+    envEl.className = 'control-note' + (backend === 'webgpu' ? '' : ' warn-note');
+  }
+
+  function measureDuration(file) {
+    var url = URL.createObjectURL(file);
+    var probe = document.createElement(/^video\//.test(file.type) ? 'video' : 'audio');
+    probe.preload = 'metadata';
+    probe.onloadedmetadata = function () {
+      if (isFinite(probe.duration)) { trackSeconds = probe.duration; describe(); }
+      URL.revokeObjectURL(url);
+    };
+    probe.onerror = function () { URL.revokeObjectURL(url); };
+    probe.src = url;
+  }
+
+  /* ------------------------------------------------------------- worker */
+
+  function ensureWorker() {
+    if (worker) return worker;
+    worker = new Worker('/js/transcribe-worker.js?v=' + ASSET_V, { type: 'module' });
+    worker.onmessage = function (e) {
+      var m = e.data || {};
+      if (m.type === 'status') onStatus(m);
+      else if (m.type === 'ready') describe(m);
+      else if (m.type === 'note') { gpuUsable = false; describe(); }
+      else if (m.type === 'partial') onPartial(m.text);
+      else if (m.type === 'done') onDone(m);
+      else if (m.type === 'error') onError(m.message);
+    };
+    worker.onerror = function (e) {
+      onError('The transcription worker could not start' + (e && e.message ? ' (' + e.message + ')' : '') + '. Your browser may be blocking it.');
+    };
+    return worker;
+  }
+
+  function setTitle(pct) {
+    document.title = pct === null ? baseTitle : '(' + Math.round(pct) + '%) ' + baseTitle;
+  }
+
+  function onStatus(m) {
+    var pct = m.phase === 'model' ? m.pct * 0.3 : m.phase === 'session' ? 30 : 32 + m.pct * 0.68;
+    CV.setProgress(progressBar, pct);
+    CV.setStatus(statusEl, 'info', m.detail);
+    setTitle(pct);
+  }
+
+  function onPartial(text) {
+    if (!liveEl) return;
+    liveEl.hidden = false;
+    liveEl.textContent += text;
+    liveEl.scrollTop = liveEl.scrollHeight;
+  }
+
+  function onError(message) {
+    setTitle(null);
+    CV.setStatus(statusEl, 'error', 'Transcription failed. ' + message);
+    goBtn.disabled = files.length === 0;
+    resetBtn.disabled = false;
+    CV.setProgress(progressBar, 100);
+  }
+
+  function onDone(m) {
+    segments = m.segments && m.segments.length ? m.segments : [{ text: m.text, start: 0, end: duration }];
+    textEl.value = ASSubs.toText(segments, { duration: duration, timestamps: tsBox && tsBox.checked });
+    resultEl.hidden = false;
+    if (liveEl) liveEl.hidden = true;
+    var words = (textEl.value.match(/\S+/g) || []).length;
+    var took = m.seconds < 90 ? Math.round(m.seconds) + ' s' : (m.seconds / 60).toFixed(1) + ' min';
+    CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + words + ' words, ' + segments.length + ' segments. Check the names, then download.');
+    CV.setProgress(progressBar, 100);
+    setTitle(null);
+    goBtn.disabled = false;
+    resetBtn.disabled = false;
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ------------------------------------------------------------ decoding */
+
+  async function decode16k(file) {
+    CV.setStatus(statusEl, 'info', 'Decoding…');
+    var buf = await AudioSaw.decodeToAudioBuffer(file);
+    if (buf.duration > MAX_SECONDS) {
+      throw new Error('That file is ' + fmtDuration(buf.duration) + ' long. Past two hours the tab runs out of memory — split it into parts first.');
+    }
+    duration = buf.duration;
+    var n = buf.length, nch = buf.numberOfChannels;
+    var mono = new Float32Array(n);
+    for (var c = 0; c < nch; c++) {
+      var x = buf.getChannelData(c);
+      for (var i = 0; i < n; i++) mono[i] += x[i] / nch;
+    }
+    if (buf.sampleRate === SR) return mono;
+    CV.setStatus(statusEl, 'info', 'Resampling to 16 kHz for the model…');
+    var r = await AudioSaw.resampleBuffer(AudioSaw.makeBuffer([mono], buf.sampleRate), SR);
+    return Float32Array.from(r.getChannelData(0));
+  }
+
+  /* ------------------------------------------------------------ downloads */
+
+  function baseName() {
+    return (files[0] ? files[0].name : 'audio').replace(/\.[^.]+$/, '');
+  }
+
+  function save(text, ext, type) {
+    var blob = new Blob([text], { type: type + ';charset=utf-8' });
+    CV.downloadBlob(blob, baseName() + '.' + ext, downloadedOnce ? { again: true } : undefined);
+    downloadedOnce = true;
+  }
+
+  function bind(id, fn) { var el = $(id); if (el) el.addEventListener('click', fn); }
+
+  bind('#dlTxt', function () { if (segments) save(textEl.value, 'txt', 'text/plain'); });
+  bind('#dlSrt', function () { if (segments) save(ASSubs.toSRT(segments, duration), 'srt', 'application/x-subrip'); });
+  bind('#dlVtt', function () { if (segments) save(ASSubs.toVTT(segments, duration), 'vtt', 'text/vtt'); });
+  bind('#copyBtn', function () {
+    var btn = this;
+    var done = function () { btn.textContent = 'copied'; setTimeout(function () { btn.textContent = 'copy text'; }, 1500); };
+    if (navigator.clipboard) navigator.clipboard.writeText(textEl.value).then(done, function () { textEl.select(); });
+    else { textEl.select(); try { document.execCommand('copy'); done(); } catch (e) {} }
+  });
+  if (tsBox) tsBox.addEventListener('change', function () {
+    if (segments) textEl.value = ASSubs.toText(segments, { duration: duration, timestamps: tsBox.checked });
+  });
+  if (modelSel) modelSel.addEventListener('change', function () { describe(); });
+
+  /* ------------------------------------------------------------------ ui */
+
+  function onFiles(picked) {
+    if (!picked || !picked.length) return;
+    files = picked.slice(0, 1);
+    fileList.style.display = '';
+    controls.style.display = '';
+    goBtn.disabled = false;
+    CV.renderFileList(fileList, files, function () { reset(); });
+    measureDuration(files[0]);
+  }
+
+  function reset() {
+    files = [];
+    segments = null;
+    fileList.innerHTML = '';
+    controls.style.display = 'none';
+    goBtn.disabled = true;
+    CV.clearStatus(statusEl);
+    progressWrap.style.display = 'none';
+    CV.setProgress(progressBar, 0);
+    resultEl.hidden = true;
+    if (liveEl) { liveEl.hidden = true; liveEl.textContent = ''; }
+    setTitle(null);
+  }
+
+  CV.bindDropzone(dropzone, fileInput, onFiles,
+    ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus', '.webm', '.aif', '.aiff', '.caf', '.wma',
+      '.mp4', '.mov', '.mkv', '.m4v', '.m4b', '.amr', '.3gp']);
+  if (resetBtn) resetBtn.addEventListener('click', reset);
+
+  goBtn.addEventListener('click', async function () {
+    if (!files.length) return;
+    goBtn.disabled = true;
+    resetBtn.disabled = true;
+    progressWrap.style.display = '';
+    CV.setProgress(progressBar, 0);
+    resultEl.hidden = true;
+    segments = null;
+    if (liveEl) liveEl.textContent = '';
+    try {
+      var w = ensureWorker();
+      // Start the model download while the file decodes.
+      w.postMessage({ type: 'load', model: modelSel.value });
+      var audio = await decode16k(files[0]);
+      w.postMessage({
+        type: 'run', model: modelSel.value, audio: audio,
+        language: langSel ? langSel.value : 'auto',
+        task: taskSel ? taskSel.value : 'transcribe'
+      }, [audio.buffer]);
+    } catch (e) {
+      onError(e.message || String(e));
+    }
+  });
+
+  describe();
+  probeGpu();
+})();

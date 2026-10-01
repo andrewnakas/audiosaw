@@ -13,6 +13,14 @@
 (function () {
   'use strict';
 
+  // The worker's ?v= comes from this script's own src, which the release bump
+  // rewrites. window.AS_VERSION is not touched by the bump and sat at
+  // 2026-09-22 for weeks, pinning the worker to whatever was cached first.
+  var ASSET_V = (function () {
+    var m = document.currentScript && /[?&]v=([^&]+)/.exec(document.currentScript.src);
+    return m ? m[1] : (window.AS_VERSION || '1');
+  })();
+
   var $ = CV.$;
   var SR = 44100;
   var MAX_SECONDS = 600;
@@ -120,7 +128,7 @@
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker('/js/stem-worker.js?v=' + (window.AS_VERSION || '1'));
+    worker = new Worker('/js/stem-worker.js?v=' + ASSET_V);
     worker.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') onStatus(m);

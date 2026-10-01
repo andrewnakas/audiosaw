@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio to Text — free transcription in your browser, no upload (Whisper)</title>
+<meta name="description" content="Transcribe audio or video to text with OpenAI's Whisper running in your browser. Nothing is uploaded. 99 languages, SRT and VTT subtitles, translate to English. Free, no signup.">
+<meta name="keywords" content="audio to text, transcribe audio free, speech to text no upload, whisper online free, mp3 to text, video to srt, subtitle generator, transcribe in browser, private transcription">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-to-text">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Audio to Text — Whisper in your browser, nothing uploaded">
+<meta property="og:description" content="Transcribe audio or video to text, SRT or VTT with Whisper running on your own machine. 99 languages. Free, no signup, no upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-to-text">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="dns-prefetch" href="https://huggingface.co">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio to Text (Whisper in the browser)",
+  "url": "https://audiosaw.com/audio-to-text",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Speech-to-text with OpenAI Whisper running locally in the browser; no upload; 99 languages; translate to English; TXT, SRT and VTT output; WebGPU accelerated",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model is downloaded to your browser and runs there; your recording never leaves the tab. The only network request is for the model files, which are identical for everyone and contain nothing of yours."}},{"@type":"Question","name":"Is this really OpenAI's Whisper?","acceptedAnswer":{"@type":"Answer","text":"Yes — the open Whisper models OpenAI released, converted to run in a browser with ONNX Runtime. You choose between the tiny, base and small sizes; the larger desktop models are too big for a browser tab."}},{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU, so a ten-minute recording takes two to three minutes. The first run also downloads the model, once. The page estimates the time for your file before you start."}},{"@type":"Question","name":"Can it make subtitles for a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM directly — the audio is pulled out in the browser — and download an SRT for YouTube, Premiere, Resolve or CapCut, or a VTT for the web."}},{"@type":"Question","name":"Does it label who is speaking?","acceptedAnswer":{"@type":"Answer","text":"No. Whisper does not separate speakers, so an interview comes back as one transcript with paragraph breaks at the pauses. Services that label speakers do it with a second model on their servers."}},{"@type":"Question","name":"Which languages does it support?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages and detects which one is spoken. Accuracy is best in English and the major European languages; for others, pick the language yourself and use the small model. \"Translate into English\" turns any of them into English text."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"The tiny model will, slowly. Phones have little memory for the larger models and long files, so for anything over a few minutes a laptop or desktop is the better choice."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Audio to text (transcription)"}]}
+</script>
+<!-- /AS:bcschema -->
+<style>
+.live-text{max-height:9em;overflow:auto;padding:.75rem 1rem;border:1px dashed var(--line,#d9cdb8);border-radius:8px;font-size:.95rem;line-height:1.5;color:var(--ink-soft,#5b5346);white-space:pre-wrap;margin:1rem 0}
+.transcript-box{width:100%;min-height:16em;padding:.9rem 1rem;border:1px solid var(--line,#d9cdb8);border-radius:8px;font:inherit;font-size:1rem;line-height:1.6;background:var(--paper,#fff);color:inherit;resize:vertical;box-sizing:border-box}
+#result{margin-top:1.5rem}
+.tool-app .actions + .control-note{margin-top:.75rem}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio to text (transcription)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Audio to <span class="ital">text</span>. Whisper, running on your machine.</h1>
+    <p>Drop a recording or a video and get a transcript, an SRT or a VTT subtitle file. The speech model is OpenAI's Whisper, and it runs inside this browser tab — your audio is never uploaded, so an interview, a medical note or an unreleased song stays on your computer. 99 languages, or translate any of them into English.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop audio or video</p>
+      <p>MP3, M4A, WAV, voice memos, MP4, MOV, WebM. One file at a time, up to two hours.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.m4a,.m4b,.opus,.amr,.3gp,.caf">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <p class="control-note" id="envNote"></p>
+      <div class="controls">
+        <label>Model
+          <select id="model">
+            <option value="onnx-community/whisper-tiny">Fast — Whisper tiny (90 MB download)</option>
+            <option value="onnx-community/whisper-base" selected>Balanced — Whisper base (135 MB, recommended)</option>
+            <option value="onnx-community/whisper-small">Accurate — Whisper small (285 MB)</option>
+          </select>
+        </label>
+        <label>Language
+          <select id="language">
+            <option value="auto" selected>Detect automatically</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="nl">Dutch</option>
+            <option value="ru">Russian</option>
+            <option value="uk">Ukrainian</option>
+            <option value="pl">Polish</option>
+            <option value="tr">Turkish</option>
+            <option value="ar">Arabic</option>
+            <option value="fa">Persian</option>
+            <option value="hi">Hindi</option>
+            <option value="ur">Urdu</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="id">Indonesian</option>
+            <option value="ms">Malay</option>
+            <option value="vi">Vietnamese</option>
+            <option value="th">Thai</option>
+            <option value="tl">Tagalog</option>
+            <option value="zh">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="sw">Swahili</option>
+          </select>
+        </label>
+        <label>Output
+          <select id="task">
+            <option value="transcribe" selected>Text in the language spoken</option>
+            <option value="translate">Translate into English</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Transcribe</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p class="control-note">The first run downloads the model (about 135 MB for the recommended one) and caches it; later files start straight away. Leave the tab open while it works.</p>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="live-text" id="liveText" hidden aria-live="off"></div>
+
+    <div id="result" hidden>
+      <label for="transcript" class="control-note">Transcript — edit names and spellings here before downloading the .txt</label>
+      <textarea id="transcript" class="transcript-box" spellcheck="true"></textarea>
+      <div class="result-actions">
+        <button class="btn" id="dlTxt">Download .txt</button>
+        <button class="btn btn-secondary" id="dlSrt">Download .srt</button>
+        <button class="btn btn-secondary" id="dlVtt">Download .vtt</button>
+        <button class="btn btn-secondary" id="copyBtn">copy text</button>
+        <label class="check"><input type="checkbox" id="withTimes"> timestamps in the text</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Model</th><td>OpenAI Whisper (tiny, base or small), ONNX, through transformers.js</td></tr>
+        <tr><th>Languages</th><td>99 for transcription; translation goes into English only</td></tr>
+        <tr><th>Outputs</th><td>Plain text (editable before you save), SRT and WebVTT subtitles</td></tr>
+        <tr><th>Model download</th><td>Once, then cached: about 90 MB (tiny), 135 MB (base), 285 MB (small)</td></tr>
+        <tr><th>Speed</th><td>Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU: a ten-minute interview in two to three minutes</td></tr>
+        <tr><th>Timestamps</th><td>Per phrase, roughly every few seconds — not per word</td></tr>
+        <tr><th>Length limit</th><td>About two hours per file</td></tr>
+        <tr><th>Uploads your file</th><td>No. The only download is the model, which is the same for everyone and holds none of your audio</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What actually happens to your recording</h2>
+    <p>The file is decoded in this tab, folded down to one channel and resampled to 16 kHz, which is the only rate Whisper understands. That happens with the same windowed-sinc resampler the rest of AudioSaw uses rather than the browser's built-in conversion, so there is no aliasing for the model to mistake for sibilance. The audio is then handed to a background worker that runs the network in 30-second windows with five seconds of overlap on each side, and stitches the windows back together where the overlaps agree.</p>
+    <p>None of that leaves your machine. Most free transcription sites upload the recording and run Whisper on their own server, which is why they want an account and cap you at a few minutes: someone is paying for the GPU. Here your GPU, or failing that your CPU, does the work, so there is no account, no minute cap and no copy of your audio sitting on a stranger's disk. That matters most for exactly the recordings people most want transcribed — interviews with sources, therapy and medical dictation, legal calls, lectures you were not supposed to record, a draft of a song.</p>
+
+    <h2>Which model to pick</h2>
+    <p><strong>Base</strong> is the default because it is the best trade for most recordings: clear speech in English and the major European languages comes back with very few mistakes, and the download is a one-off. <strong>Tiny</strong> is the one to use on a phone or an older laptop, or when you only need to search a recording rather than quote from it; it is several times faster and noticeably sloppier with names, numbers and accents. <strong>Small</strong> is the most accurate option here and the one to choose for a heavy accent, a noisy room, or any language other than the big European ones — Hindi, Persian, Tamil and Vietnamese all improve markedly from base to small. It is a large download and slow on a CPU.</p>
+    <p>The page probes your browser before you start and says whether it can use the GPU. With WebGPU (current Chrome and Edge on a desktop) Whisper runs several times faster than on the CPU; the words are the same either way. Without it, the CPU path splits the work across your cores, which is why the tab needs to stay open and why a laptop fan may spin up.</p>
+
+    <h2>Subtitles: SRT or VTT</h2>
+    <p>Both files hold the same cues — a start time, an end time and a line or two of text. <strong>SRT</strong> is the one nearly every editor and platform imports: YouTube Studio, Premiere Pro, DaVinci Resolve, Final Cut (via its caption import), CapCut and VLC all take it. <strong>VTT</strong> is the web's own format and what an HTML5 <code>&lt;track&gt;</code> element needs. Lines are wrapped at 42 characters, the broadcast convention, and every cue is kept on screen for at least a third of a second so nothing flashes past unread.</p>
+    <p>Whisper times phrases, not words, so a cue covers a natural chunk of speech of a few seconds. That is the right granularity for subtitles. It is not the right tool for karaoke-style word highlighting, and the page does not pretend otherwise.</p>
+
+    <h2>What it gets wrong</h2>
+    <p>Proper nouns are the commonest error: a product, a surname or a place it has not heard spelled is written the way it sounds. That is why the transcript is an editable box — fix the names before you download the text. Subtitle files keep the original wording so their timing stays aligned.</p>
+    <p>Whisper does not tell speakers apart. A two-person interview comes back as one stream of text with paragraph breaks at the pauses, not "Speaker 1 / Speaker 2". Crosstalk, where two people talk at once, tends to keep one voice and lose the other.</p>
+    <p>On long stretches of music or silence it can invent words — usually a repeated phrase or a polite "Thank you." It was trained largely on subtitled video, and that is what subtitles say when nobody is talking. Trimming a long music intro with the <a href="/audio-cutter">cutter</a>, or tightening the gaps with <a href="/auto-cut-silence">auto-cut silence</a>, removes most of it. Background hiss and hum hurt accuracy more than people expect; a pass through <a href="/noise-reduction">noise reduction</a> first is often the single biggest improvement.</p>
+    <p>"Translate into English" is Whisper's own translation, done in the same pass. It is good enough to understand a foreign-language recording and to make rough English subtitles; it is not a translator you would publish from unchecked, and it only goes into English.</p>
+
+    <h2>Compared with the alternatives</h2>
+    <p>Otter, Rev, Descript and the transcription built into meeting apps are convenient and add speaker labels, but they all work by uploading your audio and most charge by the minute beyond a free allowance. Running Whisper yourself in Python, or with a desktop app such as MacWhisper, gives you the larger models and is the better choice for hours of material every week. This page sits between the two: the same model family as the desktop route, with nothing to install, and the privacy of doing it on your own machine. If you do want to run Whisper elsewhere, <a href="/audio-for-whisper">audio for Whisper</a> produces the 16 kHz mono WAV it is fed internally.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my audio uploaded anywhere?</summary><p>No. The speech model is downloaded to your browser and runs there; your recording never leaves the tab. The only network request is for the model files, which are identical for everyone and contain nothing of yours.</p></details>
+      <details><summary>Is this really OpenAI's Whisper?</summary><p>Yes — the open Whisper models OpenAI released, converted to run in a browser with ONNX Runtime. You choose between the tiny, base and small sizes; the larger desktop models are too big for a browser tab.</p></details>
+      <details><summary>How long does it take?</summary><p>Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU, so a ten-minute recording takes two to three minutes. The first run also downloads the model, once. The page estimates the time for your file before you start.</p></details>
+      <details><summary>Can it make subtitles for a video?</summary><p>Yes. Drop the MP4, MOV or WebM directly — the audio is pulled out in the browser — and download an SRT for YouTube, Premiere, Resolve or CapCut, or a VTT for the web.</p></details>
+      <details><summary>Does it label who is speaking?</summary><p>No. Whisper does not separate speakers, so an interview comes back as one transcript with paragraph breaks at the pauses. Services that label speakers do it with a second model on their servers.</p></details>
+      <details><summary>Which languages does it support?</summary><p>Whisper covers 99 languages and detects which one is spoken. Accuracy is best in English and the major European languages; for others, pick the language yourself and use the small model. "Translate into English" turns any of them into English text.</p></details>
+      <details><summary>Will it work on my phone?</summary><p>The tiny model will, slowly. Phones have little memory for the larger models and long files, so for anything over a few minutes a laptop or desktop is the better choice.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean a noisy recording first; Whisper hears through less hiss.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Pull the soundtrack out of a video you want subtitled.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Transcribe only the part you need.</p></a>
+      <a class="card" href="/split-audio"><h3>Split an audio file</h3><p>Break a recording over two hours into parts.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record the speech here, then transcribe it.</p></a>
+      <a class="card" href="/auto-cut-silence"><h3>Auto-Cut Silence</h3><p>Tighten the pauses before you subtitle a clip.</p></a>
+      <a class="card" href="/audio-for-whisper"><h3>Audio for Whisper</h3><p>Running Whisper yourself? Get the file in its native format.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/audio-to-text">audio → text</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01"></script>
+<script src="/js/tool-graph.js?v=2026-10-01"></script>
+<script src="/js/flow.js?v=2026-10-01"></script>
+<script src="/js/audio-core.js?v=2026-10-01"></script>
+<script src="/js/tool-shell.js?v=2026-10-01"></script>
+<script src="/js/consent.js?v=2026-10-01"></script>
+<script src="/js/subtitles.js?v=2026-10-01"></script>
+<script src="/js/transcribe-page.js?v=2026-10-01"></script>
+<script src="/js/pwa.js?v=2026-10-01"></script>
+</body>
+</html>

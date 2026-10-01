@@ -102,3 +102,22 @@
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin
   Cross-Origin-Embedder-Policy: credentialless
+
+# /audio-to-text runs Whisper through transformers.js, the same isolation deal
+# as the stem splitter: threads need SharedArrayBuffer, which needs COOP/COEP
+# on the page, on its worker and on the runtime files the worker spawns
+# pthreads from. The runtime is pinned (transformers.js 4.2.0 + ORT
+# 1.26.0-dev) and lives apart from /vendor/ort, which is ORT 1.22 for the stem
+# splitter; the two majors cannot share files. See playbook §11.
+/audio-to-text
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/audio-to-text.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/js/transcribe-worker.js
+  Cross-Origin-Embedder-Policy: credentialless
+/vendor/transformers/*
+  Cache-Control: public, max-age=31536000, immutable
+  Cross-Origin-Resource-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
