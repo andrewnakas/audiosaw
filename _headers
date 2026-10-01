@@ -145,3 +145,8 @@
 /vendor/phonemizer/*
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin
+# The full espeak-ng (17.6 MB wasm), loaded by the TTS worker only for the
+# Spanish, French, Italian, Portuguese and Hindi voices.
+/vendor/espeak/*
+  Cache-Control: public, max-age=31536000, immutable
+  Cross-Origin-Resource-Policy: same-origin

@@ -58,7 +58,8 @@ const CHECKS = [
   ['check-tts.js'],
   ['check-audiobook.js'],
   ['check-dictation.js'],
-  ['check-dubbing.js']
+  ['check-dubbing.js'],
+  ['check-clone.js']
 ];
 
 let failed = 0;

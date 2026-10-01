@@ -42,7 +42,8 @@ function findChrome() {
 // getDisplayMedia pick a tab by its title without showing the picker).
 // headers: apply _headers to repo files, as Pages does (needed for the
 // cross-origin isolated pages). profile: a Chrome profile directory kept
-// between runs (model caches), instead of a fresh temporary one.
+// between runs (model caches), instead of a fresh temporary one; pair it
+// with port.
 async function withPage(opts, fn) {
   const routes = opts.routes || {};
   const rules = opts.headers ? require('./serve').parseHeaders() : [];
@@ -67,7 +68,9 @@ async function withPage(opts, fn) {
     res.writeHead(200, headers);
     fs.createReadStream(file).pipe(res);
   });
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  // opts.port: a fixed port, so a kept profile's Cache Storage (per origin,
+  // and the origin includes the port) still holds the models next run.
+  await new Promise((r) => server.listen(opts.port || 0, '127.0.0.1', r));
   const port = server.address().port;
   const dir = opts.profile || fs.mkdtempSync(path.join(os.tmpdir(), 'as-chk-'));
   // A killed Chrome leaves its Singleton* lock behind, and the next launch on

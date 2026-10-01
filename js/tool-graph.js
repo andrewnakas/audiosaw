@@ -835,6 +835,17 @@
         ['audio-editor', 'Fine-tune the timing of each line by hand']
       ]
     },
+    'voice-cloning': {
+      cat: 'voice', label: 'voice cloning', title: 'Voice cloning',
+      blurb: 'Clone a voice from ten seconds of audio and make it say anything, on your own GPU, with the speaker\'s consent.',
+      next: [
+        ['voice-recorder', 'Record a clean reference first'],
+        ['noise-reduction', 'Clean a noisy sample before cloning it'],
+        ['text-to-speech', 'No GPU, or no need for a clone? Use a ready-made voice'],
+        ['voice-changer', 'Change your own recording instead'],
+        ['audio-editor', 'Put the cloned lines against music or video']
+      ]
+    },
     'audio-to-text-prep': {
       cat: 'apps', label: 'for transcription', title: 'Prep audio for transcription',
       blurb: 'The format each transcription service actually wants.',
@@ -1040,7 +1051,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

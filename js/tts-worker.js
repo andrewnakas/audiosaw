@@ -23,9 +23,17 @@
  * build falls back to the CPU file. ?backend=wasm (the page's "smaller
  * download" choice) skips the GPU and its 326 MB entirely.
  *
- * Phonemes come from espeak-ng compiled to wasm (the `phonemizer` package,
- * Apache-2.0, English voices only), loaded with import() into this classic
- * worker because ORT's build here is a classic script.
+ * Phonemes come from espeak-ng compiled to wasm: the `phonemizer` package
+ * (Apache-2.0, 1.3 MB, English only) for the English voices, and the full
+ * build (espeak-ng 1.0.2 npm, GPL-3.0, 17.6 MB, every language) only when a
+ * Spanish, French, Italian, Portuguese or Hindi voice is used. Both are ES
+ * modules, loaded with import() into this classic worker because ORT's build
+ * here is a classic script.
+ *
+ * The full build runs espeak's command line once per text run. Its wasm is
+ * compiled once and each run instantiates it afresh (about 50 ms). The text
+ * goes in as a UTF-8 file with -f: passed as an argument, every accented
+ * character came out as Latin-1 garbage ("cómo" read as "circumflex").
  *
  * Protocol
  *   in : { type: 'load' }
@@ -46,6 +54,7 @@
 var Q = self.location.search || '';
 var AS_V = (/[?&]v=([^&]+)/.exec(Q) || [])[1] || '';
 var FORCE = (/[?&]backend=(wasm|webgpu)/.exec(Q) || [])[1] || '';
+var PHMODE = (/[?&]ph=(en|misaki|plain)\b/.exec(Q) || [])[1] || '';   // measurement only
 self.importScripts('/vendor/ort/ort.webgpu.min.js', '/js/tts-engine.js' + (AS_V ? '?v=' + AS_V : ''));
 
 var REPO = 'https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/1939ad2a8e416c0acfeecc08a694d14ef25f2231/';
@@ -196,8 +205,34 @@ async function doLoad() {
 
 /* ----------------------------------------------------------- synthesis */
 
+var espeak = null;
+function fullEspeak() {
+  if (!espeak) {
+    espeak = Promise.all([
+      import('/vendor/espeak/espeak-ng.js?v=1.0.2'),
+      WebAssembly.compileStreaming(fetch('/vendor/espeak/espeak-ng.wasm?v=1.0.2'))
+    ]).then(function (r) { return { make: r[0].default, mod: r[1] }; });
+    espeak.catch(function () { espeak = null; });
+  }
+  return espeak;
+}
+
+async function espeakRun(text, lang) {
+  var e = await fullEspeak();
+  var m = await e.make({
+    // --ipa=1 marks tied phonemes with U+0361, which fixPhonemes folds
+    // ('misaki') or drops.
+    arguments: ['--phonout', 'out', '-q', '-b', '1', '--ipa=1', '-v', lang, '-f', 'in.txt'],
+    preRun: [function (M) { M.FS.writeFile('in.txt', text); }],
+    instantiateWasm: function (imports, cb) { WebAssembly.instantiate(e.mod, imports).then(function (i) { cb(i); }); return {}; },
+    print: function () {}, printErr: function () {}
+  });
+  return m.FS.readFile('out', { encoding: 'utf8' }).replace(/\s+/g, ' ').trim();
+}
+
 function phonemizeRun(text, lang) {
   if (!/\S/.test(text)) return Promise.resolve(text);
+  if (!/^en/.test(lang)) return espeakRun(text, lang);
   return phon.phonemize(text, lang).then(function (a) { return a.join(' '); });
 }
 
@@ -206,7 +241,7 @@ async function synth(m) {
   var tables = await Promise.all(m.mix.map(function (v) { return voiceTable(v.id); }));
   var table = ASTTS.mixTables(tables, m.mix.map(function (v) { return v.w; }));
   var t0 = Date.now();
-  var ph = await ASTTS.phonemize(m.text, m.lang || 'en-us', phonemizeRun);
+  var ph = await ASTTS.phonemize(m.text, m.lang || 'en-us', phonemizeRun, PHMODE);
   var ids = ASTTS.tokenize(ph);
   if (ids.length <= 2) return { samples: new Float32Array(0), phonemes: ph, ms: 0 };
   var feeds = {

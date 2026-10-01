@@ -216,7 +216,8 @@
     if (worker) return worker;
     var force = /[?&]backend=(wasm|webgpu)\b/.exec(location.search);
     var backend = force ? force[1] : (engineSel && engineSel.value === 'small' ? 'wasm' : '');
-    worker = new Worker('/js/tts-worker.js?v=' + ASSET_V + (backend ? '&backend=' + backend : ''));
+    var ph = /[?&]ph=(en|misaki|plain)\b/.exec(location.search);   // tools/measure-tts-langs.js
+    worker = new Worker('/js/tts-worker.js?v=' + ASSET_V + (backend ? '&backend=' + backend : '') + (ph ? '&ph=' + ph[1] : ''));
     worker.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') onStatus(m);

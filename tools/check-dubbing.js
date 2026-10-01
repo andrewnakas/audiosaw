@@ -76,7 +76,7 @@ async function browser() {
   const probe = (f) => JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-count_frames', '-of', 'json', f], { encoding: 'utf8' }));
   const before = probe(vid);
   await withPage({
-    headers: true, profile: path.join(cache, 'chrome-dictation'),
+    headers: true, profile: path.join(cache, 'chrome-dictation'), port: 8771,
     routes: {
       '/__in.mp4': () => fs.readFileSync(vid),
       '/__kokoro/model_quantized.onnx': () => fs.readFileSync(path.join(cache, 'kokoro', 'model_quantized.onnx')),

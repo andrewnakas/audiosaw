@@ -48,7 +48,16 @@
     ['bf_emma', 'Emma', 'en-gb', 'F', 'B-'], ['bf_isabella', 'Isabella', 'en-gb', 'F', 'C'],
     ['bf_alice', 'Alice', 'en-gb', 'F', 'D'], ['bf_lily', 'Lily', 'en-gb', 'F', 'D'],
     ['bm_fable', 'Fable', 'en-gb', 'M', 'C'], ['bm_george', 'George', 'en-gb', 'M', 'C'],
-    ['bm_lewis', 'Lewis', 'en-gb', 'M', 'D+'], ['bm_daniel', 'Daniel', 'en-gb', 'M', 'D']
+    ['bm_lewis', 'Lewis', 'en-gb', 'M', 'D+'], ['bm_daniel', 'Daniel', 'en-gb', 'M', 'D'],
+    // Phonemized by the full espeak-ng build (vendor/espeak), as the model
+    // was trained: misaki's espeak fallback with these language codes. The
+    // card gives no grade for the Spanish and Portuguese voices.
+    ['ef_dora', 'Dora', 'es', 'F', '–'], ['em_alex', 'Alex', 'es', 'M', '–'], ['em_santa', 'Santa', 'es', 'M', '–'],
+    ['ff_siwis', 'Siwis', 'fr-fr', 'F', 'B-'],
+    ['if_sara', 'Sara', 'it', 'F', 'C'], ['im_nicola', 'Nicola', 'it', 'M', 'C'],
+    ['pf_dora', 'Dora', 'pt-br', 'F', '–'], ['pm_alex', 'Alex', 'pt-br', 'M', '–'], ['pm_santa', 'Santa', 'pt-br', 'M', '–'],
+    ['hf_alpha', 'Alpha', 'hi', 'F', 'C'], ['hf_beta', 'Beta', 'hi', 'F', 'C'],
+    ['hm_omega', 'Omega', 'hi', 'M', 'C'], ['hm_psi', 'Psi', 'hi', 'M', 'C']
   ].map(function (v) { return { id: v[0], name: v[1], lang: v[2], gender: v[3], grade: v[4] }; });
 
   function voice(id) {
@@ -118,8 +127,20 @@
   }
 
   // Kokoro was trained on espeak's output with a few symbols swapped; these
-  // are the same substitutions kokoro-js makes after phonemizing.
-  function fixPhonemes(ph, lang) {
+  // are the same substitutions kokoro-js makes after phonemizing. They are
+  // English rules (r → ɹ would turn a Spanish trill into an English r), so
+  // other languages get only the palatal mark; `mode` 'en' forces the English
+  // set, for the comparison in tools/measure-tts-langs.js.
+  // misaki (Kokoro's own G2P) runs espeak with tied phonemes for these
+  // languages and folds each tied pair into one symbol: that is what the
+  // capital letters and ʧ ʤ ʦ ʣ in the vocabulary are for.
+  var TIES = [['a͡ɪ', 'I'], ['a͡ʊ', 'W'], ['d͡z', 'ʣ'], ['d͡ʒ', 'ʤ'], ['e͡ɪ', 'A'], ['o͡ʊ', 'O'], ['s͡s', 'S'], ['t͡s', 'ʦ'], ['t͡ʃ', 'ʧ'], ['ɔ͡ɪ', 'Y']];
+  function fixPhonemes(ph, lang, mode) {
+    if (!/^en/.test(lang) && mode === 'misaki') {
+      TIES.forEach(function (t) { ph = ph.split(t[0]).join(t[1]); });
+      return ph.replace(/\u0361/g, '').replace(/ʲ/g, 'j').trim();
+    }
+    if (!/^en/.test(lang) && mode !== 'en') return ph.replace(/\u0361/g, '').replace(/ʲ/g, 'j').trim();
     var s = ph
       .replace(/kəkˈoːɹoʊ/g, 'kˈoʊkəɹoʊ').replace(/kəkˈɔːɹəʊ/g, 'kˈəʊkəɹəʊ')
       .replace(/ʲ/g, 'j').replace(/r/g, 'ɹ').replace(/x/g, 'k').replace(/ɬ/g, 'l')
@@ -148,14 +169,14 @@
 
   // phonemizeRun(text, lang) → Promise<string>, supplied by the caller (the
   // worker passes espeak-ng; the Node check passes a stub).
-  async function phonemize(text, lang, phonemizeRun) {
+  async function phonemize(text, lang, phonemizeRun, mode) {
     var en = /^en/.test(lang);
     var src = en ? normalize(text) : String(text).replace(/\s+/g, ' ').trim();
     var parts = splitPunct(src);
     var done = await Promise.all(parts.map(function (p) {
       return p.punct ? p.text : phonemizeRun(p.text, lang);
     }));
-    return fixPhonemes(done.join(''), lang);
+    return fixPhonemes(done.join(''), lang, mode);
   }
 
   function tokenize(ph) {
@@ -295,8 +316,11 @@
   // Browser only: fills a <select> with the voices, grouped by accent, each
   // labelled with its model-card grade. Shared by /text-to-speech and
   // /text-to-audiobook.
+  var LANGS = [['en-us', 'American English', 'US'], ['en-gb', 'British English', 'UK'], ['es', 'Spanish', 'Spanish'],
+    ['fr-fr', 'French', 'French'], ['it', 'Italian', 'Italian'], ['pt-br', 'Brazilian Portuguese', 'Portuguese'], ['hi', 'Hindi', 'Hindi']];
   function voiceLabel(v) {
-    return v.name + ' — ' + (v.lang === 'en-gb' ? 'UK' : 'US') + ' ' + (v.gender === 'F' ? 'female' : 'male') + ' · grade ' + v.grade;
+    var l = LANGS.filter(function (x) { return x[0] === v.lang; })[0];
+    return v.name + ' — ' + (l ? l[2] : v.lang) + ' ' + (v.gender === 'F' ? 'female' : 'male') + (v.grade !== '–' ? ' · grade ' + v.grade : '');
   }
   function fillVoiceSelect(sel, withNone) {
     var doc = sel.ownerDocument;
@@ -307,7 +331,7 @@
       o0.textContent = '— none —';
       sel.appendChild(o0);
     }
-    [['en-us', 'American English'], ['en-gb', 'British English']].forEach(function (g) {
+    LANGS.forEach(function (g) {
       var og = doc.createElement('optgroup');
       og.label = g[1];
       VOICES.filter(function (v) { return v.lang === g[0]; }).forEach(function (v) {
@@ -375,7 +399,7 @@
   }
 
   return {
-    tagMp3: tagMp3, tagWav: tagWav, fillVoiceSelect: fillVoiceSelect, voiceLabel: voiceLabel,
+    tagMp3: tagMp3, tagWav: tagWav, fillVoiceSelect: fillVoiceSelect, voiceLabel: voiceLabel, LANGS: LANGS,
     SAMPLE_RATE: SAMPLE_RATE, STYLE_DIM: STYLE_DIM, STYLE_ROWS: STYLE_ROWS, MAX_TOKENS: MAX_TOKENS,
     VOCAB: VOCAB, VOICES: VOICES, voice: voice,
     normalize: normalize, fixPhonemes: fixPhonemes, splitPunct: splitPunct, phonemize: phonemize,

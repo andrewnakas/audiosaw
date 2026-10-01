@@ -877,6 +877,71 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   90 MB, base 135 MB, small 285 MB). Do not quote speeds measured on a
   loaded machine; the page quotes the spike's (playbook §11).
 
+## The voice tools (Oct 2026, from VoiceStudio)
+
+/text-to-speech, /voice-changer, /text-to-audiobook, /dictation and
+/video-dubbing are browser rebuilds of what github.com/debpalash/VoiceStudio
+(a desktop Python app) does; no code came across. They sit in the
+`voice` category and homepage rail with /audio-to-text.
+
+- **Kokoro-82M** (`js/tts-worker.js`, `js/tts-engine.js` = `ASTTS`) runs on
+  **`/vendor/ort` (ORT 1.22)**, not transformers.js: ORT 1.26 rejects q8/fp16
+  on the CPU, and Kokoro is one graph with three inputs (`input_ids`,
+  `style` = row n-2 of the voice's 510×256 table, `speed`), 24 kHz out.
+  - **Weights per backend:** fp32 (326 MB) on WebGPU, q8 (92 MB) on WASM.
+    **fp16 on WebGPU gives wrong audio inside a worker** (wrong length, a
+    silent voice, speed ignored) though it looked fine on the main thread;
+    q8 on WebGPU is correct but no faster (quantised ops fall to the CPU).
+    `?backend=wasm` and the page's "smaller download" skip the GPU.
+  - Measured idle (check-tts, Apple GPU, 8 cores): 0.48× the speech's
+    length on WebGPU, 1.36× on 7 CPU threads. Under load average 50 the
+    same runs took 3-6× longer, so speed asserts only run with TTS_SPEED=1.
+  - Phonemes: the `phonemizer` package (espeak-ng, English only,
+    `vendor/phonemizer/`), imported into the classic worker with `import()`.
+    English normalisation is ported from kokoro-js. Text is chunked to
+    ~220 chars (the model card: best at 100-200 tokens, rushes past 400).
+  - Every file is tagged as synthetic speech (ID3 COMM / WAV INFO ICMT,
+    `ASTTS.tagMp3/tagWav`). Metadata, not a watermark; the page says so.
+  - The voice mixer averages whole style tables; one live voice is returned
+    untouched.
+- **/voice-changer** (`js/voice-fx.js` = `ASVoice`, UMD): TD-PSOLA with a
+  time-stretch, after a sinc resample for the formant shift, so pitch and
+  formant move separately. f0 is tracked on an 11.025 kHz copy (3 s of CPU
+  instead of 23 for the check). **The noise floor is capped 20 dB under the
+  loud frames**: on a recording with no pauses the 10th percentile was the
+  voice, nothing counted as voiced, and nothing shifted.
+- **/text-to-audiobook** (`js/book-parse.js` = `ASBook`, `audiobook-page.js`):
+  EPUB spine / text headings to chapters; each chapter is encoded as soon as
+  it is read (AAC or MP3) and stored in IndexedDB `audiosaw-tts`, so runs
+  resume. The M4B is a stream-copy concat with an ffmetadata chapter file;
+  `runFFmpeg` takes `extra: { files, raw }` for that. Chapters read back by
+  ffprobe start within 0.5 ms. DRM EPUBs are refused by name.
+- **/dictation** (`js/dictation-vad.js` = `ASVad`): phrases split on an
+  adaptive floor (+10 dB, 700 ms hang, 300 ms pre-roll, 25 s cap) and sent
+  to the unmodified `transcribe-worker.js`. **The AudioContext is made inside
+  the click, before `await getUserMedia`**: made after the permission
+  prompt it stayed suspended and delivered zeros.
+- **/video-dubbing** (`js/dub-plan.js` = `ASDub`): Whisper (translate or
+  transcribe) → lines → Kokoro, a line that overruns its slot re-read up to
+  1.3× with Kokoro's own speed input, original ducked 18 dB under lines,
+  picture stream-copied by ffmpeg.
+- **Isolation:** /text-to-speech and /dictation are cross-origin isolated
+  (threads). /text-to-audiobook and /video-dubbing are **not**, because they
+  need ffmpeg and `/vendor/ffmpeg/*` has no COEP header; their CPU path is
+  one thread.
+- **Checks:** check-tts (Kokoro files in `~/.cache/audiosaw/kokoro`,
+  `TTS_DOWNLOAD=1` fetches them), check-voice, check-audiobook,
+  check-dictation and check-dubbing all run in check-all. The last two drive
+  their pages only with `DICTATION_BROWSER=1` / `DUBBING_BROWSER=1` (Whisper
+  from the network, kept in the `~/.cache/audiosaw/chrome-dictation`
+  profile). Chrome's `--use-file-for-fake-audio-capture` delivered only
+  zeros headless, so the dictation test replaces `getUserMedia` with a
+  MediaStream playing a `say` recording.
+- **Not done, and why:** voice cloning (no zero-shot cloner is browser-sized;
+  OpenVoice's converter is the only candidate, unspiked), non-English voices
+  (the full espeak-ng wasm, 17.6 MB, works for es/fr/it/pt-br/hi with UTF-8
+  passed as a file, `-f`; not wired in yet), speaker labels.
+
 ## The stem splitter
 
 The model runs at 44.1 kHz, but the stems go back to the file's own rate and

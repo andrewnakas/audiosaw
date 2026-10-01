@@ -98,7 +98,7 @@ async function browser() {
   // --use-file-for-fake-audio-capture delivered only zeros in headless mode
   // (any WAV, any path), while its default fake device beeps fine; from the
   // stream onward this is the page's own path.
-  await withPage({ headers: true, profile, routes: { '/__speech.wav': () => fs.readFileSync(path.join(dir, 'in.wav')) } }, async (page) => {
+  await withPage({ headers: true, profile, port: 8771, routes: { '/__speech.wav': () => fs.readFileSync(path.join(dir, 'in.wav')) } }, async (page) => {
     await page.goto('/dictation', 1500);
     await page.eval(`(() => {
       navigator.mediaDevices.getUserMedia = async () => {
