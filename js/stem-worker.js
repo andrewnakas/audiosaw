@@ -95,8 +95,21 @@ async function fetchModel() {
   return bytes;
 }
 
-async function ensureSession() {
-  if (session) return session;
+// One session, however many messages ask for it. The page sends 'warmup' when
+// a file is picked and 'separate' when the button is pressed; pressed during
+// the warm-up, the second call used to start a second 64 MB download and a
+// second session alongside the first, which is a phone's whole memory budget.
+var sessionPromise = null;
+function ensureSession() {
+  if (session) return Promise.resolve(session);
+  if (!sessionPromise) {
+    sessionPromise = createSession();
+    sessionPromise.catch(function () { sessionPromise = null; });   // retry on the next call
+  }
+  return sessionPromise;
+}
+
+async function createSession() {
 
   ort.env.wasm.wasmPaths = '/vendor/ort/';
   ort.env.wasm.simd = true;
@@ -274,6 +287,8 @@ self.onmessage = async function (e) {
       ]);
     }
   } catch (err) {
-    post('error', { message: (err && err.message) || String(err) });
+    // `phase` lets the page tell a failed warm-up (nobody asked for anything
+    // yet; 'separate' retries it) from a failed separation.
+    post('error', { message: (err && err.message) || String(err), name: (err && err.name) || '', phase: msg.type });
   }
 };

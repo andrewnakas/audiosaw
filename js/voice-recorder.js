@@ -294,7 +294,7 @@
       var denied = e && (e.name === 'NotAllowedError' || e.name === 'SecurityError');
       CV.setStatus(statusEl, 'error', denied
         ? 'Microphone access was blocked. Allow it in your browser\'s address bar, then press record again.'
-        : 'Could not open the microphone. ' + (e.message || e.name || ''));
+        : 'Could not open the microphone. ' + (e.message || e.name || ''), e);
       return;
     }
 
@@ -304,7 +304,7 @@
         delivered = await startStudio(stream);
       } catch (e) {
         releaseStream(); stopMeter();
-        CV.setStatus(statusEl, 'error', 'Could not start studio recording in this browser. ' + (e.message || '') + ' Voice mode still works.');
+        CV.setStatus(statusEl, 'error', 'Could not start studio recording in this browser. ' + (e.message || '') + ' Voice mode still works.', e);
         return;
       }
     } else {
@@ -312,11 +312,21 @@
       var mime = pickMimeType();
       var ropts = { audioBitsPerSecond: 256000 };
       if (mime) ropts.mimeType = mime;
-      try { recorder = new MediaRecorder(stream, ropts); } catch (e) { recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
-      recorder.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-      recorder.onstop = onRecordingStopped;
-      recorder.start();
-      startMeter(stream);
+      // The second attempt can throw as well (NotSupportedError on a browser
+      // with a MediaRecorder that takes no audio type). Uncaught, it left the
+      // microphone open and the page silent.
+      try {
+        try { recorder = new MediaRecorder(stream, ropts); } catch (e) { recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
+        recorder.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+        recorder.onstop = onRecordingStopped;
+        recorder.start();
+      } catch (e) {
+        recorder = null;
+        releaseStream();
+        CV.setStatus(statusEl, 'error', 'This browser cannot record audio here (not supported in this browser: ' + (e.name || 'MediaRecorder') + ').', e);
+        return;
+      }
+      try { startMeter(stream); } catch (e) { /* the level meter is a nicety */ }
       delivered = readDelivered(stream, false, 0);
     }
 
@@ -417,7 +427,7 @@
       row.appendChild(btn);
       resultList.appendChild(row);
     } catch (e) {
-      CV.setStatus(statusEl, 'error', 'Could not save the recording. ' + (e.message || e));
+      CV.setStatus(statusEl, 'error', 'Could not save the recording. ' + (e.message || e), e);
     } finally {
       CV.setProgress(progressBar, 100);
     }
