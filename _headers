@@ -121,3 +121,18 @@
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin
   Cross-Origin-Embedder-Policy: credentialless
+
+# /text-to-speech runs Kokoro on /vendor/ort (ORT 1.22, the stem splitter's
+# copy, which already carries COEP above), so only the page and its worker
+# need adding. The phonemizer is imported by the worker from the same origin.
+/text-to-speech
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/text-to-speech.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/js/tts-worker.js
+  Cross-Origin-Embedder-Policy: credentialless
+/vendor/phonemizer/*
+  Cache-Control: public, max-age=31536000, immutable
+  Cross-Origin-Resource-Policy: same-origin

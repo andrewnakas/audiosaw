@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Speech — free AI voices in your browser, MP3 download, no signup</title>
+<meta name="description" content="Turn text into natural speech with Kokoro, an open AI voice model that runs in your browser. 28 voices, voice mixing, speed control, MP3 or WAV download. Nothing uploaded, no signup, no character limits per day.">
+<meta name="keywords" content="text to speech, free text to speech, text to speech mp3, ai voice generator, tts online, natural text to speech, text to audio, kokoro tts, text to speech no signup, private text to speech">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/text-to-speech">
+<link rel="icon" href="/favicon.ico">
+<meta property="og:title" content="Text to Speech — AI voices that run in your browser">
+<meta property="og:description" content="Natural-sounding text to speech with the open Kokoro model, running on your own machine. 28 voices, voice mixing, MP3 download. Free, no signup, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/text-to-speech">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="dns-prefetch" href="https://huggingface.co">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Text to Speech (Kokoro in the browser)",
+  "url": "https://audiosaw.com/text-to-speech",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Neural text-to-speech with the open Kokoro-82M model running locally in the browser; 28 American and British English voices; voice mixing; speed control; MP3, WAV and M4A download; no upload; WebGPU accelerated",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tts-box{width:100%;min-height:12em;padding:.9rem 1rem;border:1px solid var(--line,#d9cdb8);border-radius:8px;font:inherit;font-size:1.05rem;line-height:1.6;background:var(--paper,#fff);color:inherit;resize:vertical;box-sizing:border-box}
+.tts-app .controls{margin-top:1rem}
+.mix-rows{margin:.5rem 0 0;padding:.75rem 1rem;border:1px dashed var(--line,#d9cdb8);border-radius:8px}
+.mix-row{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:.35rem 0}
+.mix-row select{flex:1 1 16rem;min-width:0}
+.mix-row input[type=range]{flex:0 1 9rem}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+.speed-out{display:inline-block;min-width:3.2em;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Text to <span class="ital">speech</span>, in your browser.</h1>
+    <p>Type or paste text and hear it read in a natural voice, then download it as an MP3 or WAV. The voice model is Kokoro, an open neural text-to-speech model, and it runs inside this tab: the text is never sent anywhere, there is no account, and there is no daily character allowance to run out of.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app tts-app">
+    <label for="ttsText" class="control-note">Your text</label>
+    <textarea id="ttsText" class="tts-box" spellcheck="true" placeholder="Paste a script, an article, an email, a lesson… Up to 20,000 characters here; whole books go to the audiobook maker."></textarea>
+    <p class="control-note" id="charCount"></p>
+
+    <div class="controls">
+      <label>Voice
+        <select id="voice"></select>
+      </label>
+      <label>Speed <span class="speed-out" id="speedOut">1×</span>
+        <input type="range" id="speed" min="0.6" max="1.6" step="0.05" value="1">
+      </label>
+      <label>Model
+        <select id="engine">
+          <option value="auto" selected>Fast on a GPU (326 MB download)</option>
+          <option value="small">Smaller download (92 MB, CPU, slower)</option>
+        </select>
+      </label>
+      <label>Format
+        <select id="format">
+          <option value="mp3" selected>MP3 (192 kbps)</option>
+          <option value="wav16">WAV (16-bit)</option>
+          <option value="m4a">M4A (AAC)</option>
+        </select>
+      </label>
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-secondary" id="sampleBtn" type="button">▶ hear this voice</button>
+      <button class="btn btn-secondary" id="mixToggle" type="button" aria-expanded="false" aria-controls="mixRows">Mix voices…</button>
+    </div>
+    <div class="mix-rows" id="mixRows" hidden>
+      <div class="mix-row"><span>Main voice weight</span><input type="range" id="mainWeight" min="0" max="3" step="0.25" value="1" aria-label="Main voice weight"></div>
+      <div class="mix-row"><select aria-label="Second voice"></select><input type="range" min="0" max="3" step="0.25" value="1" aria-label="Second voice weight"></div>
+      <div class="mix-row"><select aria-label="Third voice"></select><input type="range" min="0" max="3" step="0.25" value="1" aria-label="Third voice weight"></div>
+      <p class="control-note" id="mixNote"></p>
+    </div>
+
+    <p class="control-note" id="envNote"></p>
+    <div class="actions">
+      <button class="btn" id="convertBtn" data-track="convert" disabled>Speak</button>
+      <button class="btn btn-secondary" id="stopBtn" disabled>Stop</button>
+      <button class="btn btn-secondary" id="dlBtn" disabled>Download MP3</button>
+    </div>
+    <p class="control-note">It plays each sentence as soon as it is ready. The first run downloads the voice model and keeps it; after that, speech starts within seconds. Every file is labelled as synthetic speech in its own tags.</p>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Model</th><td>Kokoro-82M (Apache-2.0), run with ONNX Runtime Web</td></tr>
+        <tr><th>Voices</th><td>28: 20 American English and 8 British English, plus any blend of up to three</td></tr>
+        <tr><th>Speed</th><td>On a laptop GPU, measured at roughly the length of the speech itself; on the CPU, several times as long</td></tr>
+        <tr><th>Model download</th><td>Once, then cached: 326 MB for the fast GPU model, or 92 MB for the smaller one that runs on the CPU</td></tr>
+        <tr><th>Output</th><td>24 kHz mono — MP3, WAV or M4A</td></tr>
+        <tr><th>Limits</th><td>20,000 characters per run here; longer texts go to the audiobook maker</td></tr>
+        <tr><th>Uploads your text</th><td>No. The only network traffic is the model and voice files, which are the same for everyone</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What actually happens to your text</h2>
+    <p>Your text is cleaned up first: numbers, prices, times and titles are written out the way they are said, so "$4.50" becomes "four dollars and fifty cents" and "Dr. Lee" becomes "Doctor Lee". It is then split into sentence-sized pieces, because the model is at its best on a sentence or two at a time and starts to rush through very long inputs. Each piece goes through espeak-ng, a long-standing open pronunciation engine, which turns spelling into phonemes, and then through Kokoro, which turns the phonemes into a waveform in the chosen voice.</p>
+    <p>All of that happens in a background worker in this tab. Most free text-to-speech sites send your text to a cloud API and pay per character for the result, which is why they cap you, ask for an email address, or put the download behind a plan. Here your own GPU, or your CPU if there is no usable GPU, does the work. A contract, a medical letter, an unpublished chapter or a script under NDA stays on your machine.</p>
+
+    <h2>Choosing a voice</h2>
+    <p>Each voice carries a grade from the model's authors, shown in the list. It reflects how much clean training audio that voice had, and it is a fair guide: <strong>Heart</strong> and <strong>Bella</strong> (both American, female) are the most natural voices in the set, <strong>Emma</strong> and <strong>Nicole</strong> are close behind, and the voices graded D have audible roughness on some words. Among the male voices, <strong>Michael</strong>, <strong>Fenrir</strong> and <strong>Puck</strong> are the steadiest. "Hear this voice" plays a short sample before you commit to a long text.</p>
+    <p><strong>Mixing</strong> blends voices rather than switching between them. Each Kokoro voice is a table of numbers that steers the model, and a mix is a weighted average of those tables, so Bella at two parts and Michael at one gives a new, consistent voice somewhere between the two. It is a way to get a voice nobody else's video is using. It is not voice design from a written description, and it cannot reproduce a particular person. The accent always follows the first voice in the mix.</p>
+
+    <h2>Getting natural results</h2>
+    <p>Punctuation is direction. Commas give short breaths, full stops give longer ones, a question mark lifts the end of a line, and a blank line between paragraphs gives a longer pause. If a sentence comes out flat, splitting it in two usually fixes it. Spell out anything with an unusual pronunciation the way it sounds. A brand or surname the model misreads can be respelled phonetically, and the respelling never shows up anywhere but the audio. Speed between 0.9× and 1.1× sounds the most natural; outside that range the voice stays in tune but its rhythm starts to sound processed.</p>
+    <p>For a voice-over, generate a paragraph at a time so you can redo one line without regenerating everything, then line the pieces up in the <a href="/audio-editor">audio editor</a> against your music. For a podcast intro or a video narration, finish with the <a href="/loudness-normalizer">loudness normalizer</a> so the voice sits at the level the platform expects.</p>
+
+    <h2>What it can't do</h2>
+    <p>There is no voice cloning here. Cloning a voice from a sample needs models that are hundreds of times larger than a browser can comfortably download, and it raises consent questions a free web page can't check. Desktop apps such as VoiceStudio and cloud services such as ElevenLabs do it, with your own hardware or their servers respectively. The voices are English for now: Kokoro also has Spanish, French, Italian, Portuguese and Hindi voices, which need a larger pronunciation engine and are on the way. Emotional delivery is limited: Kokoro reads in a calm, even narrator's style and does not do shouting, whispering or crying on request.</p>
+    <p>Generated files say so in their own metadata (an ID3 comment in an MP3, an INFO chunk in a WAV) so that a file found later can be traced. That label is easy to remove and is not a watermark in the audio itself. Please don't use synthetic speech to impersonate real people.</p>
+
+    <h2>Compared with the alternatives</h2>
+    <p>Your operating system already has a reader: macOS's Spoken Content, Windows Narrator and Chrome's "read aloud" all speak text, but their voices are older-generation, and only macOS's command-line <code>say</code> saves a file. Cloud services (Google Cloud TTS, Amazon Polly, Azure, ElevenLabs) have more voices and languages and charge per character beyond a free tier, with an API key or account either way. Kokoro sits in between: a modern neural voice rated close to much larger models in public listening comparisons, small enough to run on an ordinary laptop, and licensed so that the audio you make is yours to use.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is it really free, with no character limit?</summary><p>Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter.</p></details>
+    <details><summary>Is my text uploaded anywhere?</summary><p>No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone.</p></details>
+    <details><summary>Can I use the audio commercially?</summary><p>Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person.</p></details>
+    <details><summary>Why is the first run slow?</summary><p>It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds.</p></details>
+    <details><summary>Can it clone my voice?</summary><p>No. Voice cloning needs far larger models than a browser tab can run well, and it needs consent that a web page cannot verify. You can blend the built-in voices into a new one with "Mix voices".</p></details>
+    <details><summary>Which languages does it speak?</summary><p>American and British English today. Spanish, French, Italian, Portuguese and Hindi voices exist for the same model and are being added; Japanese and Chinese need a pronunciation engine that does not yet run in a browser.</p></details>
+    <details><summary>Does it work on a phone?</summary><p>On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker.</p></details>
+  </section>
+
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/audio-to-text">audio → text</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01"></script>
+<script src="/js/tool-graph.js?v=2026-10-01"></script>
+<script src="/js/flow.js?v=2026-10-01"></script>
+<script src="/js/audio-core.js?v=2026-10-01"></script>
+<script src="/js/consent.js?v=2026-10-01"></script>
+<script src="/js/tts-engine.js?v=2026-10-01"></script>
+<script src="/js/tts-page.js?v=2026-10-01"></script>
+<script src="/js/pwa.js?v=2026-10-01"></script>
+</body>
+</html>

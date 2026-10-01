@@ -30,6 +30,7 @@
     { id: 'levels',   title: 'Loudness & channels' },
     { id: 'repair',   title: 'Clean up & separate' },
     { id: 'create',   title: 'Record & tag' },
+    { id: 'voice',    title: 'Voice & speech' },
     { id: 'fx',       title: 'Effects & remixes' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
@@ -762,7 +763,7 @@
       ]
     },
     'audio-to-text': {
-      cat: 'create', label: 'audio → text', title: 'Audio to text (transcription)',
+      cat: 'voice', label: 'audio → text', title: 'Audio to text (transcription)',
       blurb: 'Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.',
       next: [
         ['noise-reduction', 'Clean a noisy recording first; Whisper hears through less hiss'],
@@ -772,6 +773,19 @@
         ['voice-recorder', 'Record the speech here, then transcribe it'],
         ['auto-cut-silence', 'Tighten the pauses before you subtitle a clip'],
         ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format']
+      ]
+    },
+    'text-to-speech': {
+      cat: 'voice', label: 'text → speech', title: 'Text to speech',
+      blurb: 'Natural AI voices that run in your browser: 28 voices, voice mixing, MP3 download, nothing uploaded.',
+      next: [
+        ['audio-editor', 'Line the voice-over up against music and video'],
+        ['loudness-normalizer', 'Bring the narration to podcast or YouTube loudness'],
+        ['audio-to-text', 'The other direction: speech back to text'],
+        ['slowed-reverb', 'Put the voice in a room'],
+        ['pitch-shifter', 'Shift the voice deeper or higher'],
+        ['podcast-prep', 'Finish an episode intro for upload'],
+        ['audio-joiner', 'Join several generated takes into one file']
       ]
     },
     'audio-to-text-prep': {
@@ -974,6 +988,15 @@
       ]
     },
     {
+      id: 'voice',
+      title: 'Voice & speech',
+      note: 'Speech to text and text to speech, with the models running in your tab.',
+      style: 'tile',
+      tools: [
+        'text-to-speech', 'audio-to-text'
+      ]
+    },
+    {
       id: 'fx',
       title: 'Speed, pitch & effects',
       note: 'Change how a track moves rather than what format it is in.',
@@ -989,7 +1012,7 @@
       note: 'One program, one spec, already filled in — so the import works first try.',
       style: 'tile',
       tools: [
-        'audio-to-text', 'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
+        'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
         'capcut-audio', 'davinci-resolve-audio', 'm4a-to-wav-for-audacity',
         'audio-to-text-prep', 'wav-for-sp404'
       ]
