@@ -784,6 +784,8 @@
         ['audio-to-text', 'The other direction: speech back to text'],
         ['slowed-reverb', 'Put the voice in a room'],
         ['pitch-shifter', 'Shift the voice deeper or higher'],
+        ['text-to-audiobook', 'A whole book or long article: chapters to an M4B'],
+        ['voice-changer', 'Change the voice of a recording instead'],
         ['podcast-prep', 'Finish an episode intro for upload'],
         ['audio-joiner', 'Join several generated takes into one file']
       ]
@@ -799,6 +801,17 @@
         ['audio-editor', 'Put the changed voice back against music or video'],
         ['pitch-shifter', 'Shift a whole song\'s key instead of a voice'],
         ['voice-recorder', 'Record something to change']
+      ]
+    },
+    'text-to-audiobook': {
+      cat: 'voice', label: 'text → audiobook', title: 'Text to audiobook',
+      blurb: 'An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.',
+      next: [
+        ['text-to-speech', 'Just a page or a script? Hear it straight away'],
+        ['m4b-to-mp3', 'Need plain MP3s from an M4B instead'],
+        ['mp3-tag-editor', 'Add cover art and fix the tags on the chapter MP3s'],
+        ['audio-joiner', 'Join chapter MP3s into one file'],
+        ['loudness-normalizer', 'Level the narration for a podcast feed']
       ]
     },
     'audio-to-text-prep': {
@@ -1006,7 +1019,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text', 'voice-changer'
+        'text-to-speech', 'audio-to-text', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

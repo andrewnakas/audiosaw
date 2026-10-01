@@ -21,7 +21,9 @@
  * holds the voice changer's pitch and formant claims in Node. check-tts.js
  * tests the text-to-speech engine in Node and, when the Kokoro files are in
  * ~/.cache/audiosaw/kokoro (TTS_DOWNLOAD=1 fetches them once, 420 MB), the
- * page on both backends. All of them skip their browser parts on a machine
+ * page on both backends. check-audiobook.js parses books (text, EPUB) in
+ * Node and, with those files and the ffmpeg core cached, makes an M4B and
+ * reads its chapters back with ffprobe. All of them skip their browser parts on a machine
  * without Chrome.
  */
 const { execFileSync } = require('child_process');
@@ -51,7 +53,8 @@ const CHECKS = [
   ['check-fidelity.js'],
   ['check-errors.js'],
   ['check-voice.js'],
-  ['check-tts.js']
+  ['check-tts.js'],
+  ['check-audiobook.js']
 ];
 
 let failed = 0;

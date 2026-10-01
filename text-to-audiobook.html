@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Audiobook — EPUB or text to M4B with chapters, free AI voice</title>
+<meta name="description" content="Turn an EPUB, a text file or pasted text into an M4B audiobook with chapter marks, or MP3s per chapter, read by a natural AI voice running in your browser. No upload, no word limit, resumable.">
+<meta name="keywords" content="text to audiobook, epub to audiobook, epub to mp3, ebook to audiobook free, txt to audiobook, make an audiobook, m4b with chapters, ai audiobook narrator, convert book to audio">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/text-to-audiobook">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Text to Audiobook — EPUB to M4B with chapters, in your browser">
+<meta property="og:description" content="An M4B audiobook with chapter marks from any DRM-free EPUB or text, read by an open AI voice on your own machine. Free, no upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/text-to-audiobook">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Text to Audiobook",
+  "url": "https://audiosaw.com/text-to-audiobook",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "EPUB, TXT and Markdown to M4B audiobook with chapter marks or MP3 per chapter; Kokoro-82M neural voices running in the browser; chapter detection and renaming; resumable; no upload",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.ab-paste{width:100%;min-height:7em;padding:.75rem 1rem;border:1px solid var(--line,#d9cdb8);border-radius:8px;font:inherit;line-height:1.5;background:var(--paper,#fff);color:inherit;resize:vertical;box-sizing:border-box}
+.ab-or{margin:1rem 0 .5rem;color:var(--ink-soft,#5b5346)}
+.chapters{max-height:24rem;overflow:auto;border:1px solid var(--line,#d9cdb8);border-radius:8px;padding:.25rem .75rem;margin:.75rem 0}
+.chapter-row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .75rem;padding:.4rem 0;border-bottom:1px dashed var(--line,#d9cdb8)}
+.chapter-row:last-child{border-bottom:0}
+.chapter-title{flex:1 1 14rem;min-width:0;font:inherit;padding:.2rem .4rem;border:1px solid transparent;border-radius:4px;background:transparent;color:inherit}
+.chapter-title:focus{border-color:var(--line,#d9cdb8);background:var(--paper,#fff)}
+.chapter-meta,.chapter-state{font-size:.85rem;color:var(--ink-soft,#5b5346);font-variant-numeric:tabular-nums}
+.ab-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.75rem}
+.ab-meta input{width:100%;box-sizing:border-box}
+.speed-out{display:inline-block;min-width:3.2em;font-variant-numeric:tabular-nums}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, with no word limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. The voice model runs on your own computer, so there is nothing per word or per hour to pay for. The only limits are your patience and the browser's storage, and a full novel fits comfortably."}},{"@type":"Question","name":"Will the M4B show chapters on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, in Apple Books, BookPlayer, Smart AudioBook Player, VLC and most audiobook apps. The chapter track holds the titles shown in the list, which you can edit before you start."}},{"@type":"Question","name":"Can I stop and carry on later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every finished chapter is saved in the browser. Press Make audiobook again with the same book, voice and speed, and the saved chapters are reused; only the unfinished ones are read."}},{"@type":"Question","name":"Why can't it open my Kindle or Apple Books purchase?","acceptedAnswer":{"@type":"Answer","text":"Those files are DRM-protected: encrypted so only the store's app can display them. No browser tool can read them. DRM-free EPUBs, plain text and pasted text all work."}},{"@type":"Question","name":"Is my book uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The book is read in this tab and never sent anywhere; the only downloads are the voice model and the audio encoder, which are the same for everyone."}},{"@type":"Question","name":"Which languages does it read?","acceptedAnswer":{"@type":"Answer","text":"English, in American or British voices. Kokoro also has Spanish, French, Italian, Portuguese and Hindi voices, which are being added."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Text to audiobook"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Text to audiobook</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Text to <span class="ital">audiobook</span>. Your book, read aloud.</h1>
+    <p>Drop an EPUB or a text file and get an M4B audiobook with chapter marks, or an MP3 per chapter, read by a natural AI voice. The voice model runs in your browser, so the book is never uploaded, there is no word limit, and nothing is charged by the hour.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a book</p>
+      <p>EPUB (DRM-free), TXT or Markdown. Chapters are found from the headings.</p>
+      <input type="file" id="fileInput" accept=".epub,.txt,.md,.markdown,text/plain,application/epub+zip">
+    </div>
+    <p class="ab-or">…or paste the text. Lines like "Chapter 3" or "## Title" start a new chapter.</p>
+    <textarea id="bookText" class="ab-paste" placeholder="Paste a story, a long article or your manuscript…"></textarea>
+    <div class="actions"><button class="btn btn-secondary" id="useText" type="button">Use this text</button></div>
+
+    <div id="book" hidden>
+      <h2 class="control-note">Chapters — untick any you don't want, click a title to rename it</h2>
+      <div class="chapters" id="chapters"></div>
+      <div class="ab-meta">
+        <label>Book title <input type="text" id="bookTitle"></label>
+        <label>Author <input type="text" id="bookAuthor"></label>
+      </div>
+      <div class="controls">
+        <label>Voice <select id="voice"></select></label>
+        <label>Speed <span class="speed-out" id="speedOut">1×</span>
+          <input type="range" id="speed" min="0.7" max="1.4" step="0.05" value="1">
+        </label>
+        <label>Model
+          <select id="engine">
+            <option value="auto" selected>Fast on a GPU (326 MB download)</option>
+            <option value="small">Smaller download (92 MB, CPU, slower)</option>
+          </select>
+        </label>
+        <label>Output
+          <select id="outFmt">
+            <option value="m4b" selected>M4B audiobook with chapters</option>
+            <option value="mp3zip">MP3 per chapter (zip)</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="readTitles" checked> read each chapter's title at its start</label>
+      <p class="control-note" id="summary"></p>
+      <p class="control-note" id="envNote"></p>
+      <div class="actions">
+        <button class="btn btn-secondary" id="sampleBtn" type="button">▶ hear the opening</button>
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Make audiobook</button>
+        <button class="btn btn-secondary" id="stopBtn" disabled>Stop</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Input</th><td>DRM-free EPUB, plain text or Markdown, or pasted text</td></tr>
+        <tr><th>Output</th><td>M4B with a chapter track and title/author tags, or one MP3 per chapter in a zip</td></tr>
+        <tr><th>Voice</th><td>Kokoro-82M, 28 American and British English voices, speed 0.7×–1.4×</td></tr>
+        <tr><th>Time to make</th><td>On a laptop GPU, roughly as long as the audio itself; on the CPU, several times as long. A 90,000-word novel is about ten hours of audio</td></tr>
+        <tr><th>Resumable</th><td>Yes: each finished chapter is saved in the browser, so stopping or closing the tab loses at most the chapter in progress</td></tr>
+        <tr><th>Uploads your book</th><td>No — everything, including the model, runs in this tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>An EPUB is a zip of web pages plus a list, the spine, that gives their reading order. The page reads that list, turns each document into plain paragraphs, drops the cover, copyright and contents pages, and names each chapter from its first heading. A text file is split wherever a line looks like a heading: "Chapter 12", "CHAPTER XII", "Part Two", "Prologue", or a Markdown <code>#</code> or <code>##</code>. A long text with no headings at all is cut into parts of about six thousand words at paragraph breaks. You can untick chapters (an index, the acknowledgements) and rename any of them before you start.</p>
+    <p>Each chapter is then read sentence by sentence by Kokoro, an open neural text-to-speech model, on your GPU if the browser can use it and on the CPU otherwise. Numbers, prices, years and abbreviations are written out first, so "1847" is read as a year and "Dr." as "Doctor". As soon as a chapter is finished it is compressed — AAC for the M4B, MP3 for the zip — and saved in the browser. A long book never has to sit in memory as raw audio, and an interrupted run carries on from the last finished chapter instead of from page one.</p>
+    <p>At the end, the chapters are joined without re-encoding and the M4B gets a chapter track with your titles, plus the book title and author as tags. Apple Books, VLC, Smart AudioBook Player on Android, BookPlayer on iOS and most dedicated audiobook apps show those chapters and remember your place.</p>
+
+    <h2>How long it takes</h2>
+    <p>Speech runs at roughly 150 words a minute, so a 90,000-word novel is about ten hours of audio. On a laptop with a GPU that the browser can use (current Chrome or Edge on a desktop), making it takes about as long as listening to it. On the CPU it takes several times as long. That is fine for a short story, an article or a novella in an afternoon, and an overnight job for a full novel. The estimate under the chapter list is for your book and your machine. Keep the tab open; a laptop should be plugged in, because this works its processor hard. Because finished chapters are saved, a full book can be made over several sessions.</p>
+
+    <h2>Choosing the voice</h2>
+    <p>For long listening, the voices graded A and B in the list hold up best: <strong>Heart</strong> and <strong>Bella</strong> (American) and <strong>Emma</strong> (British) have the most natural rhythm over hours. Try "hear the opening" with two or three before committing to a whole book. 1.0× is the model's natural pace; most audiobook listeners speed up in their player, which keeps the pitch steady anyway, so there is little reason to bake a faster speed into the file. Every chapter is labelled in its tags as synthetic speech.</p>
+
+    <h2>What it can't do</h2>
+    <p>It reads, it doesn't act: one voice for the whole book, in a calm narrator's style, with no character voices and no shouting or whispering. Pronunciation of invented names is espeak-ng's best guess, which is usually reasonable and occasionally odd; respell a name in the text to fix it. Footnotes are skipped, and tables, captions and images are not described. EPUBs bought from Kindle, Apple Books or Kobo are usually DRM-protected and cannot be read by anything outside the store's app; the page says so if you drop one. Project Gutenberg, Standard Ebooks and most independent authors' EPUBs are DRM-free. Only English voices are available for now.</p>
+    <p>Respect copyright: making an audiobook of a book you own for your own listening is one thing; distributing it is another. Public-domain books are free for anything.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is it free, with no word limit?</summary><p>Yes. The voice model runs on your own computer, so there is nothing per word or per hour to pay for. The only limits are your patience and the browser's storage, and a full novel fits comfortably.</p></details>
+      <details><summary>Will the M4B show chapters on my phone?</summary><p>Yes, in Apple Books, BookPlayer, Smart AudioBook Player, VLC and most audiobook apps. The chapter track holds the titles shown in the list, which you can edit before you start.</p></details>
+      <details><summary>Can I stop and carry on later?</summary><p>Yes. Every finished chapter is saved in the browser. Press Make audiobook again with the same book, voice and speed, and the saved chapters are reused; only the unfinished ones are read.</p></details>
+      <details><summary>Why can't it open my Kindle or Apple Books purchase?</summary><p>Those files are DRM-protected: encrypted so only the store's app can display them. No browser tool can read them. DRM-free EPUBs, plain text and pasted text all work.</p></details>
+      <details><summary>Is my book uploaded?</summary><p>No. The book is read in this tab and never sent anywhere; the only downloads are the voice model and the audio encoder, which are the same for everyone.</p></details>
+      <details><summary>Which languages does it read?</summary><p>English, in American or British voices. Kokoro also has Spanish, French, Italian, Portuguese and Hindi voices, which are being added.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>Just a page or a script? Hear it straight away.</p></a>
+      <a class="card" href="/m4b-to-mp3"><h3>M4B to MP3</h3><p>Need plain MP3s from an M4B instead.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Add cover art and fix the tags on the chapter MP3s.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Join chapter MP3s into one file.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Level the narration for a podcast feed.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/audio-core.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/tts-engine.js?v=2026-10-01c"></script>
+<script src="/js/book-parse.js?v=2026-10-01c"></script>
+<script src="/js/audiobook-page.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
+</body>
+</html>

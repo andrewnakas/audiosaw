@@ -290,6 +290,36 @@
     return x.subarray(Math.max(0, a - keep), Math.min(x.length, b + 1 + keep));
   }
 
+  /* --------------------------------------------------------- voice picker */
+
+  // Browser only: fills a <select> with the voices, grouped by accent, each
+  // labelled with its model-card grade. Shared by /text-to-speech and
+  // /text-to-audiobook.
+  function voiceLabel(v) {
+    return v.name + ' — ' + (v.lang === 'en-gb' ? 'UK' : 'US') + ' ' + (v.gender === 'F' ? 'female' : 'male') + ' · grade ' + v.grade;
+  }
+  function fillVoiceSelect(sel, withNone) {
+    var doc = sel.ownerDocument;
+    sel.innerHTML = '';
+    if (withNone) {
+      var o0 = doc.createElement('option');
+      o0.value = '';
+      o0.textContent = '— none —';
+      sel.appendChild(o0);
+    }
+    [['en-us', 'American English'], ['en-gb', 'British English']].forEach(function (g) {
+      var og = doc.createElement('optgroup');
+      og.label = g[1];
+      VOICES.filter(function (v) { return v.lang === g[0]; }).forEach(function (v) {
+        var o = doc.createElement('option');
+        o.value = v.id;
+        o.textContent = voiceLabel(v);
+        og.appendChild(o);
+      });
+      sel.appendChild(og);
+    });
+  }
+
   /* ------------------------------------------------------------- tagging */
 
   // Every file this site synthesises says so in its own metadata: a WAV
@@ -345,7 +375,7 @@
   }
 
   return {
-    tagMp3: tagMp3, tagWav: tagWav,
+    tagMp3: tagMp3, tagWav: tagWav, fillVoiceSelect: fillVoiceSelect, voiceLabel: voiceLabel,
     SAMPLE_RATE: SAMPLE_RATE, STYLE_DIM: STYLE_DIM, STYLE_ROWS: STYLE_ROWS, MAX_TOKENS: MAX_TOKENS,
     VOCAB: VOCAB, VOICES: VOICES, voice: voice,
     normalize: normalize, fixPhonemes: fixPhonemes, splitPunct: splitPunct, phonemize: phonemize,

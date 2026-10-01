@@ -62,30 +62,7 @@
 
   /* -------------------------------------------------------------- voices */
 
-  function voiceLabel(v) {
-    return v.name + ' — ' + (v.lang === 'en-gb' ? 'UK' : 'US') + ' ' + (v.gender === 'F' ? 'female' : 'male') + ' · grade ' + v.grade;
-  }
-
-  function fillVoices(sel, withNone) {
-    sel.innerHTML = '';
-    if (withNone) {
-      var o0 = document.createElement('option');
-      o0.value = '';
-      o0.textContent = '— none —';
-      sel.appendChild(o0);
-    }
-    [['en-us', 'American English'], ['en-gb', 'British English']].forEach(function (g) {
-      var og = document.createElement('optgroup');
-      og.label = g[1];
-      ASTTS.VOICES.filter(function (v) { return v.lang === g[0]; }).forEach(function (v) {
-        var o = document.createElement('option');
-        o.value = v.id;
-        o.textContent = voiceLabel(v);
-        og.appendChild(o);
-      });
-      sel.appendChild(og);
-    });
-  }
+  var fillVoices = ASTTS.fillVoiceSelect;
 
   fillVoices(voiceSel, false);
   voiceSel.value = 'af_heart';
