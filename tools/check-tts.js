@@ -8,8 +8,8 @@
  * The Kokoro files (326 MB fp32, 92 MB q8, a few 0.5 MB voices) are
  * downloaded once into ~/.cache/audiosaw/kokoro/ and served to the page by
  * rewriting its Hugging Face requests with CDP Fetch, the way check-fidelity
- * serves the ffmpeg core. TTS_OFFLINE=1 skips the browser part if they are
- * missing instead of downloading them.
+ * serves the ffmpeg core. Without them the browser part is skipped;
+ * TTS_DOWNLOAD=1 fetches them.
  *
  * What it holds, and why each matters:
  *   - normalisation, chunking, tokenizer and mix maths (Node);
@@ -126,7 +126,7 @@ async function ensureFiles() {
   for (const f of FILES) {
     const dest = path.join(CACHE, path.basename(f));
     if (fs.existsSync(dest)) continue;
-    if (process.env.TTS_OFFLINE) return false;
+    if (!process.env.TTS_DOWNLOAD) return false;
     console.log('  downloading ' + f + ' (once)…');
     const res = await fetch(REPO + f);
     if (!res.ok) throw new Error('download ' + f + ': HTTP ' + res.status);
@@ -141,7 +141,7 @@ const SENTENCE = 'The quick brown fox jumps over the lazy dog, and then it runs 
 async function browser() {
   const { withPage, findChrome } = require('./chrome-harness');
   if (!findChrome()) { console.log('  skip: no Chrome'); return; }
-  if (!(await ensureFiles())) { console.log('  skip: model not cached and TTS_OFFLINE is set'); return; }
+  if (!(await ensureFiles())) { console.log('  skip: the Kokoro files are not in ' + CACHE + ' (TTS_DOWNLOAD=1 fetches them once, 420 MB)'); return; }
   const routes = {};
   for (const f of FILES) routes['/__kokoro/' + path.basename(f)] = () => fs.readFileSync(path.join(CACHE, path.basename(f)));
 

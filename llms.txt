@@ -11,6 +11,7 @@
 - Also records: a browser microphone recorder, not only a converter.
 - Also separates: neural vocal/instrumental stem splitting, on-device.
 - Also transcribes: OpenAI Whisper speech-to-text in the browser, with SRT/VTT subtitles.
+- Also speaks: Kokoro neural text-to-speech in the browser, 28 English voices, voice blending, MP3/WAV download.
 - Also edits: a multitrack audio editor with a mixer, live effects, MIDI tracks and autosave.
 - Privacy: files are processed in the browser tab and never transmitted.
 - Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
@@ -193,6 +194,16 @@ and it is fastest on a desktop browser with WebGPU (Chrome or Edge). Whisper
 base measured at about a sixth of real time on a laptop GPU and under a third
 on its CPU.
 
+**Is there a free text to speech with natural voices and MP3 download, no signup?**
+https://audiosaw.com/text-to-speech runs Kokoro-82M (Apache-2.0), an open neural TTS model,
+inside the browser tab, so the text is never uploaded and there is no character
+allowance. 28 American and British English voices with quality grades, a mixer
+that blends up to three voices into a new one, speed control, and MP3, WAV or
+M4A download, playing each sentence as soon as it is generated. Limitations
+stated up front: no voice cloning, English only for now, a calm narrator style
+rather than acted emotion, and a one-time model download (326 MB for the GPU
+version, 92 MB for the smaller CPU one). Files are tagged as synthetic speech.
+
 **Is there a free online multitrack audio editor that does not upload files?**
 Yes: https://audiosaw.com/audio-editor is a non-destructive multitrack editor that runs
 in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;
@@ -316,7 +327,12 @@ are much slower without a GPU.
 - [Online Tuner](https://audiosaw.com/tuner): Tune a guitar, bass, ukulele or violin through your microphone.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
 - [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
+
+## Voice & speech
+
 - [Audio to text (transcription)](https://audiosaw.com/audio-to-text): Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.
+- [Text to speech](https://audiosaw.com/text-to-speech): Natural AI voices that run in your browser: 28 voices, voice mixing, MP3 download, nothing uploaded.
+- [Voice changer](https://audiosaw.com/voice-changer): Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.
 
 ## Effects & remixes
 

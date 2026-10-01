@@ -9,6 +9,15 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/text-to-speech">
 <link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
 <meta property="og:title" content="Text to Speech — AI voices that run in your browser">
 <meta property="og:description" content="Natural-sounding text to speech with the open Kokoro model, running on your own machine. 28 voices, voice mixing, MP3 download. Free, no signup, nothing uploaded.">
 <meta property="og:type" content="website">
@@ -18,7 +27,7 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-01">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,6 +68,16 @@ window.AS_VERSION = '2026-09-22';
 .result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
 .speed-out{display:inline-block;min-width:3.2em;font-variant-numeric:tabular-nums}
 </style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it really free, with no character limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter."}},{"@type":"Question","name":"Is my text uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone."}},{"@type":"Question","name":"Can I use the audio commercially?","acceptedAnswer":{"@type":"Answer","text":"Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person."}},{"@type":"Question","name":"Why is the first run slow?","acceptedAnswer":{"@type":"Answer","text":"It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds."}},{"@type":"Question","name":"Can it clone my voice?","acceptedAnswer":{"@type":"Answer","text":"No. Voice cloning needs far larger models than a browser tab can run well, and it needs consent that a web page cannot verify. You can blend the built-in voices into a new one with \"Mix voices\"."}},{"@type":"Question","name":"Which languages does it speak?","acceptedAnswer":{"@type":"Answer","text":"American and British English today. Spanish, French, Italian, Portuguese and Hindi voices exist for the same model and are being added; Japanese and Chinese need a pronunciation engine that does not yet run in a browser."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Text to speech"}]}
+</script>
+<!-- /AS:bcschema -->
 </head>
 <body>
 <header class="site-header">
@@ -74,6 +93,15 @@ window.AS_VERSION = '2026-09-22';
     </nav>
   </div>
 </header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Text to speech</span>
+</nav>
+<!-- /AS:breadcrumb -->
 
 <main class="container">
   <section class="page-intro">
@@ -172,14 +200,31 @@ window.AS_VERSION = '2026-09-22';
 
   <section class="faq">
     <h2>FAQ</h2>
-    <details><summary>Is it really free, with no character limit?</summary><p>Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter.</p></details>
-    <details><summary>Is my text uploaded anywhere?</summary><p>No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone.</p></details>
-    <details><summary>Can I use the audio commercially?</summary><p>Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person.</p></details>
-    <details><summary>Why is the first run slow?</summary><p>It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds.</p></details>
-    <details><summary>Can it clone my voice?</summary><p>No. Voice cloning needs far larger models than a browser tab can run well, and it needs consent that a web page cannot verify. You can blend the built-in voices into a new one with "Mix voices".</p></details>
-    <details><summary>Which languages does it speak?</summary><p>American and British English today. Spanish, French, Italian, Portuguese and Hindi voices exist for the same model and are being added; Japanese and Chinese need a pronunciation engine that does not yet run in a browser.</p></details>
-    <details><summary>Does it work on a phone?</summary><p>On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker.</p></details>
+    <!-- AS:faq -->
+      <details><summary>Is it really free, with no character limit?</summary><p>Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter.</p></details>
+      <details><summary>Is my text uploaded anywhere?</summary><p>No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone.</p></details>
+      <details><summary>Can I use the audio commercially?</summary><p>Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person.</p></details>
+      <details><summary>Why is the first run slow?</summary><p>It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds.</p></details>
+      <details><summary>Can it clone my voice?</summary><p>No. Voice cloning needs far larger models than a browser tab can run well, and it needs consent that a web page cannot verify. You can blend the built-in voices into a new one with "Mix voices".</p></details>
+      <details><summary>Which languages does it speak?</summary><p>American and British English today. Spanish, French, Italian, Portuguese and Hindi voices exist for the same model and are being added; Japanese and Chinese need a pronunciation engine that does not yet run in a browser.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker.</p></details>
+      <!-- /AS:faq -->
   </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Line the voice-over up against music and video.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring the narration to podcast or YouTube loudness.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>The other direction: speech back to text.</p></a>
+      <a class="card" href="/slowed-reverb"><h3>Slowed + Reverb Maker</h3><p>Put the voice in a room.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Shift the voice deeper or higher.</p></a>
+      <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Finish an episode intro for upload.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Join several generated takes into one file.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
 
 </main>
 
@@ -266,7 +311,12 @@ window.AS_VERSION = '2026-09-22';
         <a href="/tuner">tuner</a>
         <a href="/split-audio">split</a>
         <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
         <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
       </div>
       <div class="footer-col">
         <h4>Effects &amp; remixes</h4>
@@ -292,13 +342,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-01"></script>
-<script src="/js/tool-graph.js?v=2026-10-01"></script>
-<script src="/js/flow.js?v=2026-10-01"></script>
-<script src="/js/audio-core.js?v=2026-10-01"></script>
-<script src="/js/consent.js?v=2026-10-01"></script>
-<script src="/js/tts-engine.js?v=2026-10-01"></script>
-<script src="/js/tts-page.js?v=2026-10-01"></script>
-<script src="/js/pwa.js?v=2026-10-01"></script>
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/audio-core.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/tts-engine.js?v=2026-10-01c"></script>
+<script src="/js/tts-page.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
 </body>
 </html>

@@ -210,6 +210,7 @@ ${FOOTER_PLACEHOLDER}
 }
 
 const CATEGORY_INTRO = {
+  'voice': 'Speech in and speech out, with the neural models running in your browser tab: Whisper turns a recording into text and subtitles, and Kokoro reads text aloud in a natural voice. The models download once and are cached; the audio and the text never leave your machine, which is the point for interviews, scripts and anything under NDA.',
   'to-mp3': 'MP3 is the format that plays on everything — every phone, every car stereo, every cheap MP3 player, every editing program written in the last thirty years. These convert into it from whatever you started with. All of them are lossy encodes, so work from the highest-quality source you have rather than from something already compressed.',
   'formats': 'Conversions that are not about getting to MP3: uncompressed PCM for editing and burning, lossless FLAC for archiving, Apple-native containers, and fixed-bitrate MP3 presets when you want the decision made for you.',
   'video': 'Video files are containers — the audio inside is usually AAC, and it can be lifted out without re-encoding the picture. Because everything runs locally, the video itself never leaves your machine, which matters more here than anywhere else on the site.',

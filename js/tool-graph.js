@@ -788,6 +788,19 @@
         ['audio-joiner', 'Join several generated takes into one file']
       ]
     },
+    'voice-changer': {
+      cat: 'voice', label: 'voice changer', title: 'Voice changer',
+      blurb: 'Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.',
+      project: 'same',
+      next: [
+        ['stem-splitter', 'Pull the voice out of a song before changing it'],
+        ['noise-reduction', 'Clean the recording first; hiss confuses the pitch tracking'],
+        ['text-to-speech', 'Need a voice that was never recorded? Generate one'],
+        ['audio-editor', 'Put the changed voice back against music or video'],
+        ['pitch-shifter', 'Shift a whole song\'s key instead of a voice'],
+        ['voice-recorder', 'Record something to change']
+      ]
+    },
     'audio-to-text-prep': {
       cat: 'apps', label: 'for transcription', title: 'Prep audio for transcription',
       blurb: 'The format each transcription service actually wants.',
@@ -993,7 +1006,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text'
+        'text-to-speech', 'audio-to-text', 'voice-changer'
       ]
     },
     {
