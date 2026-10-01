@@ -52,6 +52,12 @@ ok(lines[1].text === 'First, the flour' && lines[2].text === 'goes in.', 'a sent
   ok(step < 0.02, 'ramps have no step (largest change per ms ' + step.toFixed(4) + ')');
 }
 {
+  const rate = 16000, x = new Float32Array(rate * 4);
+  for (let i = 0; i < x.length; i++) x[i] = (i > rate * 1.0 && i < rate * 2.5 ? 0.3 * Math.sin(i * 0.1) : 0) + 0.001 * Math.sin(i * 7.3);
+  const s = D.snapStarts([{ text: 'a', start: 0, end: 2.6 }, { text: 'b', start: 3.0, end: 3.5 }], x, rate);
+  ok(Math.abs(s[0].start - 0.96) < 0.03 && s[1].start === 3.0, 'a line stamped from 0 moves to its speech (' + s[0].start.toFixed(2) + ' s); one with no speech stays');
+}
+{
   const o = [new Float32Array(100).fill(0.5), new Float32Array(100).fill(-0.5)];
   const m = D.mix(o, new Float32Array(100).fill(0.5), new Float32Array(60).fill(0.1));
   ok(m.length === 2 && m[0].length === 100 && Math.abs(m[0][10] - 0.35) < 1e-6 && Math.abs(m[1][80] + 0.25) < 1e-6, 'mix keeps length and channels and adds the dub to each');

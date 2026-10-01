@@ -127,7 +127,7 @@
       var w = whisper();
       w.postMessage({ type: 'load', model: modelSel.value });
       var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: taskSel.value }, [audio.buffer]);
-      lines = ASDub.merge(done.segments);
+      lines = ASDub.snapStarts(ASDub.merge(done.segments), r16.getChannelData(0), 16000);
       if (!lines.length) throw new Error('No speech was found in the soundtrack.');
       // Whisper is done: free its memory before Kokoro loads.
       asr.terminate(); asr = null;

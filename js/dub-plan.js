@@ -85,5 +85,22 @@
     });
   }
 
-  return { merge: merge, fit: fit, duck: duck, mix: mix, MAX_SPEED: MAX_SPEED };
+  // Whisper often stamps a line from the end of the previous one, or from
+  // 0 after a silent opening (measured: a sentence starting at 1.0 s came
+  // back at 0.00), which would start the dub early. Each start is moved to
+  // the first 20 ms frame of real speech inside the line: above three times
+  // the file's own floor (its 10th-percentile level) and -45 dBFS.
+  function snapStarts(lines, mono, rate) {
+    var F = Math.round(rate * 0.02), n = Math.floor(mono.length / F), lv = new Float32Array(n);
+    for (var k = 0; k < n; k++) { var e = 0; for (var i = k * F; i < (k + 1) * F; i++) e += mono[i] * mono[i]; lv[k] = Math.sqrt(e / F); }
+    var sorted = Array.from(lv).sort(function (a, b) { return a - b; });
+    var thr = Math.max(Math.pow(10, -45 / 20), (sorted[Math.floor(n * 0.1)] || 0) * 3);
+    return lines.map(function (ln) {
+      var a = Math.floor(ln.start / 0.02), b = Math.min(n, Math.ceil(ln.end / 0.02));
+      for (var j = a; j < b; j++) if (lv[j] > thr) return Object.assign({}, ln, { start: Math.max(ln.start, j * 0.02 - 0.04) });
+      return ln;
+    });
+  }
+
+  return { merge: merge, fit: fit, duck: duck, mix: mix, snapStarts: snapStarts, MAX_SPEED: MAX_SPEED };
 }));
