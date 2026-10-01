@@ -4,8 +4,10 @@
 
   // Without an accept list any file reached the decoder and surfaced a raw
   // exception instead of "wrong file type".
+  // .amr and .3gp are phone voice notes; the browser cannot decode them but
+  // decodeToAudioBuffer falls back to ffmpeg, as it does for .wma and .ac3.
   var CUT_ACCEPT = ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus',
-    '.aif', '.aiff', '.m4b', '.wma', '.mp4', '.mov', '.webm', '.mkv'];
+    '.aif', '.aiff', '.m4b', '.m4r', '.wma', '.ac3', '.caf', '.amr', '.3gp', '.weba', '.mp4', '.mov', '.webm', '.mkv'];
   var $ = CV.$;
 
   var dropzone = $('#dropzone');
@@ -114,23 +116,15 @@
   bindHandle(handleStart, function (p) { startPct = p; });
   bindHandle(handleEnd, function (p) { endPct = p; });
 
+  // The selection as a view of the decoded buffer (AudioSaw.view). It used
+  // to be copied and rendered through an OfflineAudioContext, which only
+  // reproduced the same samples: on a 75-minute file that render alone ran
+  // for minutes with the status stuck on "Cutting…".
   function sliceBuffer(buffer, startSec, endSec) {
     var sr = buffer.sampleRate;
-    var channels = buffer.numberOfChannels;
     var startSample = Math.max(0, Math.floor(startSec * sr));
     var endSample = Math.min(buffer.length, Math.ceil(endSec * sr));
-    var length = endSample - startSample;
-    var Ctor = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    var off = new Ctor(channels, length, sr);
-    var src = off.createBufferSource();
-    var sliced = off.createBuffer(channels, length, sr);
-    for (var c = 0; c < channels; c++) {
-      sliced.getChannelData(c).set(buffer.getChannelData(c).subarray(startSample, endSample));
-    }
-    src.buffer = sliced;
-    src.connect(off.destination);
-    src.start(0);
-    return off.startRendering();
+    return Promise.resolve(AudioSaw.view(buffer, startSample, endSample));
   }
 
   function onFile(f) {
@@ -151,7 +145,7 @@
         setTimeout(function () { progressWrap.style.display = 'none'; }, 600);
       })
       .catch(function (e) {
-        CV.setStatus(statusEl, 'error', 'Could not decode: ' + (e.message || e));
+        CV.setStatus(statusEl, 'error', 'Could not decode: ' + (e.message || e), e);
         progressWrap.style.display = 'none';
       });
   }
@@ -223,7 +217,7 @@
       CV.downloadBlob(blob, outName);
       CV.setStatus(statusEl, 'success', 'Done — downloaded ' + outName);
     } catch (err) {
-      CV.setStatus(statusEl, 'error', 'Cut failed: ' + (err.message || err));
+      CV.setStatus(statusEl, 'error', 'Cut failed: ' + (err.message || err), err);
     } finally {
       cutBtn.disabled = false;
     }

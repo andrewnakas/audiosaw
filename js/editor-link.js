@@ -172,7 +172,7 @@
       else global.location.href = url;
     }).catch(function (err) {
       if (win) try { win.close(); } catch (e) {}
-      ctx.status('error', 'Could not hand it over: ' + ((err && err.message) || 'storage refused it') + '. Export it and open the tool directly instead.');
+      ctx.status('error', 'Could not hand it over: ' + ((err && err.message) || 'storage refused it') + '. Export it and open the tool directly instead.', err);
     }).then(function () { ctx.setBusy(false); });
   }
 
@@ -316,7 +316,7 @@
       place(ret, target, outs, mode, title, note);
     }).catch(function (err) {
       ctx.setBusy(false);
-      ctx.status('error', 'Could not open the result from ' + title + ': ' + ((err && err.message) || 'unsupported file') + '.');
+      ctx.status('error', 'Could not open the result from ' + title + ': ' + ((err && err.message) || 'unsupported file') + '.', err);
       CV.track('chain_continue', { from_tool: ret.tool, to_tool: 'audio-editor', placement: 'project', accepted: false });
     });
   }

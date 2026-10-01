@@ -120,7 +120,7 @@
             outputs.push(o.blob ? o : { name: cfg.outName ? cfg.outName(f.name, opts) : f.name, blob: o });
           });
         } catch (e) {
-          failures.push({ name: f.name, error: e.message || String(e) });
+          failures.push({ name: f.name, error: e.message || String(e), err: e });
         }
       }
 
@@ -136,7 +136,7 @@
             (failures.length ? ' (' + failures.length + ' failed)' : ''));
         } else {
           CV.setStatus(statusEl, 'error', (cfg.failMessage || 'Could not process that file. ') +
-            (failures[0] ? failures[0].error : ''));
+            (failures[0] ? failures[0].error : ''), failures[0] && failures[0].err);
         }
 
         outputs.forEach(function (o) {

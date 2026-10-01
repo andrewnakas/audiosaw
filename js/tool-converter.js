@@ -109,7 +109,7 @@
         });
         outputs.push({ name: AudioSaw.rename(f.name, target), blob: blob });
       } catch (e) {
-        failures.push({ name: f.name, error: e.message || String(e) });
+        failures.push({ name: f.name, error: e.message || String(e), err: e });
       }
     }
 
@@ -123,7 +123,7 @@
         CV.downloadBlob(zip, 'audiosaw-' + currentTarget() + '.zip');
         CV.setStatus(statusEl, 'success', 'Done — ' + outputs.length + ' files zipped' + (failures.length ? ' (' + failures.length + ' failed)' : ''));
       } else {
-        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''));
+        CV.setStatus(statusEl, 'error', 'Could not convert. ' + (failures[0] ? failures[0].error : ''), failures[0] && failures[0].err);
       }
       outputs.forEach(function (o) {
         var row = document.createElement('div');

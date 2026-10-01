@@ -232,6 +232,21 @@ numbers; tighten the check before quoting a new one.
   format tokens and writers, the resampler loader, and a WebAssembly FFmpeg
   build, lazily loaded, for m4a/ogg/flac/LAME and video demuxing (see "Audio
   quality" above).
+  - **`decodeToAudioBuffer` falls back to ffmpeg** (float WAV at the file's
+    rate) when the browser refuses a file, so every tool reads AMR/3GP voice
+    notes, WMA and AC-3. Not for text/zip/PDF/images (no 30 MB download to
+    fail), not for a >48 MB MP3/AAC/FLAC/Vorbis/Opus (that is memory, and is
+    reported as such), and not on /stem-splitter: it is cross-origin isolated
+    and `/vendor/ffmpeg/*` carries no COEP header. `{ ffmpeg: false }` turns
+    it off; `convert()` uses that and goes straight to the target instead.
+  - A 0-byte file is refused before decoding ("That file is empty").
+  - The core falls back from unpkg to jsDelivr (same bytes); the cache key
+    is still the unpkg URL.
+  - Long files: the WAV/AIFF/lamejs writers quantise in 64k-frame blocks, and
+    `AudioSaw.view(buffer, start, end)` hands encode() a window without a
+    copy. Copying is what made a 75-minute split need ~2 GB on top of the
+    decoded audio. /split-audio also cuts equal parts or fixed lengths by
+    ffmpeg stream copy when the decode fails for memory.
 - `js/tool-shell.js` — `CV.shell({process})`, the driver for tools that do
   custom processing, plus shared DSP helpers (`CV.lowpass`, `CV.highpass`,
   `CV.peakNormalise`, `CV.bufferFrom`, `CV.channelsOf`, `CV.encodeBuffer`).
@@ -768,6 +783,21 @@ New outcomes become new *values* on those events, never a ninth event:
 A `validation` error kind exists for UI hints like "Selection too short" and is
 deliberately **silent** — it fires no event and shows no recovery panel. Those
 used to be counted as conversion failures, which buried the real error rate.
+
+**`error_type` values** (`ERROR_KINDS` in flow.js, first match wins):
+`wrong_type`, `empty_file` (0 bytes), `mic_denied`, `mic_missing`, `mic_busy`,
+`mic_constraints`, `insecure`, `unsupported_api` (a named browser API is
+missing), `storage`, `codec_crash` (a wasm module died), `too_long` (a tool's
+cap), `memory`, `no_content` (no gaps, no pitch, silence), `bad_file`,
+`codec_load`, `decode`, `encode`, `empty` (no audio track), `aborted`,
+`script_error` (a TypeError/ReferenceError: usually ours), `other`. Until Oct
+2026 most failures were `other`: every refused microphone among them.
+- Pass the exception as `CV.setStatus(el, 'error', msg, err)`: the classifier
+  then sees `NotAllowedError: Permission denied`, not only the page's words.
+- The picked files' names are cut out of the message before it is matched;
+  `empty.mp3` failing to decode was filed under `empty`.
+- `node tools/check-errors.js` pins the buckets against the real messages and
+  drives the failures in Chrome. A new message goes in its table.
 
 Why no heartbeat and no retry: a `setInterval` that reports to GA4 does not stop
 in a background tab, so an abandoned tab reports near-perfect usage; and a silent
