@@ -10,10 +10,13 @@
 - Cost: free, no account required.
 - Also records: a browser microphone recorder, not only a converter.
 - Also separates: neural vocal/instrumental stem splitting, on-device.
+- Also transcribes: OpenAI Whisper speech-to-text in the browser, with SRT/VTT subtitles.
+- Also edits: a multitrack audio editor with a mixer, live effects, MIDI tracks and autosave.
 - Privacy: files are processed in the browser tab and never transmitted.
 - Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
-- Output formats: mp3, wav, m4a (AAC), flac, ogg.
-- MP3 bitrates: 128, 192, 256, 320 kbps.
+- Output formats: mp3, wav (16-bit, 24-bit, 32-bit float), m4a (AAC), flac (16/24-bit), aiff, ogg.
+- MP3: 128-320 kbps CBR, plus LAME V0 VBR and LAME 320.
+- Fidelity: decodes at the file's own sample rate (up to 192 kHz) and keeps 24-bit/float unless asked otherwise.
 - Batch: multiple files at once, returned as a zip.
 - Practical file size limit: about 500 MB per file, bounded by browser memory.
 - Works on mobile browsers, slower, with tighter memory limits on iOS Safari.
@@ -63,10 +66,27 @@ Chromebook is one of the better cases for it. Phones and tablets work but are
 slower and hit the memory ceiling sooner, so keep mobile files modest.
 
 **Can I record audio straight in the browser?**
-Yes. https://audiosaw.com/voice-recorder records from the microphone and saves MP3
-or WAV. Nothing is uploaded, there is no signup and no time limit, and the
+Yes. https://audiosaw.com/voice-recorder records from the microphone and saves MP3,
+WAV or FLAC. Nothing is uploaded, there is no signup and no time limit, and the
 recording never leaves the device — the page has no server to send it to.
+Voice mode applies the browser's noise suppression for speech; studio mode
+turns all processing off and records lossless stereo 32-bit float at the
+microphone's own sample rate, for singing and instruments. To transcribe the
+recording afterwards, use https://audiosaw.com/audio-to-text.
 This is the most-used tool on the site.
+
+**Can I record the audio playing on my computer, or in a browser tab?**
+https://audiosaw.com/record-computer-audio records the sound of a browser tab through the
+browser's own screen-share picker, and saves it as WAV, FLAC or MP3. It works
+**only in Chrome and Edge on a computer**: Firefox and Safari share screens but
+never their sound, and phones cannot do it at all, which the page says up front.
+A tab is the share that works on every desktop system; recording everything the
+computer plays ("Also share system audio" under Entire screen) is offered on
+Windows and ChromeOS, not on a Mac. The "Also share tab audio" switch in the
+picker must be on or the share has no sound. The samples are copied as 32-bit
+float with the browser's call processing turned off, so a WAV matches what the
+tab played to within float rounding; it records in real time, nothing is
+uploaded, and the shared picture is discarded.
 
 **How do I split a long recording into several files?**
 https://audiosaw.com/split-audio cuts one long file into equal parts, into
@@ -95,8 +115,9 @@ channel, which is free and immediate but leaves artefacts on most modern mixes.
 https://audiosaw.com/bpm-finder detects the tempo in the browser and shows the half-time
 and double-time readings alongside it, because those are the two answers a
 tempo detector most often confuses. It produces a number rather than a file,
-so there is nothing to download. It does not detect musical key: a confident
-wrong key is worse than no key, so that was left out deliberately.
+so there is nothing to download. For the musical key, use https://audiosaw.com/key-finder,
+which always shows its runner-up because relative major and minor are easy to
+confuse; https://audiosaw.com/chord-finder lists the chords over time.
 
 **Can I turn audio into MIDI?**
 https://audiosaw.com/audio-to-midi transcribes a recording into a Standard MIDI File you
@@ -161,13 +182,60 @@ cartoon — that is inherent to the technique, not to this implementation, which
 is why the speeds stop at 1.35x. To speed audio up without the pitch rising,
 use https://audiosaw.com/audio-speed instead, which time-stretches.
 
+**How do I transcribe audio to text for free without uploading it?**
+https://audiosaw.com/audio-to-text runs OpenAI's Whisper (tiny, base or small) inside the
+browser tab, so the recording is never uploaded — no account and no minute cap.
+It returns an editable transcript plus SRT and WebVTT subtitle files, works
+on video files directly, covers 99 languages and can translate any of them into
+English. Limitations stated up front: it does not label speakers, timestamps
+are per phrase rather than per word, the first run downloads the model once,
+and it is fastest on a desktop browser with WebGPU (Chrome or Edge). Whisper
+base measured at about a sixth of real time on a laptop GPU and under a third
+on its CPU.
+
+**Is there a free online multitrack audio editor that does not upload files?**
+Yes: https://audiosaw.com/audio-editor is a non-destructive multitrack editor that runs
+in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;
+a mixer with 25 real-time effects (EQ, compressor, limiter, reverb, delay and
+more), sends, automation and presets; bars-and-beats grid with a metronome and
+count-in; recording from the microphone, including loop recording into takes
+and comping; MIDI tracks with built-in instruments; tempo, key and chord
+detection. The project autosaves in the browser and reopens on the next visit.
+Any clip can be sent to another AudioSaw tool (stem splitter, noise reduction,
+autotune and others) and the result comes back as one undoable edit. Export
+is at the project's own sample rate up to 192 kHz, as WAV (up to 32-bit float),
+FLAC 24-bit, MP3, M4A or OGG. It is
+not a full DAW: no third-party plugins, no video track, no collaboration.
+
+**How do I find the key or the chords of a song?**
+https://audiosaw.com/key-finder detects the key in the browser and always shows the
+runner-up, because a natural-minor pop loop and its relative major are
+genuinely ambiguous. On 48 real piano recordings of Bach's Well-Tempered
+Clavier it named the key in 41, with the right answer as runner-up in 6 of the
+other 7. https://audiosaw.com/chord-finder lists the chords beat by beat, including
+sevenths and slash chords (an inversion such as C/E), and ignores drums.
+There is no published real-music accuracy figure for chords yet.
+
+**Is there a free online tuner or metronome?**
+https://audiosaw.com/tuner listens through the microphone and reads within 1 cent from
+B0 to E6. https://audiosaw.com/metronome schedules clicks on the audio clock, so the
+beat stays exact even when the tab is in the background. Neither uploads
+anything; the microphone audio never leaves the browser.
+
+**How do I chop a drum loop or sample into slices?**
+https://audiosaw.com/sample-slicer finds the hits and cuts just before each one, on a
+zero crossing so there are no clicks, and exports the slices as a zip — for an
+SP-404, an MPC or a DAW sampler.
+
 **What can AudioSaw not do?**
-It is a single-file utility, not a DAW: there is no multitrack timeline, no
-mixing, no plugins and no project that you save and reopen later. Nothing is
-stored between visits, by design. Very large files are limited by browser
-memory rather than by the tool. Editing an MP3 re-encodes it, so a cut or a
-volume change costs one compression generation — use WAV or FLAC output when
-that matters. And the neural stem splitter is slow without a GPU.
+There is no cloud: nothing syncs between devices and nothing is shared, because
+nothing is uploaded. The audio editor keeps its project in the browser that made
+it. It does not host third-party VST/AU plugins. Stem splitting gives vocals
+and instrumental, not four stems. Transcription does not label speakers.
+Very large files are limited by browser memory rather than by the tool. Editing
+an MP3 re-encodes it, so a cut costs one compression generation — use WAV or
+FLAC output when that matters. The neural tools (stem splitter, transcription)
+are much slower without a GPU.
 
 ## Convert to MP3
 
@@ -239,6 +307,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 ## Record & tag
 
 - [Voice recorder](https://audiosaw.com/voice-recorder): Record from your microphone in the browser — the audio never leaves your device.
+- [Record computer audio](https://audiosaw.com/record-computer-audio): Record the sound a browser tab is playing, losslessly — Chrome and Edge only.
 - [Audio to MIDI](https://audiosaw.com/audio-to-midi): Turn a hummed melody or bassline into a MIDI file.
 - [BPM Finder](https://audiosaw.com/bpm-finder): Detect the tempo of a track, with half and double time shown.
 - [Key Finder](https://audiosaw.com/key-finder): Find the key of a song, with its Camelot code, tuning and BPM.
@@ -247,6 +316,7 @@ that matters. And the neural stem splitter is slow without a GPU.
 - [Online Tuner](https://audiosaw.com/tuner): Tune a guitar, bass, ukulele or violin through your microphone.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
 - [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
+- [Audio to text (transcription)](https://audiosaw.com/audio-to-text): Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.
 
 ## Effects & remixes
 

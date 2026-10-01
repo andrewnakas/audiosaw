@@ -754,16 +754,31 @@
       cat: 'apps', label: 'for Whisper', title: 'Audio for Whisper',
       blurb: '16 kHz mono WAV — exactly what Whisper wants, in one click.',
       next: [
+        ['audio-to-text', 'Transcribe it here with Whisper, in your browser'],
         ['audio-to-text-prep', 'Other transcription services and their formats'],
         ['silence-remover', 'Cut dead air so you transcribe less'],
         ['stereo-to-mono', 'Just the channel fix'],
         ['change-sample-rate', 'Pick a different rate']
       ]
     },
+    'audio-to-text': {
+      cat: 'create', label: 'audio → text', title: 'Audio to text (transcription)',
+      blurb: 'Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.',
+      next: [
+        ['noise-reduction', 'Clean a noisy recording first; Whisper hears through less hiss'],
+        ['extract-audio', 'Pull the soundtrack out of a video you want subtitled'],
+        ['audio-cutter', 'Transcribe only the part you need'],
+        ['split-audio', 'Break a recording over two hours into parts'],
+        ['voice-recorder', 'Record the speech here, then transcribe it'],
+        ['auto-cut-silence', 'Tighten the pauses before you subtitle a clip'],
+        ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format']
+      ]
+    },
     'audio-to-text-prep': {
       cat: 'apps', label: 'for transcription', title: 'Prep audio for transcription',
       blurb: 'The format each transcription service actually wants.',
       next: [
+        ['audio-to-text', 'Or transcribe it right here, with nothing uploaded'],
         ['audio-for-whisper', 'Whisper specifically'],
         ['noise-reduction', 'Clean it up — recognisers do better on clean audio'],
         ['silence-remover', 'Shorten the audio before you pay per minute'],
@@ -873,8 +888,16 @@
   // tool. Re-derive the first five from the Pages and Screens report if the mix
   // moves; seven days of data is enough to order a row of eight and not much
   // more than that.
+  //
+  // Re-derived 1 Oct 2026 (views, 24-30 Sep): /audio-editor 406, /voice-recorder
+  // 342, /stem-splitter 342, /split-audio 190, /mp3-tag-editor 111,
+  // /noise-reduction 74. The editor had grown 6.5x in a week without being in
+  // this row at all. /audio-to-text is here on intent, the day it shipped:
+  // "transcribe without uploading" is the question it exists to answer.
   var HOME_JOBS = [
+    ['audio-editor', 'edit & mix tracks'],
     ['voice-recorder', 'record something'],
+    ['audio-to-text', 'transcribe to text'],
     ['stem-splitter', 'separate the vocals'],
     ['split-audio', 'split a long recording'],
     ['noise-reduction', 'remove background noise'],
@@ -966,7 +989,7 @@
       note: 'One program, one spec, already filled in — so the import works first try.',
       style: 'tile',
       tools: [
-        'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
+        'audio-to-text', 'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
         'capcut-audio', 'davinci-resolve-audio', 'm4a-to-wav-for-audacity',
         'audio-to-text-prep', 'wav-for-sp404'
       ]

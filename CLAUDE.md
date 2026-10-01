@@ -800,6 +800,53 @@ outcome, and counting it would be the heartbeat this site does not have.
 `docs/growth-playbook.md` records what the growth work has and has not covered,
 including which GA4 key events to star and why `file_selected` must not be one.
 
+## Transcription (/audio-to-text)
+
+Whisper through transformers.js, on the stem splitter's isolation pattern:
+`js/transcribe-page.js` decodes, folds to mono and resamples to 16 kHz with
+the sinc resampler; `js/transcribe-worker.js` (a **module** worker) runs the
+pipeline; `js/subtitles.js` (UMD) writes TXT, SRT and VTT and is checked by
+`node tools/check-srt.js`, which parses the output back with its own reader.
+
+**The runtime is pinned, and the pin is the finding** (playbook §11):
+transformers.js **4.2.0** with its ORT 1.26.0-dev, vendored in
+`/vendor/transformers/`. 4.3.0 needs a 26.9 MB asyncify wasm, over Pages'
+25 MiB limit, and it cannot come from a CDN because the page is isolated.
+`/vendor/ort/` is ORT 1.22 for the stem splitter; the majors cannot share
+files. The worker sets `wasmPaths` to the vendored asyncify build (plain
+build on Safari), or the library fetches jsDelivr and fails under COEP.
+
+- **dtypes: `q4` on both backends.** The CPU path has no choice (q8, int8,
+  fp16 fail on ORT 1.26 with "TransposeDQWeightsForMatMulNBits Missing
+  required scale"). The spike used an fp32 encoder on WebGPU; q4 there was
+  re-measured on 1 Oct (tiny and base, a 42 s speech clip, transcripts
+  correct word for word bar punctuation) and is what ships, because then
+  both backends load the same files. With different files, a WebGPU session
+  that failed made the CPU fallback download a second encoder (base: 217 MB
+  instead of 135), and whisper-small's fp32 encoder alone is 336 MB.
+- **Downloads resume.** `env.fetch` is `resumableFetch`: when the stream
+  drops it asks for the rest with `Range` and keeps going, so
+  transformers.js sees one complete response. Before it, a slow link failed
+  the 117 MB base decoder at 67 MB, twice, and started over each time; a
+  network error was also mistaken for a WebGPU failure. Hugging Face's CDN
+  answers Range with 206 and CORS. `tools/check-model-fetch.js` lifts the
+  function out of the worker and runs it against a server that drops every
+  2 MB.
+- **Headers.** `_headers` gives COOP/COEP to the page, COEP to the worker
+  and CORP+COEP to `/vendor/transformers/*`; `sw.js` BYPASSes all three,
+  for the same reason as the stem splitter.
+- **Progress.** The pipeline gives none while it runs. A
+  `WhisperTextStreamer` on the call fires `on_finalize` once per 30 s
+  window, which is the part counter, and its text is the live preview.
+- **Testing.** `tools/serve.js` serves the repo with `_headers` applied
+  (`withPage({ headers: true })` does the same in the harness). Headless
+  Chrome on a Mac gets a real WebGPU adapter with `--enable-unsafe-webgpu
+  --use-angle=metal --ignore-gpu-blocklist`; without those flags it still
+  reports `navigator.gpu` and an adapter, then fails to build the session.
+  `withPage({ profile })` keeps the model cache between runs (q4: tiny
+  90 MB, base 135 MB, small 285 MB). Do not quote speeds measured on a
+  loaded machine; the page quotes the spike's (playbook §11).
+
 ## The stem splitter
 
 The model runs at 44.1 kHz, but the stems go back to the file's own rate and

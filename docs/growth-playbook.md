@@ -692,3 +692,52 @@ decoder on WebGPU.** Re-test both if the version is ever bumped.
 Cost to carry: about 60 MB of vendored runtime, alongside the existing ORT 1.22
 that `/stem-splitter` uses. They are different major versions and cannot be
 shared.
+
+## §12 — The 10,000-a-month read (1 Oct 2026)
+
+Andrew's target: 10,000 users a month. Read from GA4 "Audio Saw" and Search
+Console on 1 Oct:
+
+| | |
+|---|---|
+| Active users, last 30 days | **3.3K** (+367%); new users 3.2K |
+| Sessions, last 30 days | 4.9K (+391%) |
+| Sessions by channel, last 7 days | AI Assistant ~1K, Organic 273 (+46%), Direct 218, Unassigned 158 |
+| First-user source, last 7 days | chatgpt.com 681, direct 158, google 86, bing 62 (+72%), duckduckgo 16 |
+| Views by page, last 7 days | / 429, **/audio-editor 406 (+652%)**, /voice-recorder 342, /stem-splitter 342, /split-audio 190, /mp3-tag-editor 111, /noise-reduction 74 |
+| Countries, last 7 days | US 142, India 119, Iran 66, Brazil 45, Singapore 37, Japan 29 |
+| Search Console | 407 clicks / 28 d, **343 of them "audiosaw"**; indexed 2 of 63 (report last updated 20 Sep) |
+
+10K a month is ~3x where the site is. The diagnosis in §9 holds: Google is
+still a navigational channel (people who were told the name by an
+assistant), and assistants send the traffic. The editor's 6.5x week is the
+clearest evidence yet that a distinctive tool gets picked up within days.
+
+**Errors, now attributable** (28 days; the dimensions were registered 21 Sep,
+so most rows are "(not set)"): 418 users hit `convert_error`. Of attributed
+events: `other` 220 (86 users), `decode` 112 (36), `wrong_type` 68 (30),
+`codec_load` 8. By tool: split-audio 91 events / 32 users, audio-editor 74 /
+18, stem-splitter 56 / 27, voice-recorder 44 / 16, index 31 / 15,
+audio-cutter 19 / 12. `other` being the largest bucket means the classifier,
+not the data, was the gap.
+
+**What shipped on 1 Oct:**
+
+- `/audio-to-text`: Whisper in the browser (§11's spike, built). The highest-
+  ceiling page on the list: "transcribe without uploading" is an assistant
+  question the site used to answer by sending people elsewhere.
+- `/record-computer-audio`: tab audio through `getDisplayMedia`, lossless.
+- **llms.txt was wrong, not just stale.** Its "What can AudioSaw not do?"
+  told assistants there was "no multitrack timeline, no mixing, no plugins and
+  no project that you save" — all four false since 23 Sep — and the BPM answer
+  said the site does not detect key, a week after /key-finder shipped. That is
+  the file assistants quote. Rewritten, with new answers for the editor,
+  transcription, key/chords, tuner/metronome and the slicer.
+- Homepage jobs row re-derived from the week's views: the editor (the
+  second-most-viewed page) was not in it at all.
+- Error classification split so `other` stops hiding causes (see flow.js).
+
+**Watch next:** Landing page × session source for /audio-to-text and
+/audio-editor from chatgpt.com over the next two weeks; `error_type`
+after the new buckets have a week of data; returning-user share on 5 Oct
+(the PWA judgement, §5).

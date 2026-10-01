@@ -1,11 +1,12 @@
 # AudioSaw
 
 Free audio tools that run entirely in your browser. A multitrack audio editor,
-plus single-purpose tools to convert, cut, join, normalise, transcribe pitch to
-MIDI, split stems with a neural network and record from a microphone — with no
-upload, no account, no watermark and no queue.
+speech-to-text with OpenAI's Whisper, and single-purpose tools to convert, cut,
+join, normalise, transcribe pitch to MIDI, split stems with a neural network and
+record from a microphone or a browser tab — with no upload, no account, no
+watermark and no queue.
 
-**[audiosaw.com](https://audiosaw.com)** · 61 tools · no ads · works offline
+**[audiosaw.com](https://audiosaw.com)** · 69 tools · no ads · works offline
 
 The file never leaves your machine. There is no server to send it to: the site
 is static files on a CDN, and every byte of processing happens in the tab using
@@ -25,12 +26,13 @@ nothing to run — no conversion servers exist to pay for.
 
 ## What is actually interesting in here
 
-Most of the 61 pages are ordinary format conversions. These are not:
+Most of the 69 pages are ordinary format conversions. These are not:
 
 | | |
 |---|---|
 | [`js/editor-*.js`](js/editor-ui.js) | [/audio-editor](https://audiosaw.com/audio-editor): a non-destructive multitrack editor that works with touch and mouse. Clips are windows onto immutable sources, so undo is a stack of small JSON snapshots; playback and export build the same Web Audio graph, so the file matches what you heard; recording goes through an AudioWorklet on the playback clock and is placed using the latency the browser reports. The model is pure and runs in Node against a thousand random edits. |
 | [`js/stem-separator.js`](js/stem-separator.js), [`js/stem-worker.js`](js/stem-worker.js) | Neural source separation (MDX-Net) via ONNX Runtime Web, WebGPU with a threaded WASM fallback. ~2.9 s per 5.9 s chunk on an Apple GPU; 45 s on seven CPU threads. |
+| [`js/transcribe-worker.js`](js/transcribe-worker.js), [`js/subtitles.js`](js/subtitles.js) | [/audio-to-text](https://audiosaw.com/audio-to-text): Whisper (tiny, base, small) through transformers.js, WebGPU with a threaded WASM fallback, to text, SRT and VTT. Pinned to transformers.js 4.2.0, because 4.3.0's runtime wasm is over Cloudflare Pages' 25 MiB file limit and cannot come from a CDN on a cross-origin-isolated page. |
 | [`js/spectral.js`](js/spectral.js) | The STFT the model needs — n_fft 6144, so a radix-3 stage over the radix-2 kernel. Validated against a NumPy implementation of the same pipeline to six decimal places. |
 | [`js/loudness.js`](js/loudness.js) | ITU-R BS.1770-4 integrated loudness and true peak, checked against FFmpeg's `ebur128` filter and required to agree within 0.1 LU. |
 | [`js/autotune.js`](js/autotune.js) | PSOLA pitch correction. The pitch marks are placed on a low-passed copy, because peak-picking a bright waveform lands on a different feature each cycle — measured, that dropped the output two octaves. |
@@ -50,6 +52,7 @@ node tools/check-midi.js       # round-trips MIDI through an independent parser
 node tools/check-autotune.js   # off-pitch note lands on target, in-tune note untouched
 node tools/check-silence.js    # no speech truncated, no clicks at the joins
 node tools/check-editor.js     # editor model: undo exact, no overlaps after 1,000 random edits
+node tools/check-srt.js        # subtitles parse back with an independent SRT/VTT reader
 node tools/check-all.js        # generated files current, every page has its scripts
 ```
 
@@ -58,15 +61,15 @@ node tools/check-all.js        # generated files current, every page has its scr
 There is no build step and there are no dependencies. Serve the directory:
 
 ```bash
-python3 -m http.server 8000
+node tools/serve.js            # http://localhost:8788
 ```
 
-Then open `http://localhost:8000`. That is the whole development setup.
-
-Two caveats. `/stem-splitter` needs cross-origin isolation (the COOP/COEP
-headers in [`_headers`](_headers)), which a plain static server does not send,
-so that page needs a server that does. And the FFmpeg core is fetched from a
-CDN at 30 MB the first time, then cached.
+That is the whole development setup. It serves extensionless URLs and applies
+the rules in [`_headers`](_headers), which matters for `/stem-splitter` and
+`/audio-to-text`: both need cross-origin isolation (COOP/COEP) for threaded
+WebAssembly, and a plain static server such as `python3 -m http.server` does
+not send it. The FFmpeg core is fetched from a CDN at 30 MB the first time,
+then cached; the neural models come from Hugging Face the same way.
 
 ## Contributing
 
