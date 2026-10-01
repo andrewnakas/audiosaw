@@ -21,8 +21,9 @@
  *   - speed 1.5 shortens the speech by about 1/1.5;
  *   - a two-voice mix differs from both voices and is still speech;
  *   - the page's quoted speeds, reported always and enforced with
- *     TTS_SPEED=1 (other work on the machine moves them 2-3x): WebGPU under 1.5x the speech's length ("about as
- *     long as the speech"), threaded CPU under 8x ("several times").
+ *     TTS_SPEED=1 on an idle machine (load average 50 made them 3-6x
+ *     slower): WebGPU under 0.75x the speech's length, threaded CPU
+ *     under 2x. Measured idle on 1 Oct: 0.48 and 1.36.
  *   TTS_BACKENDS=wasm runs one backend.
  */
 const fs = require('fs');
@@ -212,8 +213,8 @@ async function browser() {
       // idle, 8x at load average 50), which says nothing about the code.
       const speedOk = (c) => c || !process.env.TTS_SPEED;
       const rtf = ['af_heart', 'am_michael', 'bf_emma'].map((v) => res[v].wall / res[v].seconds).sort()[1];
-      if (backend === 'webgpu') ok(speedOk(rtf < 1.5), 'WebGPU takes ' + rtf.toFixed(2) + 'x the speech length (page: "about as long as the speech")');
-      else ok(speedOk(rtf < 8), 'CPU takes ' + rtf.toFixed(2) + 'x the speech length (page: "several times as long")');
+      if (backend === 'webgpu') ok(speedOk(rtf < 0.75), 'WebGPU takes ' + rtf.toFixed(2) + 'x the speech length (page: "about half"; measured 0.48 idle)');
+      else ok(speedOk(rtf < 2), 'CPU takes ' + rtf.toFixed(2) + 'x the speech length (page: "about one and a half times"; measured 1.36 idle)');
 
       // Download: MP3 with the synthetic-speech tag, and the readout.
       const dl = await page.eval(`(async () => {

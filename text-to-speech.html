@@ -63,7 +63,8 @@ window.AS_VERSION = '2026-09-22';
 .tts-app .controls{margin-top:1rem}
 .mix-rows{margin:.5rem 0 0;padding:.75rem 1rem;border:1px dashed var(--line,#d9cdb8);border-radius:8px}
 .mix-row{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:.35rem 0}
-.mix-row select{flex:1 1 16rem;min-width:0}
+.mix-row select{flex:1 1 16rem;min-width:0;padding:9px 12px;background:var(--paper);border:1px solid var(--ink-soft);border-radius:3px;font-size:.92rem;color:var(--ink);font-family:var(--mono)}
+.mix-row span{font-family:var(--mono);font-size:.85rem}
 .mix-row input[type=range]{flex:0 1 9rem}
 .result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
 .speed-out{display:inline-block;min-width:3.2em;font-variant-numeric:tabular-nums}
@@ -167,7 +168,7 @@ window.AS_VERSION = '2026-09-22';
         <tbody>
         <tr><th>Model</th><td>Kokoro-82M (Apache-2.0), run with ONNX Runtime Web</td></tr>
         <tr><th>Voices</th><td>28: 20 American English and 8 British English, plus any blend of up to three</td></tr>
-        <tr><th>Speed</th><td>On a laptop GPU, measured at roughly the length of the speech itself; on the CPU, several times as long</td></tr>
+        <tr><th>Speed</th><td>Measured on a laptop (Apple GPU, 8 cores): about half the speech's own length on the GPU, about one and a half times it on the CPU. A busy machine takes longer</td></tr>
         <tr><th>Model download</th><td>Once, then cached: 326 MB for the fast GPU model, or 92 MB for the smaller one that runs on the CPU</td></tr>
         <tr><th>Output</th><td>24 kHz mono — MP3, WAV or M4A</td></tr>
         <tr><th>Limits</th><td>20,000 characters per run here; longer texts go to the audiobook maker</td></tr>

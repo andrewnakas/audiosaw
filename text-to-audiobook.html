@@ -170,7 +170,7 @@ window.AS_VERSION = '2026-09-22';
         <tr><th>Input</th><td>DRM-free EPUB, plain text or Markdown, or pasted text</td></tr>
         <tr><th>Output</th><td>M4B with a chapter track and title/author tags, or one MP3 per chapter in a zip</td></tr>
         <tr><th>Voice</th><td>Kokoro-82M, 28 American and British English voices, speed 0.7×–1.4×</td></tr>
-        <tr><th>Time to make</th><td>On a laptop GPU, roughly as long as the audio itself; on the CPU, several times as long. A 90,000-word novel is about ten hours of audio</td></tr>
+        <tr><th>Time to make</th><td>On a laptop GPU, about half as long as the audio itself; on the CPU, several times as long. A 90,000-word novel is about ten hours of audio</td></tr>
         <tr><th>Resumable</th><td>Yes: each finished chapter is saved in the browser, so stopping or closing the tab loses at most the chapter in progress</td></tr>
         <tr><th>Uploads your book</th><td>No — everything, including the model, runs in this tab</td></tr>
         </tbody>
@@ -185,7 +185,7 @@ window.AS_VERSION = '2026-09-22';
     <p>At the end, the chapters are joined without re-encoding and the M4B gets a chapter track with your titles, plus the book title and author as tags. Apple Books, VLC, Smart AudioBook Player on Android, BookPlayer on iOS and most dedicated audiobook apps show those chapters and remember your place.</p>
 
     <h2>How long it takes</h2>
-    <p>Speech runs at roughly 150 words a minute, so a 90,000-word novel is about ten hours of audio. On a laptop with a GPU that the browser can use (current Chrome or Edge on a desktop), making it takes about as long as listening to it. On the CPU it takes several times as long. That is fine for a short story, an article or a novella in an afternoon, and an overnight job for a full novel. The estimate under the chapter list is for your book and your machine. Keep the tab open; a laptop should be plugged in, because this works its processor hard. Because finished chapters are saved, a full book can be made over several sessions.</p>
+    <p>Speech runs at roughly 150 words a minute, so a 90,000-word novel is about ten hours of audio. On a laptop with a GPU that the browser can use (current Chrome or Edge on a desktop), making it takes about half as long as listening to it: a ten-hour novel in about five. On the CPU it takes several times as long. Either way a short story or an article is done in minutes, and a full novel is an evening's or an overnight job. The estimate under the chapter list is for your book and your machine. Keep the tab open; a laptop should be plugged in, because this works its processor hard. Because finished chapters are saved, a full book can be made over several sessions.</p>
 
     <h2>Choosing the voice</h2>
     <p>For long listening, the voices graded A and B in the list hold up best: <strong>Heart</strong> and <strong>Bella</strong> (American) and <strong>Emma</strong> (British) have the most natural rhythm over hours. Try "hear the opening" with two or three before committing to a whole book. 1.0× is the model's natural pace; most audiobook listeners speed up in their player, which keeps the pitch steady anyway, so there is little reason to bake a faster speed into the file. Every chapter is labelled in its tags as synthetic speech.</p>

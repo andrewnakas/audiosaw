@@ -175,9 +175,11 @@
 
   /* --------------------------------------------------------- environment */
 
-  // Measured cost per second of speech (see tts-worker.js), for the estimate.
-  // The machine's other work moves these by 2x; these are the busy figures.
-  var COST = { webgpu: 1.1, wasm: 5, wasm1: 8 };
+  // Measured cost per second of speech, for the estimate: check-tts on an
+  // idle machine (Apple GPU, 8 cores) gave 0.48 on WebGPU and 1.36 on seven
+  // CPU threads; one thread is about three times slower. Rounded up, since
+  // most machines are busier than a test runner.
+  var COST = { webgpu: 0.6, wasm: 1.6, wasm1: 4.5 };
 
   function wantsSmall() { return (engineSel && engineSel.value === 'small') || /[?&]backend=wasm\b/.test(location.search); }
 
@@ -190,8 +192,8 @@
         : 'Running on the CPU' + (ready.threads > 1 ? ' across ' + ready.threads + ' threads' : ' on one thread') + ' — slower than a GPU, same voice.');
     } else if (gpuUsable === null) parts.push('Checking whether your browser can use the GPU…');
     else if (gpuUsable && !wantsSmall()) parts.push('Your browser can use the GPU, the fast path. The first run downloads a 326 MB voice model, once; on a slow or metered connection, choose the smaller download.');
-    else if (gpuUsable) parts.push('The smaller download (92 MB) runs on the CPU: same voice, several times slower than your GPU would be.');
-    else parts.push('No usable GPU here, so this runs on the CPU: a 92 MB model, once, and several times as long as the speech to generate.');
+    else if (gpuUsable) parts.push('The smaller download (92 MB) runs on the CPU: same voice, about three times slower than your GPU would be.');
+    else parts.push('No usable GPU here, so this runs on the CPU: a 92 MB model, once, and roughly one and a half times as long as the speech to generate.');
     var words = (textEl.value.match(/\S+/g) || []).length;
     if (words > 20) {
       var cost = backend === 'webgpu' ? COST.webgpu : (self.crossOriginIsolated ? COST.wasm : COST.wasm1);

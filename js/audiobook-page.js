@@ -182,7 +182,7 @@
     if (!book || !summaryEl) return;
     var w = total(), speech = w / WORDS_PER_S / (+speedEl.value || 1);
     var gpu = ready ? ready.backend === 'webgpu' : (navigator.gpu && !(engineSel && engineSel.value === 'small'));
-    var cost = gpu ? 1.1 : 5;
+    var cost = gpu ? 0.6 : 4.5;
     summaryEl.textContent = book.chapters.filter(function (c) { return c.on; }).length + ' chapters, ' + w.toLocaleString() +
       ' words: about ' + fmtTime(speech) + ' of audio. Expect roughly ' + fmtTime(speech * cost) + ' to make it ' +
       (gpu ? 'on a GPU' : 'on the CPU') + '; keep the tab open. Finished chapters are saved, so it can be stopped and resumed.';
