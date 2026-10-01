@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Record Computer Audio — record what a browser tab plays, free, nothing uploaded</title>
+<meta name="description" content="Record the sound a browser tab is playing, or the whole computer on Windows, straight to WAV, FLAC or MP3. Chrome and Edge only. Lossless, no install, no upload.">
+<meta name="keywords" content="record computer audio, record tab audio, record browser audio, record system audio online, record internal audio, record audio playing on my computer, capture tab audio chrome">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/record-computer-audio">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Record Computer Audio">
+<meta property="og:description" content="Record the sound a browser tab is playing, or the whole computer on Windows, straight to WAV, FLAC or MP3. Chrome and Edge only. Lossless, no install, no upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/record-computer-audio">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-09-25f">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Record Computer Audio",
+  "url": "https://audiosaw.com/record-computer-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-10-01"
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is my recording silent?","acceptedAnswer":{"@type":"Answer","text":"Almost always because the share had no sound: the Also share tab audio switch was off, or a window was shared instead of a tab. The page checks for this and says so straight away. If the share did have sound but nothing was playing in that tab, the page tells you after you stop that every sample was silent."}},{"@type":"Question","name":"Can it record Spotify, YouTube or a Zoom call?","acceptedAnswer":{"@type":"Answer","text":"If it plays in a Chrome or Edge tab, yes: open it in a tab and share that tab. The desktop apps are not browser tabs, so on Windows record them with Entire screen and Also share system audio. On a Mac a desktop app cannot be recorded from a browser."}},{"@type":"Question","name":"Why does it not work in Firefox or Safari?","acceptedAnswer":{"@type":"Answer","text":"Both browsers can share a screen or a window with a page, but neither passes the sound on, so there is no audio for a page to record. That is a browser limitation, not a setting. Use Chrome or Edge for this page."}},{"@type":"Question","name":"Can I record my whole Mac's sound?","acceptedAnswer":{"@type":"Answer","text":"Not from Chrome or Edge on macOS: the picker offers sound for tabs only. For system-wide recording on a Mac you need a virtual audio device such as the free BlackHole, or an app like Audio Hijack."}},{"@type":"Question","name":"Does it record the video too?","acceptedAnswer":{"@type":"Answer","text":"No. The browser will not share sound without a picture, so the page has to accept the picture, and it stops it the instant the share starts. Only the audio track is kept."}},{"@type":"Question","name":"Is the recording uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The audio is copied into memory in this tab, encoded by code in the page, and saved by your browser's download. There is no server involved, and you can watch the network panel stay quiet while it records."}},{"@type":"Question","name":"Which format should I save as?","acceptedAnswer":{"@type":"Answer","text":"WAV with match the source keeps the samples as the tab played them, as 32-bit float. FLAC at 24-bit is lossless to well below hearing, in a smaller file. MP3 at 320 kbps or V0 is the choice for listening on a phone or in a car."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to record the audio playing in a browser tab", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "Google Chrome or Microsoft Edge on a computer"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Press Record", "text": "The browser opens its own sharing picker. Nothing is captured until you choose something in it."}, {"@type": "HowToStep", "position": 2, "name": "Pick the tab that is playing", "text": "Choose it from the tab list and leave the Also share tab audio switch on. Without it the share has no sound."}, {"@type": "HowToStep", "position": 3, "name": "Play the audio", "text": "The timer runs and the meter moves while sound arrives. Press Stop, or Stop sharing in the browser's bar, when it is done."}, {"@type": "HowToStep", "position": 4, "name": "Choose a format and save", "text": "WAV or FLAC keeps the audio as the tab played it; MP3 is smaller. The file downloads from your browser."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Record computer audio"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Record computer audio</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Record <span class="ital">computer audio</span>. Whatever a tab is playing, saved as a file.</h1>
+    <p>Share a browser tab with this page and it records the sound coming out of it: a stream, a lecture, a call in a web app, a track in an online synth. The samples are copied as they are played and saved as WAV, FLAC or MP3 on your own machine. Works in Chrome and Edge on a computer; Firefox and Safari cannot share sound with a page at all, and this page says so rather than recording silence.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div id="browserNote" class="status hidden" role="status"></div>
+
+    <div class="rec-stage">
+      <p class="rec-timer" id="timer">0:00</p>
+      <div class="rec-meter"><div class="rec-meter-bar" id="meterBar"></div></div>
+      <div class="rec-actions">
+        <button class="btn btn-record" id="recordBtn">● Record a tab</button>
+        <button class="btn btn-secondary" id="stopBtn" disabled>■ Stop</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+      <p class="control-note" id="recSize"></p>
+      <p class="control-note" id="recNote"></p>
+    </div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="wav" selected>WAV — match the source (32-bit float)</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="flac">FLAC — match the source (24-bit)</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="mp3">MP3</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192">192 kbps — balanced</option>
+            <option value="256">256 kbps</option>
+            <option value="320" selected>320 kbps — maximum</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="saveBtn" data-track="convert">Save recording</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Records</th><td>The sound of one browser tab; on Windows and ChromeOS, everything the computer plays</td></tr>
+        <tr><th>Captured as</th><td>32-bit float, stereo, at the rate the browser reports for the shared audio, with echo cancellation, noise suppression and auto gain all off</td></tr>
+        <tr><th>Output formats</th><td>WAV 32-bit float, 24 or 16-bit; FLAC 24 or 16-bit; MP3 128–320 kbps or LAME V0</td></tr>
+        <tr><th>Memory while recording</th><td>About 23 MB per minute at 48 kHz stereo, held in the tab until you save</td></tr>
+        <tr><th>Video</th><td>Never kept: the browser insists on sharing a picture, and the page stops it the moment the share starts</td></tr>
+        <tr><th>Uploads your audio</th><td>No — captured, encoded and saved inside the page</td></tr>
+        <tr><th>Browsers</th><td>Chrome and Edge on Windows, macOS, Linux and ChromeOS. Not Firefox, not Safari, not phones</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What it records, and what it cannot</h2>
+<p>Browsers let a page record a screen, a window or a tab through the same "share your screen" picker that Google Meet and Zoom use. When the thing being shared has sound and the browser is willing to pass it on, the share carries an audio track alongside the picture. This page asks for that share, throws the picture away, and records the audio track. That is the whole trick, and it is why the browser asks you to pick something in its own dialog first: no page can listen to your computer without that consent, and the browser marks the shared tab while the share lasts.</p>
+<p>Whether the share has sound depends on the browser and on what you pick:</p>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <thead><tr><th>Browser</th><th>A tab's audio</th><th>Everything the computer plays</th></tr></thead>
+        <tbody>
+        <tr><th>Chrome, Edge on Windows</th><td>Yes</td><td>Yes: choose Entire screen and switch on "Also share system audio"</td></tr>
+        <tr><th>Chrome, Edge on ChromeOS</th><td>Yes</td><td>Yes, the same way</td></tr>
+        <tr><th>Chrome, Edge on macOS</th><td>Yes</td><td>No: the Mac picker offers sound for tabs only</td></tr>
+        <tr><th>Chrome, Edge on Linux</th><td>Yes</td><td>No</td></tr>
+        <tr><th>Firefox (any system)</th><td>No</td><td>No: it shares screens and windows, never their sound</td></tr>
+        <tr><th>Safari</th><td>No</td><td>No, for the same reason</td></tr>
+        <tr><th>Any phone or tablet</th><td>No</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+<p>The tab row is the one we test: a check in this site's code opens a tab playing a known stereo tone, records it through this page in Chrome on macOS, and compares the file with what the tab played. The other rows are each browser's documented behaviour, and the page reads what actually arrived rather than trusting the table: if a share comes back without sound, it tells you which switch to look for.</p>
+<p>A tab share carries that one tab and nothing else. Other tabs, the music app in your dock and system notification sounds are not in it, which is usually what you want. Brave, Opera, Vivaldi and Arc are built on Chromium and generally behave like Chrome here, but we have not tested them.</p>
+
+    <h2>The "Also share tab audio" switch</h2>
+<p>Almost every failed recording comes down to one control. At the bottom of Chrome's picker, under the list of tabs, there is a switch labelled <strong>Also share tab audio</strong>. Check that it is on before you press Share. With it off, the share is a silent picture and there is nothing to record. The page notices the moment the share starts and tells you, rather than letting you sit through a three-minute song for an empty file.</p>
+<p>On Windows the Entire screen tab has its own switch, <strong>Also share system audio</strong>. That records everything the computer plays: every tab, Spotify, a game, a Teams call. Remember that it includes notification chimes too.</p>
+<p>Picking a window rather than a tab is the other common miss. Chrome does not offer sound for a shared window, so share the tab inside it instead.</p>
+<p>Once you press Share, Chrome switches you to the tab you picked, which is where you want to be: press play there. The recording runs on this page in the background, and the timer catches up when you come back to press Stop.</p>
+
+    <h2>Quality: what you get is what the tab played</h2>
+<p>Most online recorders compress the audio while recording, so a stream that was already compressed once gets compressed again before you have even chosen a format. This page does not. The shared audio goes into an AudioWorklet that copies each block of samples out as 32-bit floating point, in an audio context opened at the shared track's own sample rate, so nothing is resampled on the way. Save as WAV with "match the source" and the file holds exactly those floats. FLAC "match the source" writes 24-bit, whose rounding sits far below anything audible.</p>
+<p>We measured how close that gets. A tab playing a stereo test tone, 440 Hz on the left and 660 Hz on the right, was recorded through this page and the saved WAV compared sample by sample with what the tab played: every sample was within 0.00000015 of the original (−136 dB), which is floating-point rounding in Chrome's capture path, and the two channels stayed apart. The length of the file matched the time it ran.</p>
+<p>The settings this page asks for are not the browser's defaults, and that matters. Asked for plain "audio", Chrome treats a tab like a microphone on a call: it hands the sound over in <strong>mono</strong>, at 48 kHz, with <strong>echo cancellation, noise suppression and automatic gain</strong> switched on. In our test a tone playing at half of full scale came through that default path at anywhere from a tenth to three fifths of its level, different on every run as the processing worked on it. A recorder that does not ask for anything else gets exactly that. This page turns all three off and asks for two channels, which is how the tone above arrived intact.</p>
+<p>What you cannot recover is anything the tab never had. A YouTube video or a Spotify web stream is already lossy compressed by the time it plays; recording it losslessly preserves exactly that, no better. If you only need to listen to it later, MP3 at 320 kbps or V0 costs one more generation and will not be audible to most people. If it is going into an editor or a DAW for more work, keep WAV or FLAC and make the MP3 at the very end.</p>
+
+    <h2>Compared with OBS, Audacity and BlackHole</h2>
+<p><strong>OBS Studio</strong> records "Desktop Audio" alongside video and is the right tool if you also want the picture, or several sources mixed with levels. It is a large install to record one stream's sound.</p>
+<p><strong>Audacity on Windows</strong> can record the system output with no extra software: set the audio host to <em>Windows WASAPI</em> and choose the output device marked <em>(loopback)</em> as the recording device. That captures everything the computer plays, like the "system audio" switch here, and you get Audacity's editor for what comes next.</p>
+<p><strong>On a Mac</strong>, recording system audio has traditionally needed a virtual audio driver. <strong>BlackHole</strong> is a free, open-source one; you route the output to it (usually through a Multi-Output Device in Audio MIDI Setup so you can still hear) and record from it in any app. Rogue Amoeba's <strong>Audio Hijack</strong> and <strong>Loopback</strong> are the paid, polished version of the same idea. Both take an install and a driver permission, and both can record any app, not just a browser tab.</p>
+<p>This page is for the case where the sound is already in a browser tab and you want it as a file now, with nothing installed. If you find yourself recording desktop apps regularly, one of the above will serve you better.</p>
+
+    <h2>Limits worth knowing</h2>
+<p><strong>It records in real time.</strong> A 40-minute lecture takes 40 minutes to capture, and the tab has to keep playing for that long. What is recorded is the tab's own output, so the player's volume slider in that tab changes the level of the recording.</p>
+<p><strong>The recording lives in memory until you save it.</strong> Float stereo at 48 kHz is about 23 MB per minute, so an hour is around 1.4 GB. The size so far shows under the buttons while you record. For long sessions, stop and save every half hour or so; closing or reloading the tab loses anything unsaved.</p>
+<p><strong>"Stop sharing" in the browser's bar is the same as Stop.</strong> The page keeps everything recorded up to that point, as it does if the shared tab is closed.</p>
+<p><strong>Only record what you have the right to.</strong> Capturing a stream for your own listening can still breach the service's terms, and redistributing it usually breaches copyright. A lecture or meeting may need everyone's consent before it is recorded, depending on where you are.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Why is my recording silent?</summary><p>Almost always because the share had no sound: the Also share tab audio switch was off, or a window was shared instead of a tab. The page checks for this and says so straight away. If the share did have sound but nothing was playing in that tab, the page tells you after you stop that every sample was silent.</p></details>
+      <details><summary>Can it record Spotify, YouTube or a Zoom call?</summary><p>If it plays in a Chrome or Edge tab, yes: open it in a tab and share that tab. The desktop apps are not browser tabs, so on Windows record them with Entire screen and Also share system audio. On a Mac a desktop app cannot be recorded from a browser.</p></details>
+      <details><summary>Why does it not work in Firefox or Safari?</summary><p>Both browsers can share a screen or a window with a page, but neither passes the sound on, so there is no audio for a page to record. That is a browser limitation, not a setting. Use Chrome or Edge for this page.</p></details>
+      <details><summary>Can I record my whole Mac's sound?</summary><p>Not from Chrome or Edge on macOS: the picker offers sound for tabs only. For system-wide recording on a Mac you need a virtual audio device such as the free BlackHole, or an app like Audio Hijack.</p></details>
+      <details><summary>Does it record the video too?</summary><p>No. The browser will not share sound without a picture, so the page has to accept the picture, and it stops it the instant the share starts. Only the audio track is kept.</p></details>
+      <details><summary>Is the recording uploaded anywhere?</summary><p>No. The audio is copied into memory in this tab, encoded by code in the page, and saved by your browser's download. There is no server involved, and you can watch the network panel stay quiet while it records.</p></details>
+      <details><summary>Which format should I save as?</summary><p>WAV with match the source keeps the samples as the tab played them, as 32-bit float. FLAC at 24-bit is lossless to well below hearing, in a smaller file. MP3 at 320 kbps or V0 is the choice for listening on a phone or in a car.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/trim-silence-edges"><h3>Trim silence off the ends</h3><p>Cut the dead air from before you pressed play and after it ended.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Keep only the part of the stream you wanted.</p></a>
+      <a class="card" href="/split-audio"><h3>Split an audio file</h3><p>Split a long recorded set or lecture into parts.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring a quiet stream up to a standard loudness.</p></a>
+      <a class="card" href="/audio-to-text-prep"><h3>Prep audio for transcription</h3><p>Get a recorded talk or meeting ready for transcription.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Give the file a title, artist and cover.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record the microphone instead of the computer.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-09-25f"></script>
+<script src="/js/tool-graph.js?v=2026-09-25f"></script>
+<script src="/js/flow.js?v=2026-09-25f"></script>
+<script src="/js/audio-core.js?v=2026-09-25f"></script>
+<script src="/js/tool-shell.js?v=2026-09-25f"></script>
+<script src="/js/consent.js?v=2026-09-25f"></script>
+<script src="/js/record-computer-page.js?v=2026-09-25f"></script>
+<script src="/js/pwa.js?v=2026-09-25f"></script>
+</body>
+</html>

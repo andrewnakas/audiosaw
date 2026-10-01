@@ -14,8 +14,9 @@
  * takes about twenty seconds. check-project-link.js drives an editor -> tool ->
  * editor round trip through the real pages, about fifteen more. check-fidelity.js
  * measures the decode/encode/resample layer and drives thirty tool pages with a
- * 96 kHz / 24-bit file, about a minute. All three skip themselves on a machine
- * without Chrome.
+ * 96 kHz / 24-bit file, about a minute. check-record-computer.js records a real
+ * tab through /record-computer-audio, about fifteen seconds. All of them skip
+ * themselves on a machine without Chrome.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
@@ -38,6 +39,7 @@ const CHECKS = [
   ['check-grid.js'],
   ['check-midi.js'],
   ['check-midi-track.js'],
+  ['check-record-computer.js'],
   ['check-fidelity.js']
 ];
 

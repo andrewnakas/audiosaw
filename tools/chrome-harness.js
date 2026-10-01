@@ -35,6 +35,10 @@ function findChrome() {
 
 // routes: { '/path': string | Buffer | () => Buffer }. Everything else is
 // served from the repo; an extensionless path gets '.html', like Pages does.
+// fakeMedia: false leaves out the fake microphone/camera and the auto-accepted
+// permission prompt, so a capture flag can pick a real source.
+// args: extra Chrome switches (check-record-computer passes the ones that let
+// getDisplayMedia pick a tab by its title without showing the picker).
 async function withPage(opts, fn) {
   const routes = opts.routes || {};
   const server = http.createServer((req, res) => {
@@ -59,8 +63,8 @@ async function withPage(opts, fn) {
   const port = server.address().port;
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-chk-'));
   const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--user-data-dir=' + dir,
-    '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required',
-    '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', 'about:blank'], { stdio: 'ignore' });
+    '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required'
+  ].concat(opts.fakeMedia === false ? [] : ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'], opts.args || [], ['about:blank']), { stdio: 'ignore' });
   let ws;
   try {
     ws = await connect(dir);

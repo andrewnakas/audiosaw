@@ -340,6 +340,27 @@ numbers; tighten the check before quoting a new one.
     That became true once YIN's parabolic refinement moved from the
     normalised curve (4.5 cents off at 1.3 kHz) to the raw difference
     (0.25 cents).
+- `js/record-computer-page.js`: `/record-computer-audio`, tab (and, on
+  Windows/ChromeOS, system) audio through `getDisplayMedia`. The video track
+  is stopped at once; the audio goes through the studio-mode worklet (float,
+  stereo, at the track's rate). Chromium only: Firefox and Safari return no
+  audio track, and the page says so before and after.
+  - **Ask for processing off.** With `audio: true` Chrome delivers tab audio
+    mono, 48 kHz, with echo cancellation, noise suppression and AGC on (a
+    0.5 tone peaked at 0.05–0.3). Off, every sample is within 1.5e-7 of what
+    the tab played (float rounding, not bit-exact).
+  - **Checked by** `tools/check-record-computer.js`: Chrome without the fake
+    media flags (`fakeMedia: false` in the harness) and with
+    `--auto-select-tab-capture-source-by-title`, recording a second tab that
+    loops a known buffer. Chrome moves the focus to a tab when sharing it
+    starts, and `getDisplayMedia` throws InvalidStateError on an unfocused
+    page, so the check brings the page back (`Page.bringToFront`) per step.
+    A hidden page's timers run once a second, hence its MutationObserver
+    timestamps.
+  - A share with no sound, a cancelled picker and a silent tab are `warn`,
+    not `error`: they are user-side misses and must not count as
+    `convert_error` (the `empty` kind's "no audio" regex would also
+    misdescribe them as a file problem).
 - `js/piano-roll.js` (`ASPianoRoll`): the note editor on `/audio-to-midi`.
   Transcriptions land on the roll, and the .mid is written from the roll's
   notes when "Download .mid" is pressed. `convert_success` therefore fires on

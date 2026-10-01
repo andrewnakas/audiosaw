@@ -642,7 +642,21 @@
         ['trim-silence-edges', 'Top and tail the recording'],
         ['normalize-audio', 'Bring it to a consistent level'],
         ['audio-to-text-prep', 'Prep it for transcription'],
-        ['autotune', 'Tune the take you just recorded']
+        ['autotune', 'Tune the take you just recorded'],
+        ['record-computer-audio', 'Record what a tab is playing instead of the microphone']
+      ]
+    },
+    'record-computer-audio': {
+      cat: 'create', label: 'record a tab', title: 'Record computer audio',
+      blurb: 'Record the sound a browser tab is playing, losslessly — Chrome and Edge only.',
+      next: [
+        ['trim-silence-edges', 'Cut the dead air from before you pressed play and after it ended'],
+        ['audio-cutter', 'Keep only the part of the stream you wanted'],
+        ['split-audio', 'Split a long recorded set or lecture into parts'],
+        ['loudness-normalizer', 'Bring a quiet stream up to a standard loudness'],
+        ['audio-to-text-prep', 'Get a recorded talk or meeting ready for transcription'],
+        ['mp3-tag-editor', 'Give the file a title, artist and cover'],
+        ['voice-recorder', 'Record the microphone instead of the computer']
       ]
     },
     'audio-to-midi': {
@@ -933,7 +947,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor'
       ]
     },
     {
