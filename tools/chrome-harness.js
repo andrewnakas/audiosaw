@@ -85,6 +85,13 @@ async function withPage(opts, fn) {
       async goto(p, wait) {
         await send('Page.navigate', { url: page.url(p) });
         await new Promise((r) => setTimeout(r, wait || 800));
+        // On a loaded machine the fixed wait is not enough for the scripts at
+        // the bottom of the page; wait for the load as well (up to a minute).
+        for (let i = 0; i < 300; i++) {
+          const r = await send('Runtime.evaluate', { expression: 'document.readyState', returnByValue: true });
+          if (r.result && r.result.result && r.result.result.value === 'complete') break;
+          await new Promise((res) => setTimeout(res, 200));
+        }
       },
       async eval(expression, timeout) {
         const res = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, timeout: timeout || 300000 });
