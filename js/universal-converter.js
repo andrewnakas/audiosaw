@@ -96,7 +96,7 @@
           });
           outputs.push({ name: AudioSaw.rename(f.name, target), blob: blob });
         } catch (e) {
-          failures.push({ name: f.name, error: e.message || String(e) });
+          failures.push({ name: f.name, error: e.message || String(e), err: e });
         }
       }
 
@@ -111,10 +111,10 @@
         renderResult(outputs);
         CV.setStatus(statusEl, 'success', 'Done — ' + outputs.length + ' files zipped' + (failures.length ? ' (' + failures.length + ' failed)' : ''));
       } else {
-        CV.setStatus(statusEl, 'error', 'All conversions failed: ' + failures.map(function (x) { return x.name + ' (' + x.error + ')'; }).join('; '));
+        CV.setStatus(statusEl, 'error', 'All conversions failed: ' + failures.map(function (x) { return x.name + ' (' + x.error + ')'; }).join('; '), failures[0] && failures[0].err);
       }
     } catch (e) {
-      CV.setStatus(statusEl, 'error', 'Conversion error: ' + (e.message || e));
+      CV.setStatus(statusEl, 'error', 'Conversion error: ' + (e.message || e), e);
     } finally {
       setBusy(convertBtn, false);
       convertBtn.disabled = files.length === 0;
