@@ -792,6 +792,7 @@
         ['audio-to-text', 'The other direction: speech back to text'],
         ['slowed-reverb', 'Put the voice in a room'],
         ['pitch-shifter', 'Shift the voice deeper or higher'],
+        ['voice-cloning', 'Speak the text in a particular voice, with permission'],
         ['text-to-audiobook', 'A whole book or long article: chapters to an M4B'],
         ['voice-changer', 'Change the voice of a recording instead'],
         ['podcast-prep', 'Finish an episode intro for upload'],
@@ -841,6 +842,17 @@
         ['extract-audio', 'Pull the new soundtrack back out of the video'],
         ['text-to-speech', 'Write your own narration instead'],
         ['audio-editor', 'Fine-tune the timing of each line by hand']
+      ]
+    },
+    'voice-cloning': {
+      cat: 'voice', label: 'voice cloning', title: 'Voice cloning',
+      blurb: 'Clone a voice from ten seconds of audio and make it say anything, on your own GPU, with the speaker\'s consent.',
+      next: [
+        ['voice-recorder', 'Record a clean reference first'],
+        ['noise-reduction', 'Clean a noisy sample before cloning it'],
+        ['text-to-speech', 'No GPU, or no need for a clone? Use a ready-made voice'],
+        ['voice-changer', 'Change your own recording instead'],
+        ['audio-editor', 'Put the cloned lines against music or video']
       ]
     },
     'audio-to-text-prep': {
@@ -1049,7 +1061,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

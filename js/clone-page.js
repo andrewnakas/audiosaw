@@ -184,7 +184,7 @@
         document.title = '(' + Math.round(100 * i / chunks.length) + '%) ' + baseTitle;
         var k = ++seq;
         var m = await call(k, { type: 'synth', seq: k, text: chunks[i].text });
-        lastStats = { tokens: m.tokens, seconds: m.samples.length / SR, ms: m.ms }; lastRaw = m.samples.slice();
+        lastStats = { tokens: m.tokens, seconds: m.samples.length / SR, ms: m.ms, timing: m.timing }; lastRaw = m.samples.slice();
         var x = ASTTS.trimSilence(m.samples), piece = new Float32Array(x.length);
         piece.set(x);
         parts.push(piece, new Float32Array(Math.round(chunks[i].pause * SR)));
@@ -193,6 +193,10 @@
       }
       var n = parts.reduce(function (s, p) { return s + p.length; }, 0), all = new Float32Array(n), off = 0;
       parts.forEach(function (p) { all.set(p, off); off += p.length; });
+      // The decoder can overshoot full scale (measured: a peak above 1 on a
+      // bright female reference); bring it to -1 dBFS rather than clip.
+      var pk = 0; for (var q = 0; q < all.length; q++) { var av = Math.abs(all[q]); if (av > pk) pk = av; }
+      if (pk > 0.891) for (var q2 = 0; q2 < all.length; q2++) all[q2] *= 0.891 / pk;
       result = all;
       CV.setProgress(progressBar, 100);
       dlBtn.disabled = false;
