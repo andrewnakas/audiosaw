@@ -172,13 +172,14 @@
     stopBtn.disabled = false; dlBtn.disabled = true; result = null;
     progressWrap.style.display = '';
     audioCtx();
-    var t0 = Date.now(), parts = [];
+    var t0 = Date.now(), parts = [], loaded = ready;
     try {
       if (!refEncoded) {
         CV.setStatus(statusEl, 'info', ready ? 'Listening to the reference voice…' : 'Loading the cloning model…');
         var a = refAudio.slice();
         await call('ref', { type: 'reference', audio: a }, [a.buffer]);
         refEncoded = true;
+        t0 = Date.now();   // time the speech, not the one-time model download
       }
       for (var i = 0; i < chunks.length; i++) {
         if (!running) throw new Error('stopped');
@@ -204,7 +205,8 @@
       result = all;
       CV.setProgress(progressBar, 100);
       dlBtn.disabled = false;
-      CV.setStatus(statusEl, 'success', 'Done: ' + (all.length / SR).toFixed(1) + ' s of speech in ' + Math.round((Date.now() - t0) / 1000) + ' s. Download it below.');
+      CV.setStatus(statusEl, 'success', 'Done: ' + (all.length / SR).toFixed(1) + ' s of speech in ' + Math.round((Date.now() - t0) / 1000) + ' s' +
+        (loaded ? '' : ', after the one-time model download') + '. Download it below.');
     } catch (e) {
       if (/stopped|cancelled/.test(e.message)) CV.setStatus(statusEl, 'info', 'Stopped.');
       else CV.setStatus(statusEl, 'error', 'Voice cloning failed. ' + (e.message || e), e);
