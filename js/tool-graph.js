@@ -846,7 +846,7 @@
     },
     'voice-cloning': {
       cat: 'voice', label: 'voice cloning', title: 'Voice cloning',
-      blurb: 'Clone a voice from ten seconds of audio and make it say anything, on your own GPU, with the speaker\'s consent.',
+      blurb: 'Clone a voice from five seconds of audio and make it say anything, on your own GPU, with the speaker\'s consent.',
       next: [
         ['voice-recorder', 'Record a clean reference first'],
         ['noise-reduction', 'Clean a noisy sample before cloning it'],

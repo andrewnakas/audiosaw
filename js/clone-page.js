@@ -23,7 +23,11 @@
   }
 
   var $ = CV.$;
-  var SR = 24000, MIN_REF = 4, MAX_REF = 15;
+  // MAX_REF: the decoder re-reads the whole reference for every 10 tokens it
+  // renders (clone-worker.js), so its length sets the speed: measured, a 6 s
+  // reference took twice as long to decode as a 4 s one. Five seconds of
+  // speech keeps the likeness and the wait reasonable.
+  var SR = 24000, MIN_REF = 3, MAX_REF = 5;
   var consent = $('#consent'), recBtn = $('#recBtn'), dropzone = $('#dropzone'), fileInput = $('#fileInput');
   var refInfo = $('#refInfo'), refPlay = $('#refPlay'), textEl = $('#cloneText'), goBtn = $('#convertBtn');
   var stopBtn = $('#stopBtn'), dlBtn = $('#dlBtn'), fmtSel = $('#format'), statusEl = $('#status');
@@ -80,7 +84,7 @@
     var mono = buf.numberOfChannels > 1 ? await AudioSaw.mixToMono(buf) : buf;
     var r = mono.sampleRate === SR ? mono : await AudioSaw.resampleBuffer(mono, SR);
     var x = ASTTS.trimSilence(r.getChannelData(0), 0.01, Math.round(0.1 * SR));
-    if (x.length < MIN_REF * SR) throw new Error('That clip has ' + (x.length / SR).toFixed(1) + ' s of speech. Give it at least ' + MIN_REF + ' seconds — ten is better.');
+    if (x.length < MIN_REF * SR) throw new Error('That clip has ' + (x.length / SR).toFixed(1) + ' s of speech. Give it at least ' + MIN_REF + ' seconds — five or more is better.');
     if (x.length > MAX_REF * SR) x = x.subarray(0, MAX_REF * SR);
     var peak = 0; for (var i = 0; i < x.length; i++) peak = Math.max(peak, Math.abs(x[i]));
     refAudio = new Float32Array(x.length);
@@ -121,13 +125,13 @@
     var tick = setInterval(function () {
       var s = Math.round((Date.now() - t0) / 1000);
       recBtn.textContent = '■ Stop (' + s + ' s)';
-      if (s >= MAX_REF + 1) rec.stop();
+      if (s >= 8) rec.stop();
     }, 250);
     rec = {
       stop: async function () {
         clearInterval(tick);
         rec = null;
-        recBtn.textContent = '● Record 10 seconds';
+        recBtn.textContent = '● Record 8 seconds';
         stream.getTracks().forEach(function (t) { t.stop(); });
         var n = chunks.reduce(function (a, x) { return a + x.length; }, 0), all = new Float32Array(n), off = 0;
         chunks.forEach(function (x) { all.set(x, off); off += x.length; });

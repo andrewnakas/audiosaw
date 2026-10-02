@@ -216,40 +216,26 @@ async function synth(m) {
 //   - past 65,535 output samples (2.73 s) the waveform is exact zeros, the
 //     per-dimension workgroup limit;
 //   - well before that, the words degrade with the number of new tokens in
-//     one call: 12 or 16 tokens transcribe perfectly, 18-20 drop words, 25
-//     changes them, 50 is gibberish. It does not depend on the reference
+//     one call: 8 and 10 transcribe perfectly on both test voices, 12 slips
+//     on one, 18-20 drop words, 25 changes them, 50 is gibberish. It does not depend on the reference
 //     length (a 3 s reference behaved the same), so it is not total size.
 // So the tokens are decoded in windows of WIN, each with the same reference
 // prompt and speaker, overlapping by LAP tokens that are crossfaded. The
 // browser's CPU build cannot run the decoder at all (no kernel for its
 // quantised gather), so this is the way through.
-var WIN = 12, LAP = 4, SPT = 960;
-// Each window carries only the last PROMPT_KEEP reference tokens (and the
-// matching speaker-feature frames, two per token): the decoder's cost grows
-// with the prompt, every window pays it, and the speaker embedding carries
-// the timbre either way. Measured in Python on the same tokens: 142, 60 and
-// 30 prompt tokens all transcribe word for word, and 30 decodes 2.6x faster.
-var PROMPT_KEEP = 30;
-var promptCut = null;
-function cutPrompt(T) {
-  if (promptCut && promptCut.src === ref) return promptCut;
-  var p = ref.audio_tokens.ort_tensor.data, f = ref.speaker_features.ort_tensor;
-  var n = Math.min(PROMPT_KEEP, p.length), frames = Math.min(f.dims[1], 2 * n - 1), F = f.dims[2];
-  var fd = f.data.slice((f.dims[1] - frames) * F);
-  promptCut = { src: ref, tokens: p.slice(p.length - n), feat: new T('float32', fd, [1, frames, F]) };
-  return promptCut;
-}
-
+var WIN = 10, LAP = 2, SPT = 960;
 async function decodeWindow(T, S, toks, last) {
-  var cut = cutPrompt(T);
-  var prompt = cut.tokens, n = prompt.length + toks.length + (last ? 3 : 0);
+  // The whole reference prompt, every window: trimmed to its last 30 or 60
+  // tokens it decoded fine in Python but garbled on WebGPU (measured on the
+  // Daniel voice). The page caps the reference instead (clone-page.js).
+  var prompt = ref.audio_tokens.ort_tensor.data, n = prompt.length + toks.length + (last ? 3 : 0);
   var all = new BigInt64Array(n);
   all.set(prompt, 0);
   toks.forEach(function (t, i) { all[prompt.length + i] = BigInt(t); });
   if (last) for (var j = 0; j < 3; j++) all[prompt.length + toks.length + j] = BigInt(SILENCE);
   var wav = (await S.conditional_decoder.run({
     speech_tokens: new T('int64', all, [1, n]),
-    speaker_embeddings: ref.speaker_embeddings.ort_tensor, speaker_features: cut.feat
+    speaker_embeddings: ref.speaker_embeddings.ort_tensor, speaker_features: ref.speaker_features.ort_tensor
   })).waveform;
   var w = wav.location === 'gpu-buffer' ? await wav.getData(true) : wav.data;
   return new Float32Array(w);

@@ -950,26 +950,31 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   Chatterbox Turbo (Resemble AI, MIT) through transformers.js 4.2.0 on
   WebGPU, q4f16, ~560 MB, gated on a consent box, files tagged as a cloned
   voice. check-clone (Whisper from the local mirror) needs both clones
-  intelligible (measured 100% and 94% of the words), each clone's pitch
-  nearer its own reference than the other's, and the tag. About 1.9x the
-  speech's length on an Apple GPU. Four WebGPU traps, each measured against
-  Resemble's Python reference on the same files:
+  intelligible (measured 94-100% of the words over repeated runs, on a male
+  and a female `say` reference), each clone's pitch nearer its own reference
+  than the other's, and the tag. About 4.5x the speech's length on an Apple
+  GPU (a 4 s line in ~17 s), nearly all of it the decoder. Traps, each
+  measured against Resemble's Python reference on the same files (CPU,
+  word-perfect every run):
   - ORT 1.22 cannot create its sessions; ORT 1.26 (transformers.js) can.
   - embed_tokens routes the LAST TWO ids to the speech table; a one-id step
     asks the text table for zero rows and WebGPU rejects the dispatch, so a
     single id is sent as [text pad, id, id]. The text must end 50256 50256.
   - The language model is NOT the problem, though it looked like it: its
     logits differ from the CPU's by 0.5-0.8 and near-ties swap (13/19 agree
-    teacher-forced, in q4, q4f16 and fp16 alike, and every single op matches
-    the CPU in isolation), but its tokens, decoded by Python, transcribe word
-    for word.
+    teacher-forced, in q4, q4f16 and fp16 alike; every op matches the CPU in
+    isolation), yet its tokens, decoded by Python, transcribe word for word.
   - The decoder is: past 65,535 samples it writes zeros, and its words
-    degrade with the number of new tokens per call (12-16 perfect, 25 wrong,
-    50 gibberish). So tokens are decoded 12 at a time with a 4-token
-    crossfade, each window carrying only the last 30 prompt tokens (and 59
-    speaker-feature frames), which in Python transcribes identically and
-    decodes 2.6x faster. The browser's CPU build cannot run any of these
-    models: none has a GatherBlockQuantized kernel.
+    degrade with the new tokens per call (8-10 perfect on both voices, 12
+    slips, 25 wrong, 50 gibberish). Tokens are decoded 10 at a time with a
+    2-token crossfade, each window carrying the WHOLE reference prompt:
+    trimmed to its last 30 or 60 tokens it was fine in Python and garbled on
+    WebGPU. So the page caps the reference at 5 s of speech instead, which is
+    what bounds the decode cost (a 6 s reference decoded twice as slowly as
+    a 4 s one). The decoder starts from noise, so renders vary slightly run
+    to run; that is why check-clone runs two voices.
+  - The browser's CPU build runs none of these models (no
+    GatherBlockQuantized kernel in q4, q4f16 or q8).
 - **Not done:** speaker labels; dubbing into languages other than English.
 
 ## The stem splitter

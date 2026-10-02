@@ -274,14 +274,21 @@ const HELPERS = `
     if (await run(`__h.begin()`)) {
       await page.send('Page.bringToFront');
       await new Promise((res) => setTimeout(res, 1500));
+      // Timed at the close, not when the status appears: the page's
+      // "Recorded m:ss" is floored, and the time it takes to notice the
+      // share ended and finish the file is not recording. Comparing the
+      // floored text with the later clock failed at 1.9 s recorded vs 2.02 s.
+      // The saved file's exact length is what shows whether audio was lost.
       const end = await run(`(async () => {
+        const secs = (performance.now() - window.__t0) / 1000;
         window.__src.close();
         await __h.wait(() => __h.$('#controls').style.display === '' || /status (warn|error)/.test(__h.$('#status').className), 10000);
-        return { status: __h.$('#status').textContent, stopDisabled: __h.$('#stopBtn').disabled, secs: (performance.now() - window.__t0) / 1000 };
-      })()`, 30000);
-      const m = /Recorded (\d+):(\d\d)/.exec(end.status), got = m ? +m[1] * 60 + +m[2] : -1;
+        const st = { status: __h.$('#status').textContent, stopDisabled: __h.$('#stopBtn').disabled, secs };
+        try { const wav = await __h.save('wav'); const w = __h.readWav(wav.bytes.buffer); st.fileSecs = w.chans[0].length / w.fmt.rate; } catch (e) { st.fileErr = String(e); }
+        return st;
+      })()`, 60000);
       ok(/share ended from the browser/.test(end.status) && end.stopDisabled, 'when the shared tab closed the page said: ' + end.status);
-      ok(got >= 1 && Math.abs(got - end.secs) <= 1, 'when the shared tab closed after ' + end.secs.toFixed(2) + ' s the page kept ' + got + ' s');
+      ok(end.fileSecs != null && Math.abs(end.fileSecs - end.secs) < 0.25, 'when the shared tab closed after ' + end.secs.toFixed(2) + ' s the saved file holds ' + (end.fileSecs != null ? end.fileSecs.toFixed(2) + ' s' : 'nothing (' + end.fileErr + ')'));
     } else fails.push('the tab-closing case did not start recording');
 
     // 5. Browsers that cannot do it are told before they try.
