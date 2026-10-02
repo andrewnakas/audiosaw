@@ -780,7 +780,7 @@
         ['auto-cut-silence', 'Tighten the pauses before you subtitle a clip'],
         ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format'],
         ['dictation', 'Talk instead of uploading: live speech to text'],
-        ['video-dubbing', 'Turn the English transcript into a voice-over']
+        ['video-dubbing', 'Turn the transcript into a voice-over, in English or five other languages']
       ]
     },
     'text-to-speech': {
@@ -834,10 +834,10 @@
       ]
     },
     'video-dubbing': {
-      cat: 'voice', label: 'video dubbing', title: 'Video dubbing (to English)',
-      blurb: 'Translate a video\'s speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.',
+      cat: 'voice', label: 'video dubbing', title: 'Video dubbing',
+      blurb: 'Translate a video\'s speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.',
       next: [
-        ['audio-to-text', 'Just the English subtitles, without a voice-over'],
+        ['audio-to-text', 'Just the subtitles, without a voice-over'],
         ['stem-splitter', 'Take the original voice out of the music before dubbing'],
         ['extract-audio', 'Pull the new soundtrack back out of the video'],
         ['text-to-speech', 'Write your own narration instead'],

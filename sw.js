@@ -24,7 +24,7 @@
  */
 'use strict';
 
-var Q = '?v=2026-10-01i';
+var Q = '?v=2026-10-02a';
 var V = Q.slice(3);
 
 var STATIC = 'audiosaw-static-' + V;   // immutable assets, keyed on the full URL

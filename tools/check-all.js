@@ -58,6 +58,7 @@ const CHECKS = [
   ['check-tts.js'],
   ['check-audiobook.js'],
   ['check-dictation.js'],
+  ['check-translate.js'],
   ['check-dubbing.js'],
   ['check-clone.js'],
   ['check-diarize.js']

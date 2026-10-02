@@ -4,15 +4,17 @@
  *   1. decode the video's soundtrack (AudioSaw), fold it to 16 kHz mono;
  *   2. Whisper (transcribe-worker.js, unmodified) gives timed phrases,
  *      transcribed or translated into English;
- *   3. the phrases are joined into lines (ASDub.merge) and shown for editing;
+ *   3. the phrases are joined into lines (ASDub.merge); for a dub into
+ *      Spanish, French, Italian, Portuguese or Hindi, the English lines go
+ *      through OPUS-MT (translate-worker.js); then they are shown for editing;
  *   4. Kokoro (tts-worker.js) reads each line; ASDub.fit speeds a line that
  *      overruns its slot, up to 1.3x;
  *   5. the original is ducked under the lines, or dropped, and the dub laid
  *      over it at the original's rate;
  *   6. ffmpeg copies the video stream untouched and muxes the new audio in.
  *
- * English output only: Kokoro's voices on this site are English, and
- * Whisper's own translation goes only into English.
+ * Whisper's own translation goes only into English, hence the second model
+ * for the other five of Kokoro's languages.
  */
 (function () {
   'use strict';
@@ -46,6 +48,13 @@
   // Defaults alternate a man's and a woman's voice, which is what makes two
   // people easy to tell apart in a dub.
   var DEFAULT_VOICES = ['am_michael', 'af_heart', 'bm_george', 'bf_emma', 'am_fenrir', 'af_bella'];
+  // The same alternation in the other languages Kokoro speaks. French has
+  // one voice, so every speaker shares it.
+  var LANG_VOICES = {
+    'es': ['em_alex', 'ef_dora', 'em_santa'], 'fr-fr': ['ff_siwis'], 'it': ['im_nicola', 'if_sara'],
+    'pt-br': ['pm_alex', 'pf_dora', 'pm_santa'], 'hi': ['hm_omega', 'hf_alpha', 'hm_psi', 'hf_beta']
+  };
+  var target = null;   // the language the lines were translated into, or null
   var speakerVoice = {}, speakers = 0;
   var baseTitle = document.title;
 
@@ -131,7 +140,8 @@
       var audio = Float32Array.from(r16.getChannelData(0));
       var w = whisper();
       w.postMessage({ type: 'load', model: modelSel.value });
-      var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: taskSel.value }, [audio.buffer]);
+      var into = /^to:/.test(taskSel.value) ? taskSel.value.slice(3) : null;
+      var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: into ? 'translate' : taskSel.value }, [audio.buffer]);
       var segs = done.segments;
       speakers = 0; speakerVoice = {};
       if (perSpk && perSpk.checked) {
@@ -142,8 +152,17 @@
       lines = ASDub.snapStarts(ASDub.merge(segs), r16.getChannelData(0), 16000);
       renderSpeakerVoices();
       if (!lines.length) throw new Error('No speech was found in the soundtrack.');
-      // Whisper is done: free its memory before Kokoro loads.
+      // Whisper is done: free its memory before the next model loads.
       asr.terminate(); asr = null;
+      target = null;
+      if (into) {
+        setProgress(49, 'Translating into ' + langName(into) + '…');
+        var tr = await translateLines(lines.map(function (l) { return l.text; }), into);
+        lines.forEach(function (l, i) { l.en = l.text; l.text = tr[i] || l.text; });
+        target = into;
+        voiceSel.value = LANG_VOICES[into][0];
+        renderSpeakerVoices();
+      }
       renderLines();
       CV.setProgress(progressBar, 50);
       CV.setStatus(statusEl, 'success', lines.length + ' lines. Check the wording below, then make the dub.');
@@ -170,6 +189,25 @@
     });
   }
 
+  function langName(code) {
+    var l = ASTTS.LANGS.filter(function (x) { return x[0] === code; })[0];
+    return l ? l[1] : code;
+  }
+
+  function translateLines(texts, lang) {
+    return new Promise(function (resolve, reject) {
+      var w = new Worker('/js/translate-worker.js?v=' + ASSET_V);
+      w.onmessage = function (e) {
+        var m = e.data || {};
+        if (m.type === 'status') CV.setStatus(statusEl, 'info', m.detail);
+        else if (m.type === 'done') { w.terminate(); resolve(m.lines); }
+        else if (m.type === 'error') { w.terminate(); reject(new Error(m.message)); }
+      };
+      w.onerror = function (e) { w.terminate(); reject(new Error((e && e.message) || 'The translation worker failed to start.')); };
+      w.postMessage({ type: 'run', lang: lang, lines: texts });
+    });
+  }
+
   function renderSpeakerVoices() {
     if (!spkBox) return;
     spkBox.innerHTML = '';
@@ -177,7 +215,8 @@
     for (var k = 1; k <= speakers; k++) {
       var l = document.createElement('label'), sel = document.createElement('select');
       ASTTS.fillVoiceSelect(sel, false);
-      sel.value = speakerVoice[k] = DEFAULT_VOICES[(k - 1) % DEFAULT_VOICES.length];
+      var pool = (target && LANG_VOICES[target]) || DEFAULT_VOICES;
+      sel.value = speakerVoice[k] = pool[(k - 1) % pool.length];
       sel.dataset.k = k;
       sel.addEventListener('change', function () { speakerVoice[this.dataset.k] = this.value; });
       l.appendChild(document.createTextNode('Speaker ' + k + ' '));
@@ -196,11 +235,19 @@
       t.textContent = fmtT(ln.start) + '–' + fmtT(ln.end) + (speakers > 1 && ln.speaker ? ' · Speaker ' + ln.speaker : '');
       var ta = document.createElement('textarea');
       ta.rows = 2; ta.value = ln.text; ta.setAttribute('aria-label', 'Line ' + (i + 1) + ' at ' + fmtT(ln.start));
+      var cell = ta;
+      if (ln.en) {
+        ta.lang = target === 'fr-fr' ? 'fr' : target === 'pt-br' ? 'pt-BR' : target;
+        cell = document.createElement('div');
+        var en = document.createElement('small');
+        en.className = 'dub-en'; en.lang = 'en'; en.textContent = ln.en;
+        cell.appendChild(ta); cell.appendChild(en);
+      }
       ta.addEventListener('input', function () { ln.text = ta.value; });
       var st = document.createElement('span');
       st.className = 'dub-state';
       ln.stateEl = st;
-      row.appendChild(t); row.appendChild(ta); row.appendChild(st);
+      row.appendChild(t); row.appendChild(cell); row.appendChild(st);
       linesEl.appendChild(row);
     });
   }
@@ -284,7 +331,7 @@
   function save(blob, name) { CV.downloadBlob(blob, name, savedOnce ? { again: true } : undefined); savedOnce = true; }
   dlVideo.addEventListener('click', function () { if (outputs && outputs.video) save(outputs.video, outputs.base + '-dubbed.mp4'); });
   dlAudio.addEventListener('click', function () { if (outputs) save(outputs.audio, outputs.base + '-dubbed.mp3'); });
-  dlSrt.addEventListener('click', function () { if (outputs) save(new Blob([outputs.srt], { type: 'application/x-subrip;charset=utf-8' }), outputs.base + '-english.srt'); });
+  dlSrt.addEventListener('click', function () { if (outputs) save(new Blob([outputs.srt], { type: 'application/x-subrip;charset=utf-8' }), outputs.base + '-' + (target || (taskSel.value === 'translate' ? 'en' : (langSel.value === 'auto' ? 'dub' : langSel.value))) + '.srt'); });
 
   window.__dubPage = { transcribe: transcribe, dub: dub, setLines: function (l) { lines = ASDub.merge(l); renderLines(); linesPanel.hidden = false; }, state: function () { return { file: !!file, orig: !!orig, lines: lines && lines.length }; } };
 })();

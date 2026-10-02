@@ -200,6 +200,72 @@ async function browserEs() {
   });
 }
 
+// Into Spanish: an English video, Whisper (translate → English), OPUS-MT
+// into Spanish, Kokoro's Spanish voice; the dub transcribed in Spanish must
+// carry the sentence's words. Needs the en-es model in the local mirror.
+async function browserTo() {
+  if (!process.env.DUBBING_BROWSER) return;
+  const fs = require('fs'), os = require('os'), path = require('path');
+  const { execFileSync } = require('child_process');
+  const { withPage } = require('./chrome-harness');
+  const mirror = require('./model-mirror');
+  const ES = 'Xenova/opus-mt-en-es', WB = 'onnx-community/whisper-base';
+  if (!mirror.has(ES, ['onnx/decoder_model_merged_quantized.onnx'])) { console.log('  skip: into Spanish (run check-translate with TRANSLATE_DOWNLOAD=1 first)'); return; }
+  const cache = path.join(os.homedir(), '.cache', 'audiosaw');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-dub-to-'));
+  execFileSync('say', ['-v', 'Daniel', '-o', path.join(dir, 's.aiff'), 'The train leaves the station at eight o\'clock. My sister works at the hospital.']);
+  const vid = path.join(dir, 'in.mp4');
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=purple:s=320x240:r=25:d=9', '-i', path.join(dir, 's.aiff'),
+    '-filter_complex', '[1:a]adelay=800|800,apad=whole_dur=9[a]', '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', '-ac', '2', '-t', '9', vid]);
+  await withPage({
+    headers: true,
+    routes: Object.assign(mirror.routes([WB, ES]), {
+      '/__in.mp4': () => fs.readFileSync(vid),
+      '/__kokoro/model_quantized.onnx': () => fs.readFileSync(path.join(cache, 'kokoro', 'model_quantized.onnx')),
+      '/__kokoro/em_alex.bin': () => fs.readFileSync(path.join(cache, 'kokoro', 'em_alex.bin')),
+      '/__core.wasm': () => fs.readFileSync(path.join(cache, 'ffmpeg-core-0.12.6.wasm'))
+    })
+  }, async (page) => {
+    page.listen('Fetch.requestPaused', (p) => {
+      const u = p.request.url;
+      const hf = /huggingface\.co\/(onnx-community\/whisper-base|Xenova\/opus-mt-en-es)\/resolve\/[^/]+\/([^?]+)/.exec(u);
+      const to = hf ? '/__hf/' + hf[1] + '/' + hf[2] : /ffmpeg-core\.wasm/.test(u) ? '/__core.wasm' : '/__kokoro/' + u.split('?')[0].split('/').pop();
+      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(to) });
+    });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/*' }, { urlPattern: '*huggingface.co/Xenova/*' }, { urlPattern: '*unpkg.com*ffmpeg-core.wasm*' }] });
+    await page.goto('/video-dubbing?backend=wasm', 1500);
+    const r = await page.eval(`(async () => {
+      const f = new File([await (await fetch('/__in.mp4')).blob()], 'train.mp4', { type: 'video/mp4' });
+      const dt = new DataTransfer(); dt.items.add(f);
+      const inp = document.querySelector('#fileInput'); inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+      document.querySelector('#task').value = 'to:es';
+      document.querySelector('#language').value = 'en';
+      await window.__dubPage.transcribe();
+      if (!window.__dubPage.state().lines) return { err: 'transcribe: ' + document.querySelector('#status').textContent };
+      const shown = Array.from(document.querySelectorAll('#lines .dub-en')).map((e) => e.textContent);
+      const voice = document.querySelector('#voice').value;
+      await window.__dubPage.dub();
+      const d = window.__dub;
+      if (!d || !d.outputs.audio) return { err: 'dub: ' + document.querySelector('#status').textContent };
+      const ab = await AudioSaw.decodeToAudioBuffer(new File([d.outputs.audio], 'dub.mp3'), null, { quiet: true });
+      const mono = ab.numberOfChannels > 1 ? await AudioSaw.mixToMono(ab) : ab;
+      const a = Float32Array.from((await AudioSaw.resampleBuffer(mono, 16000)).getChannelData(0));
+      const w = new Worker('/js/transcribe-worker.js', { type: 'module' });
+      const heard = await new Promise((res) => { w.onmessage = (e) => { if (e.data.type === 'done') res(e.data.text); if (e.data.type === 'error') res('ERR ' + e.data.message); };
+        w.postMessage({ type: 'run', model: 'onnx-community/whisper-base', audio: a, language: 'es', task: 'transcribe' }, [a.buffer]); });
+      return { lines: d.lines.map((l) => l.text), shown, voice, heard, srt: d.outputs.srt, video: !!d.outputs.video };
+    })()`, 1800000);
+    ok(!r.err, 'into Spanish: transcribed and translated' + (r.err ? ' — ' + r.err : ': ' + JSON.stringify(r.lines)));
+    if (r.err) return;
+    ok(r.voice === 'em_alex' && r.shown.length === r.lines.length && /train/i.test(r.shown.join(' ')), 'the Spanish voice is picked and each line shows its English (' + JSON.stringify(r.shown) + ')');
+    const norm = (t) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    ok(/tren/.test(norm(r.srt)) && /hermana/.test(norm(r.srt)), 'the subtitles are in Spanish');
+    const keys = ['tren', 'estacion', 'ocho', 'hermana', 'hospital'];
+    const hit = keys.filter((k) => norm(r.heard).includes(k)).length;
+    ok(hit >= 4 && r.video, 'into Spanish: the dub says it in Spanish: "' + r.heard.trim() + '" (' + hit + '/' + keys.length + ' key words)');
+  });
+}
+
 // Two speakers, one voice each: a Daniel/Samantha conversation dubbed with
 // "a different voice for each speaker" — two speakers found, voices
 // alternating with them, and the man's lines lower than the woman's.
@@ -269,7 +335,7 @@ async function browserTwo() {
   });
 }
 
-browser().then(browserEs).then(browserTwo).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
+browser().then(browserEs).then(browserTo).then(browserTwo).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
   console.log('\ncheck-dubbing: all good');
 });

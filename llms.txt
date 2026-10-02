@@ -335,7 +335,7 @@ are much slower without a GPU.
 - [Voice changer](https://audiosaw.com/voice-changer): Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.
 - [Text to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.
 - [Dictation (speech to text)](https://audiosaw.com/dictation): Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.
-- [Video dubbing (to English)](https://audiosaw.com/video-dubbing): Translate a video's speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.
+- [Video dubbing](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
 - [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of audio and make it say anything, on your own GPU, with the speaker's consent.
 
 ## Effects & remixes

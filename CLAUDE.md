@@ -989,13 +989,43 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   transcript gets "Speaker n:" paragraphs (renamable) and subtitles the name
   at each change.
 - **Re-voicing** on /video-dubbing works in es/fr/it/pt-br/hi as well as
-  English (a Spanish case in check-dubbing); translation is into English only.
+  English (a Spanish case in check-dubbing).
+- **Dubbing into es/fr/it/pt-br/hi** ("Dub it: Into Spanish", task value
+  `to:<lang>`): Whisper translates to English, then `js/translate-worker.js`
+  (a classic worker) runs Helsinki OPUS-MT, and the voice and per-speaker
+  defaults switch to that language's Kokoro voices. Each line shows its
+  English underneath.
+  - **The runtime is ORT 1.22, not transformers.js.** ORT 1.26 refuses every
+    8-bit OPUS-MT export with the same "TransposeDQWeightsForMatMulNBits
+    Missing required scale" that pinned Whisper to q4, and the q4 files are
+    ~300 MB a language against ~113. ORT 1.22 loads the 8-bit ones.
+    `js/marian.js` (`ASMarian`, UMD) is the decode loop (encoder, then the
+    merged decoder with its KV cache, 4-beam search). transformers.js is
+    imported only for its tokenizer. `ort.min.js` declares a module-scoped
+    `var ort`, so the worker is classic (`importScripts`) with a dynamic
+    `import()` for transformers.js.
+  - **The language tag must be one token.** For en-ROMANCE, `>>es<<` typed
+    into the text is split into pieces and ignored (output came back in
+    a mix of languages); `tok.convert_tokens_to_ids(tag)` goes in front.
+  - **One model per language**: en-es, en-fr, en-it, en-hi, and en-ROMANCE
+    with `>>pt_BR<<` (there is no en-pt export). ROMANCE for all four
+    drifted into French mid-Italian; the dedicated en-it did not.
+  - **One sentence at a time** (`ASMarian.sentences`): given two at once,
+    the Spanish output dropped the first.
+  - The start/pad ids come from each model's config.json (ROMANCE 65000,
+    en-hi 61949).
+  - **Checked by** `tools/check-translate.js`: each language's key words
+    per line, no other language mixed in, no sentence dropped, and the
+    same output twice. Models are in the mirror (`TRANSLATE_DOWNLOAD=1`
+    fetches ~620 MB once). It measured about 1 s a line on one thread,
+    which is what the page gets: /video-dubbing is not isolated. Also
+    check-dubbing's into-Spanish case (DUBBING_BROWSER=1): an English
+    `say` video, dubbed into Spanish and heard back by Whisper in Spanish.
 - **Per-speaker dubbing:** "a different voice for each speaker" runs the same
   diarization; `ASDub.merge` never joins lines across a change of speaker,
   and voices default to alternating man/woman. check-dubbing's two-person case
   (DUBBING_BROWSER=1): both found, voices alternate, the man's lines 122 Hz
   vs the woman's 197.
-- **Not done:** translating into languages other than English.
 
 ## The stem splitter
 
