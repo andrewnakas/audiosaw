@@ -230,7 +230,7 @@ lines.push(`${ORIGIN}/audio-to-text runs OpenAI\'s Whisper (tiny, base or small)
 lines.push('browser tab, so the recording is never uploaded — no account and no minute cap.');
 lines.push('It returns an editable transcript plus SRT and WebVTT subtitle files, works');
 lines.push('on video files directly, covers 99 languages and can translate any of them into');
-lines.push('English. Limitations stated up front: it does not label speakers, timestamps');
+lines.push('English, and can label who is speaking (pyannote + WeSpeaker, in the browser). Limitations: timestamps');
 lines.push('are per phrase rather than per word, the first run downloads the model once,');
 lines.push('and it is fastest on a desktop browser with WebGPU (Chrome or Edge). Whisper');
 lines.push('base measured at about a sixth of real time on a laptop GPU and under a third');
@@ -284,7 +284,7 @@ lines.push('**What can AudioSaw not do?**');
 lines.push('There is no cloud: nothing syncs between devices and nothing is shared, because');
 lines.push('nothing is uploaded. The audio editor keeps its project in the browser that made');
 lines.push('it. It does not host third-party VST/AU plugins. Stem splitting gives vocals');
-lines.push('and instrumental, not four stems. Transcription does not label speakers.');
+lines.push('and instrumental, not four stems. Speaker labels are capped at six people.');
 lines.push('Very large files are limited by browser memory rather than by the tool. Editing');
 lines.push('an MP3 re-encodes it, so a cut costs one compression generation — use WAV or');
 lines.push('FLAC output when that matters. The neural tools (stem splitter, transcription)');

@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-01g">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01h">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -60,7 +60,7 @@ window.AS_VERSION = '2026-09-22';
 <script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model is downloaded to your browser and runs there; your recording never leaves the tab. The only network request is for the model files, which are identical for everyone and contain nothing of yours."}},{"@type":"Question","name":"Is this really OpenAI's Whisper?","acceptedAnswer":{"@type":"Answer","text":"Yes — the open Whisper models OpenAI released, converted to run in a browser with ONNX Runtime. You choose between the tiny, base and small sizes; the larger desktop models are too big for a browser tab."}},{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU, so a ten-minute recording takes two to three minutes. The first run also downloads the model, once. The page estimates the time for your file before you start."}},{"@type":"Question","name":"Can it make subtitles for a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM directly — the audio is pulled out in the browser — and download an SRT for YouTube, Premiere, Resolve or CapCut, or a VTT for the web."}},{"@type":"Question","name":"Does it label who is speaking?","acceptedAnswer":{"@type":"Answer","text":"No. Whisper does not separate speakers, so an interview comes back as one transcript with paragraph breaks at the pauses. Services that label speakers do it with a second model on their servers."}},{"@type":"Question","name":"Which languages does it support?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages and detects which one is spoken. Accuracy is best in English and the major European languages; for others, pick the language yourself and use the small model. \"Translate into English\" turns any of them into English text."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"The tiny model will, slowly. Phones have little memory for the larger models and long files, so for anything over a few minutes a laptop or desktop is the better choice."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my audio uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model is downloaded to your browser and runs there; your recording never leaves the tab. The only network request is for the model files, which are identical for everyone and contain nothing of yours."}},{"@type":"Question","name":"Is this really OpenAI's Whisper?","acceptedAnswer":{"@type":"Answer","text":"Yes — the open Whisper models OpenAI released, converted to run in a browser with ONNX Runtime. You choose between the tiny, base and small sizes; the larger desktop models are too big for a browser tab."}},{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU, so a ten-minute recording takes two to three minutes. The first run also downloads the model, once. The page estimates the time for your file before you start."}},{"@type":"Question","name":"Can it make subtitles for a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM directly — the audio is pulled out in the browser — and download an SRT for YouTube, Premiere, Resolve or CapCut, or a VTT for the web."}},{"@type":"Question","name":"Does it label who is speaking?","acceptedAnswer":{"@type":"Answer","text":"Yes, if you tick \"label who is speaking\". A speaker model (pyannote segmentation with WeSpeaker voiceprints) runs in your browser after the transcription and marks each line \"Speaker 1\", \"Speaker 2\" and so on, which you can rename. On test conversations it got 96% of the speech right with two people and 92% with three."}},{"@type":"Question","name":"Which languages does it support?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages and detects which one is spoken. Accuracy is best in English and the major European languages; for others, pick the language yourself and use the small model. \"Translate into English\" turns any of them into English text."}},{"@type":"Question","name":"Will it work on my phone?","acceptedAnswer":{"@type":"Answer","text":"The tiny model will, slowly. Phones have little memory for the larger models and long files, so for anything over a few minutes a laptop or desktop is the better choice."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -74,6 +74,8 @@ window.AS_VERSION = '2026-09-22';
 #result{margin-top:1.5rem}
 .tool-app .actions + .control-note{margin-top:.75rem}
 .result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+.speaker-names{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:.5rem 0 1rem;font-size:.92rem}
+.speaker-names input{margin-left:.35rem;padding:.3rem .5rem;border:1px solid var(--line,#d9cdb8);border-radius:4px;font:inherit;width:9rem}
 </style>
 </head>
 <body>
@@ -160,6 +162,16 @@ window.AS_VERSION = '2026-09-22';
             <option value="sw">Swahili</option>
           </select>
         </label>
+        <label>Speakers
+          <select id="speakers">
+            <option value="0" selected>Count them for me</option>
+            <option value="2">2 people</option>
+            <option value="3">3 people</option>
+            <option value="4">4 people</option>
+            <option value="5">5 people</option>
+            <option value="6">6 people</option>
+          </select>
+        </label>
         <label>Output
           <select id="task">
             <option value="transcribe" selected>Text in the language spoken</option>
@@ -167,6 +179,7 @@ window.AS_VERSION = '2026-09-22';
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="diarize"> label who is speaking (adds a 33 MB speaker model and a little time)</label>
       <div class="actions">
         <button class="btn" id="convertBtn" data-track="convert" disabled>Transcribe</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -188,6 +201,7 @@ window.AS_VERSION = '2026-09-22';
         <button class="btn btn-secondary" id="copyBtn">copy text</button>
         <label class="check"><input type="checkbox" id="withTimes"> timestamps in the text</label>
       </div>
+      <div class="speaker-names" id="speakerNames" hidden></div>
     </div>
   </section>
 
@@ -224,12 +238,12 @@ window.AS_VERSION = '2026-09-22';
 
     <h2>What it gets wrong</h2>
     <p>Proper nouns are the commonest error: a product, a surname or a place it has not heard spelled is written the way it sounds. That is why the transcript is an editable box — fix the names before you download the text. Subtitle files keep the original wording so their timing stays aligned.</p>
-    <p>Whisper does not tell speakers apart. A two-person interview comes back as one stream of text with paragraph breaks at the pauses, not "Speaker 1 / Speaker 2". Crosstalk, where two people talk at once, tends to keep one voice and lose the other.</p>
+    <p>Whisper itself does not tell speakers apart; tick "label who is speaking" and a second step does. It is pyannote's method, run in your browser: a small segmentation model (pyannote segmentation-3.0) marks where speech is and when the voice changes, a speaker-embedding model (WeSpeaker ResNet34, CC-BY-4.0) turns each stretch of speech into a voiceprint, and the voiceprints are grouped into people. Each line of the transcript then gets "Speaker 1:", "Speaker 2:" and so on, and you can type real names in once. Subtitles get the name at each change of speaker. On test conversations it labelled over 99% of the speech correctly with two people and 92% with three, and counted them right when left to count; tell it the number of people if you know it. Short interjections ("yes", "right") are the usual mistakes, and two people with very similar voices may be merged. Crosstalk, where two people talk at once, tends to keep one voice and lose the other.</p>
     <p>On long stretches of music or silence it can invent words — usually a repeated phrase or a polite "Thank you." It was trained largely on subtitled video, and that is what subtitles say when nobody is talking. Trimming a long music intro with the <a href="/audio-cutter">cutter</a>, or tightening the gaps with <a href="/auto-cut-silence">auto-cut silence</a>, removes most of it. Background hiss and hum hurt accuracy more than people expect; a pass through <a href="/noise-reduction">noise reduction</a> first is often the single biggest improvement.</p>
     <p>"Translate into English" is Whisper's own translation, done in the same pass. It is good enough to understand a foreign-language recording and to make rough English subtitles; it is not a translator you would publish from unchecked, and it only goes into English.</p>
 
     <h2>Compared with the alternatives</h2>
-    <p>Otter, Rev, Descript and the transcription built into meeting apps are convenient and add speaker labels, but they all work by uploading your audio and most charge by the minute beyond a free allowance. Running Whisper yourself in Python, or with a desktop app such as MacWhisper, gives you the larger models and is the better choice for hours of material every week. This page sits between the two: the same model family as the desktop route, with nothing to install, and the privacy of doing it on your own machine. If you do want to run Whisper elsewhere, <a href="/audio-for-whisper">audio for Whisper</a> produces the 16 kHz mono WAV it is fed internally.</p>
+    <p>Otter, Rev, Descript and the transcription built into meeting apps are convenient and label speakers too, but they all work by uploading your audio and most charge by the minute beyond a free allowance. Running Whisper yourself in Python, or with a desktop app such as MacWhisper, gives you the larger models and is the better choice for hours of material every week. This page sits between the two: the same model family as the desktop route, with nothing to install, and the privacy of doing it on your own machine. If you do want to run Whisper elsewhere, <a href="/audio-for-whisper">audio for Whisper</a> produces the 16 kHz mono WAV it is fed internally.</p>
   </section>
 
   <section class="faq">
@@ -239,7 +253,7 @@ window.AS_VERSION = '2026-09-22';
       <details><summary>Is this really OpenAI's Whisper?</summary><p>Yes — the open Whisper models OpenAI released, converted to run in a browser with ONNX Runtime. You choose between the tiny, base and small sizes; the larger desktop models are too big for a browser tab.</p></details>
       <details><summary>How long does it take?</summary><p>Whisper base measured at about a sixth of the audio's length on a laptop GPU and under a third on its CPU, so a ten-minute recording takes two to three minutes. The first run also downloads the model, once. The page estimates the time for your file before you start.</p></details>
       <details><summary>Can it make subtitles for a video?</summary><p>Yes. Drop the MP4, MOV or WebM directly — the audio is pulled out in the browser — and download an SRT for YouTube, Premiere, Resolve or CapCut, or a VTT for the web.</p></details>
-      <details><summary>Does it label who is speaking?</summary><p>No. Whisper does not separate speakers, so an interview comes back as one transcript with paragraph breaks at the pauses. Services that label speakers do it with a second model on their servers.</p></details>
+      <details><summary>Does it label who is speaking?</summary><p>Yes, if you tick "label who is speaking". A speaker model (pyannote segmentation with WeSpeaker voiceprints) runs in your browser after the transcription and marks each line "Speaker 1", "Speaker 2" and so on, which you can rename. On test conversations it got 96% of the speech right with two people and 92% with three.</p></details>
       <details><summary>Which languages does it support?</summary><p>Whisper covers 99 languages and detects which one is spoken. Accuracy is best in English and the major European languages; for others, pick the language yourself and use the small model. "Translate into English" turns any of them into English text.</p></details>
       <details><summary>Will it work on my phone?</summary><p>The tiny model will, slowly. Phones have little memory for the larger models and long files, so for anything over a few minutes a laptop or desktop is the better choice.</p></details>
       <!-- /AS:faq -->
@@ -381,14 +395,15 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-01g"></script>
-<script src="/js/tool-graph.js?v=2026-10-01g"></script>
-<script src="/js/flow.js?v=2026-10-01g"></script>
-<script src="/js/audio-core.js?v=2026-10-01g"></script>
-<script src="/js/tool-shell.js?v=2026-10-01g"></script>
-<script src="/js/consent.js?v=2026-10-01g"></script>
-<script src="/js/subtitles.js?v=2026-10-01g"></script>
-<script src="/js/transcribe-page.js?v=2026-10-01g"></script>
-<script src="/js/pwa.js?v=2026-10-01g"></script>
+<script src="/js/common.js?v=2026-10-01h"></script>
+<script src="/js/tool-graph.js?v=2026-10-01h"></script>
+<script src="/js/flow.js?v=2026-10-01h"></script>
+<script src="/js/audio-core.js?v=2026-10-01h"></script>
+<script src="/js/tool-shell.js?v=2026-10-01h"></script>
+<script src="/js/consent.js?v=2026-10-01h"></script>
+<script src="/js/subtitles.js?v=2026-10-01h"></script>
+<script src="/js/diarize.js?v=2026-10-01h"></script>
+<script src="/js/transcribe-page.js?v=2026-10-01h"></script>
+<script src="/js/pwa.js?v=2026-10-01h"></script>
 </body>
 </html>

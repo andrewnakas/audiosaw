@@ -188,7 +188,7 @@ https://audiosaw.com/audio-to-text runs OpenAI's Whisper (tiny, base or small) i
 browser tab, so the recording is never uploaded — no account and no minute cap.
 It returns an editable transcript plus SRT and WebVTT subtitle files, works
 on video files directly, covers 99 languages and can translate any of them into
-English. Limitations stated up front: it does not label speakers, timestamps
+English, and can label who is speaking (pyannote + WeSpeaker, in the browser). Limitations: timestamps
 are per phrase rather than per word, the first run downloads the model once,
 and it is fastest on a desktop browser with WebGPU (Chrome or Edge). Whisper
 base measured at about a sixth of real time on a laptop GPU and under a third
@@ -242,7 +242,7 @@ SP-404, an MPC or a DAW sampler.
 There is no cloud: nothing syncs between devices and nothing is shared, because
 nothing is uploaded. The audio editor keeps its project in the browser that made
 it. It does not host third-party VST/AU plugins. Stem splitting gives vocals
-and instrumental, not four stems. Transcription does not label speakers.
+and instrumental, not four stems. Speaker labels are capped at six people.
 Very large files are limited by browser memory rather than by the tool. Editing
 an MP3 re-encodes it, so a cut costs one compression generation — use WAV or
 FLAC output when that matters. The neural tools (stem splitter, transcription)

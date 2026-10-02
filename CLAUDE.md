@@ -975,7 +975,23 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     to run; that is why check-clone runs two voices.
   - The browser's CPU build runs none of these models (no
     GatherBlockQuantized kernel in q4, q4f16 or q8).
-- **Not done:** speaker labels; dubbing into languages other than English.
+- **Speaker labels on /audio-to-text** (`js/diarize.js` = `ASDiar`,
+  `js/diarize-worker.js`): pyannote segmentation-3.0 (MIT, 6 MB) marks speech
+  and voice changes, WeSpeaker ResNet34 (CC-BY-4.0, 26.5 MB, credited on the
+  page) embeds each turn of 0.5 s or more, and average-linkage cosine
+  clustering groups them: to the count chosen, or on Auto to a 0.45 distance
+  then folding any speaker under 8% of the speech into its nearest. Both on
+  the CPU through transformers.js. Segmentation alone merged two women's
+  voices (68%); with embeddings, check-diarize measures 99.7% of the speech
+  labelled right with two `say` voices and 92.0% with three over 3 minutes,
+  and Auto counts both right (0.4 split the pair in three, 0.5 merged the
+  trio). Whisper segments take the speaker who talks most inside them; the
+  transcript gets "Speaker n:" paragraphs (renamable) and subtitles the name
+  at each change.
+- **Re-voicing** on /video-dubbing works in es/fr/it/pt-br/hi as well as
+  English (a Spanish case in check-dubbing); translation is into English only.
+- **Not done:** dubbing with a different voice per speaker; translating into
+  languages other than English.
 
 ## The stem splitter
 

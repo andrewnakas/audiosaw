@@ -24,7 +24,7 @@
  */
 'use strict';
 
-var Q = '?v=2026-10-01g';
+var Q = '?v=2026-10-01h';
 var V = Q.slice(3);
 
 var STATIC = 'audiosaw-static-' + V;   // immutable assets, keyed on the full URL
@@ -57,7 +57,7 @@ var STATIC_PATHS = /^\/(css|js|vendor|assets)\//;
 // /stemflipper is a separate single-page app proxied in by functions/stemflipper/. It
 // owns its own routing and its own asset versioning, so this worker must stay out of the
 // way entirely — caching its HTML here would pin visitors to a stale build.
-var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|dictation(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/|vendor\/espeak\/)/;
+var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|js\/diarize-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|dictation(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/|vendor\/espeak\/)/;
 
 // Where a shared file should land. Anything unlisted goes to the homepage,
 // whose converter accepts everything and picks a target.

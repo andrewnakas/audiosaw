@@ -22,7 +22,7 @@
     return m ? m[1] : (window.AS_VERSION || '1');
   })();
 
-  if (typeof CV === 'undefined' || typeof AudioSaw === 'undefined' || typeof ASSubs === 'undefined') {
+  if (typeof CV === 'undefined' || typeof AudioSaw === 'undefined' || typeof ASSubs === 'undefined' || typeof ASDiar === 'undefined') {
     console.error('[audio-to-text] the /js/* includes must come before transcribe-page.js');
     return;
   }
@@ -162,14 +162,68 @@
     CV.setProgress(progressBar, 100);
   }
 
-  function onDone(m) {
+  // Speaker labels (diarize-worker.js + ASDiar): run after Whisper, on a
+  // copy of the 16 kHz audio, only when asked for. names: the renames typed
+  // into the speaker boxes.
+  var diarAudio = null, speakerCount = 0, names = {}, diarWorker = null;
+
+  function renderText() {
+    if (!segments) return;
+    textEl.value = speakerCount
+      ? ASDiar.toText(segments, names)
+      : ASSubs.toText(segments, { duration: duration, timestamps: tsBox && tsBox.checked });
+  }
+  function cueSegments() { return speakerCount ? ASDiar.prefixCues(segments, names) : segments; }
+
+  function renderNames() {
+    var box = $('#speakerNames');
+    if (!box) return;
+    box.innerHTML = '';
+    box.hidden = !speakerCount;
+    for (var k = 1; k <= speakerCount; k++) {
+      var l = document.createElement('label'), inp = document.createElement('input');
+      inp.type = 'text'; inp.placeholder = 'Speaker ' + k; inp.value = names[k] || ''; inp.dataset.k = k;
+      inp.addEventListener('input', function () { names[this.dataset.k] = this.value; renderText(); });
+      l.appendChild(document.createTextNode('Speaker ' + k + ' is '));
+      l.appendChild(inp);
+      box.appendChild(l);
+    }
+  }
+
+  function diarize(audio, speakers) {
+    return new Promise(function (resolve, reject) {
+      if (!diarWorker) diarWorker = new Worker('/js/diarize-worker.js?v=' + ASSET_V, { type: 'module' });
+      diarWorker.onmessage = function (e) {
+        var m = e.data || {};
+        if (m.type === 'status') { CV.setStatus(statusEl, 'info', m.detail); CV.setProgress(progressBar, 90 + m.pct * 0.1); }
+        else if (m.type === 'done') resolve(m);
+        else if (m.type === 'error') reject(new Error(m.message));
+      };
+      diarWorker.onerror = function (e) { reject(new Error('The speaker worker could not start' + (e && e.message ? ' (' + e.message + ')' : ''))); };
+      diarWorker.postMessage({ type: 'run', audio: audio, speakers: speakers }, [audio.buffer]);
+    });
+  }
+
+  async function onDone(m) {
     segments = m.segments && m.segments.length ? m.segments : [{ text: m.text, start: 0, end: duration }];
-    textEl.value = ASSubs.toText(segments, { duration: duration, timestamps: tsBox && tsBox.checked });
+    speakerCount = 0; names = {};
+    if (diarAudio) {
+      var a = diarAudio; diarAudio = null;
+      try {
+        var d = await diarize(a, +(($('#speakers') || {}).value || 0));
+        if (d.turns.length) { segments = ASDiar.labelSegments(segments, d.turns); speakerCount = d.speakers; }
+      } catch (e) {
+        CV.setStatus(statusEl, 'warn', 'The transcript is ready, but the speakers could not be labelled (' + (e.message || e) + ').', e);
+      }
+    }
+    renderNames();
+    renderText();
     resultEl.hidden = false;
     if (liveEl) liveEl.hidden = true;
     var words = (textEl.value.match(/\S+/g) || []).length;
     var took = m.seconds < 90 ? Math.round(m.seconds) + ' s' : (m.seconds / 60).toFixed(1) + ' min';
-    CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + words + ' words, ' + segments.length + ' segments. Check the names, then download.');
+    CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + words + ' words, ' + segments.length + ' segments' +
+      (speakerCount ? ', ' + speakerCount + ' speaker' + (speakerCount > 1 ? 's' : '') + ' (name them below)' : '') + '. Check the names, then download.');
     CV.setProgress(progressBar, 100);
     setTitle(null);
     goBtn.disabled = false;
@@ -213,17 +267,15 @@
   function bind(id, fn) { var el = $(id); if (el) el.addEventListener('click', fn); }
 
   bind('#dlTxt', function () { if (segments) save(textEl.value, 'txt', 'text/plain'); });
-  bind('#dlSrt', function () { if (segments) save(ASSubs.toSRT(segments, duration), 'srt', 'application/x-subrip'); });
-  bind('#dlVtt', function () { if (segments) save(ASSubs.toVTT(segments, duration), 'vtt', 'text/vtt'); });
+  bind('#dlSrt', function () { if (segments) save(ASSubs.toSRT(cueSegments(), duration), 'srt', 'application/x-subrip'); });
+  bind('#dlVtt', function () { if (segments) save(ASSubs.toVTT(cueSegments(), duration), 'vtt', 'text/vtt'); });
   bind('#copyBtn', function () {
     var btn = this;
     var done = function () { btn.textContent = 'copied'; setTimeout(function () { btn.textContent = 'copy text'; }, 1500); };
     if (navigator.clipboard) navigator.clipboard.writeText(textEl.value).then(done, function () { textEl.select(); });
     else { textEl.select(); try { document.execCommand('copy'); done(); } catch (e) {} }
   });
-  if (tsBox) tsBox.addEventListener('change', function () {
-    if (segments) textEl.value = ASSubs.toText(segments, { duration: duration, timestamps: tsBox.checked });
-  });
+  if (tsBox) tsBox.addEventListener('change', renderText);
   if (modelSel) modelSel.addEventListener('change', function () { describe(); });
 
   /* ------------------------------------------------------------------ ui */
@@ -271,6 +323,8 @@
       // Start the model download while the file decodes.
       w.postMessage({ type: 'load', model: modelSel.value });
       var audio = await decode16k(files[0]);
+      var dz = $('#diarize');
+      diarAudio = dz && dz.checked ? audio.slice() : null;
       w.postMessage({
         type: 'run', model: modelSel.value, audio: audio,
         language: langSel ? langSel.value : 'auto',
