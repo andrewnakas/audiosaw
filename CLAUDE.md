@@ -946,29 +946,30 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   The English fix-ups (r → ɹ) are not applied to them: they cost Portuguese 20%.
 - **Dubbing timing:** Whisper stamped a sentence that starts at 1.0 s as
   0.00; `ASDub.snapStarts` moves each line to the first real speech in it.
-- **Voice cloning is built but held back** (`js/clone-worker.js`,
-  `js/clone-page.js`, `tools/check-clone.js`; the page was removed from the
-  release in the commit that says so — restore it from there). Chatterbox
-  Turbo (Resemble AI, MIT) through transformers.js 4.2.0 on WebGPU, q4f16,
-  ~560 MB. It produces speech in the reference voice (each clone's pitch
-  follows its own reference), but the words drift: Whisper heard "the wet
-  floor" for a 17-word sentence. Resemble's Python reference on the SAME
-  files (CPU) is word-perfect. Found so far, all measured:
-  - ORT 1.22 cannot create the speech encoder or language-model sessions.
+- **/voice-cloning** (`js/clone-worker.js`, `js/clone-page.js`):
+  Chatterbox Turbo (Resemble AI, MIT) through transformers.js 4.2.0 on
+  WebGPU, q4f16, ~560 MB, gated on a consent box, files tagged as a cloned
+  voice. check-clone (Whisper from the local mirror) needs both clones
+  intelligible (measured 100% and 94% of the words), each clone's pitch
+  nearer its own reference than the other's, and the tag. About 1.9x the
+  speech's length on an Apple GPU. Four WebGPU traps, each measured against
+  Resemble's Python reference on the same files:
+  - ORT 1.22 cannot create its sessions; ORT 1.26 (transformers.js) can.
   - embed_tokens routes the LAST TWO ids to the speech table; a one-id step
-    asks the text table for zero rows and WebGPU rejects the dispatch. Fixed
-    by sending [text pad, id, id]. The tokenizer must end with 50256 50256.
-  - The decoder stops at 65,535 output samples on WebGPU (zeros after
-    2.73 s); fixed by decoding 50-token windows with a 10-token crossfade
-    (the same windowing in Python stays word-perfect).
-  - The remaining fault is the WebGPU language model: with identical inputs
-    (conditioning and embeddings match Python to 4 decimals) its logits are
-    0.5-0.8 lower and near-ties swap; teacher-forced, 13 of 19 steps agree.
-    q4 (fp32 activations) does the same, so it is not fp16 rounding. The
-    browser's CPU build cannot run it at all (no GatherBlockQuantized kernel,
-    which q4, q4f16 and q8 all use). Next test: the fp16 export (635 MB,
-    plain MatMul/Gather) on WebGPU, to tell MatMulNBits from
-    GroupQueryAttention.
+    asks the text table for zero rows and WebGPU rejects the dispatch, so a
+    single id is sent as [text pad, id, id]. The text must end 50256 50256.
+  - The language model is NOT the problem, though it looked like it: its
+    logits differ from the CPU's by 0.5-0.8 and near-ties swap (13/19 agree
+    teacher-forced, in q4, q4f16 and fp16 alike, and every single op matches
+    the CPU in isolation), but its tokens, decoded by Python, transcribe word
+    for word.
+  - The decoder is: past 65,535 samples it writes zeros, and its words
+    degrade with the number of new tokens per call (12-16 perfect, 25 wrong,
+    50 gibberish). So tokens are decoded 12 at a time with a 4-token
+    crossfade, each window carrying only the last 30 prompt tokens (and 59
+    speaker-feature frames), which in Python transcribes identically and
+    decodes 2.6x faster. The browser's CPU build cannot run any of these
+    models: none has a GatherBlockQuantized kernel.
 - **Not done:** speaker labels; dubbing into languages other than English.
 
 ## The stem splitter

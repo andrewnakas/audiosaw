@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Cloning — clone a voice from 10 seconds, free, in your browser</title>
+<meta name="description" content="Clone a voice from a ten-second recording and make it say anything, with the open Chatterbox model running on your own GPU in the browser. Nothing is uploaded. Free, no signup. Your voice or with permission only.">
+<meta name="keywords" content="voice cloning, ai voice clone free, clone my voice, voice cloning online, zero shot voice cloning, chatterbox tts, private voice clone, voice clone no upload">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/voice-cloning">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Voice Cloning — from ten seconds of audio, on your own GPU">
+<meta property="og:description" content="Record ten seconds, type the text, hear it in that voice. The model runs in the browser; nothing is uploaded. Free.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/voice-cloning">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01e">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Voice Cloning (Chatterbox in the browser)",
+  "url": "https://audiosaw.com/voice-cloning",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Zero-shot voice cloning from a 5-15 second reference with Chatterbox Turbo running locally on WebGPU; record or upload the reference; consent required; MP3 or WAV tagged as a cloned synthetic voice; no upload",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.consent-box{display:flex;gap:.75rem;align-items:flex-start;padding:1rem;border:1px solid var(--ink-soft);border-radius:6px;background:var(--paper);margin-bottom:1rem}
+.consent-box input{width:20px;height:20px;margin-top:.15rem;accent-color:var(--amber);flex:none}
+.dropzone.disabled{opacity:.45;pointer-events:none}
+.read-this{font-family:var(--serif,Georgia,serif);font-size:1.05rem;line-height:1.55;padding:.75rem 1rem;border-left:3px solid var(--amber);background:var(--paper);margin:.75rem 0}
+.clone-box{width:100%;min-height:9em;padding:.9rem 1rem;border:1px solid var(--line,#d9cdb8);border-radius:8px;font:inherit;font-size:1.05rem;line-height:1.6;background:var(--paper,#fff);color:inherit;resize:vertical;box-sizing:border-box}
+.ref-row{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:.5rem 0 1rem}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The recording and the text stay in this browser tab, and the cloning model runs on your own graphics card. The only download is the model itself, which is the same for everyone."}},{"@type":"Question","name":"How long a recording does it need?","acceptedAnswer":{"@type":"Answer","text":"About ten seconds of one person speaking clearly. Five is the minimum; anything past fifteen is not used."}},{"@type":"Question","name":"Why does it need WebGPU?","acceptedAnswer":{"@type":"Answer","text":"The model writes speech one small token at a time, 25 per second of audio, and each token is a pass through a 350-million-parameter network. A graphics card does that quickly; a processor alone would take minutes per sentence."}},{"@type":"Question","name":"Can I clone a celebrity or someone else's voice?","acceptedAnswer":{"@type":"Answer","text":"Only with their permission. The page asks you to confirm it before it starts, and every file is tagged as a cloned voice."}},{"@type":"Question","name":"Which languages does it speak?","acceptedAnswer":{"@type":"Answer","text":"English. Resemble AI's multilingual Chatterbox covers 23 languages but is too large to run comfortably in a browser yet."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes: no account, no credits, no limit. Your own computer does the work."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Voice cloning"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Voice cloning</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Voice <span class="ital">cloning</span>, in your browser.</h1>
+    <p>Record ten seconds of a voice, type some text, and hear it spoken in that voice. The cloning model is Chatterbox Turbo, an open model from Resemble AI, and it runs on your own graphics card inside this tab, so the voice sample is never uploaded to anyone. Use it for your own voice, or a voice whose owner has said yes.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <label class="consent-box"><input type="checkbox" id="consent">
+      <span><strong>This is my voice, or I have the speaker's permission to clone it.</strong> I won't use it to impersonate anyone, deceive anyone, or get around a voice check.</span>
+    </label>
+
+    <h2 class="control-note">1. The voice to clone</h2>
+    <p class="control-note">Record yourself reading this aloud, in a quiet room, at your normal pace:</p>
+    <p class="read-this">The north wind and the sun were disputing which was the stronger, when a traveller came along wrapped in a warm cloak. They agreed that the one who first made the traveller take his cloak off should be considered stronger than the other.</p>
+    <div class="ref-row">
+      <button class="btn" id="recBtn" type="button" disabled>● Record 10 seconds</button>
+      <span class="control-note">or drop a clip below: 5 to 15 seconds of one person speaking, no music</span>
+    </div>
+    <div class="dropzone disabled" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a voice clip</p>
+      <p>WAV, MP3, M4A, a voice memo. Only the first 15 seconds of speech are used.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.m4a,.opus,.caf" disabled>
+    </div>
+    <div class="ref-row"><span class="control-note" id="refInfo"></span><button class="btn btn-secondary" id="refPlay" type="button" hidden>▶ hear the reference</button></div>
+
+    <div id="stepTwo" hidden>
+      <h2 class="control-note">2. What it should say</h2>
+      <textarea id="cloneText" class="clone-box" placeholder="Type what the cloned voice should say. Tags such as [laugh] or [chuckle] add those sounds."></textarea>
+      <div class="controls">
+        <label>Format
+          <select id="format">
+            <option value="mp3" selected>MP3 (192 kbps)</option>
+            <option value="wav16">WAV (16-bit)</option>
+          </select>
+        </label>
+      </div>
+      <p class="control-note" id="envNote"></p>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Speak in this voice</button>
+        <button class="btn btn-secondary" id="stopBtn" disabled>Stop</button>
+        <button class="btn btn-secondary" id="dlBtn" disabled>Download</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Model</th><td>Chatterbox Turbo (Resemble AI, MIT licence, 350M parameters), 4-bit weights, run with ONNX Runtime Web</td></tr>
+        <tr><th>Reference</th><td>5 to 15 seconds of one person speaking; ten seconds of clean speech is the sweet spot</td></tr>
+        <tr><th>Language</th><td>English</td></tr>
+        <tr><th>Needs</th><td>WebGPU: current Chrome or Edge on a desktop or laptop. About 560 MB downloaded once and cached</td></tr>
+        <tr><th>Speed</th><td>Measured on a laptop GPU (Apple, 8 cores): about twice the length of the speech, so a 4-second line takes 7 to 8 seconds. The first one also loads the model</td></tr>
+        <tr><th>Output</th><td>24 kHz mono MP3 or WAV, tagged as a cloned synthetic voice</td></tr>
+        <tr><th>Uploads your voice</th><td>No. The sample and the text stay in this tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>Zero-shot cloning means the model has never been trained on your voice; it hears a sample once and imitates it. Chatterbox does this in three steps. A speech encoder listens to your reference clip and turns it into two things: a compact description of the voice (its pitch range, timbre and the way it sounds in its room), and the clip itself as a string of speech tokens. A language model then reads your text and writes new speech tokens, one for every 40 milliseconds of audio, continuing in the style of the reference. Finally a decoder turns those tokens back into sound in the reference voice.</p>
+    <p>All three run here, on your graphics card, through WebGPU. The model is downloaded from Hugging Face the first time, about 560 MB, and kept by the browser, so the second visit starts in seconds. Your recording is resampled to 24 kHz, trimmed of silence at the ends and capped at fifteen seconds; it is never sent anywhere, and closing the tab discards it.</p>
+
+    <h2>Getting a good likeness</h2>
+    <p>The reference matters more than anything else. Record in a quiet, soft room: a bedroom or a car beats a kitchen, because hard surfaces add echo, and the model copies the room along with the voice. Hold the phone or microphone a hand's width from your mouth and speak as you want the result to sound. If you read flatly, the clone reads flatly. Ten seconds of continuous speech is plenty; more than fifteen does not improve the likeness. A clip with music, a second voice or heavy noise underneath gives a muddy clone; clean it first with <a href="/noise-reduction">noise reduction</a> or pull the voice out of a song with the <a href="/stem-splitter">AI vocal remover</a>.</p>
+    <p>Write the text the way it should be spoken, with punctuation, and keep sentences to a reasonable length; each one is generated separately and played as it arrives. Chatterbox Turbo also understands a few non-speech tags inline: <code>[laugh]</code>, <code>[chuckle]</code>, <code>[cough]</code> and <code>[sigh]</code>.</p>
+
+    <h2>Consent and honesty</h2>
+    <p>A cloned voice can be used to deceive: fake phone calls to relatives, messages put in someone's mouth, attempts to get past a bank's voice check. Do not clone anyone without their permission. The page will not start until you confirm that the voice is yours or that you have permission, and every file it writes carries a tag saying it is a cloned, synthetic voice. That tag is metadata and easy to strip, so it is a label, not protection. The responsibility is yours. In many places, using someone's voice without consent is unlawful as well as wrong.</p>
+
+    <h2>What it can't do</h2>
+    <p>It needs WebGPU. On a phone, or in Safari or Firefox without it, the page says so instead of crawling for minutes on the processor. It speaks English only. The likeness is good, not perfect: people who know the voice well will usually hear the difference, especially in emotion and rhythm. For a neutral narrator voice with no cloning, the <a href="/text-to-speech">text to speech</a> page is faster and needs no GPU. Commercial services such as ElevenLabs offer more languages and fine-tuned "professional" clones, but they work by uploading your voice to their servers.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my voice uploaded?</summary><p>No. The recording and the text stay in this browser tab, and the cloning model runs on your own graphics card. The only download is the model itself, which is the same for everyone.</p></details>
+      <details><summary>How long a recording does it need?</summary><p>About ten seconds of one person speaking clearly. Five is the minimum; anything past fifteen is not used.</p></details>
+      <details><summary>Why does it need WebGPU?</summary><p>The model writes speech one small token at a time, 25 per second of audio, and each token is a pass through a 350-million-parameter network. A graphics card does that quickly; a processor alone would take minutes per sentence.</p></details>
+      <details><summary>Can I clone a celebrity or someone else's voice?</summary><p>Only with their permission. The page asks you to confirm it before it starts, and every file is tagged as a cloned voice.</p></details>
+      <details><summary>Which languages does it speak?</summary><p>English. Resemble AI's multilingual Chatterbox covers 23 languages but is too large to run comfortably in a browser yet.</p></details>
+      <details><summary>Is it free?</summary><p>Yes: no account, no credits, no limit. Your own computer does the work.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record a clean reference first.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean a noisy sample before cloning it.</p></a>
+      <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>No GPU, or no need for a clone? Use a ready-made voice.</p></a>
+      <a class="card" href="/voice-changer"><h3>Voice changer</h3><p>Change your own recording instead.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Put the cloned lines against music or video.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01e"></script>
+<script src="/js/tool-graph.js?v=2026-10-01e"></script>
+<script src="/js/flow.js?v=2026-10-01e"></script>
+<script src="/js/audio-core.js?v=2026-10-01e"></script>
+<script src="/js/consent.js?v=2026-10-01e"></script>
+<script src="/js/tts-engine.js?v=2026-10-01e"></script>
+<script src="/js/clone-page.js?v=2026-10-01e"></script>
+<script src="/js/pwa.js?v=2026-10-01e"></script>
+</body>
+</html>

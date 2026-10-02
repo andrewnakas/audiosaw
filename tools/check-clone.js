@@ -117,10 +117,11 @@ async function ensure() {
         const y = window.__clone.result();
         if (!y) return { err: document.querySelector('#status').textContent };
         let ss = 0, pk = 0; for (let i = 0; i < y.length; i++) { ss += y[i] * y[i]; pk = Math.max(pk, Math.abs(y[i])); }
-        return { secs: y.length / 24000, rms: Math.sqrt(ss / y.length), peak: pk, ms: performance.now() - t0, y: Array.from(y) };
+        return { timing: window.__clone.stats(), secs: y.length / 24000, rms: Math.sqrt(ss / y.length), peak: pk, ms: performance.now() - t0, y: Array.from(y) };
       })()`, 1200000);
       if (r.err) { ok(false, v + ': ' + r.err); continue; }
       out[v] = r;
+      console.log('    ' + v + ' timing ' + JSON.stringify(r.timing));
       // What it actually said, by Whisper (cached in the profile by the
       // dictation check; skipped if it is not there and the network is slow).
       if (haveWhisper) r.heard = await page.eval(`(async () => {
@@ -155,11 +156,11 @@ async function ensure() {
       document.querySelector('#format').value = 'mp3'; document.querySelector('#dlBtn').click();
       for (let i = 0; i < 300 && !got.length; i++) await new Promise((r) => setTimeout(r, 100));
       CV.downloadBlob = orig;
-      if (!got.length) return {};
+      if (!got.length) return { none: true, status: document.querySelector('#status').textContent.slice(0, 160), dis: document.querySelector('#dlBtn').disabled };
       const u = new Uint8Array(await got[0].b.arrayBuffer());
-      return { id3: String.fromCharCode(u[0], u[1], u[2]), tag: new TextDecoder('utf-16le').decode(u.slice(0, 1200)).includes('cloned voice') };
+      return { id3: String.fromCharCode(u[0], u[1], u[2]), tag: [0, 1].some((o) => new TextDecoder('utf-16le').decode(u.slice(o, 1600 + o)).includes('cloned voice')) };   // frames can start on an odd byte
     })()`);
-    ok(dl.id3 === 'ID3' && dl.tag, 'the MP3 says it is a cloned voice');
+    ok(dl.id3 === 'ID3' && dl.tag, 'the MP3 says it is a cloned voice' + (dl.id3 === 'ID3' && dl.tag ? '' : ' — got ' + JSON.stringify(dl)));
     if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
   });
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }

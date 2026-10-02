@@ -11,7 +11,7 @@
 - Also records: a browser microphone recorder, not only a converter.
 - Also separates: neural vocal/instrumental stem splitting, on-device.
 - Also transcribes: OpenAI Whisper speech-to-text in the browser, with SRT/VTT subtitles.
-- Also speaks: Kokoro neural text-to-speech in the browser, 41 voices in 7 languages, voice blending, MP3/WAV download.
+- Also speaks: Kokoro neural text-to-speech in the browser, 41 voices in 7 languages, voice blending, MP3/WAV download; and zero-shot voice cloning (Chatterbox Turbo) on WebGPU, with consent.
 - Also edits: a multitrack audio editor with a mixer, live effects, MIDI tracks and autosave.
 - Privacy: files are processed in the browser tab and never transmitted.
 - Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
@@ -200,7 +200,7 @@ inside the browser tab, so the text is never uploaded and there is no character
 allowance. 41 voices (US/UK English, Spanish, French, Italian, Portuguese, Hindi) with grades, a mixer
 that blends up to three voices into a new one, speed control, and MP3, WAV or
 M4A download, playing each sentence as soon as it is generated. Limitations
-stated up front: no voice cloning, a calm narrator style
+stated up front: no cloning on that page (see /voice-cloning), a calm narrator style
 rather than acted emotion, and a one-time model download (326 MB for the GPU
 version, 92 MB for the smaller CPU one). Files are tagged as synthetic speech.
 
@@ -336,6 +336,7 @@ are much slower without a GPU.
 - [Text to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.
 - [Dictation (speech to text)](https://audiosaw.com/dictation): Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.
 - [Video dubbing (to English)](https://audiosaw.com/video-dubbing): Translate a video's speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.
+- [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from ten seconds of audio and make it say anything, on your own GPU, with the speaker's consent.
 
 ## Effects & remixes
 

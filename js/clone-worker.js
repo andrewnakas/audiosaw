@@ -150,6 +150,7 @@ async function reference(audio) {
 // sessions transformers.js created. Not model.generate(): through it the
 // same 27-word sentence stopped at 3.2 s, where this loop (and the Python
 // reference on the same files) gives 5.8 s.
+var lastTiming = null;
 var START = 6561, STOP = 6562, SILENCE = 4299, PENALTY = 1.2, MAX_TOKENS = 1000;
 
 async function synth(m) {
@@ -202,28 +203,53 @@ async function synth(m) {
   for (var k3 in past) { if (past[k3].location === 'gpu-buffer') past[k3].dispose(); }
 
   var body = gen.slice(1, gen[gen.length - 1] === STOP ? -1 : gen.length);
+  var tLm = Date.now() - t0;
   var samples = await decode(T, S, body);
+  lastTiming = { lm: tLm, dec: Date.now() - t0 - tLm, tokens: body.length };
   return { samples: samples, tokens: body.length, ms: Date.now() - t0 };
 }
 
-// The decoder renders 960 samples (40 ms) per speech token. On WebGPU its
-// last stage stops at 65,535 output samples, the per-dimension workgroup
-// limit: past 2.73 s the waveform was exact zeros (measured; the same files
-// on the CPU in Python fill all 5.8 s, and the browser's CPU build has no
-// kernel for the decoder's quantised gather). So the tokens are decoded in
-// windows of WIN, each with the same reference prompt and speaker, that
-// overlap by LAP tokens, and the overlaps are crossfaded. The last window
-// gets the three silence tokens the reference code appends.
-var WIN = 50, LAP = 10, SPT = 960;
+// The decoder renders 960 samples (40 ms) per speech token. On WebGPU it
+// cannot be given a whole sentence's tokens at once. Two faults, both
+// measured by decoding tokens the browser generated (which the Python
+// decoder turns into word-perfect speech) and transcribing with Whisper:
+//   - past 65,535 output samples (2.73 s) the waveform is exact zeros, the
+//     per-dimension workgroup limit;
+//   - well before that, the words degrade with the number of new tokens in
+//     one call: 12 or 16 tokens transcribe perfectly, 18-20 drop words, 25
+//     changes them, 50 is gibberish. It does not depend on the reference
+//     length (a 3 s reference behaved the same), so it is not total size.
+// So the tokens are decoded in windows of WIN, each with the same reference
+// prompt and speaker, overlapping by LAP tokens that are crossfaded. The
+// browser's CPU build cannot run the decoder at all (no kernel for its
+// quantised gather), so this is the way through.
+var WIN = 12, LAP = 4, SPT = 960;
+// Each window carries only the last PROMPT_KEEP reference tokens (and the
+// matching speaker-feature frames, two per token): the decoder's cost grows
+// with the prompt, every window pays it, and the speaker embedding carries
+// the timbre either way. Measured in Python on the same tokens: 142, 60 and
+// 30 prompt tokens all transcribe word for word, and 30 decodes 2.6x faster.
+var PROMPT_KEEP = 30;
+var promptCut = null;
+function cutPrompt(T) {
+  if (promptCut && promptCut.src === ref) return promptCut;
+  var p = ref.audio_tokens.ort_tensor.data, f = ref.speaker_features.ort_tensor;
+  var n = Math.min(PROMPT_KEEP, p.length), frames = Math.min(f.dims[1], 2 * n - 1), F = f.dims[2];
+  var fd = f.data.slice((f.dims[1] - frames) * F);
+  promptCut = { src: ref, tokens: p.slice(p.length - n), feat: new T('float32', fd, [1, frames, F]) };
+  return promptCut;
+}
+
 async function decodeWindow(T, S, toks, last) {
-  var prompt = ref.audio_tokens.ort_tensor.data, n = prompt.length + toks.length + (last ? 3 : 0);
+  var cut = cutPrompt(T);
+  var prompt = cut.tokens, n = prompt.length + toks.length + (last ? 3 : 0);
   var all = new BigInt64Array(n);
   all.set(prompt, 0);
   toks.forEach(function (t, i) { all[prompt.length + i] = BigInt(t); });
   if (last) for (var j = 0; j < 3; j++) all[prompt.length + toks.length + j] = BigInt(SILENCE);
   var wav = (await S.conditional_decoder.run({
     speech_tokens: new T('int64', all, [1, n]),
-    speaker_embeddings: ref.speaker_embeddings.ort_tensor, speaker_features: ref.speaker_features.ort_tensor
+    speaker_embeddings: ref.speaker_embeddings.ort_tensor, speaker_features: cut.feat
   })).waveform;
   var w = wav.location === 'gpu-buffer' ? await wav.getData(true) : wav.data;
   return new Float32Array(w);
@@ -252,7 +278,7 @@ self.onmessage = async function (e) {
     else if (m.type === 'reference') await reference(m.audio);
     else if (m.type === 'synth') {
       var r = await synth(m);
-      post('audio', { seq: m.seq, samples: r.samples, tokens: r.tokens, ms: r.ms }, [r.samples.buffer]);
+      post('audio', { seq: m.seq, samples: r.samples, tokens: r.tokens, ms: r.ms, timing: lastTiming }, [r.samples.buffer]);
     }
   } catch (err) {
     post('error', { seq: m.seq, message: (err && err.message) || String(err) });
