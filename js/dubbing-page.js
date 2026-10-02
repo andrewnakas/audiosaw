@@ -22,7 +22,7 @@
     return m ? m[1] : (window.AS_VERSION || '1');
   })();
 
-  if (typeof CV === 'undefined' || typeof AudioSaw === 'undefined' || typeof ASTTS === 'undefined' || typeof ASDub === 'undefined' || typeof ASSubs === 'undefined') {
+  if (typeof CV === 'undefined' || typeof AudioSaw === 'undefined' || typeof ASTTS === 'undefined' || typeof ASDub === 'undefined' || typeof ASSubs === 'undefined' || typeof ASDiar === 'undefined') {
     console.error('[video-dubbing] the /js/* includes must come before dubbing-page.js');
     return;
   }
@@ -34,7 +34,7 @@
   var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
   var controls = $('#controls'), goBtn = $('#convertBtn'), dubBtn = $('#dubBtn');
   var taskSel = $('#task'), langSel = $('#language'), modelSel = $('#model');
-  var voiceSel = $('#voice'), bgSel = $('#background');
+  var voiceSel = $('#voice'), bgSel = $('#background'), perSpk = $('#perSpeaker'), spkBox = $('#speakerVoices');
   var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
   var linesPanel = $('#linesPanel'), linesEl = $('#lines'), resultEl = $('#result'), videoEl = $('#preview');
   var dlVideo = $('#dlVideo'), dlAudio = $('#dlAudio'), dlSrt = $('#dlSrt');
@@ -42,6 +42,11 @@
 
   var file = null, orig = null, lines = null, outputs = null;
   var asr = null, tts = null, seq = 0, waiting = {};
+  // Per-speaker voices: speakerVoice[n] is the voice for speaker n.
+  // Defaults alternate a man's and a woman's voice, which is what makes two
+  // people easy to tell apart in a dub.
+  var DEFAULT_VOICES = ['am_michael', 'af_heart', 'bm_george', 'bf_emma', 'am_fenrir', 'af_bella'];
+  var speakerVoice = {}, speakers = 0;
   var baseTitle = document.title;
 
   ASTTS.fillVoiceSelect(voiceSel, false);
@@ -127,7 +132,15 @@
       var w = whisper();
       w.postMessage({ type: 'load', model: modelSel.value });
       var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: taskSel.value }, [audio.buffer]);
-      lines = ASDub.snapStarts(ASDub.merge(done.segments), r16.getChannelData(0), 16000);
+      var segs = done.segments;
+      speakers = 0; speakerVoice = {};
+      if (perSpk && perSpk.checked) {
+        setProgress(48, 'Telling the speakers apart…');
+        var d = await diarizeAudio(Float32Array.from(r16.getChannelData(0)));
+        if (d.turns.length) { segs = ASDiar.labelSegments(segs, d.turns); speakers = d.speakers; }
+      }
+      lines = ASDub.snapStarts(ASDub.merge(segs), r16.getChannelData(0), 16000);
+      renderSpeakerVoices();
       if (!lines.length) throw new Error('No speech was found in the soundtrack.');
       // Whisper is done: free its memory before Kokoro loads.
       asr.terminate(); asr = null;
@@ -144,6 +157,35 @@
     goBtn.disabled = false;
   }
 
+  function diarizeAudio(audio) {
+    return new Promise(function (resolve, reject) {
+      var w = new Worker('/js/diarize-worker.js?v=' + ASSET_V, { type: 'module' });
+      w.onmessage = function (e) {
+        var m = e.data || {};
+        if (m.type === 'status') CV.setStatus(statusEl, 'info', m.detail);
+        else if (m.type === 'done') { w.terminate(); resolve(m); }
+        else if (m.type === 'error') { w.terminate(); reject(new Error(m.message)); }
+      };
+      w.postMessage({ type: 'run', audio: audio, speakers: 0 }, [audio.buffer]);
+    });
+  }
+
+  function renderSpeakerVoices() {
+    if (!spkBox) return;
+    spkBox.innerHTML = '';
+    spkBox.hidden = speakers < 2;
+    for (var k = 1; k <= speakers; k++) {
+      var l = document.createElement('label'), sel = document.createElement('select');
+      ASTTS.fillVoiceSelect(sel, false);
+      sel.value = speakerVoice[k] = DEFAULT_VOICES[(k - 1) % DEFAULT_VOICES.length];
+      sel.dataset.k = k;
+      sel.addEventListener('change', function () { speakerVoice[this.dataset.k] = this.value; });
+      l.appendChild(document.createTextNode('Speaker ' + k + ' '));
+      l.appendChild(sel);
+      spkBox.appendChild(l);
+    }
+  }
+
   function renderLines() {
     linesEl.innerHTML = '';
     lines.forEach(function (ln, i) {
@@ -151,7 +193,7 @@
       row.className = 'dub-line';
       var t = document.createElement('span');
       t.className = 'dub-time';
-      t.textContent = fmtT(ln.start) + '–' + fmtT(ln.end);
+      t.textContent = fmtT(ln.start) + '–' + fmtT(ln.end) + (speakers > 1 && ln.speaker ? ' · Speaker ' + ln.speaker : '');
       var ta = document.createElement('textarea');
       ta.rows = 2; ta.value = ln.text; ta.setAttribute('aria-label', 'Line ' + (i + 1) + ' at ' + fmtT(ln.start));
       ta.addEventListener('input', function () { ln.text = ta.value; });
@@ -180,9 +222,10 @@
       var placed = [], dub24 = new Float32Array(Math.ceil(total * TTS_SR) + TTS_SR * 4), over = 0;
       for (var i = 0; i < live.length; i++) {
         setProgress(50 + 40 * i / live.length, 'Voicing line ' + (i + 1) + ' of ' + live.length + '…');
-        var x = await speak(live[i].text, id, 1);
+        var vid = speakers > 1 && live[i].speaker ? (speakerVoice[live[i].speaker] || id) : id;
+        var x = await speak(live[i].text, vid, 1);
         var f = ASDub.fit(live, i, x.length / TTS_SR, total);
-        if (f.speed > 1) x = await speak(live[i].text, id, f.speed);
+        if (f.speed > 1) x = await speak(live[i].text, vid, f.speed);
         var a = Math.round(f.start * TTS_SR);
         if (a + x.length > dub24.length) x = x.subarray(0, Math.max(0, dub24.length - a));
         dub24.set(x, a);
@@ -227,7 +270,7 @@
       CV.setStatus(statusEl, 'success', 'Dubbed ' + live.length + ' lines in ' + Math.round((Date.now() - t0) / 1000) + ' s' +
         (over ? '; ' + over + ' line' + (over > 1 ? 's run' : ' runs') + ' past the next — shorten ' + (over > 1 ? 'them' : 'it') + ' and dub again' : '') + '.');
       resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      window.__dub = { outputs: outputs, placed: placed, lines: live.map(function (l) { return { text: l.text, start: l.start, end: l.end }; }) };
+      window.__dub = { outputs: outputs, placed: placed, lines: live.map(function (l) { return { text: l.text, start: l.start, end: l.end, speaker: l.speaker || 0, voice: speakers > 1 && l.speaker ? speakerVoice[l.speaker] : voiceSel.value }; }) };
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not make the dub. ' + (e.message || e), e);
     }

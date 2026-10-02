@@ -35,10 +35,10 @@
       if (!text || s.start == null) return;
       var end = s.end != null ? s.end : s.start + Math.max(1, text.split(' ').length / 2.6);
       var last = out[out.length - 1];
-      if (last && s.start - last.end <= maxGap && end - last.start <= maxLen && !/[.!?]["')\]]?$/.test(last.text)) {
+      if (last && last.speaker === s.speaker && s.start - last.end <= maxGap && end - last.start <= maxLen && !/[.!?]["')\]]?$/.test(last.text)) {
         last.text += ' ' + text;
         last.end = end;
-      } else out.push({ text: text, start: s.start, end: end });
+      } else out.push({ text: text, start: s.start, end: end, speaker: s.speaker });
     });
     return out;
   }

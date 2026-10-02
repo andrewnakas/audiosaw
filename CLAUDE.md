@@ -990,8 +990,12 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   at each change.
 - **Re-voicing** on /video-dubbing works in es/fr/it/pt-br/hi as well as
   English (a Spanish case in check-dubbing); translation is into English only.
-- **Not done:** dubbing with a different voice per speaker; translating into
-  languages other than English.
+- **Per-speaker dubbing:** "a different voice for each speaker" runs the same
+  diarization; `ASDub.merge` never joins lines across a change of speaker,
+  and voices default to alternating man/woman. check-dubbing's two-person case
+  (DUBBING_BROWSER=1): both found, voices alternate, the man's lines 122 Hz
+  vs the woman's 197.
+- **Not done:** translating into languages other than English.
 
 ## The stem splitter
 

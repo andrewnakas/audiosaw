@@ -43,6 +43,10 @@ ok(lines[1].text === 'First, the flour' && lines[2].text === 'goes in.', 'a sent
   ok(Math.abs(d.slot - 1.15) < 1e-9, 'the last line\'s slot stops at the end of the video (' + d.slot.toFixed(2) + ' s)');
 }
 {
+  const m = D.merge([{ text: 'So we', start: 0, end: 1, speaker: 1 }, { text: 'went home', start: 1.1, end: 2, speaker: 2 }]);
+  ok(m.length === 2, 'fragments of different speakers are never joined into one line');
+}
+{
   const rate = 1000, n = 5000;
   const g = D.duck(n, rate, [{ start: 1, seconds: 1 }, { start: 3.5, seconds: 0.5 }], 18, 0.1);
   const low = Math.pow(10, -18 / 20);
@@ -196,7 +200,76 @@ async function browserEs() {
   });
 }
 
-browser().then(browserEs).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
+// Two speakers, one voice each: a Daniel/Samantha conversation dubbed with
+// "a different voice for each speaker" — two speakers found, voices
+// alternating with them, and the man's lines lower than the woman's.
+async function browserTwo() {
+  if (!process.env.DUBBING_BROWSER) return;
+  const fs = require('fs'), os = require('os'), path = require('path');
+  const { execFileSync } = require('child_process');
+  const { withPage } = require('./chrome-harness');
+  const mirror = require('./model-mirror');
+  require('../js/pitch-track.js');
+  const cache = path.join(os.homedir(), '.cache', 'audiosaw');
+  const SEG = 'onnx-community/pyannote-segmentation-3.0', EMB = 'onnx-community/wespeaker-voxceleb-resnet34-LM', WB = 'onnx-community/whisper-base';
+  mirror.fetch(SEG, ['config.json', 'preprocessor_config.json', 'onnx/model.onnx'], '733a93b6473d019a773298e08cefa686894b1854');
+  mirror.fetch(EMB, ['config.json', 'preprocessor_config.json', 'onnx/model.onnx'], '6a61a1833ff2583aabeba044f5c8221f00b67ceb');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-dub2-'));
+  const said = [['Daniel', 'Good morning, thanks for coming in today.'], ['Samantha', 'Happy to be here, it has been a busy week.'], ['Daniel', 'Tell me about the new bridge.'], ['Samantha', 'We widened the footpath and added lights.']];
+  const parts = [];
+  said.forEach(([v, t], i) => { const f = path.join(dir, i + '.aiff'); execFileSync('say', ['-v', v, '-o', f, t]); parts.push(f); });
+  const vid = path.join(dir, 'in.mp4');
+  const inputs = [].concat(...parts.map((p) => ['-i', p]));
+  const filt = parts.map((_, i) => '[' + (i + 1) + ':a]apad=pad_dur=0.6[a' + i + ']').join(';') + ';' + parts.map((_, i) => '[a' + i + ']').join('') + 'concat=n=' + parts.length + ':v=0:a=1,adelay=600|600[a]';
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=gray:s=320x240:r=25:d=16'].concat(inputs, ['-filter_complex', filt, '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', '-ac', '2', '-shortest', vid]));
+  await withPage({
+    headers: true,
+    routes: Object.assign(mirror.routes([WB, SEG, EMB]), {
+      '/__in.mp4': () => fs.readFileSync(vid),
+      '/__kokoro/model_quantized.onnx': () => fs.readFileSync(path.join(cache, 'kokoro', 'model_quantized.onnx')),
+      '/__kokoro/am_michael.bin': () => fs.readFileSync(path.join(cache, 'kokoro', 'am_michael.bin')),
+      '/__kokoro/af_heart.bin': () => fs.readFileSync(path.join(cache, 'kokoro', 'af_heart.bin')),
+      '/__core.wasm': () => fs.readFileSync(path.join(cache, 'ffmpeg-core-0.12.6.wasm'))
+    })
+  }, async (page) => {
+    page.listen('Fetch.requestPaused', (p) => {
+      const u = p.request.url;
+      const hf = /huggingface\.co\/(onnx-community\/(?:whisper-base|pyannote-segmentation-3\.0|wespeaker-voxceleb-resnet34-LM))\/resolve\/[^/]+\/([^?]+)/.exec(u);
+      const to = hf ? '/__hf/' + hf[1] + '/' + hf[2] : /ffmpeg-core\.wasm/.test(u) ? '/__core.wasm' : '/__kokoro/' + u.split('?')[0].split('/').pop();
+      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(to) });
+    });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/*' }, { urlPattern: '*unpkg.com*ffmpeg-core.wasm*' }] });
+    await page.goto('/video-dubbing?backend=wasm', 1500);
+    const r = await page.eval(`(async () => {
+      const f = new File([await (await fetch('/__in.mp4')).blob()], 'talk.mp4', { type: 'video/mp4' });
+      const dt = new DataTransfer(); dt.items.add(f);
+      const inp = document.querySelector('#fileInput'); inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+      document.querySelector('#task').value = 'transcribe'; document.querySelector('#language').value = 'en';
+      document.querySelector('#perSpeaker').checked = true;
+      await window.__dubPage.transcribe();
+      if (!window.__dubPage.state().lines) return { err: document.querySelector('#status').textContent };
+      const boxes = document.querySelectorAll('#speakerVoices select').length;
+      await window.__dubPage.dub();
+      const d = window.__dub;
+      if (!d || !d.outputs.audio) return { err: 'dub: ' + document.querySelector('#status').textContent };
+      const ab = await AudioSaw.decodeToAudioBuffer(new File([d.outputs.audio], 'd.mp3'), null, { quiet: true });
+      const ch = Array.from(ab.getChannelData(0));
+      return { boxes, lines: d.lines, placed: d.placed, rate: ab.sampleRate, ch };
+    })()`, 1800000);
+    ok(!r.err, 'two speakers: transcribed, labelled and dubbed' + (r.err ? ' — ' + r.err : ''));
+    if (r.err) return;
+    const spk = [...new Set(r.lines.map((l) => l.speaker))];
+    ok(spk.length === 2 && r.boxes === 2, 'two speakers found, with a voice picker each (' + JSON.stringify(r.lines.map((l) => l.speaker + ':' + l.voice)) + ')');
+    const alt = r.lines.every((l, i) => i === 0 || l.speaker !== r.lines[i - 1].speaker);
+    ok(alt && new Set(r.lines.map((l) => l.voice)).size === 2, 'the voices alternate with the speakers');
+    const x = Float32Array.from(r.ch), f0 = (a, b) => { const fr = ASPitch.track(x.subarray(Math.floor(a * r.rate), Math.floor(b * r.rate)), r.rate, { minHz: 60, maxHz: 400 }).filter((q) => q.clarity > 0.8).map((q) => q.hz).sort((p, q) => p - q); return fr.length ? fr[fr.length >> 1] : 0; };
+    const by = {}; r.placed.forEach((p, i) => { const v = r.lines[i].voice; (by[v] = by[v] || []).push(f0(p.start, p.start + p.seconds)); });
+    const med = (a) => a.filter(Boolean).sort((p, q) => p - q)[a.length >> 1] || 0;
+    ok(med(by.am_michael || []) > 0 && med(by.am_michael) < med(by.af_heart || []), 'the man\'s lines are lower than the woman\'s (' + med(by.am_michael || []).toFixed(0) + ' Hz vs ' + med(by.af_heart || []).toFixed(0) + ' Hz)');
+  });
+}
+
+browser().then(browserEs).then(browserTwo).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
   console.log('\ncheck-dubbing: all good');
 });
