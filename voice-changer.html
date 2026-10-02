@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Changer — deeper, higher, robot or radio voice, free and in your browser</title>
+<meta name="description" content="Change the voice in a recording: deeper or higher without the slowed-tape sound, more masculine or feminine, robot, monster, chipmunk, radio or telephone. Separate pitch and formant controls. Free, no upload.">
+<meta name="keywords" content="voice changer, voice changer online free, deep voice changer, make voice deeper, robot voice, voice changer for recordings, female to male voice changer, formant shifter, change voice in audio file">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/voice-changer">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Voice Changer — separate pitch and formant, in your browser">
+<meta property="og:description" content="Deeper, higher, robot, monster, radio or telephone voice for any recording. Pitch and formant move independently. Free, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/voice-changer">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Voice Changer",
+  "url": "https://audiosaw.com/voice-changer",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Voice changer for recordings with independent pitch and formant shifting (PSOLA); presets for deeper, higher, masculine, feminine, chipmunk, monster, robot, alien, radio, telephone and cave; preview; batch; keeps sample rate and length; no upload",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.vc-sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;margin:1rem 0}
+.vc-slider{display:flex;flex-direction:column;gap:.35rem}
+.vc-slider input{width:100%}
+.vc-val{font-variant-numeric:tabular-nums;color:var(--ink-soft,#5b5346);font-size:.9rem}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, and is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"Free, no signup, and nothing is uploaded. The processing runs in your browser tab, so the recording never leaves your computer."}},{"@type":"Question","name":"How do I make my voice deeper without it sounding slowed down?","acceptedAnswer":{"@type":"Answer","text":"Choose the Deeper preset, or lower the pitch by three or four semitones and the formant by about one. The pitch moves without the formants, which is what keeps it sounding like a person rather than a slowed tape."}},{"@type":"Question","name":"Can it make a male voice sound female, or the reverse?","acceptedAnswer":{"@type":"Answer","text":"The More feminine and More masculine presets move pitch and formants by roughly the difference between typical adult voices. The result is noticeably different, but speaking style matters as much as pitch, so it will not fully convince on its own."}},{"@type":"Question","name":"Does it work on singing?","acceptedAnswer":{"@type":"Answer","text":"Yes, on a solo voice. For a voice in a song, separate it first with the AI vocal remover, change it, and mix it back in the audio editor."}},{"@type":"Question","name":"Does it change the length of the file?","acceptedAnswer":{"@type":"Answer","text":"No. The output is the same length as the original to the sample, so it still lines up with video. The one exception is the cave preset, which adds its echo tail at the end."}},{"@type":"Question","name":"Can I use it live on Discord or in a game?","acceptedAnswer":{"@type":"Answer","text":"No. It processes recordings. Live voice changing needs a program that sits between the microphone and the app, such as Voicemod or Clownfish."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Voice changer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Voice changer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Voice <span class="ital">changer</span>. Deeper, higher, robot, radio.</h1>
+    <p>Change how a voice sounds in a recording: deeper or higher while still sounding like a person, more masculine or more feminine, or something else entirely — robot, monster, chipmunk, old radio, a phone line. Pitch and formants are separate controls, which is what keeps a lowered voice from sounding like a slowed-down tape. Runs in your browser; nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a voice recording</p>
+      <p>MP3, WAV, M4A, voice memos, FLAC. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,.m4a,.opus,.caf" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Voice
+          <select id="preset">
+            <option value="deeper" selected>Deeper</option>
+            <option value="higher">Higher</option>
+            <option value="male">More masculine</option>
+            <option value="female">More feminine</option>
+            <option value="chipmunk">Chipmunk</option>
+            <option value="monster">Monster</option>
+            <option value="robot">Robot</option>
+            <option value="alien">Alien</option>
+            <option value="radio">Old radio</option>
+            <option value="telephone">Telephone</option>
+            <option value="cave">Cave echo</option>
+            <option value="custom">Custom — just the sliders</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="320">320 kbps — maximum</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
+          </select>
+        </label>
+      </div>
+      <div class="vc-sliders">
+        <label class="vc-slider">Pitch <span class="vc-val" id="pitchVal"></span>
+          <input type="range" id="pitch" min="-12" max="12" step="0.5" value="-4">
+        </label>
+        <label class="vc-slider">Formant (voice size) <span class="vc-val" id="formantVal"></span>
+          <input type="range" id="formant" min="-6" max="6" step="0.5" value="-1.5">
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="previewBtn" type="button">▶ Preview 8 s</button>
+        <button class="btn" id="convertBtn" disabled>Change voice</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Method</th><td>Pitch-synchronous overlap-add (PSOLA) for pitch, sinc resampling for formants, so the two move independently</td></tr>
+        <tr><th>Pitch range</th><td>One octave down to one octave up, in half-semitone steps</td></tr>
+        <tr><th>Accuracy</th><td>Within 3 cents of the requested pitch on a test voice, with the length unchanged to the sample</td></tr>
+        <tr><th>Presets</th><td>Deeper, higher, more masculine, more feminine, chipmunk, monster, robot, alien, old radio, telephone, cave</td></tr>
+        <tr><th>Keeps</th><td>The sample rate, channels and length of the original</td></tr>
+        <tr><th>Uploads your file</th><td>No — everything runs in the page</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Pitch and formant: why there are two sliders</h2>
+    <p>A voice has two separate qualities that people tend to lump together as "how deep it sounds". <strong>Pitch</strong> is the note: how fast the vocal folds vibrate, around 100–130 times a second for a typical adult male speaking voice and 180–220 for a typical female one. <strong>Formants</strong> are the resonances of the throat, mouth and nose that turn that buzz into vowels. Their positions depend on the size and shape of the vocal tract, which is why a child and an adult singing the same note still sound nothing alike.</p>
+    <p>Speeding up or slowing down a recording moves both by the same amount. That is the chipmunk effect, and it is also why most "deep voice" apps sound like a slowed tape rather than a large person. This tool cuts the voice into slices one vocal-fold cycle long and lays them back down closer together or further apart. That changes the pitch without changing the slices themselves, so the formants stay put. The formant slider then moves the resonances on their own, by resampling before the slices are cut. Lower both and you get a bigger, darker person; lower just the pitch and you get the same person speaking lower; raise just the formants and the voice sounds younger or smaller at the same note.</p>
+
+    <h2>Getting a convincing result</h2>
+    <p>For a believable deeper or higher voice, stay within about four semitones and move the formant a little in the same direction, about a third as far. The <em>Deeper</em> and <em>Higher</em> presets do exactly that. <em>More masculine</em> and <em>More feminine</em> go further on both, which is roughly the difference between typical adult voices. They will not turn one person into a convincing other person, and they are not meant to. Past six or seven semitones every pitch shifter starts to sound processed, because real voices change the way they are produced, not just their note, when they go that far.</p>
+    <p>Use <strong>Preview 8 s</strong> to hear the current setting on the start of your file before processing all of it. Clean, dry recordings shift best. Background music or a second voice confuses the pitch detection, so separate the voice first with the <a href="/stem-splitter">AI vocal remover</a>, and reduce hiss with <a href="/noise-reduction">noise reduction</a> before rather than after.</p>
+
+    <h2>The character presets</h2>
+    <p><strong>Robot</strong> flattens the voice to a single note (110 Hz) and adds ring modulation, which is the classic science-fiction approach: the words stay intelligible but the melody of speech disappears. <strong>Monster</strong> drops the pitch ten semitones and the formants by about a quarter, then adds drive and a dark room. <strong>Alien</strong> raises both slightly and rings the voice against a 180 Hz tone. <strong>Old radio</strong> and <strong>Telephone</strong> cut the voice down to the narrow band those devices carry: roughly 300 Hz to 3.4 kHz for a phone line, with an 8 kHz sample-rate grit on top. <strong>Cave</strong> adds a long reverb with a tail, so the file gets a few seconds longer.</p>
+    <p>Every preset sets the sliders when you choose it, and the sliders can then adjust its pitch and formant. A "monster, but less" is one slider move.</p>
+
+    <h2>What it can't do</h2>
+    <p>This is a voice <em>changer</em>, not a voice cloner: it changes the character of the voice in the recording but cannot make it sound like a specific other person. Desktop tools such as RVC and VoiceStudio do that with neural models trained per voice. It processes recordings, not a live microphone feed for calls or streams; for that, a real-time app such as Voicemod sits between your microphone and the other program. If you need a voice that was never recorded at all, the <a href="/text-to-speech">text to speech</a> page generates one from typed text.</p>
+    <p>The output keeps the original's sample rate, channel count and length to the sample, except for the cave preset, whose echo adds a tail. Sent from the <a href="/audio-editor">audio editor</a>, the changed clip comes back lined up exactly where it was.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is it free, and is my recording uploaded?</summary><p>Free, no signup, and nothing is uploaded. The processing runs in your browser tab, so the recording never leaves your computer.</p></details>
+      <details><summary>How do I make my voice deeper without it sounding slowed down?</summary><p>Choose the Deeper preset, or lower the pitch by three or four semitones and the formant by about one. The pitch moves without the formants, which is what keeps it sounding like a person rather than a slowed tape.</p></details>
+      <details><summary>Can it make a male voice sound female, or the reverse?</summary><p>The More feminine and More masculine presets move pitch and formants by roughly the difference between typical adult voices. The result is noticeably different, but speaking style matters as much as pitch, so it will not fully convince on its own.</p></details>
+      <details><summary>Does it work on singing?</summary><p>Yes, on a solo voice. For a voice in a song, separate it first with the AI vocal remover, change it, and mix it back in the audio editor.</p></details>
+      <details><summary>Does it change the length of the file?</summary><p>No. The output is the same length as the original to the sample, so it still lines up with video. The one exception is the cave preset, which adds its echo tail at the end.</p></details>
+      <details><summary>Can I use it live on Discord or in a game?</summary><p>No. It processes recordings. Live voice changing needs a program that sits between the microphone and the app, such as Voicemod or Clownfish.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Pull the voice out of a song before changing it.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean the recording first; hiss confuses the pitch tracking.</p></a>
+      <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>Need a voice that was never recorded? Generate one.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Put the changed voice back against music or video.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Shift a whole song's key instead of a voice.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record something to change.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/project-link.js?v=2026-10-01c"></script>
+<script src="/js/audio-core.js?v=2026-10-01c"></script>
+<script src="/js/loudness.js?v=2026-10-01c"></script>
+<script src="/js/tool-shell.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/resample.js?v=2026-10-01c"></script>
+<script src="/js/pitch-track.js?v=2026-10-01c"></script>
+<script src="/js/voice-fx.js?v=2026-10-01c"></script>
+<script src="/js/voice-changer.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
+</body>
+</html>

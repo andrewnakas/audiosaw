@@ -17,8 +17,16 @@
  * 96 kHz / 24-bit file, about a minute. check-record-computer.js records a real
  * tab through /record-computer-audio, about fifteen seconds. check-errors.js
  * pins the convert_error buckets and drives the failures behind them (0-byte,
- * unreadable and ffmpeg-only files, refused microphones). All of them skip
- * their browser parts on a machine without Chrome.
+ * unreadable and ffmpeg-only files, refused microphones). check-voice.js
+ * holds the voice changer's pitch and formant claims in Node. check-tts.js
+ * tests the text-to-speech engine in Node and, when the Kokoro files are in
+ * ~/.cache/audiosaw/kokoro (TTS_DOWNLOAD=1 fetches them once, 420 MB), the
+ * page on both backends. check-audiobook.js parses books (text, EPUB) in
+ * Node and, with those files and the ffmpeg core cached, makes an M4B and
+ * reads its chapters back with ffprobe. check-dictation.js holds the
+ * phrase splitter behind /dictation (DICTATION_BROWSER=1 adds the page with
+ * a spoken sentence through Whisper). All of them skip their browser parts on a machine
+ * without Chrome.
  */
 const { execFileSync } = require('child_process');
 const path = require('path');
@@ -45,7 +53,13 @@ const CHECKS = [
   ['check-midi-track.js'],
   ['check-record-computer.js'],
   ['check-fidelity.js'],
-  ['check-errors.js']
+  ['check-errors.js'],
+  ['check-voice.js'],
+  ['check-tts.js'],
+  ['check-audiobook.js'],
+  ['check-dictation.js'],
+  ['check-dubbing.js'],
+  ['check-clone.js']
 ];
 
 let failed = 0;

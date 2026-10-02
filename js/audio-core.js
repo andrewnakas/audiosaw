@@ -996,7 +996,13 @@
   }
 
   // Run one ffmpeg command over one input. `input` is a File, Blob or bytes.
-  async function runFFmpeg(input, inExt, args, outExt, mime, onProgress, label) {
+  // extra (optional): { files: [{ name, data: Uint8Array }], raw: bool }.
+  // The files are written next to the input and removed afterwards, so args
+  // can name them (a concat list, an ffmetadata chapter file). With raw, args
+  // carry their own -i and `input` may be null: the M4B writer concatenates
+  // many chapter files, so there is no single primary input.
+  async function runFFmpeg(input, inExt, args, outExt, mime, onProgress, label, extra) {
+    extra = extra || {};
     // Download occupies 55–90 on a cold start and collapses to a single jump to
     // 60 when the core is already cached, so the bar never runs backwards.
     var loadEnd = 60;
@@ -1014,7 +1020,12 @@
     var stamp = Date.now() + '_' + Math.floor(Math.random() * 1e6);
     var inName = 'in_' + stamp + '.' + (inExt || 'bin');
     var outName = 'out_' + stamp + '.' + outExt;
-    await ffmpeg.writeFile(inName, input instanceof Uint8Array ? input : await fetchFile(input));
+    if (input != null) await ffmpeg.writeFile(inName, input instanceof Uint8Array ? input : await fetchFile(input));
+    var extraNames = [];
+    for (var xf = 0; xf < (extra.files || []).length; xf++) {
+      await ffmpeg.writeFile(extra.files[xf].name, extra.files[xf].data);
+      extraNames.push(extra.files[xf].name);
+    }
 
     // Named so it can be removed again. Registering an anonymous listener per
     // call left every previous conversion's closure attached and firing.
@@ -1039,7 +1050,7 @@
 
     var data, ret, failed = false;
     try {
-      ret = await ffmpeg.exec(['-i', inName].concat(args, [outName]));
+      ret = await ffmpeg.exec((extra.raw ? [] : ['-i', inName]).concat(args, [outName]));
       // A failed run leaves no output file, and readFile then throws a bare
       // "ErrnoError: FS error" that says nothing about the file.
       if (!ret) data = await ffmpeg.readFile(outName);
@@ -1049,7 +1060,8 @@
     } finally {
       try { ffmpeg.off('progress', onFFProgress); } catch (e) {}
       try { ffmpeg.off('log', onFFLog); } catch (e) {}
-      try { await ffmpeg.deleteFile(inName); } catch (e) {}
+      if (input != null) { try { await ffmpeg.deleteFile(inName); } catch (e) {} }
+      for (var xd = 0; xd < extraNames.length; xd++) { try { await ffmpeg.deleteFile(extraNames[xd]); } catch (e) {} }
       try { await ffmpeg.deleteFile(outName); } catch (e) {}
       // A failed run leaves the wasm heap in a state where the next exec dies
       // with "memory access out of bounds", so throw that instance away.

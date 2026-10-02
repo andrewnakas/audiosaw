@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-01b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -181,7 +181,7 @@ gtag('config', 'G-5X9ERMVYXE');
       <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
       <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
       <a href="/slowed-reverb" title="Slowed + Reverb Maker">slowed + reverb</a>
-      <a href="/tools" class="task-picker-all">all 69 tools &rarr;</a>
+      <a href="/tools" class="task-picker-all">all 74 tools &rarr;</a>
     </div>
   </section>
 <!-- /AS:jobs -->
@@ -214,7 +214,7 @@ gtag('config', 'G-5X9ERMVYXE');
 <!-- AS:home -->
   <section class="rails">
     <h2><span class="num">02.</span>Pick a tool</h2>
-    <p class="rails-intro">All 69, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+    <p class="rails-intro">All 74, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
 
     <div class="rail rail-is-chips" data-rail="convert">
       <div class="rail-head">
@@ -330,6 +330,27 @@ gtag('config', 'G-5X9ERMVYXE');
       </ul>
     </div>
 
+    <div class="rail" data-rail="voice">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-voice">Voice &amp; speech <span class="rail-count">6</span></h3>
+          <p>Speech to text and text to speech, with the models running in your tab.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-voice">
+        <li><a href="/text-to-speech"><span class="rail-tile-title">Text to speech</span><span class="rail-tile-blurb">Natural AI voices that run in your browser: 41 voices in 7 languages, voice mixing, MP3 download, nothing uploaded.</span></a></li>
+        <li><a href="/audio-to-text"><span class="rail-tile-title">Audio to text (transcription)</span><span class="rail-tile-blurb">Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.</span></a></li>
+        <li><a href="/dictation"><span class="rail-tile-title">Dictation (speech to text)</span><span class="rail-tile-blurb">Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.</span></a></li>
+        <li><a href="/video-dubbing"><span class="rail-tile-title">Video dubbing (to English)</span><span class="rail-tile-blurb">Translate a video's speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.</span></a></li>
+        <li><a href="/voice-changer"><span class="rail-tile-title">Voice changer</span><span class="rail-tile-blurb">Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.</span></a></li>
+        <li><a href="/text-to-audiobook"><span class="rail-tile-title">Text to audiobook</span><span class="rail-tile-blurb">An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.</span></a></li>
+      </ul>
+    </div>
+
     <div class="rail" data-rail="fx">
       <div class="rail-head">
         <div>
@@ -354,7 +375,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="apps">
       <div class="rail-head">
         <div>
-          <h3 id="rail-apps">For a specific app or device <span class="rail-count">9</span></h3>
+          <h3 id="rail-apps">For a specific app or device <span class="rail-count">8</span></h3>
           <p>One program, one spec, already filled in — so the import works first try.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -363,7 +384,6 @@ gtag('config', 'G-5X9ERMVYXE');
         </div>
       </div>
       <ul class="rail-row" aria-labelledby="rail-apps">
-        <li><a href="/audio-to-text"><span class="rail-tile-title">Audio to text (transcription)</span><span class="rail-tile-blurb">Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.</span></a></li>
         <li><a href="/audio-for-whisper"><span class="rail-tile-title">Audio for Whisper</span><span class="rail-tile-blurb">16 kHz mono WAV — exactly what Whisper wants, in one click.</span></a></li>
         <li><a href="/podcast-prep"><span class="rail-tile-title">Podcast prep</span><span class="rail-tile-blurb">Normalize, mono mixdown and MP3 encode in a single pass.</span></a></li>
         <li><a href="/discord-audio-compressor"><span class="rail-tile-title">Compress audio for Discord</span><span class="rail-tile-blurb">Fits under the upload limit without you doing the maths.</span></a></li>
@@ -526,7 +546,15 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/tuner">tuner</a>
         <a href="/split-audio">split</a>
         <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
         <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
       </div>
       <div class="footer-col">
         <h4>Effects &amp; remixes</h4>
@@ -551,12 +579,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-10-01b"></script>
-<script src="/js/tool-graph.js?v=2026-10-01b"></script>
-<script src="/js/flow.js?v=2026-10-01b"></script>
-<script src="/js/audio-core.js?v=2026-10-01b"></script>
-<script src="/js/universal-converter.js?v=2026-10-01b"></script>
-<script src="/js/consent.js?v=2026-10-01b"></script>
-<script src="/js/pwa.js?v=2026-10-01b"></script>
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/audio-core.js?v=2026-10-01c"></script>
+<script src="/js/universal-converter.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
 </body>
 </html>

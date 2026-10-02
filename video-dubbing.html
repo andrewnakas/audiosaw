@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Dubbing — translate a video to English with an AI voice-over, free</title>
+<meta name="description" content="Dub a video into English in your browser: Whisper translates the speech, you check the lines, and an AI voice reads them over the original, timed to it. The video is never uploaded. MP4, SRT and MP3 out.">
+<meta name="keywords" content="ai video dubbing, dub video to english, translate video to english, ai voice over, video translator, free dubbing, auto dub, english voice over generator, dubbing without upload">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/video-dubbing">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Video Dubbing — any language to an English voice-over, in your browser">
+<meta property="og:description" content="Whisper translates, you check the lines, an AI voice reads them over the original. Nothing uploaded. Free.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/video-dubbing">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-01c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Video Dubbing (English voice-over)",
+  "url": "https://audiosaw.com/video-dubbing",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Video dubbing into English in the browser: Whisper transcription and translation, editable lines, Kokoro AI voice timed to the original, original audio ducked or replaced, video stream copied, MP4, MP3 and SRT output, no upload",
+  "dateModified": "2026-10-01"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.dub-lines{max-height:28rem;overflow:auto;border:1px solid var(--line,#d9cdb8);border-radius:8px;padding:.25rem .75rem;margin:.75rem 0}
+.dub-line{display:grid;grid-template-columns:7.5rem 1fr auto;gap:.5rem .75rem;align-items:start;padding:.45rem 0;border-bottom:1px dashed var(--line,#d9cdb8)}
+.dub-line:last-child{border-bottom:0}
+.dub-line textarea{width:100%;box-sizing:border-box;font:inherit;line-height:1.45;padding:.3rem .45rem;border:1px solid var(--line,#d9cdb8);border-radius:6px;background:var(--paper,#fff);color:inherit;resize:vertical}
+.dub-time,.dub-state{font-size:.85rem;color:var(--ink-soft,#5b5346);font-variant-numeric:tabular-nums;padding-top:.35rem}
+@media (max-width:560px){.dub-line{grid-template-columns:1fr}.dub-time,.dub-state{padding-top:0}}
+#preview{width:100%;max-height:60vh;border-radius:8px;background:#000;margin:.75rem 0}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed, voiced and re-assembled in this browser tab. The only downloads are the speech and voice models, which are the same for everyone."}},{"@type":"Question","name":"Which languages can it dub from?","acceptedAnswer":{"@type":"Answer","text":"Whisper understands 99 languages and translates them into English. Accuracy is best for widely spoken languages; for others, pick the language and use the small model."}},{"@type":"Question","name":"Can it dub into Spanish, French or other languages?","acceptedAnswer":{"@type":"Answer","text":"Not yet: the dub is English only. Whisper translates only into English, and the voices here are English."}},{"@type":"Question","name":"Does it re-encode my video?","acceptedAnswer":{"@type":"Answer","text":"No. The picture is copied exactly; only the soundtrack is new. The file comes back as MP4."}},{"@type":"Question","name":"Will the voice sound like the original speaker?","acceptedAnswer":{"@type":"Answer","text":"No. It uses one of 28 built-in voices. Matching the original speaker's voice would need voice cloning, which requires models far too large for a browser tab."}},{"@type":"Question","name":"Can I fix the translation before it is spoken?","acceptedAnswer":{"@type":"Answer","text":"Yes. After transcription every line is shown in an editable box with its time; the voice reads whatever is in the boxes when you press Make the dub."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Video dubbing (to English)"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Video dubbing (to English)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Video <span class="ital">dubbing</span>, into English, in your browser.</h1>
+    <p>Drop a video in any language and get it back with an English voice-over, timed to the original speech. Whisper transcribes and translates the soundtrack, you check the lines, and an AI voice reads them over the original with the music and effects kept underneath. All of it runs in this tab: the video is never uploaded, so this works for footage you can't share with a cloud service.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a video</p>
+      <p>MP4, MOV, WebM, or an audio file. Up to about 600 MB.</p>
+      <input type="file" id="fileInput" accept="video/*,audio/*,.mkv,.m4v">
+    </div>
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>The video is
+          <select id="task">
+            <option value="translate" selected>In another language: translate to English</option>
+            <option value="transcribe">Already in English: re-voice it</option>
+          </select>
+        </label>
+        <label>Spoken language
+          <select id="language">
+            <option value="auto" selected>Detect automatically</option>
+            <option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option>
+            <option value="it">Italian</option><option value="pt">Portuguese</option><option value="nl">Dutch</option>
+            <option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="pl">Polish</option>
+            <option value="tr">Turkish</option><option value="ar">Arabic</option><option value="hi">Hindi</option>
+            <option value="id">Indonesian</option><option value="vi">Vietnamese</option><option value="zh">Chinese</option>
+            <option value="ja">Japanese</option><option value="ko">Korean</option><option value="en">English</option>
+          </select>
+        </label>
+        <label>Speech model
+          <select id="model">
+            <option value="onnx-community/whisper-base" selected>Whisper base (135 MB)</option>
+            <option value="onnx-community/whisper-small">Whisper small (285 MB, better translation)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>1. Transcribe</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="linesPanel" hidden>
+      <h2 class="control-note">The English lines, with their times — fix anything before the voice reads it</h2>
+      <div class="dub-lines" id="lines"></div>
+      <div class="controls">
+        <label>Voice <select id="voice"></select></label>
+        <label>Original soundtrack
+          <select id="background">
+            <option value="duck" selected>Keep it, turned down under the new voice</option>
+            <option value="keep">Keep it at full level</option>
+            <option value="replace">Replace it: new voice only</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="dubBtn">2. Make the dub</button>
+      </div>
+    </div>
+
+    <div id="result" hidden>
+      <video id="preview" controls playsinline hidden></video>
+      <div class="result-actions">
+        <button class="btn" id="dlVideo" hidden>Download dubbed MP4</button>
+        <button class="btn btn-secondary" id="dlAudio">Download the soundtrack (MP3)</button>
+        <button class="btn btn-secondary" id="dlSrt">Download English subtitles (.srt)</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Speech recognition</th><td>OpenAI Whisper (base or small), translating from 99 languages into English</td></tr>
+        <tr><th>Voice</th><td>Kokoro-82M, 28 American and British English voices</td></tr>
+        <tr><th>Timing</th><td>Each line starts where the original phrase started; a line that runs long is read up to 1.3× faster, and anything still over is flagged for you to shorten</td></tr>
+        <tr><th>Original audio</th><td>Turned down 18 dB under each line, kept at full level, or replaced</td></tr>
+        <tr><th>Video</th><td>Copied untouched, not re-encoded: same picture, same quality</td></tr>
+        <tr><th>Outputs</th><td>Dubbed MP4, the new soundtrack as MP3, English subtitles as SRT</td></tr>
+        <tr><th>Uploads your video</th><td>No — everything runs in this tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <p>The soundtrack is decoded in the browser and handed to Whisper, which returns the speech as timed phrases, translated into English if you asked for that. Fragments are joined into natural lines, but never across a pause or a full stop, and you see them in a list with their times. This is the moment to fix a name or soften a clumsy translation. Machine translation of speech is good enough to follow a video, not good enough to publish unread.</p>
+    <p>Then each line is read by Kokoro, an open neural voice, and placed where the original phrase began. English often runs longer than the language it came from, so a line that would overrun the start of the next one is read again slightly faster, up to 1.3×, which is about as fast as a voice stays natural. Past that, the line is allowed to run on and is marked in the list, so you can shorten its wording and dub again. The original soundtrack is turned down by 18 dB under each line and left alone in between, so music, effects and the presence of the original speakers stay; that is how most documentary voice-over is mixed. Finally the new soundtrack is muxed onto the video with the picture copied bit for bit, so nothing is re-compressed.</p>
+
+    <h2>Good results</h2>
+    <p>Clear speech with modest background works best; a single presenter, an interview, a lecture, a cooking or how-to video. For a translation, choose Whisper <strong>small</strong>: its translations are noticeably better than base's, at the cost of a bigger download and more time. Pick the spoken language yourself if the video starts with music. Choose a voice that suits the speaker; Michael and Fenrir are steady male narrators, Heart and Bella the most natural female voices. If the original speech is still too present under the new voice, choose "Replace it", or separate the voice from the music first with the <a href="/stem-splitter">AI vocal remover</a> and dub the instrumental.</p>
+
+    <h2>What it can't do</h2>
+    <p>It produces English only: the voices on this site are English, and Whisper translates only into English. It uses one voice for everyone, so an interview between two people comes back read by one narrator; Whisper does not tell speakers apart. The voice does not match the original speaker's voice or emotion and is not lip-synced: this is voice-over dubbing, as on news and documentaries, not the studio kind where actors match mouth movements. Cloud services such as ElevenLabs and Rask do voice cloning and lip-sync by uploading your video to their servers and charging by the minute. Long videos take a while: transcription runs at a fraction of the video's length on a GPU, and the voice at about the length of the speech. Trim to the part you need with the <a href="/audio-cutter">cutter</a> or your editor first.</p>
+    <p>If you only need English subtitles, <a href="/audio-to-text">audio to text</a> writes them directly, and the SRT from this page can be loaded into YouTube, Premiere or CapCut alongside the dub.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my video uploaded?</summary><p>No. The video is read, transcribed, voiced and re-assembled in this browser tab. The only downloads are the speech and voice models, which are the same for everyone.</p></details>
+      <details><summary>Which languages can it dub from?</summary><p>Whisper understands 99 languages and translates them into English. Accuracy is best for widely spoken languages; for others, pick the language and use the small model.</p></details>
+      <details><summary>Can it dub into Spanish, French or other languages?</summary><p>Not yet: the dub is English only. Whisper translates only into English, and the voices here are English.</p></details>
+      <details><summary>Does it re-encode my video?</summary><p>No. The picture is copied exactly; only the soundtrack is new. The file comes back as MP4.</p></details>
+      <details><summary>Will the voice sound like the original speaker?</summary><p>No. It uses one of 28 built-in voices. Matching the original speaker's voice would need voice cloning, which requires models far too large for a browser tab.</p></details>
+      <details><summary>Can I fix the translation before it is spoken?</summary><p>Yes. After transcription every line is shown in an editable box with its time; the voice reads whatever is in the boxes when you press Make the dub.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>Just the English subtitles, without a voice-over.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Take the original voice out of the music before dubbing.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Pull the new soundtrack back out of the video.</p></a>
+      <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>Write your own narration instead.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Fine-tune the timing of each line by hand.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-01c"></script>
+<script src="/js/tool-graph.js?v=2026-10-01c"></script>
+<script src="/js/flow.js?v=2026-10-01c"></script>
+<script src="/js/audio-core.js?v=2026-10-01c"></script>
+<script src="/js/loudness.js?v=2026-10-01c"></script>
+<script src="/js/tool-shell.js?v=2026-10-01c"></script>
+<script src="/js/consent.js?v=2026-10-01c"></script>
+<script src="/js/subtitles.js?v=2026-10-01c"></script>
+<script src="/js/tts-engine.js?v=2026-10-01c"></script>
+<script src="/js/dub-plan.js?v=2026-10-01c"></script>
+<script src="/js/dubbing-page.js?v=2026-10-01c"></script>
+<script src="/js/pwa.js?v=2026-10-01c"></script>
+</body>
+</html>

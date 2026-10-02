@@ -877,6 +877,100 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   90 MB, base 135 MB, small 285 MB). Do not quote speeds measured on a
   loaded machine; the page quotes the spike's (playbook §11).
 
+## The voice tools (Oct 2026, from VoiceStudio)
+
+/text-to-speech, /voice-changer, /text-to-audiobook, /dictation and
+/video-dubbing are browser rebuilds of what github.com/debpalash/VoiceStudio
+(a desktop Python app) does; no code came across. They sit in the
+`voice` category and homepage rail with /audio-to-text.
+
+- **Kokoro-82M** (`js/tts-worker.js`, `js/tts-engine.js` = `ASTTS`) runs on
+  **`/vendor/ort` (ORT 1.22)**, not transformers.js: ORT 1.26 rejects q8/fp16
+  on the CPU, and Kokoro is one graph with three inputs (`input_ids`,
+  `style` = row n-2 of the voice's 510×256 table, `speed`), 24 kHz out.
+  - **Weights per backend:** fp32 (326 MB) on WebGPU, q8 (92 MB) on WASM.
+    **fp16 on WebGPU gives wrong audio inside a worker** (wrong length, a
+    silent voice, speed ignored) though it looked fine on the main thread;
+    q8 on WebGPU is correct but no faster (quantised ops fall to the CPU).
+    `?backend=wasm` and the page's "smaller download" skip the GPU.
+  - Measured idle (check-tts, Apple GPU, 8 cores): 0.48× the speech's
+    length on WebGPU, 1.36× on 7 CPU threads. Under load average 50 the
+    same runs took 3-6× longer, so speed asserts only run with TTS_SPEED=1.
+  - Phonemes: the `phonemizer` package (espeak-ng, English only,
+    `vendor/phonemizer/`), imported into the classic worker with `import()`.
+    English normalisation is ported from kokoro-js. Text is chunked to
+    ~220 chars (the model card: best at 100-200 tokens, rushes past 400).
+  - Every file is tagged as synthetic speech (ID3 COMM / WAV INFO ICMT,
+    `ASTTS.tagMp3/tagWav`). Metadata, not a watermark; the page says so.
+  - The voice mixer averages whole style tables; one live voice is returned
+    untouched.
+- **/voice-changer** (`js/voice-fx.js` = `ASVoice`, UMD): TD-PSOLA with a
+  time-stretch, after a sinc resample for the formant shift, so pitch and
+  formant move separately. f0 is tracked on an 11.025 kHz copy (3 s of CPU
+  instead of 23 for the check). **The noise floor is capped 20 dB under the
+  loud frames**: on a recording with no pauses the 10th percentile was the
+  voice, nothing counted as voiced, and nothing shifted.
+- **/text-to-audiobook** (`js/book-parse.js` = `ASBook`, `audiobook-page.js`):
+  EPUB spine / text headings to chapters; each chapter is encoded as soon as
+  it is read (AAC or MP3) and stored in IndexedDB `audiosaw-tts`, so runs
+  resume. The M4B is a stream-copy concat with an ffmetadata chapter file;
+  `runFFmpeg` takes `extra: { files, raw }` for that. Chapters read back by
+  ffprobe start within 0.5 ms. DRM EPUBs are refused by name.
+- **/dictation** (`js/dictation-vad.js` = `ASVad`): phrases split on an
+  adaptive floor (+10 dB, 700 ms hang, 300 ms pre-roll, 25 s cap) and sent
+  to the unmodified `transcribe-worker.js`. **The AudioContext is made inside
+  the click, before `await getUserMedia`**: made after the permission
+  prompt it stayed suspended and delivered zeros.
+- **/video-dubbing** (`js/dub-plan.js` = `ASDub`): Whisper (translate or
+  transcribe) → lines → Kokoro, a line that overruns its slot re-read up to
+  1.3× with Kokoro's own speed input, original ducked 18 dB under lines,
+  picture stream-copied by ffmpeg.
+- **Isolation:** /text-to-speech and /dictation are cross-origin isolated
+  (threads). /text-to-audiobook and /video-dubbing are **not**, because they
+  need ffmpeg and `/vendor/ffmpeg/*` has no COEP header; their CPU path is
+  one thread.
+- **Checks:** check-tts (Kokoro files in `~/.cache/audiosaw/kokoro`,
+  `TTS_DOWNLOAD=1` fetches them), check-voice, check-audiobook,
+  check-dictation and check-dubbing all run in check-all. The last two drive
+  their pages only with `DICTATION_BROWSER=1` / `DUBBING_BROWSER=1` (Whisper
+  from the network, kept in the `~/.cache/audiosaw/chrome-dictation`
+  profile). Chrome's `--use-file-for-fake-audio-capture` delivered only
+  zeros headless, so the dictation test replaces `getUserMedia` with a
+  MediaStream playing a `say` recording.
+- **Languages:** 41 voices. es/fr/it/pt-br/hi go through the full
+  espeak-ng wasm (`vendor/espeak/`, 17.6 MB, GPL-3.0, loaded only for those
+  voices), text passed as a UTF-8 file with `-f` (as an argument, accented
+  letters came out as Latin-1 garbage). `tools/measure-tts-langs.js` (not in
+  check-all) reads each back with Whisper: es and pt word for word, fr/it miss
+  only numbers written as digits, hi correct but transcribed in Urdu script.
+  The English fix-ups (r → ɹ) are not applied to them: they cost Portuguese 20%.
+- **Dubbing timing:** Whisper stamped a sentence that starts at 1.0 s as
+  0.00; `ASDub.snapStarts` moves each line to the first real speech in it.
+- **Voice cloning is built but held back** (`js/clone-worker.js`,
+  `js/clone-page.js`, `tools/check-clone.js`; the page was removed from the
+  release in the commit that says so — restore it from there). Chatterbox
+  Turbo (Resemble AI, MIT) through transformers.js 4.2.0 on WebGPU, q4f16,
+  ~560 MB. It produces speech in the reference voice (each clone's pitch
+  follows its own reference), but the words drift: Whisper heard "the wet
+  floor" for a 17-word sentence. Resemble's Python reference on the SAME
+  files (CPU) is word-perfect. Found so far, all measured:
+  - ORT 1.22 cannot create the speech encoder or language-model sessions.
+  - embed_tokens routes the LAST TWO ids to the speech table; a one-id step
+    asks the text table for zero rows and WebGPU rejects the dispatch. Fixed
+    by sending [text pad, id, id]. The tokenizer must end with 50256 50256.
+  - The decoder stops at 65,535 output samples on WebGPU (zeros after
+    2.73 s); fixed by decoding 50-token windows with a 10-token crossfade
+    (the same windowing in Python stays word-perfect).
+  - The remaining fault is the WebGPU language model: with identical inputs
+    (conditioning and embeddings match Python to 4 decimals) its logits are
+    0.5-0.8 lower and near-ties swap; teacher-forced, 13 of 19 steps agree.
+    q4 (fp32 activations) does the same, so it is not fp16 rounding. The
+    browser's CPU build cannot run it at all (no GatherBlockQuantized kernel,
+    which q4, q4f16 and q8 all use). Next test: the fp16 export (635 MB,
+    plain MatMul/Gather) on WebGPU, to tell MatMulNBits from
+    GroupQueryAttention.
+- **Not done:** speaker labels; dubbing into languages other than English.
+
 ## The stem splitter
 
 The model runs at 44.1 kHz, but the stems go back to the file's own rate and

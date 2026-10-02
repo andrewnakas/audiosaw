@@ -30,6 +30,7 @@
     { id: 'levels',   title: 'Loudness & channels' },
     { id: 'repair',   title: 'Clean up & separate' },
     { id: 'create',   title: 'Record & tag' },
+    { id: 'voice',    title: 'Voice & speech' },
     { id: 'fx',       title: 'Effects & remixes' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
@@ -762,7 +763,7 @@
       ]
     },
     'audio-to-text': {
-      cat: 'create', label: 'audio → text', title: 'Audio to text (transcription)',
+      cat: 'voice', label: 'audio → text', title: 'Audio to text (transcription)',
       blurb: 'Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.',
       next: [
         ['noise-reduction', 'Clean a noisy recording first; Whisper hears through less hiss'],
@@ -772,6 +773,66 @@
         ['voice-recorder', 'Record the speech here, then transcribe it'],
         ['auto-cut-silence', 'Tighten the pauses before you subtitle a clip'],
         ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format']
+      ]
+    },
+    'text-to-speech': {
+      cat: 'voice', label: 'text → speech', title: 'Text to speech',
+      blurb: 'Natural AI voices that run in your browser: 41 voices in 7 languages, voice mixing, MP3 download, nothing uploaded.',
+      next: [
+        ['audio-editor', 'Line the voice-over up against music and video'],
+        ['loudness-normalizer', 'Bring the narration to podcast or YouTube loudness'],
+        ['audio-to-text', 'The other direction: speech back to text'],
+        ['slowed-reverb', 'Put the voice in a room'],
+        ['pitch-shifter', 'Shift the voice deeper or higher'],
+        ['text-to-audiobook', 'A whole book or long article: chapters to an M4B'],
+        ['voice-changer', 'Change the voice of a recording instead'],
+        ['podcast-prep', 'Finish an episode intro for upload'],
+        ['audio-joiner', 'Join several generated takes into one file']
+      ]
+    },
+    'voice-changer': {
+      cat: 'voice', label: 'voice changer', title: 'Voice changer',
+      blurb: 'Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.',
+      project: 'same',
+      next: [
+        ['stem-splitter', 'Pull the voice out of a song before changing it'],
+        ['noise-reduction', 'Clean the recording first; hiss confuses the pitch tracking'],
+        ['text-to-speech', 'Need a voice that was never recorded? Generate one'],
+        ['audio-editor', 'Put the changed voice back against music or video'],
+        ['pitch-shifter', 'Shift a whole song\'s key instead of a voice'],
+        ['voice-recorder', 'Record something to change']
+      ]
+    },
+    'text-to-audiobook': {
+      cat: 'voice', label: 'text → audiobook', title: 'Text to audiobook',
+      blurb: 'An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.',
+      next: [
+        ['text-to-speech', 'Just a page or a script? Hear it straight away'],
+        ['m4b-to-mp3', 'Need plain MP3s from an M4B instead'],
+        ['mp3-tag-editor', 'Add cover art and fix the tags on the chapter MP3s'],
+        ['audio-joiner', 'Join chapter MP3s into one file'],
+        ['loudness-normalizer', 'Level the narration for a podcast feed']
+      ]
+    },
+    'dictation': {
+      cat: 'voice', label: 'dictation', title: 'Dictation (speech to text)',
+      blurb: 'Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.',
+      next: [
+        ['audio-to-text', 'Already recorded it? Transcribe the file, with subtitles'],
+        ['text-to-speech', 'The other way: have text read aloud'],
+        ['voice-recorder', 'Keep the recording as well as the words'],
+        ['noise-reduction', 'Clean a noisy recording before transcribing it']
+      ]
+    },
+    'video-dubbing': {
+      cat: 'voice', label: 'video dubbing', title: 'Video dubbing (to English)',
+      blurb: 'Translate a video\'s speech to English and have an AI voice read it over the original, timed to it, nothing uploaded.',
+      next: [
+        ['audio-to-text', 'Just the English subtitles, without a voice-over'],
+        ['stem-splitter', 'Take the original voice out of the music before dubbing'],
+        ['extract-audio', 'Pull the new soundtrack back out of the video'],
+        ['text-to-speech', 'Write your own narration instead'],
+        ['audio-editor', 'Fine-tune the timing of each line by hand']
       ]
     },
     'audio-to-text-prep': {
@@ -974,6 +1035,15 @@
       ]
     },
     {
+      id: 'voice',
+      title: 'Voice & speech',
+      note: 'Speech to text and text to speech, with the models running in your tab.',
+      style: 'tile',
+      tools: [
+        'text-to-speech', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+      ]
+    },
+    {
       id: 'fx',
       title: 'Speed, pitch & effects',
       note: 'Change how a track moves rather than what format it is in.',
@@ -989,7 +1059,7 @@
       note: 'One program, one spec, already filled in — so the import works first try.',
       style: 'tile',
       tools: [
-        'audio-to-text', 'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
+        'audio-for-whisper', 'podcast-prep', 'discord-audio-compressor',
         'capcut-audio', 'davinci-resolve-audio', 'm4a-to-wav-for-audacity',
         'audio-to-text-prep', 'wav-for-sp404'
       ]
