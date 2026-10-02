@@ -54,7 +54,9 @@
         ['audio-cutter', 'Trim it down to the part you actually wanted'],
         ['audio-compressor', 'Shrink it further if it is still too big to send'],
         ['normalize-audio', 'Even out the level if the video audio was quiet'],
-        ['mov-to-mp3', 'Same job for a QuickTime or iPhone .mov']
+        ['mov-to-mp3', 'Same job for a QuickTime or iPhone .mov'],
+        ['audio-to-text', 'Subtitles or a transcript of the video'],
+        ['video-dubbing', 'Dub the video into another language']
       ]
     },
     'm4a-to-mp3': {
@@ -65,7 +67,8 @@
         ['stereo-to-mono', 'Halve the file size — voice does not need stereo'],
         ['aac-to-mp3', 'Same codec, bare .aac file rather than .m4a'],
         ['normalize-audio', 'Bring a quietly recorded memo up to a usable level'],
-        ['caf-to-mp3', 'Same job for a GarageBand or Logic recording']
+        ['caf-to-mp3', 'Same job for a GarageBand or Logic recording'],
+        ['audio-to-text', 'Turn the voice memo into text instead']
       ]
     },
     'wav-to-mp3': {
@@ -115,7 +118,9 @@
         ['audio-to-text-prep', 'Get it ready to be transcribed'],
         ['silence-remover', 'Cut the pauses out of a long voice note'],
         ['stereo-to-mono', 'Voice notes do not need two channels'],
-        ['amplify-audio', 'Rescue a note recorded too far from the mic']
+        ['amplify-audio', 'Rescue a note recorded too far from the mic'],
+        ['audio-to-text', 'Read the voice note as text'],
+        ['voice-changer', 'Change the voice on the note']
       ]
     },
     'wma-to-mp3': {
@@ -289,7 +294,9 @@
         ['mp3-tag-editor', 'Add a title, artist and cover art to the export'],
         ['stem-splitter', 'Split a song into vocals and instrumental, then edit them as tracks'],
         ['voice-recorder', 'Record a quick take on its own, without the timeline'],
-        ['audio-compressor', 'Shrink the export if it is too big to send']
+        ['audio-compressor', 'Shrink the export if it is too big to send'],
+        ['text-to-speech', 'Generate a narrated line to drop on a track'],
+        ['audio-to-text', 'Transcribe the edit, with speaker labels']
       ]
     },
     'audio-cutter': {
@@ -546,7 +553,8 @@
         ['audio-eq', 'Clear up what is left with a little EQ'],
         ['silence-remover', 'Cut the dead air as well'],
         ['audio-to-text-prep', 'Now send it to be transcribed'],
-        ['stem-splitter', 'Separate the voice from the background instead of filtering it']
+        ['stem-splitter', 'Separate the voice from the background instead of filtering it'],
+        ['audio-to-text', 'Transcribe it: clean audio transcribes far better']
       ]
     },
     'audio-eq': {
@@ -650,7 +658,8 @@
         ['autotune', 'Tune the take you just recorded'],
         ['record-computer-audio', 'Record what a tab is playing instead of the microphone'],
         ['voice-changer', 'Make the recording deeper, higher or a robot'],
-        ['dictation', 'Want the words, not the audio? Dictate']
+        ['dictation', 'Want the words, not the audio? Dictate'],
+        ['audio-to-text', 'Transcribe what you just recorded']
       ]
     },
     'record-computer-audio': {
@@ -769,8 +778,8 @@
       ]
     },
     'audio-to-text': {
-      cat: 'voice', label: 'audio → text', title: 'Audio to text (transcription)',
-      blurb: 'Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.',
+      cat: 'voice', label: 'audio → text', title: 'Transcribe audio to text',
+      blurb: 'MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.',
       next: [
         ['noise-reduction', 'Clean a noisy recording first; Whisper hears through less hiss'],
         ['extract-audio', 'Pull the soundtrack out of a video you want subtitled'],
@@ -785,7 +794,7 @@
     },
     'text-to-speech': {
       cat: 'voice', label: 'text → speech', title: 'Text to speech',
-      blurb: 'Natural AI voices that run in your browser: 41 voices in 7 languages, voice mixing, MP3 download, nothing uploaded.',
+      blurb: 'A free AI voice generator in your browser: 41 natural voices in 7 languages including Hindi and Spanish, MP3 download, no sign-up.',
       next: [
         ['audio-editor', 'Line the voice-over up against music and video'],
         ['loudness-normalizer', 'Bring the narration to podcast or YouTube loudness'],
@@ -800,8 +809,8 @@
       ]
     },
     'voice-changer': {
-      cat: 'voice', label: 'voice changer', title: 'Voice changer',
-      blurb: 'Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.',
+      cat: 'voice', label: 'voice changer', title: 'Voice changer for audio files',
+      blurb: 'Make a recorded voice deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.',
       project: 'same',
       next: [
         ['stem-splitter', 'Pull the voice out of a song before changing it'],
@@ -813,8 +822,8 @@
       ]
     },
     'text-to-audiobook': {
-      cat: 'voice', label: 'text → audiobook', title: 'Text to audiobook',
-      blurb: 'An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.',
+      cat: 'voice', label: 'text → audiobook', title: 'EPUB to audiobook',
+      blurb: 'An EPUB or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.',
       next: [
         ['text-to-speech', 'Just a page or a script? Hear it straight away'],
         ['m4b-to-mp3', 'Need plain MP3s from an M4B instead'],
@@ -824,8 +833,8 @@
       ]
     },
     'dictation': {
-      cat: 'voice', label: 'dictation', title: 'Dictation (speech to text)',
-      blurb: 'Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.',
+      cat: 'voice', label: 'dictation', title: 'Speech to text (voice typing)',
+      blurb: 'Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.',
       next: [
         ['audio-to-text', 'Already recorded it? Transcribe the file, with subtitles'],
         ['text-to-speech', 'The other way: have text read aloud'],
@@ -834,7 +843,7 @@
       ]
     },
     'video-dubbing': {
-      cat: 'voice', label: 'video dubbing', title: 'Video dubbing',
+      cat: 'voice', label: 'video dubbing', title: 'AI video dubbing and translation',
       blurb: 'Translate a video\'s speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.',
       next: [
         ['audio-to-text', 'Just the subtitles, without a voice-over'],
@@ -846,7 +855,7 @@
     },
     'voice-cloning': {
       cat: 'voice', label: 'voice cloning', title: 'Voice cloning',
-      blurb: 'Clone a voice from five seconds of audio and make it say anything, on your own GPU, with the speaker\'s consent.',
+      blurb: 'Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.',
       next: [
         ['voice-recorder', 'Record a clean reference first'],
         ['noise-reduction', 'Clean a noisy sample before cloning it'],

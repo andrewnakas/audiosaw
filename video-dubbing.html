@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Video Dubbing — dub a video into English, Spanish, French and more, free</title>
-<meta name="description" content="Dub a video into English, Spanish, French, Italian, Brazilian Portuguese or Hindi in your browser: the speech is transcribed and translated, you check the lines, and an AI voice reads them over the original, timed to it. Never uploaded. MP4, SRT and MP3 out.">
+<title>AI Video Translator and Dubbing Free — English, Spanish, Hindi</title>
+<meta name="description" content="Free AI dubbing and video translator, no sign-up: dub a video into English, Spanish, French, Italian, Brazilian Portuguese or Hindi in your browser. the speech is transcribed and translated, you check the lines, and an AI voice reads them over the original, timed to it. Never uploaded. MP4, SRT and MP3 out.">
 <meta name="keywords" content="ai video dubbing, dub video to english, dub video to spanish, translate video to spanish, translate video to english, ai voice over, video translator, free dubbing, auto dub, dubbing without upload">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/video-dubbing">
@@ -18,7 +18,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
-<meta property="og:title" content="Video Dubbing — a voice-over in English, Spanish, French, Italian, Portuguese or Hindi, in your browser">
+<meta property="og:title" content="Free AI Dubbing — translate a video into English, Spanish, French, Italian, Portuguese or Hindi">
 <meta property="og:description" content="The speech is translated, you check the lines, an AI voice reads them over the original. Nothing uploaded. Free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/video-dubbing">
@@ -26,12 +26,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02a">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Video Dubbing",
+  "name": "AI Video Dubbing",
+  "alternateName": ["AI video translator", "Translate video to English", "Translate video to Spanish", "Dub video online"],
   "url": "https://audiosaw.com/video-dubbing",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
@@ -72,12 +73,12 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed, voiced and re-assembled in this browser tab. The only downloads are the speech and voice models, which are the same for everyone."}},{"@type":"Question","name":"Which languages can it dub from?","acceptedAnswer":{"@type":"Answer","text":"Whisper understands 99 languages and translates them into English. Accuracy is best for widely spoken languages; for others, pick the language and use the small model."}},{"@type":"Question","name":"Can it dub into Spanish, French or other languages?","acceptedAnswer":{"@type":"Answer","text":"Yes: Spanish, French, Italian, Brazilian Portuguese and Hindi, as well as English. Whisper translates the speech into English, and an open translation model (OPUS-MT, about 110–130 MB, downloaded once per language) takes it on from there. Other languages are not offered because the voice model does not speak them."}},{"@type":"Question","name":"Does it re-encode my video?","acceptedAnswer":{"@type":"Answer","text":"No. The picture is copied exactly; only the soundtrack is new. The file comes back as MP4."}},{"@type":"Question","name":"Can each person in the video get their own voice?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tick \"a different voice for each speaker\": the page works out who says each line and offers a voice for each person. On a two-person test it found both speakers and gave each line the right voice."}},{"@type":"Question","name":"Will the voice sound like the original speaker?","acceptedAnswer":{"@type":"Answer","text":"No. It uses one of the 41 built-in voices. To make English speech in a particular voice, the separate voice cloning page copies a voice from a short sample; it is not part of dubbing, because it needs a WebGPU graphics card and a 560 MB model."}},{"@type":"Question","name":"Can I fix the translation before it is spoken?","acceptedAnswer":{"@type":"Answer","text":"Yes. After transcription every line is shown in an editable box with its time; the voice reads whatever is in the boxes when you press Make the dub."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed, voiced and re-assembled in this browser tab. The only downloads are the speech and voice models, which are the same for everyone."}},{"@type":"Question","name":"Is there a free AI video translator with no sign-up?","acceptedAnswer":{"@type":"Answer","text":"This is one. There is no account, no credits and no watermark, because the speech recognition, translation and voice all run in your browser; the only downloads are the models, once. Videos up to about 600 MB work, and longer ones take a while on a CPU."}},{"@type":"Question","name":"Can I get subtitles in another language from a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every dub also saves an SRT subtitle file in the dub's language, which YouTube, Premiere and CapCut import. For English subtitles alone, without a voice-over, audio to text writes them directly."}},{"@type":"Question","name":"Which languages can it dub from?","acceptedAnswer":{"@type":"Answer","text":"Whisper understands 99 languages and translates them into English. Accuracy is best for widely spoken languages; for others, pick the language and use the small model."}},{"@type":"Question","name":"Can it dub into Spanish, French or other languages?","acceptedAnswer":{"@type":"Answer","text":"Yes: Spanish, French, Italian, Brazilian Portuguese and Hindi, as well as English. Whisper translates the speech into English, and an open translation model (OPUS-MT, about 110–130 MB, downloaded once per language) takes it on from there. Other languages are not offered because the voice model does not speak them."}},{"@type":"Question","name":"Does it re-encode my video?","acceptedAnswer":{"@type":"Answer","text":"No. The picture is copied exactly; only the soundtrack is new. The file comes back as MP4."}},{"@type":"Question","name":"Can each person in the video get their own voice?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tick \"a different voice for each speaker\": the page works out who says each line and offers a voice for each person. On a two-person test it found both speakers and gave each line the right voice."}},{"@type":"Question","name":"Will the voice sound like the original speaker?","acceptedAnswer":{"@type":"Answer","text":"No. It uses one of the 41 built-in voices. To make English speech in a particular voice, the separate voice cloning page copies a voice from a short sample; it is not part of dubbing, because it needs a WebGPU graphics card and a 560 MB model."}},{"@type":"Question","name":"Can I fix the translation before it is spoken?","acceptedAnswer":{"@type":"Answer","text":"Yes. After transcription every line is shown in an editable box with its time; the voice reads whatever is in the boxes when you press Make the dub."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Video dubbing"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"AI video dubbing and translation"}]}
 </script>
 <!-- /AS:bcschema -->
 </head>
@@ -100,14 +101,14 @@ window.AS_VERSION = '2026-09-22';
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
   <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
-  <span aria-current="page">Video dubbing</span>
+  <span aria-current="page">AI video dubbing and translation</span>
 </nav>
 <!-- /AS:breadcrumb -->
 
 <main class="container">
   <section class="page-intro">
-    <h1>Video <span class="ital">dubbing</span>, in six languages, in your browser.</h1>
-    <p>Drop a video in any language and get it back with a voice-over in English, Spanish, French, Italian, Brazilian Portuguese or Hindi, timed to the original speech. Whisper transcribes the soundtrack and translates it, you check the lines, and an AI voice reads them over the original with the music and effects kept underneath. All of it runs in this tab: the video is never uploaded, so this works for footage you can't share with a cloud service.</p>
+    <h1>AI video <span class="ital">dubbing</span> and translation, free.</h1>
+    <p>An AI video translator with no account and no upload: drop a video in any language and get it back with a voice-over in English, Spanish, French, Italian, Brazilian Portuguese or Hindi, timed to the original speech. Whisper transcribes the soundtrack and translates it, you check the lines, and an AI voice reads them over the original with the music and effects kept underneath. All of it runs in this tab: the video is never uploaded, so this works for footage you can't share with a cloud service.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -210,11 +211,11 @@ window.AS_VERSION = '2026-09-22';
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
+    <h2>How to dub a video into another language for free</h2>
     <p>The soundtrack is decoded in the browser and handed to Whisper, which returns the speech as timed phrases, translated into English if you asked for that. Fragments are joined into natural lines, but never across a pause or a full stop. Whisper only translates into English, so a dub into Spanish, French, Italian, Portuguese or Hindi takes one more step: the English lines go through OPUS-MT, the University of Helsinki's open translation models, one sentence at a time (given two sentences at once, the model sometimes drops one). That runs on the processor at about a second a line, after a one-time download of the language's model. You then see the lines in a list with their times, and in a translated dub each one has the English it came from underneath. This is the moment to fix a name or soften a clumsy translation. Machine translation of speech is good enough to follow a video, not good enough to publish unread.</p>
     <p>Then each line is read by Kokoro, an open neural voice, and placed where the original phrase began. A translation often runs longer than the language it came from, so a line that would overrun the start of the next one is read again slightly faster, up to 1.3×, which is about as fast as a voice stays natural. Past that, the line is allowed to run on and is marked in the list, so you can shorten its wording and dub again. The original soundtrack is turned down by 18 dB under each line and left alone in between, so music, effects and the presence of the original speakers stay; that is how most documentary voice-over is mixed. Finally the new soundtrack is muxed onto the video with the picture copied bit for bit, so nothing is re-compressed.</p>
 
-    <h2>Good results</h2>
+    <h2>Translating a video to English or Spanish: good results</h2>
     <p>Clear speech with modest background works best; a single presenter, an interview, a lecture, a cooking or how-to video. For a translation, choose Whisper <strong>small</strong>: its translations are noticeably better than base's, at the cost of a bigger download and more time. Pick the spoken language yourself if the video starts with music. Choose a voice that suits the speaker; Michael and Fenrir are steady male narrators, Heart and Bella the most natural female voices. If the original speech is still too present under the new voice, choose "Replace it", or separate the voice from the music first with the <a href="/stem-splitter">AI vocal remover</a> and dub the instrumental.</p>
 
     <h2>What it can't do</h2>
@@ -226,6 +227,8 @@ window.AS_VERSION = '2026-09-22';
     <h2>FAQ</h2>
     <!-- AS:faq -->
       <details><summary>Is my video uploaded?</summary><p>No. The video is read, transcribed, voiced and re-assembled in this browser tab. The only downloads are the speech and voice models, which are the same for everyone.</p></details>
+      <details><summary>Is there a free AI video translator with no sign-up?</summary><p>This is one. There is no account, no credits and no watermark, because the speech recognition, translation and voice all run in your browser; the only downloads are the models, once. Videos up to about 600 MB work, and longer ones take a while on a CPU.</p></details>
+      <details><summary>Can I get subtitles in another language from a video?</summary><p>Yes. Every dub also saves an SRT subtitle file in the dub's language, which YouTube, Premiere and CapCut import. For English subtitles alone, without a voice-over, audio to text writes them directly.</p></details>
       <details><summary>Which languages can it dub from?</summary><p>Whisper understands 99 languages and translates them into English. Accuracy is best for widely spoken languages; for others, pick the language and use the small model.</p></details>
       <details><summary>Can it dub into Spanish, French or other languages?</summary><p>Yes: Spanish, French, Italian, Brazilian Portuguese and Hindi, as well as English. Whisper translates the speech into English, and an open translation model (OPUS-MT, about 110–130 MB, downloaded once per language) takes it on from there. Other languages are not offered because the voice model does not speak them.</p></details>
       <details><summary>Does it re-encode my video?</summary><p>No. The picture is copied exactly; only the soundtrack is new. The file comes back as MP4.</p></details>
@@ -239,7 +242,7 @@ window.AS_VERSION = '2026-09-22';
   <section class="related-tools">
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
-      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>Just the subtitles, without a voice-over.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>Just the subtitles, without a voice-over.</p></a>
       <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Take the original voice out of the music before dubbing.</p></a>
       <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Pull the new soundtrack back out of the video.</p></a>
       <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>Write your own narration instead.</p></a>
@@ -367,18 +370,18 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02a"></script>
-<script src="/js/tool-graph.js?v=2026-10-02a"></script>
-<script src="/js/flow.js?v=2026-10-02a"></script>
-<script src="/js/audio-core.js?v=2026-10-02a"></script>
-<script src="/js/loudness.js?v=2026-10-02a"></script>
-<script src="/js/tool-shell.js?v=2026-10-02a"></script>
-<script src="/js/consent.js?v=2026-10-02a"></script>
-<script src="/js/subtitles.js?v=2026-10-02a"></script>
-<script src="/js/tts-engine.js?v=2026-10-02a"></script>
-<script src="/js/diarize.js?v=2026-10-02a"></script>
-<script src="/js/dub-plan.js?v=2026-10-02a"></script>
-<script src="/js/dubbing-page.js?v=2026-10-02a"></script>
-<script src="/js/pwa.js?v=2026-10-02a"></script>
+<script src="/js/common.js?v=2026-10-02b"></script>
+<script src="/js/tool-graph.js?v=2026-10-02b"></script>
+<script src="/js/flow.js?v=2026-10-02b"></script>
+<script src="/js/audio-core.js?v=2026-10-02b"></script>
+<script src="/js/loudness.js?v=2026-10-02b"></script>
+<script src="/js/tool-shell.js?v=2026-10-02b"></script>
+<script src="/js/consent.js?v=2026-10-02b"></script>
+<script src="/js/subtitles.js?v=2026-10-02b"></script>
+<script src="/js/tts-engine.js?v=2026-10-02b"></script>
+<script src="/js/diarize.js?v=2026-10-02b"></script>
+<script src="/js/dub-plan.js?v=2026-10-02b"></script>
+<script src="/js/dubbing-page.js?v=2026-10-02b"></script>
+<script src="/js/pwa.js?v=2026-10-02b"></script>
 </body>
 </html>

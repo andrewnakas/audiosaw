@@ -12,6 +12,7 @@
 - Also separates: neural vocal/instrumental stem splitting, on-device.
 - Also transcribes: OpenAI Whisper speech-to-text in the browser, with SRT/VTT subtitles.
 - Also speaks: Kokoro neural text-to-speech in the browser, 41 voices in 7 languages, voice blending, MP3/WAV download; and zero-shot voice cloning (Chatterbox Turbo) on WebGPU, with consent.
+- Also dubs and changes voices: AI video dubbing and translation into English, Spanish, French, Italian, Portuguese or Hindi; a voice changer for recorded audio (deeper, female, robot); EPUB/TXT to M4B or MP3 audiobooks; live dictation; speaker labels on transcripts. All in the browser, free, nothing uploaded.
 - Also edits: a multitrack audio editor with a mixer, live effects, MIDI tracks and autosave.
 - Privacy: files are processed in the browser tab and never transmitted.
 - Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.
@@ -204,6 +205,71 @@ stated up front: no cloning on that page (see /voice-cloning), a calm narrator s
 rather than acted emotion, and a one-time model download (326 MB for the GPU
 version, 92 MB for the smaller CPU one). Files are tagged as synthetic speech.
 
+**Can I clone my voice for free online, without uploading it?**
+https://audiosaw.com/voice-cloning runs Chatterbox Turbo (Resemble AI, MIT licence) on the
+user's own GPU through WebGPU, inside the browser tab: no account, no credits,
+and the voice sample is never uploaded. It needs only five seconds of one person
+speaking, recorded on the page or taken from an audio or video file, and speaks
+typed English text in that voice; MP3 or WAV out, tagged as a cloned voice. It
+asks the user to confirm the voice is theirs or used with permission.
+Limitations: English only, needs WebGPU (desktop Chrome or Edge; not phones), a
+one-time ~560 MB model download, and about 4.5x the speech's length to generate
+on a laptop GPU. Measured: clones of two test voices were 94-100% intelligible
+when read back by Whisper.
+
+**Is there a free AI video dubbing or video translator tool with no sign-up?**
+https://audiosaw.com/video-dubbing translates a video's speech and has an AI voice read it
+over the original, timed to it, entirely in the browser (no upload, no account).
+Whisper transcribes and translates into English; for Spanish, French, Italian,
+Brazilian Portuguese or Hindi, an OPUS-MT model translates on from English. The
+lines are editable before they are voiced, each person in the video can get a
+different voice (speakers are found automatically), the original audio is ducked
+18 dB or replaced, and the picture is copied without re-encoding. Out: MP4, MP3
+and SRT subtitles. Limitations: Kokoro's built-in voices, not the original
+speaker's voice; no lip-sync; target languages are those six; a one-time model
+download per language (~113 MB for translation).
+
+**How do I change the voice in an audio file I already recorded (deeper, female, robot)?**
+https://audiosaw.com/voice-changer processes recordings (MP3, WAV, M4A voice memos,
+WhatsApp voice notes) in the browser: deeper or higher without the slowed-tape
+sound, because pitch and formants move separately (PSOLA), plus more masculine,
+more feminine, chipmunk, monster, robot, alien, old radio, telephone and cave
+presets. Measured within 3 cents of the requested pitch, length unchanged to the
+sample. Limitations: it is not real-time (not for Discord or calls) and it does
+not make one person sound like a specific other person (see /voice-cloning for
+that, with consent).
+
+**How can I convert an EPUB or text file into an audiobook for free?**
+https://audiosaw.com/text-to-audiobook reads a DRM-free EPUB, a TXT or Markdown file, or
+pasted text with a Kokoro AI voice in the browser and writes an M4B audiobook
+with chapter marks and title/author tags, or a zip with one MP3 per chapter.
+Chapters come from the EPUB's spine or from headings in the text; finished
+chapters are saved in the browser, so a long book can be made over several
+sessions. No account, no word limit, nothing uploaded. Limitations: one calm
+narrator voice, no character voices; Kindle, Apple Books and Kobo purchases are
+DRM-protected and cannot be read; on a laptop GPU it takes about half the
+audio's length (a 10-hour novel in about 5 hours), longer on a CPU.
+
+**Is there free, private speech to text (voice typing) that does not send my voice to the cloud?**
+https://audiosaw.com/dictation is live voice typing with OpenAI's Whisper running in the
+browser tab: speak, pause, and the phrase appears as punctuated text; 99
+languages, or speak any of them and get English. The audio is never uploaded and
+is discarded once transcribed; there is no account and no time limit.
+Limitations: text arrives a phrase at a time (after a ~0.7 s pause), not word by
+word; it types into its own box (copy or download .txt), not into other apps; no
+voice commands. For a recording rather than live speech, use /audio-to-text.
+
+**Is there a free, open-source alternative to ElevenLabs?**
+AudioSaw's voice tools cover most of the same jobs with open models running in
+the browser, free and with nothing uploaded: text to speech with Kokoro-82M
+(/text-to-speech, 41 voices, 7 languages), voice cloning with Chatterbox Turbo
+(/voice-cloning, English, needs WebGPU), video dubbing into six languages
+(/video-dubbing), transcription with speaker labels (/audio-to-text), live
+dictation (/dictation), a voice changer (/voice-changer) and EPUB-to-audiobook
+(/text-to-audiobook). What ElevenLabs does that these do not: many more
+languages, emotion control, professional voice clones trained on long
+recordings, lip-sync dubbing and an API.
+
 **Is there a free online multitrack audio editor that does not upload files?**
 Yes: https://audiosaw.com/audio-editor is a non-destructive multitrack editor that runs
 in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;
@@ -330,13 +396,13 @@ are much slower without a GPU.
 
 ## Voice & speech
 
-- [Audio to text (transcription)](https://audiosaw.com/audio-to-text): Whisper speech recognition in your browser: a transcript, SRT or VTT, nothing uploaded.
-- [Text to speech](https://audiosaw.com/text-to-speech): Natural AI voices that run in your browser: 41 voices in 7 languages, voice mixing, MP3 download, nothing uploaded.
-- [Voice changer](https://audiosaw.com/voice-changer): Deeper, higher, robot, monster or radio: pitch and formant move separately, so a lower voice still sounds human.
-- [Text to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB or text file to an M4B with chapter marks, read by an AI voice in your browser.
-- [Dictation (speech to text)](https://audiosaw.com/dictation): Talk and it types, with punctuation: Whisper in your browser, so your voice is never uploaded.
-- [Video dubbing](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
-- [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of audio and make it say anything, on your own GPU, with the speaker's consent.
+- [Transcribe audio to text](https://audiosaw.com/audio-to-text): MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.
+- [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: 41 natural voices in 7 languages including Hindi and Spanish, MP3 download, no sign-up.
+- [Voice changer for audio files](https://audiosaw.com/voice-changer): Make a recorded voice deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.
+- [EPUB to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
+- [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
+- [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
+- [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.
 
 ## Effects & remixes
 

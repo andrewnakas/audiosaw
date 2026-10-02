@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text to Speech — free AI voices in your browser, MP3 download, no signup</title>
-<meta name="description" content="Turn text into natural speech with Kokoro, an open AI voice model that runs in your browser. 41 voices in 7 languages, voice mixing, speed control, MP3 or WAV download. Nothing uploaded, no signup, no character limits per day.">
+<title>Text to Speech Free — AI Voice Generator, MP3 Download, No Signup</title>
+<meta name="description" content="Free AI voice generator: turn text into natural speech and download it as MP3, with no sign-up and no daily character limit. 41 voices in English, Spanish, French, Italian, Portuguese and Hindi. Runs in your browser; nothing uploaded.">
 <meta name="keywords" content="text to speech, free text to speech, text to speech mp3, ai voice generator, tts online, natural text to speech, text to audio, kokoro tts, text to speech no signup, private text to speech">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/text-to-speech">
@@ -18,7 +18,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
-<meta property="og:title" content="Text to Speech — AI voices that run in your browser">
+<meta property="og:title" content="Free Text to Speech — natural AI voices, MP3 download, no sign-up">
 <meta property="og:description" content="Natural-sounding text to speech with the open Kokoro model, running on your own machine. 41 voices in 7 languages, voice mixing, MP3 download. Free, no signup, nothing uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/text-to-speech">
@@ -27,12 +27,13 @@
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="dns-prefetch" href="https://huggingface.co">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02a">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Text to Speech (Kokoro in the browser)",
+  "name": "Text to Speech",
+  "alternateName": ["AI voice generator", "Text to MP3", "Text to voice", "Kokoro TTS online", "Read text aloud"],
   "url": "https://audiosaw.com/text-to-speech",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
@@ -71,7 +72,7 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it really free, with no character limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter."}},{"@type":"Question","name":"Is my text uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone."}},{"@type":"Question","name":"Can I use the audio commercially?","acceptedAnswer":{"@type":"Answer","text":"Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person."}},{"@type":"Question","name":"Why is the first run slow?","acceptedAnswer":{"@type":"Answer","text":"It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds."}},{"@type":"Question","name":"Can it clone my voice?","acceptedAnswer":{"@type":"Answer","text":"Not on this page, which uses Kokoro's built-in voices (you can blend them with \"Mix voices\"). The voice cloning page does it from five seconds of your recording, with a bigger model that needs a GPU, and only for your own voice or one you have permission to use."}},{"@type":"Question","name":"Which languages does it speak?","acceptedAnswer":{"@type":"Answer","text":"American and British English (28 voices), Spanish, French, Italian, Brazilian Portuguese and Hindi (13 more). Japanese and Chinese need a pronunciation engine that does not yet run in a browser."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it really free and unlimited, with no sign-up?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no login and no monthly character quota: the work happens on your own computer, so there is nothing per character to pay for. The one limit is 20,000 characters per run on this page, to keep the tab responsive; run it again as often as you like, and the audiobook maker handles whole books chapter by chapter."}},{"@type":"Question","name":"Can I download the speech as an MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose MP3 (192 kbps), WAV or M4A and press Download once it has finished speaking. The file is saved straight from the tab, with no watermark in the audio and no email or plan needed to get it."}},{"@type":"Question","name":"Is my text uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone."}},{"@type":"Question","name":"Can I use the audio commercially?","acceptedAnswer":{"@type":"Answer","text":"Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person."}},{"@type":"Question","name":"Why is the first run slow?","acceptedAnswer":{"@type":"Answer","text":"It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds."}},{"@type":"Question","name":"Can it clone my voice?","acceptedAnswer":{"@type":"Answer","text":"Not on this page, which uses Kokoro's built-in voices (you can blend them with \"Mix voices\"). The voice cloning page does it from five seconds of your recording, with a bigger model that needs a GPU, and only for your own voice or one you have permission to use."}},{"@type":"Question","name":"Is there Hindi or Spanish text to speech?","acceptedAnswer":{"@type":"Answer","text":"Yes. American and British English have 28 voices, and Spanish, French, Italian, Brazilian Portuguese and Hindi 13 more between them, including two female and two male Hindi voices. Japanese and Chinese need a pronunciation engine that does not yet run in a browser."}},{"@type":"Question","name":"What is Kokoro TTS, and can I use it online?","acceptedAnswer":{"@type":"Answer","text":"Kokoro-82M is an open-weight text-to-speech model, released under Apache-2.0 and small enough (82 million parameters) to run on a laptop and rated close to much larger models in public listening comparisons. This page is Kokoro running in the browser: all of its English, Spanish, French, Italian, Portuguese and Hindi voices, with nothing to install, no Python and no GPU server."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -106,8 +107,8 @@ window.AS_VERSION = '2026-09-22';
 
 <main class="container">
   <section class="page-intro">
-    <h1>Text to <span class="ital">speech</span>, in your browser.</h1>
-    <p>Type or paste text and hear it read in a natural voice, then download it as an MP3 or WAV. The voice model is Kokoro, an open neural text-to-speech model, and it runs inside this tab: the text is never sent anywhere, there is no account, and there is no daily character allowance to run out of.</p>
+    <h1>Free text to <span class="ital">speech</span>, with MP3 download.</h1>
+    <p>Type or paste text and hear it read aloud in a natural AI voice, then download it as an MP3 or WAV: text to audio, with no sign-up and no daily character allowance to run out of. The voice generator is Kokoro, an open neural text-to-speech model, and it runs inside this tab, so the text is never sent anywhere. 41 voices speak American and British English, Spanish, French, Italian, Brazilian Portuguese and Hindi.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -179,20 +180,22 @@ window.AS_VERSION = '2026-09-22';
   </section>
 
   <section class="content-section">
-    <h2>What actually happens to your text</h2>
+    <h2>Why it is free and unlimited: it runs on your computer</h2>
     <p>Your text is cleaned up first: numbers, prices, times and titles are written out the way they are said, so "$4.50" becomes "four dollars and fifty cents" and "Dr. Lee" becomes "Doctor Lee". It is then split into sentence-sized pieces, because the model is at its best on a sentence or two at a time and starts to rush through very long inputs. Each piece goes through espeak-ng, a long-standing open pronunciation engine, which turns spelling into phonemes, and then through Kokoro, which turns the phonemes into a waveform in the chosen voice.</p>
     <p>All of that happens in a background worker in this tab. Most free text-to-speech sites send your text to a cloud API and pay per character for the result, which is why they cap you, ask for an email address, or put the download behind a plan. Here your own GPU, or your CPU if there is no usable GPU, does the work. A contract, a medical letter, an unpublished chapter or a script under NDA stays on your machine.</p>
 
-    <h2>Choosing a voice</h2>
+    <h2>Choosing a natural AI voice</h2>
     <p>Each voice carries a grade from the model's authors, shown in the list. It reflects how much clean training audio that voice had, and it is a fair guide: <strong>Heart</strong> and <strong>Bella</strong> (both American, female) are the most natural voices in the set, <strong>Emma</strong> and <strong>Nicole</strong> are close behind, and the voices graded D have audible roughness on some words. Among the male voices, <strong>Michael</strong>, <strong>Fenrir</strong> and <strong>Puck</strong> are the steadiest. "Hear this voice" plays a short sample before you commit to a long text.</p>
     <p><strong>Mixing</strong> blends voices rather than switching between them. Each Kokoro voice is a table of numbers that steers the model, and a mix is a weighted average of those tables, so Bella at two parts and Michael at one gives a new, consistent voice somewhere between the two. It is a way to get a voice nobody else's video is using. It is not voice design from a written description, and it cannot reproduce a particular person. The accent always follows the first voice in the mix.</p>
 
-    <h2>Getting natural results</h2>
+    <h2>Making it sound natural, then saving the MP3</h2>
     <p>Punctuation is direction. Commas give short breaths, full stops give longer ones, a question mark lifts the end of a line, and a blank line between paragraphs gives a longer pause. If a sentence comes out flat, splitting it in two usually fixes it. Spell out anything with an unusual pronunciation the way it sounds. A brand or surname the model misreads can be respelled phonetically, and the respelling never shows up anywhere but the audio. Speed between 0.9× and 1.1× sounds the most natural; outside that range the voice stays in tune but its rhythm starts to sound processed.</p>
     <p>For a voice-over, generate a paragraph at a time so you can redo one line without regenerating everything, then line the pieces up in the <a href="/audio-editor">audio editor</a> against your music. For a podcast intro or a video narration, finish with the <a href="/loudness-normalizer">loudness normalizer</a> so the voice sits at the level the platform expects.</p>
 
+    <h2>Hindi, Spanish, French, Italian and Portuguese text to speech</h2>
+    <p>Pick a voice from the language's group in the list and type in that language: Hindi in Devanagari, Spanish with its accents. There are four Hindi voices (Alpha and Beta, female; Omega and Psi, male), three Spanish (Dora, Alex, Santa), three Brazilian Portuguese with the same names, two Italian (Sara and Nicola) and one French (Siwis). The first time you choose one of them, the page downloads a fuller pronunciation engine (espeak-ng, 18 MB) that knows how those languages are spelled. Read back by Whisper, the Spanish and Portuguese test sentences came out word for word, French and Italian missed only numbers written as digits (write them out to be safe), and the Hindi was correct. The same 20,000 characters per run and the same MP3 download apply, with no word limit across runs. To have a Spanish or Hindi version of a video rather than of a text, <a href="/video-dubbing">video dubbing</a> translates and voices it in one go.</p>
     <h2>What it can't do</h2>
-    <p>There is no cloning on this page: the voices are Kokoro's own. To make speech in a particular person's voice, with their permission, use <a href="/voice-cloning">voice cloning</a>, which needs a GPU and a much bigger model. Beyond English, Kokoro speaks Spanish, French, Italian, Brazilian Portuguese and Hindi. Choosing one of those voices downloads a fuller pronunciation engine (espeak-ng, 18 MB) the first time. Read back by Whisper, Spanish and Portuguese test sentences came out word for word, and French and Italian missed only numbers written as digits. There are fewer voices per language than for English, and Japanese and Chinese need a pronunciation engine that does not run in a browser yet. Emotional delivery is limited: Kokoro reads in a calm, even narrator's style and does not do shouting, whispering or crying on request.</p>
+    <p>There is no cloning on this page: the voices are Kokoro's own. To make speech in a particular person's voice, with their permission, use <a href="/voice-cloning">voice cloning</a>, which needs a GPU and a much bigger model. Beyond English, Kokoro speaks the five languages below, with fewer voices each than English, and Japanese and Chinese need a pronunciation engine that does not run in a browser yet. Emotional delivery is limited: Kokoro reads in a calm, even narrator's style and does not do shouting, whispering or crying on request.</p>
     <p>Generated files say so in their own metadata (an ID3 comment in an MP3, an INFO chunk in a WAV) so that a file found later can be traced. That label is easy to remove and is not a watermark in the audio itself. Please don't use synthetic speech to impersonate real people.</p>
 
     <h2>Compared with the alternatives</h2>
@@ -202,12 +205,14 @@ window.AS_VERSION = '2026-09-22';
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
-      <details><summary>Is it really free, with no character limit?</summary><p>Yes. The work happens on your own computer, so there is nothing per character to pay for. The only limit is 20,000 characters per run on this page, to keep the tab responsive; the audiobook maker handles whole books chapter by chapter.</p></details>
+      <details><summary>Is it really free and unlimited, with no sign-up?</summary><p>Yes. There is no account, no login and no monthly character quota: the work happens on your own computer, so there is nothing per character to pay for. The one limit is 20,000 characters per run on this page, to keep the tab responsive; run it again as often as you like, and the audiobook maker handles whole books chapter by chapter.</p></details>
+      <details><summary>Can I download the speech as an MP3?</summary><p>Yes. Choose MP3 (192 kbps), WAV or M4A and press Download once it has finished speaking. The file is saved straight from the tab, with no watermark in the audio and no email or plan needed to get it.</p></details>
       <details><summary>Is my text uploaded anywhere?</summary><p>No. The voice model is downloaded to your browser and runs there. Your text never leaves the tab; the only requests are for the model and voice files, which are the same for everyone.</p></details>
       <details><summary>Can I use the audio commercially?</summary><p>Kokoro is released under the Apache-2.0 licence, which allows commercial use, and nothing on this page adds restrictions. You are responsible for what the speech says and for not passing it off as a real person.</p></details>
       <details><summary>Why is the first run slow?</summary><p>It downloads the voice model: 326 MB for the fast GPU version, or 92 MB if you choose the smaller download or have no usable GPU. It is cached afterwards, so the next text starts speaking within a few seconds.</p></details>
       <details><summary>Can it clone my voice?</summary><p>Not on this page, which uses Kokoro's built-in voices (you can blend them with "Mix voices"). The voice cloning page does it from five seconds of your recording, with a bigger model that needs a GPU, and only for your own voice or one you have permission to use.</p></details>
-      <details><summary>Which languages does it speak?</summary><p>American and British English (28 voices), Spanish, French, Italian, Brazilian Portuguese and Hindi (13 more). Japanese and Chinese need a pronunciation engine that does not yet run in a browser.</p></details>
+      <details><summary>Is there Hindi or Spanish text to speech?</summary><p>Yes. American and British English have 28 voices, and Spanish, French, Italian, Brazilian Portuguese and Hindi 13 more between them, including two female and two male Hindi voices. Japanese and Chinese need a pronunciation engine that does not yet run in a browser.</p></details>
+      <details><summary>What is Kokoro TTS, and can I use it online?</summary><p>Kokoro-82M is an open-weight text-to-speech model, released under Apache-2.0 and small enough (82 million parameters) to run on a laptop and rated close to much larger models in public listening comparisons. This page is Kokoro running in the browser: all of its English, Spanish, French, Italian, Portuguese and Hindi voices, with nothing to install, no Python and no GPU server.</p></details>
       <details><summary>Does it work on a phone?</summary><p>On recent phones, yes, but slowly, because without a desktop-class GPU the model runs on the processor. Short texts are fine; for long ones a laptop is much quicker.</p></details>
       <!-- /AS:faq -->
   </section>
@@ -218,12 +223,12 @@ window.AS_VERSION = '2026-09-22';
     <div class="card-grid">
       <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Line the voice-over up against music and video.</p></a>
       <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring the narration to podcast or YouTube loudness.</p></a>
-      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>The other direction: speech back to text.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>The other direction: speech back to text.</p></a>
       <a class="card" href="/slowed-reverb"><h3>Slowed + Reverb Maker</h3><p>Put the voice in a room.</p></a>
       <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Shift the voice deeper or higher.</p></a>
       <a class="card" href="/voice-cloning"><h3>Voice cloning</h3><p>Speak the text in a particular voice, with permission.</p></a>
-      <a class="card" href="/text-to-audiobook"><h3>Text to audiobook</h3><p>A whole book or long article: chapters to an M4B.</p></a>
-      <a class="card" href="/voice-changer"><h3>Voice changer</h3><p>Change the voice of a recording instead.</p></a>
+      <a class="card" href="/text-to-audiobook"><h3>EPUB to audiobook</h3><p>A whole book or long article: chapters to an M4B.</p></a>
+      <a class="card" href="/voice-changer"><h3>Voice changer for audio files</h3><p>Change the voice of a recording instead.</p></a>
       <a class="card" href="/podcast-prep"><h3>Podcast prep</h3><p>Finish an episode intro for upload.</p></a>
       <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Join several generated takes into one file.</p></a>
     </div>
@@ -350,13 +355,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02a"></script>
-<script src="/js/tool-graph.js?v=2026-10-02a"></script>
-<script src="/js/flow.js?v=2026-10-02a"></script>
-<script src="/js/audio-core.js?v=2026-10-02a"></script>
-<script src="/js/consent.js?v=2026-10-02a"></script>
-<script src="/js/tts-engine.js?v=2026-10-02a"></script>
-<script src="/js/tts-page.js?v=2026-10-02a"></script>
-<script src="/js/pwa.js?v=2026-10-02a"></script>
+<script src="/js/common.js?v=2026-10-02b"></script>
+<script src="/js/tool-graph.js?v=2026-10-02b"></script>
+<script src="/js/flow.js?v=2026-10-02b"></script>
+<script src="/js/audio-core.js?v=2026-10-02b"></script>
+<script src="/js/consent.js?v=2026-10-02b"></script>
+<script src="/js/tts-engine.js?v=2026-10-02b"></script>
+<script src="/js/tts-page.js?v=2026-10-02b"></script>
+<script src="/js/pwa.js?v=2026-10-02b"></script>
 </body>
 </html>

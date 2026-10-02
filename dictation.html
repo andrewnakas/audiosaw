@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dictation — private speech to text in your browser (Whisper), free</title>
-<meta name="description" content="Speak and get text with punctuation, using OpenAI's Whisper running in your browser. Your voice is never uploaded. 99 languages, or translate to English as you talk. Free, no signup.">
+<title>Speech to Text Online Free — Voice Typing, Dictation, No Sign Up</title>
+<meta name="description" content="Free online speech to text: talk and it types, with punctuation. Voice typing in 99 languages with OpenAI's Whisper running in your browser, so your voice is never uploaded. No sign-up, no time limit, copy or download as TXT.">
 <meta name="keywords" content="dictation, online dictation, speech to text, voice typing, private dictation, offline speech recognition, whisper dictation, talk to text, voice to text free">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/dictation">
@@ -18,7 +18,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
-<meta property="og:title" content="Dictation — Whisper speech to text that stays on your machine">
+<meta property="og:title" content="Speech to Text Online — free voice typing that stays on your machine">
 <meta property="og:description" content="Talk, and the words appear with punctuation. Whisper runs in the tab, so nothing you say is uploaded. Free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/dictation">
@@ -26,12 +26,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02a">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Dictation (Whisper in the browser)",
+  "name": "Speech to Text (Dictation)",
+  "alternateName": ["Voice typing", "Voice to text", "Talk to text", "Online dictation"],
   "url": "https://audiosaw.com/dictation",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
@@ -69,12 +70,12 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model runs in your browser; the audio never leaves the tab and is thrown away once it has been turned into text. Only the model download touches the network, once."}},{"@type":"Question","name":"Why does the text appear after I pause rather than word by word?","acceptedAnswer":{"@type":"Answer","text":"Each phrase is transcribed as a whole when you pause, which is what gives Whisper enough context to punctuate it. Word-by-word recognition needs a different kind of model that today only runs on servers."}},{"@type":"Question","name":"Which languages can I dictate in?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages. Choose yours from the list for the best results, or choose \"An English translation\" to speak another language and get English text."}},{"@type":"Question","name":"Is the text saved if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"The text is kept in this browser and comes back when you return to the page, until you clear it. Download it as a .txt file to keep it anywhere else."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, with the tiny or base model. Text arrives a little slower than on a laptop."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model runs in your browser; the audio never leaves the tab and is thrown away once it has been turned into text. Only the model download touches the network, once."}},{"@type":"Question","name":"Why does the text appear after I pause rather than word by word?","acceptedAnswer":{"@type":"Answer","text":"Each phrase is transcribed as a whole when you pause, which is what gives Whisper enough context to punctuate it. Word-by-word recognition needs a different kind of model that today only runs on servers."}},{"@type":"Question","name":"Is this speech to text free, with no sign-up and no time limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account and no minute allowance: the speech model runs on your own computer, so dictating for an hour costs the same as for a minute. The one download is the model, once."}},{"@type":"Question","name":"Can I transcribe a recording instead of talking live?","acceptedAnswer":{"@type":"Answer","text":"Yes, on the audio to text page: drop an MP3, a voice memo or a video and it writes a transcript or SRT subtitles, and can label who is speaking. This page is for live voice typing from the microphone."}},{"@type":"Question","name":"Which languages can I dictate in?","acceptedAnswer":{"@type":"Answer","text":"Whisper covers 99 languages. Choose yours from the list for the best results, or choose \"An English translation\" to speak another language and get English text."}},{"@type":"Question","name":"Is the text saved if I close the tab?","acceptedAnswer":{"@type":"Answer","text":"The text is kept in this browser and comes back when you return to the page, until you clear it. Download it as a .txt file to keep it anywhere else."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"On recent phones, with the tiny or base model. Text arrives a little slower than on a laptop."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Dictation (speech to text)"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Speech to text (voice typing)"}]}
 </script>
 <!-- /AS:bcschema -->
 </head>
@@ -97,14 +98,14 @@ window.AS_VERSION = '2026-09-22';
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
   <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
-  <span aria-current="page">Dictation (speech to text)</span>
+  <span aria-current="page">Speech to text (voice typing)</span>
 </nav>
 <!-- /AS:breadcrumb -->
 
 <main class="container">
   <section class="page-intro">
-    <h1>Dictation. <span class="ital">Speak</span>, and it types.</h1>
-    <p>Press the button, talk, and your words appear as text, with punctuation, after each phrase. The speech recognition is OpenAI's Whisper running inside this browser tab, so nothing you say is sent to a server. That is the difference from the dictation built into Chrome, Google Docs and most phones, which stream your voice to the cloud.</p>
+    <h1>Speech to text: <span class="ital">speak</span>, and it types.</h1>
+    <p>Online dictation and voice typing: press the button, talk, and your words appear as text, with punctuation, after each phrase. Voice to text in 99 languages, free, with no sign-up and no time limit. The speech recognition is OpenAI's Whisper running inside this browser tab, so nothing you say is sent to a server. That is the difference from the dictation built into Chrome, Google Docs and most phones, which stream your voice to the cloud.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -180,15 +181,15 @@ window.AS_VERSION = '2026-09-22';
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
+    <h2>How voice typing works here</h2>
     <p>The microphone is read in small blocks and measured every 30 milliseconds against the room's own background level, which the page keeps learning while you're quiet. Anything 10 dB above that background is speech. When you pause for about seven-tenths of a second, the phrase you just said is handed to Whisper, the same speech model the <a href="/audio-to-text">audio to text</a> page uses for recordings, and the text it returns is added to the box. The 300 milliseconds before you started speaking are included, so the soft start of a word like "first" or "hello" isn't clipped. A phrase that runs past 25 seconds is cut there, inside the 30-second window Whisper listens through.</p>
     <p>Whisper is given whole phrases rather than fixed slices of time, which is why the text arrives with sensible punctuation: it sees the sentence it's punctuating. That is also why it lags by a phrase rather than showing each word as you say it. Streaming word-by-word recognisers exist, but they run in the cloud.</p>
 
-    <h2>Getting accurate text</h2>
+    <h2>Getting accurate text from talk to text</h2>
     <p>Speak in phrases and pause at the end of each sentence; the pause is what sends the phrase. A headset or a laptop's built-in microphone in a quiet room works well; a phone on a desk across the room does not. Say punctuation only if you want the words: Whisper adds commas and full stops from your intonation, and "comma" is written as the word. Pick your language rather than leaving it on automatic for short phrases, because a two-word phrase is not much to identify a language from.</p>
     <p><strong>Base</strong> is the right model for most people. <strong>Tiny</strong> keeps up better on an older laptop or a phone, with more mistakes on names and numbers. <strong>Small</strong> is noticeably better with accents and for languages other than English, but on a computer without a GPU it may fall several phrases behind; it catches up when you stop.</p>
 
-    <h2>Private by construction</h2>
+    <h2>Private dictation: your voice is never uploaded</h2>
     <p>Most dictation is a cloud service. The microphone button in Google Docs, Chrome's speech API, Windows voice typing in its default mode and most phone keyboards send the audio to the vendor's servers to be recognised. That is fine for a shopping list. It is less fine for a patient note, a legal memo, a diary or a draft that isn't public yet. Here the model is downloaded once and runs on your machine; the audio is discarded as soon as it has been transcribed, and only the text is kept, in your browser, until you clear it.</p>
 
     <h2>What it can't do</h2>
@@ -200,6 +201,8 @@ window.AS_VERSION = '2026-09-22';
     <!-- AS:faq -->
       <details><summary>Is my voice sent anywhere?</summary><p>No. The speech model runs in your browser; the audio never leaves the tab and is thrown away once it has been turned into text. Only the model download touches the network, once.</p></details>
       <details><summary>Why does the text appear after I pause rather than word by word?</summary><p>Each phrase is transcribed as a whole when you pause, which is what gives Whisper enough context to punctuate it. Word-by-word recognition needs a different kind of model that today only runs on servers.</p></details>
+      <details><summary>Is this speech to text free, with no sign-up and no time limit?</summary><p>Yes. There is no account and no minute allowance: the speech model runs on your own computer, so dictating for an hour costs the same as for a minute. The one download is the model, once.</p></details>
+      <details><summary>Can I transcribe a recording instead of talking live?</summary><p>Yes, on the audio to text page: drop an MP3, a voice memo or a video and it writes a transcript or SRT subtitles, and can label who is speaking. This page is for live voice typing from the microphone.</p></details>
       <details><summary>Which languages can I dictate in?</summary><p>Whisper covers 99 languages. Choose yours from the list for the best results, or choose "An English translation" to speak another language and get English text.</p></details>
       <details><summary>Is the text saved if I close the tab?</summary><p>The text is kept in this browser and comes back when you return to the page, until you clear it. Download it as a .txt file to keep it anywhere else.</p></details>
       <details><summary>Does it work on a phone?</summary><p>On recent phones, with the tiny or base model. Text arrives a little slower than on a laptop.</p></details>
@@ -210,7 +213,7 @@ window.AS_VERSION = '2026-09-22';
   <section class="related-tools">
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
-      <a class="card" href="/audio-to-text"><h3>Audio to text (transcription)</h3><p>Already recorded it? Transcribe the file, with subtitles.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>Already recorded it? Transcribe the file, with subtitles.</p></a>
       <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>The other way: have text read aloud.</p></a>
       <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Keep the recording as well as the words.</p></a>
       <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean a noisy recording before transcribing it.</p></a>
@@ -337,13 +340,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02a"></script>
-<script src="/js/tool-graph.js?v=2026-10-02a"></script>
-<script src="/js/flow.js?v=2026-10-02a"></script>
-<script src="/js/consent.js?v=2026-10-02a"></script>
-<script src="/js/resample.js?v=2026-10-02a"></script>
-<script src="/js/dictation-vad.js?v=2026-10-02a"></script>
-<script src="/js/dictation-page.js?v=2026-10-02a"></script>
-<script src="/js/pwa.js?v=2026-10-02a"></script>
+<script src="/js/common.js?v=2026-10-02b"></script>
+<script src="/js/tool-graph.js?v=2026-10-02b"></script>
+<script src="/js/flow.js?v=2026-10-02b"></script>
+<script src="/js/consent.js?v=2026-10-02b"></script>
+<script src="/js/resample.js?v=2026-10-02b"></script>
+<script src="/js/dictation-vad.js?v=2026-10-02b"></script>
+<script src="/js/dictation-page.js?v=2026-10-02b"></script>
+<script src="/js/pwa.js?v=2026-10-02b"></script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voice Cloning — clone a voice from 5 seconds, free, in your browser</title>
-<meta name="description" content="Clone a voice from a few seconds of recording and make it say anything, with the open Chatterbox model running on your own GPU in the browser. Nothing is uploaded. Free, no signup. Your voice or with permission only.">
+<title>Voice Cloning Free — Clone Your Voice from 5 Seconds, No Sign Up</title>
+<meta name="description" content="Free AI voice cloning online: clone your voice from five seconds of recording or an audio file and make it say anything, with the open-source Chatterbox model on your own GPU. No sign-up, no credits, nothing uploaded. With consent only.">
 <meta name="keywords" content="voice cloning, ai voice clone free, clone my voice, voice cloning online, zero shot voice cloning, chatterbox tts, private voice clone, voice clone no upload">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/voice-cloning">
@@ -18,7 +18,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
-<meta property="og:title" content="Voice Cloning — from five seconds of audio, on your own GPU">
+<meta property="og:title" content="Free Voice Cloning — clone a voice from five seconds, on your own GPU">
 <meta property="og:description" content="Record a few seconds, type the text, hear it in that voice. The model runs in the browser; nothing is uploaded. Free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/voice-cloning">
@@ -26,12 +26,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02a">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Voice Cloning (Chatterbox in the browser)",
+  "name": "Voice Cloning",
+  "alternateName": ["AI voice clone", "Clone my voice", "Voice cloner", "Chatterbox TTS online"],
   "url": "https://audiosaw.com/voice-cloning",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Browser",
@@ -67,7 +68,7 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The recording and the text stay in this browser tab, and the cloning model runs on your own graphics card. The only download is the model itself, which is the same for everyone."}},{"@type":"Question","name":"How long a recording does it need?","acceptedAnswer":{"@type":"Answer","text":"Five seconds of one person speaking clearly. It uses the first five seconds of speech, and needs at least three."}},{"@type":"Question","name":"Why does it need WebGPU?","acceptedAnswer":{"@type":"Answer","text":"The model writes speech one small token at a time, 25 per second of audio, and each token is a pass through a 350-million-parameter network. A graphics card does that quickly; a processor alone would take minutes per sentence."}},{"@type":"Question","name":"Can I clone a celebrity or someone else's voice?","acceptedAnswer":{"@type":"Answer","text":"Only with their permission. The page asks you to confirm it before it starts, and every file is tagged as a cloned voice."}},{"@type":"Question","name":"Which languages does it speak?","acceptedAnswer":{"@type":"Answer","text":"English. Resemble AI's multilingual Chatterbox covers 23 languages but is too large to run comfortably in a browser yet."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes: no account, no credits, no limit. Your own computer does the work."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my voice uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The recording and the text stay in this browser tab, and the cloning model runs on your own graphics card. The only download is the model itself, which is the same for everyone."}},{"@type":"Question","name":"How long a recording does it need?","acceptedAnswer":{"@type":"Answer","text":"Five seconds of one person speaking clearly. It uses the first five seconds of speech, and needs at least three."}},{"@type":"Question","name":"Can I clone a voice from an audio file or a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Instead of recording, drop an MP3, WAV, M4A, voice note or video file of the person speaking alone. The first five seconds of speech are used, so trim the file to a clean stretch first if it starts with music or another voice."}},{"@type":"Question","name":"Is this an open-source alternative to ElevenLabs?","acceptedAnswer":{"@type":"Answer","text":"For cloning in English, yes: Chatterbox Turbo is MIT-licensed, and here it runs on your own GPU with no account or credits. ElevenLabs has more languages, emotion control and trained \"professional\" clones, and uploads your voice to do it. AudioSaw's other voice tools cover the rest of that ground in the browser: text to speech, video dubbing, transcription and a voice changer."}},{"@type":"Question","name":"What is Chatterbox Turbo, and can I try it online?","acceptedAnswer":{"@type":"Answer","text":"Chatterbox Turbo is Resemble AI's open voice-cloning model (MIT licence, 350 million parameters). This page runs it in the browser with 4-bit weights on WebGPU, so you can try it without Python, a GPU server or a Hugging Face account."}},{"@type":"Question","name":"Why does it need WebGPU?","acceptedAnswer":{"@type":"Answer","text":"The model writes speech one small token at a time, 25 per second of audio, and each token is a pass through a 350-million-parameter network. A graphics card does that quickly; a processor alone would take minutes per sentence."}},{"@type":"Question","name":"Can I clone a celebrity or someone else's voice?","acceptedAnswer":{"@type":"Answer","text":"Only with their permission. The page asks you to confirm it before it starts, and every file is tagged as a cloned voice."}},{"@type":"Question","name":"Which languages does it speak?","acceptedAnswer":{"@type":"Answer","text":"English. Resemble AI's multilingual Chatterbox covers 23 languages but is too large to run comfortably in a browser yet."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes: no account, no credits, no limit. Your own computer does the work."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -101,8 +102,8 @@ window.AS_VERSION = '2026-09-22';
 
 <main class="container">
   <section class="page-intro">
-    <h1>Voice <span class="ital">cloning</span>, in your browser.</h1>
-    <p>Record a few seconds of a voice, type some text, and hear it spoken in that voice. The cloning model is Chatterbox Turbo, an open model from Resemble AI, and it runs on your own graphics card inside this tab, so the voice sample is never uploaded to anyone. Use it for your own voice, or a voice whose owner has said yes.</p>
+    <h1>Free voice <span class="ital">cloning</span>, in your browser.</h1>
+    <p>Record a few seconds of a voice, or drop an audio or video file of it, type some text, and hear it spoken in that voice: an AI voice clone with no account, no credits and no upload. The cloning model is Chatterbox Turbo, an open model from Resemble AI, and it runs on your own graphics card inside this tab, so the voice sample is never uploaded to anyone. Use it for your own voice, or a voice whose owner has said yes.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -168,12 +169,12 @@ window.AS_VERSION = '2026-09-22';
   </section>
 
   <section class="content-section">
-    <h2>How it works</h2>
+    <h2>How zero-shot AI voice cloning works</h2>
     <p>Zero-shot cloning means the model has never been trained on your voice; it hears a sample once and imitates it. Chatterbox does this in three steps. A speech encoder listens to your reference clip and turns it into two things: a compact description of the voice (its pitch range, timbre and the way it sounds in its room), and the clip itself as a string of speech tokens. A language model then reads your text and writes new speech tokens, one for every 40 milliseconds of audio, continuing in the style of the reference. Finally a decoder turns those tokens back into sound in the reference voice.</p>
     <p>All three run here, on your graphics card, through WebGPU. The model is downloaded from Hugging Face the first time, about 560 MB, and kept by the browser, so the second visit starts in seconds. Your recording is resampled to 24 kHz, trimmed of silence at the ends and cut to its first five seconds of speech; it is never sent anywhere, and closing the tab discards it.</p>
 
-    <h2>Getting a good likeness</h2>
-    <p>The reference matters more than anything else. Record in a quiet, soft room: a bedroom or a car beats a kitchen, because hard surfaces add echo, and the model copies the room along with the voice. Hold the phone or microphone a hand's width from your mouth and speak as you want the result to sound. If you read flatly, the clone reads flatly. Only the first five seconds of speech are used: the decoder re-reads the whole reference for every fraction of a second it renders, so a longer one makes every sentence slower without helping the likeness much. Record a little more than that and start speaking straight away. A clip with music, a second voice or heavy noise underneath gives a muddy clone; clean it first with <a href="/noise-reduction">noise reduction</a> or pull the voice out of a song with the <a href="/stem-splitter">AI vocal remover</a>.</p>
+    <h2>How much audio do you need to clone a voice?</h2>
+    <p>Five seconds of one person speaking clearly is enough here, and three is the minimum; a longer sample does not improve the likeness, for a reason explained below. What the reference sounds like matters far more than its length. Record in a quiet, soft room: a bedroom or a car beats a kitchen, because hard surfaces add echo, and the model copies the room along with the voice. Hold the phone or microphone a hand's width from your mouth and speak as you want the result to sound. If you read flatly, the clone reads flatly. Only the first five seconds of speech are used: the decoder re-reads the whole reference for every fraction of a second it renders, so a longer one makes every sentence slower without helping the likeness much. Record a little more than that and start speaking straight away. A clip with music, a second voice or heavy noise underneath gives a muddy clone; clean it first with <a href="/noise-reduction">noise reduction</a> or pull the voice out of a song with the <a href="/stem-splitter">AI vocal remover</a>.</p>
     <p>Write the text the way it should be spoken, with punctuation, and keep sentences to a reasonable length; each one is generated separately and played as it arrives. Chatterbox Turbo also understands a few non-speech tags inline: <code>[laugh]</code>, <code>[chuckle]</code>, <code>[cough]</code> and <code>[sigh]</code>.</p>
 
     <h2>Consent and honesty</h2>
@@ -188,6 +189,9 @@ window.AS_VERSION = '2026-09-22';
     <!-- AS:faq -->
       <details><summary>Is my voice uploaded?</summary><p>No. The recording and the text stay in this browser tab, and the cloning model runs on your own graphics card. The only download is the model itself, which is the same for everyone.</p></details>
       <details><summary>How long a recording does it need?</summary><p>Five seconds of one person speaking clearly. It uses the first five seconds of speech, and needs at least three.</p></details>
+      <details><summary>Can I clone a voice from an audio file or a video?</summary><p>Yes. Instead of recording, drop an MP3, WAV, M4A, voice note or video file of the person speaking alone. The first five seconds of speech are used, so trim the file to a clean stretch first if it starts with music or another voice.</p></details>
+      <details><summary>Is this an open-source alternative to ElevenLabs?</summary><p>For cloning in English, yes: Chatterbox Turbo is MIT-licensed, and here it runs on your own GPU with no account or credits. ElevenLabs has more languages, emotion control and trained "professional" clones, and uploads your voice to do it. AudioSaw's other voice tools cover the rest of that ground in the browser: text to speech, video dubbing, transcription and a voice changer.</p></details>
+      <details><summary>What is Chatterbox Turbo, and can I try it online?</summary><p>Chatterbox Turbo is Resemble AI's open voice-cloning model (MIT licence, 350 million parameters). This page runs it in the browser with 4-bit weights on WebGPU, so you can try it without Python, a GPU server or a Hugging Face account.</p></details>
       <details><summary>Why does it need WebGPU?</summary><p>The model writes speech one small token at a time, 25 per second of audio, and each token is a pass through a 350-million-parameter network. A graphics card does that quickly; a processor alone would take minutes per sentence.</p></details>
       <details><summary>Can I clone a celebrity or someone else's voice?</summary><p>Only with their permission. The page asks you to confirm it before it starts, and every file is tagged as a cloned voice.</p></details>
       <details><summary>Which languages does it speak?</summary><p>English. Resemble AI's multilingual Chatterbox covers 23 languages but is too large to run comfortably in a browser yet.</p></details>
@@ -202,7 +206,7 @@ window.AS_VERSION = '2026-09-22';
       <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record a clean reference first.</p></a>
       <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean a noisy sample before cloning it.</p></a>
       <a class="card" href="/text-to-speech"><h3>Text to speech</h3><p>No GPU, or no need for a clone? Use a ready-made voice.</p></a>
-      <a class="card" href="/voice-changer"><h3>Voice changer</h3><p>Change your own recording instead.</p></a>
+      <a class="card" href="/voice-changer"><h3>Voice changer for audio files</h3><p>Change your own recording instead.</p></a>
       <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Put the cloned lines against music or video.</p></a>
     </div>
   </section>
@@ -327,13 +331,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02a"></script>
-<script src="/js/tool-graph.js?v=2026-10-02a"></script>
-<script src="/js/flow.js?v=2026-10-02a"></script>
-<script src="/js/audio-core.js?v=2026-10-02a"></script>
-<script src="/js/consent.js?v=2026-10-02a"></script>
-<script src="/js/tts-engine.js?v=2026-10-02a"></script>
-<script src="/js/clone-page.js?v=2026-10-02a"></script>
-<script src="/js/pwa.js?v=2026-10-02a"></script>
+<script src="/js/common.js?v=2026-10-02b"></script>
+<script src="/js/tool-graph.js?v=2026-10-02b"></script>
+<script src="/js/flow.js?v=2026-10-02b"></script>
+<script src="/js/audio-core.js?v=2026-10-02b"></script>
+<script src="/js/consent.js?v=2026-10-02b"></script>
+<script src="/js/tts-engine.js?v=2026-10-02b"></script>
+<script src="/js/clone-page.js?v=2026-10-02b"></script>
+<script src="/js/pwa.js?v=2026-10-02b"></script>
 </body>
 </html>
