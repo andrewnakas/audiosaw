@@ -175,7 +175,8 @@
         ['split-audio', 'Split a long book into chapter-sized files automatically'],
         ['audio-speed', 'Speed up narration without chipmunking it'],
         ['wav-to-mp3-128kbps', 'Run the audiobook again at 128 kbps — speech does not need more'],
-        ['stereo-to-mono', 'Halve the size of a mono narration']
+        ['stereo-to-mono', 'Halve the size of a mono narration'],
+        ['text-to-audiobook', 'Make an M4B audiobook from an ebook']
       ]
     },
 
@@ -274,7 +275,8 @@
         ['normalize-audio', 'Even out inconsistent recording levels'],
         ['audio-to-text-prep', 'Prep it for transcription'],
         ['capcut-audio', 'Match what CapCut expects on import'],
-        ['ac3-to-mp3', 'Dolby Digital soundtracks, downmixed to stereo']
+        ['ac3-to-mp3', 'Dolby Digital soundtracks, downmixed to stereo'],
+        ['video-dubbing', 'Re-voice the video in English instead']
       ]
     },
 
@@ -531,7 +533,8 @@
         ['split-audio', 'Break a long track into parts first'],
         ['bpm-finder', 'Read the tempo off the isolated drums'],
         ['audio-to-midi', 'Transcribe the part you just isolated'],
-        ['autotune', 'Tune the vocal stem you just separated']
+        ['autotune', 'Tune the vocal stem you just separated'],
+        ['video-dubbing', 'Dub a video over its instrumental']
       ]
     },
     'noise-reduction': {
@@ -583,7 +586,8 @@
         ['key-finder', 'Find the key it is in now, so you know how far to move it'],
         ['bpm-finder', 'Check the tempo you are working against'],
         ['audio-to-midi', 'Capture the line as notes instead of audio'],
-        ['autotune', 'Correct the tuning rather than transpose it']
+        ['autotune', 'Correct the tuning rather than transpose it'],
+        ['voice-changer', 'For a voice, shift pitch without the chipmunk sound']
       ]
     },
 
@@ -644,7 +648,9 @@
         ['normalize-audio', 'Bring it to a consistent level'],
         ['audio-to-text-prep', 'Prep it for transcription'],
         ['autotune', 'Tune the take you just recorded'],
-        ['record-computer-audio', 'Record what a tab is playing instead of the microphone']
+        ['record-computer-audio', 'Record what a tab is playing instead of the microphone'],
+        ['voice-changer', 'Make the recording deeper, higher or a robot'],
+        ['dictation', 'Want the words, not the audio? Dictate']
       ]
     },
     'record-computer-audio': {
@@ -772,7 +778,9 @@
         ['split-audio', 'Break a recording over two hours into parts'],
         ['voice-recorder', 'Record the speech here, then transcribe it'],
         ['auto-cut-silence', 'Tighten the pauses before you subtitle a clip'],
-        ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format']
+        ['audio-for-whisper', 'Running Whisper yourself? Get the file in its native format'],
+        ['dictation', 'Talk instead of uploading: live speech to text'],
+        ['video-dubbing', 'Turn the English transcript into a voice-over']
       ]
     },
     'text-to-speech': {
@@ -857,7 +865,8 @@
         ['trim-silence-edges', 'Top and tail the recording'],
         ['mp3-to-wav', 'Hand an editor an uncompressed file to work from'],
         ['loudness-normalizer', 'Hit the -16 LUFS podcast platforms expect'],
-        ['auto-cut-silence', 'Cut the dead air before you publish']
+        ['auto-cut-silence', 'Cut the dead air before you publish'],
+        ['text-to-speech', 'Generate an intro or ad read in a natural voice']
       ]
     },
     'discord-audio-compressor': {
