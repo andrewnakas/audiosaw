@@ -188,6 +188,49 @@
       (gpu ? 'on a GPU' : 'on the CPU') + '; keep the tab open. Finished chapters are saved, so it can be stopped and resumed.';
   }
 
+  // A PDF's text layer through pdf.js (vendor/pdfjs, loaded only now), as
+  // positioned runs for ASBook.fromPdf, plus its bookmarks as page numbers.
+  var PDFJS = '/vendor/pdfjs/pdf.min.mjs?v=6.3.289';
+  async function readPdf(f) {
+    var pdfjs = await import(PDFJS);
+    pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs?v=6.3.289';
+    var task = pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()), isEvalSupported: false }), doc;
+    try { doc = await task.promise; }
+    catch (e) {
+      if (e && e.name === 'PasswordException') throw new Error('This PDF is password-protected. Open it, save a copy without the password, and try that.');
+      throw e;
+    }
+    var pages = [];
+    for (var n = 1; n <= doc.numPages; n++) {
+      if (n % 10 === 1) CV.setStatus(statusEl, 'info', 'Reading ' + f.name + '… page ' + n + ' of ' + doc.numPages);
+      var page = await doc.getPage(n), tc = await page.getTextContent();
+      // Upright text only: sideways runs are margin stamps (arXiv's) and
+      // labels on rotated figures.
+      pages.push({ items: tc.items.filter(function (it) { return typeof it.str === 'string' && it.transform && Math.abs(it.transform[1]) < 0.01 && Math.abs(it.transform[2]) < 0.01; }).map(function (it) {
+        var t = it.transform;
+        return { str: it.str, x: t[4], y: t[5], w: it.width, h: Math.hypot(t[2], t[3]) || it.height || 10 };
+      }) });
+      page.cleanup();
+    }
+    var outline = [];
+    async function walk(items, depth) {
+      for (var i = 0; i < (items || []).length; i++) {
+        var o = items[i], dest = o.dest, pageIx = -1;
+        try {
+          if (typeof dest === 'string') dest = await doc.getDestination(dest);
+          if (Array.isArray(dest) && dest[0] != null) pageIx = typeof dest[0] === 'number' ? dest[0] : await doc.getPageIndex(dest[0]);
+        } catch (e) { /* a broken bookmark is skipped */ }
+        outline.push({ title: o.title, page: pageIx, depth: depth });
+        if (depth < 2) await walk(o.items, depth + 1);
+      }
+    }
+    try { await walk(await doc.getOutline(), 0); } catch (e) { outline = []; }
+    var info = {};
+    try { info = (await doc.getMetadata()).info || {}; } catch (e) {}
+    task.destroy();
+    return ASBook.fromPdf({ pages: pages, outline: outline, info: { title: info.Title, author: info.Author } });
+  }
+
   async function onFiles(files) {
     var f = files[0];
     if (!f) return;
@@ -195,16 +238,17 @@
       CV.setStatus(statusEl, 'info', 'Reading ' + f.name + '…');
       var b;
       if (/\.epub$/i.test(f.name)) b = await ASBook.fromEpub(await f.arrayBuffer());
+      else if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf') b = await readPdf(f);
       else b = ASBook.fromText(await f.text());
       if (!b.title) b.title = f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
       if (!b.chapters.length) throw new Error('There is no text in that file.');
       CV.clearStatus(statusEl);
       load(b);
     } catch (e) {
-      CV.setStatus(statusEl, 'error', 'Could not read that book. ' + (e.message || e));
+      CV.setStatus(statusEl, 'error', 'Could not read that book. ' + (e.message || e), e);
     }
   }
-  CV.bindDropzone(dropzone, fileInput, onFiles, ['.txt', '.md', '.markdown', '.epub', '.text']);
+  CV.bindDropzone(dropzone, fileInput, onFiles, ['.txt', '.md', '.markdown', '.epub', '.text', '.pdf']);
   if (pasteBtn) pasteBtn.addEventListener('click', function () {
     if (!pasteEl.value.trim()) return;
     var b = ASBook.fromText(pasteEl.value);

@@ -810,7 +810,7 @@
     },
     'voice-changer': {
       cat: 'voice', label: 'voice changer', title: 'Voice changer for audio files',
-      blurb: 'Make a recorded voice deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.',
+      blurb: 'Make a voice in a recording or a video deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.',
       project: 'same',
       next: [
         ['stem-splitter', 'Pull the voice out of a song before changing it'],
@@ -822,8 +822,8 @@
       ]
     },
     'text-to-audiobook': {
-      cat: 'voice', label: 'text → audiobook', title: 'EPUB to audiobook',
-      blurb: 'An EPUB or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.',
+      cat: 'voice', label: 'text → audiobook', title: 'EPUB or PDF to audiobook',
+      blurb: 'An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.',
       next: [
         ['text-to-speech', 'Just a page or a script? Hear it straight away'],
         ['m4b-to-mp3', 'Need plain MP3s from an M4B instead'],

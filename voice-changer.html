@@ -25,7 +25,7 @@
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -65,7 +65,7 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, and is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"Free, no signup, and nothing is uploaded. The processing runs in your browser tab, so the recording never leaves your computer."}},{"@type":"Question","name":"Can I change the voice in an audio file I already recorded?","acceptedAnswer":{"@type":"Answer","text":"Yes, that is what this page is for. Drop in an MP3, WAV, M4A, FLAC, OGG or Opus file (an iPhone voice memo or a WhatsApp voice note works), pick a preset, and download the result as MP3, WAV, FLAC or M4A. Several files can be changed in one go."}},{"@type":"Question","name":"How do I make my voice deeper without it sounding slowed down?","acceptedAnswer":{"@type":"Answer","text":"Choose the Deeper preset, or lower the pitch by three or four semitones and the formant by about one. The pitch moves without the formants, which is what keeps it sounding like a person rather than a slowed tape."}},{"@type":"Question","name":"Can it make a male voice sound female, or the reverse?","acceptedAnswer":{"@type":"Answer","text":"The More feminine and More masculine presets move pitch and formants by roughly the difference between typical adult voices. The result is noticeably different, but speaking style matters as much as pitch, so it will not fully convince on its own."}},{"@type":"Question","name":"Does it work on singing?","acceptedAnswer":{"@type":"Answer","text":"Yes, on a solo voice. For a voice in a song, separate it first with the AI vocal remover, change it, and mix it back in the audio editor."}},{"@type":"Question","name":"Does it change the length of the file?","acceptedAnswer":{"@type":"Answer","text":"No. The output is the same length as the original to the sample, so it still lines up with video. The one exception is the cave preset, which adds its echo tail at the end."}},{"@type":"Question","name":"Can I use it live on Discord or in a game?","acceptedAnswer":{"@type":"Answer","text":"No. It processes recordings. Live voice changing needs a program that sits between the microphone and the app, such as Voicemod or Clownfish."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, and is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"Free, no signup, and nothing is uploaded. The processing runs in your browser tab, so the recording never leaves your computer."}},{"@type":"Question","name":"Can I change the voice in an audio file I already recorded?","acceptedAnswer":{"@type":"Answer","text":"Yes, that is what this page is for. Drop in an MP3, WAV, M4A, FLAC, OGG or Opus file (an iPhone voice memo or a WhatsApp voice note works), pick a preset, and download the result as MP3, WAV, FLAC or M4A. Several files can be changed in one go."}},{"@type":"Question","name":"How do I make my voice deeper without it sounding slowed down?","acceptedAnswer":{"@type":"Answer","text":"Choose the Deeper preset, or lower the pitch by three or four semitones and the formant by about one. The pitch moves without the formants, which is what keeps it sounding like a person rather than a slowed tape."}},{"@type":"Question","name":"Can it make a male voice sound female, or the reverse?","acceptedAnswer":{"@type":"Answer","text":"The More feminine and More masculine presets move pitch and formants by roughly the difference between typical adult voices. The result is noticeably different, but speaking style matters as much as pitch, so it will not fully convince on its own."}},{"@type":"Question","name":"Can I make my voice deeper in a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM, choose Deeper (or any preset), and the video comes back with the changed voice and the picture copied untouched, still in sync. MOV and MKV keep their format; WebM comes back as MP4."}},{"@type":"Question","name":"Does it work on singing?","acceptedAnswer":{"@type":"Answer","text":"Yes, on a solo voice. For a voice in a song, separate it first with the AI vocal remover, change it, and mix it back in the audio editor."}},{"@type":"Question","name":"Does it change the length of the file?","acceptedAnswer":{"@type":"Answer","text":"No. The output is the same length as the original to the sample, so it still lines up with video. The one exception is the cave preset, which adds its echo tail at the end."}},{"@type":"Question","name":"Can I use it live on Discord or in a game?","acceptedAnswer":{"@type":"Answer","text":"No. It processes recordings. Live voice changing needs a program that sits between the microphone and the app, such as Voicemod or Clownfish."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -100,7 +100,7 @@ window.AS_VERSION = '2026-09-22';
 <main class="container">
   <section class="page-intro">
     <h1>Voice <span class="ital">changer</span> for recorded audio.</h1>
-    <p>Change how a voice sounds in an audio file you already have, such as a voice memo, a WhatsApp voice note, a voice-over or a podcast clip: deeper or higher while still sounding like a person, male to female or female to male, or something else entirely, with robot, monster, chipmunk, old radio and phone-line voice effects. Pitch and formants are separate controls, which is what keeps a lowered voice from sounding like a slowed-down tape. Runs in your browser; nothing is uploaded.</p>
+    <p>Change how a voice sounds in an audio file or a video you already have, such as a voice memo, a WhatsApp voice note, a voice-over, a podcast clip or a phone video: deeper or higher while still sounding like a person, male to female or female to male, or something else entirely, with robot, monster, chipmunk, old radio and phone-line voice effects. Pitch and formants are separate controls, which is what keeps a lowered voice from sounding like a slowed-down tape. Runs in your browser; nothing is uploaded.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -108,9 +108,9 @@ window.AS_VERSION = '2026-09-22';
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
-      <p class="big">drop a voice recording</p>
-      <p>MP3, WAV, M4A, voice memos, FLAC. Batch supported.</p>
-      <input type="file" id="fileInput" accept="audio/*,.m4a,.opus,.caf" multiple>
+      <p class="big">drop a voice recording or a video</p>
+      <p>MP3, WAV, M4A, voice memos, FLAC, or an MP4, MOV or WebM video. Batch supported.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.m4a,.opus,.caf,.mkv,.m4v" multiple>
     </div>
 
     <div class="file-list" id="fileList"></div>
@@ -152,6 +152,7 @@ window.AS_VERSION = '2026-09-22';
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the new voice</label>
       <div class="vc-sliders">
         <label class="vc-slider">Pitch <span class="vc-val" id="pitchVal"></span>
           <input type="range" id="pitch" min="-12" max="12" step="0.5" value="-4">
@@ -182,6 +183,7 @@ window.AS_VERSION = '2026-09-22';
         <tr><th>Accuracy</th><td>Within 3 cents of the requested pitch on a test voice, with the length unchanged to the sample</td></tr>
         <tr><th>Presets</th><td>Deeper, higher, more masculine, more feminine, chipmunk, monster, robot, alien, old radio, telephone, cave</td></tr>
         <tr><th>Keeps</th><td>The sample rate, channels and length of the original</td></tr>
+        <tr><th>Video</th><td>MP4, MOV, MKV or WebM in; the same video back with the new voice, the picture copied without re-encoding (WebM comes back as MP4)</td></tr>
         <tr><th>Uploads your file</th><td>No — everything runs in the page</td></tr>
         </tbody>
       </table>
@@ -201,6 +203,8 @@ window.AS_VERSION = '2026-09-22';
     <p><strong>Chipmunk</strong> raises the pitch nine semitones and the formants by about a third, the sped-up cartoon sound, but without changing the length. <strong>Robot</strong> flattens the voice to a single note (110 Hz) and adds ring modulation, which is the classic science-fiction approach: the words stay intelligible but the melody of speech disappears. <strong>Monster</strong> drops the pitch ten semitones and the formants by about a quarter, then adds drive and a dark room. <strong>Alien</strong> raises both slightly and rings the voice against a 180 Hz tone. <strong>Old radio</strong> and <strong>Telephone</strong> cut the voice down to the narrow band those devices carry: roughly 300 Hz to 3.4 kHz for a phone line, with an 8 kHz sample-rate grit on top. <strong>Cave</strong> adds a long reverb with a tail, so the file gets a few seconds longer.</p>
     <p>Every preset sets the sliders when you choose it, and the sliders can then adjust its pitch and formant. A "monster, but less" is one slider move.</p>
 
+    <h2>Change the voice in a video</h2>
+    <p>Drop a video and, with "keep the picture" ticked, you get the video back with the new voice: the picture stream is copied across untouched, not re-encoded, so it loses nothing and the job takes seconds longer rather than minutes. Because the changed voice is the same length as the original to the sample, it stays in sync with lips and cuts. On a test clip the picture came back with every one of its 125 frames, the length matched to the hundredth of a second, and the Deeper preset measured 394 cents lower against the 400 it asks for. Background music in the video is shifted along with the voice, so for a clip with a soundtrack, separate the voice first with the <a href="/stem-splitter">AI vocal remover</a>. Untick the box to get just the changed audio as MP3, WAV, FLAC or M4A.</p>
     <h2>What it can't do</h2>
     <p>This is a voice <em>changer</em>, not a voice cloner: it changes the character of the voice in the recording but cannot make it sound like a specific other person. Desktop tools such as RVC and VoiceStudio do that with neural models trained per voice. It processes recordings, not a live microphone feed for calls or streams; for that, a real-time app such as Voicemod sits between your microphone and the other program. If you need a voice that was never recorded at all, the <a href="/text-to-speech">text to speech</a> page generates one from typed text.</p>
     <p>The output keeps the original's sample rate, channel count and length to the sample, except for the cave preset, whose echo adds a tail. Sent from the <a href="/audio-editor">audio editor</a>, the changed clip comes back lined up exactly where it was.</p>
@@ -213,6 +217,7 @@ window.AS_VERSION = '2026-09-22';
       <details><summary>Can I change the voice in an audio file I already recorded?</summary><p>Yes, that is what this page is for. Drop in an MP3, WAV, M4A, FLAC, OGG or Opus file (an iPhone voice memo or a WhatsApp voice note works), pick a preset, and download the result as MP3, WAV, FLAC or M4A. Several files can be changed in one go.</p></details>
       <details><summary>How do I make my voice deeper without it sounding slowed down?</summary><p>Choose the Deeper preset, or lower the pitch by three or four semitones and the formant by about one. The pitch moves without the formants, which is what keeps it sounding like a person rather than a slowed tape.</p></details>
       <details><summary>Can it make a male voice sound female, or the reverse?</summary><p>The More feminine and More masculine presets move pitch and formants by roughly the difference between typical adult voices. The result is noticeably different, but speaking style matters as much as pitch, so it will not fully convince on its own.</p></details>
+      <details><summary>Can I make my voice deeper in a video?</summary><p>Yes. Drop the MP4, MOV or WebM, choose Deeper (or any preset), and the video comes back with the changed voice and the picture copied untouched, still in sync. MOV and MKV keep their format; WebM comes back as MP4.</p></details>
       <details><summary>Does it work on singing?</summary><p>Yes, on a solo voice. For a voice in a song, separate it first with the AI vocal remover, change it, and mix it back in the audio editor.</p></details>
       <details><summary>Does it change the length of the file?</summary><p>No. The output is the same length as the original to the sample, so it still lines up with video. The one exception is the cave preset, which adds its echo tail at the end.</p></details>
       <details><summary>Can I use it live on Discord or in a game?</summary><p>No. It processes recordings. Live voice changing needs a program that sits between the microphone and the app, such as Voicemod or Clownfish.</p></details>
@@ -352,18 +357,18 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02b"></script>
-<script src="/js/tool-graph.js?v=2026-10-02b"></script>
-<script src="/js/flow.js?v=2026-10-02b"></script>
-<script src="/js/project-link.js?v=2026-10-02b"></script>
-<script src="/js/audio-core.js?v=2026-10-02b"></script>
-<script src="/js/loudness.js?v=2026-10-02b"></script>
-<script src="/js/tool-shell.js?v=2026-10-02b"></script>
-<script src="/js/consent.js?v=2026-10-02b"></script>
-<script src="/js/resample.js?v=2026-10-02b"></script>
-<script src="/js/pitch-track.js?v=2026-10-02b"></script>
-<script src="/js/voice-fx.js?v=2026-10-02b"></script>
-<script src="/js/voice-changer.js?v=2026-10-02b"></script>
-<script src="/js/pwa.js?v=2026-10-02b"></script>
+<script src="/js/common.js?v=2026-10-02c"></script>
+<script src="/js/tool-graph.js?v=2026-10-02c"></script>
+<script src="/js/flow.js?v=2026-10-02c"></script>
+<script src="/js/project-link.js?v=2026-10-02c"></script>
+<script src="/js/audio-core.js?v=2026-10-02c"></script>
+<script src="/js/loudness.js?v=2026-10-02c"></script>
+<script src="/js/tool-shell.js?v=2026-10-02c"></script>
+<script src="/js/consent.js?v=2026-10-02c"></script>
+<script src="/js/resample.js?v=2026-10-02c"></script>
+<script src="/js/pitch-track.js?v=2026-10-02c"></script>
+<script src="/js/voice-fx.js?v=2026-10-02c"></script>
+<script src="/js/voice-changer.js?v=2026-10-02c"></script>
+<script src="/js/pwa.js?v=2026-10-02c"></script>
 </body>
 </html>

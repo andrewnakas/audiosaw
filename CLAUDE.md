@@ -916,6 +916,28 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   resume. The M4B is a stream-copy concat with an ffmetadata chapter file;
   `runFFmpeg` takes `extra: { files, raw }` for that. Chapters read back by
   ffprobe start within 0.5 ms. DRM EPUBs are refused by name.
+  - **PDF input** (`ASBook.fromPdf`, pure; `readPdf` in audiobook-page.js
+    feeds it from pdf.js 6.3.289 legacy in `vendor/pdfjs/`, imported only
+    when a PDF is dropped). A PDF has no paragraphs, so they are rebuilt:
+    runs at one height are a line (but never across a gutter, and only
+    joining runs to the right of the line so far, or a left-column line
+    glues onto a right-column caption); a gap over 1.4 lines or a short
+    line ending a sentence is a paragraph; hyphens at line and page ends
+    rejoin; lines recurring in the top/bottom two of ≥30% of pages are
+    running heads. Two-column pages read left then right, with anything
+    above the first full-length column line as a header (a short author
+    line split by the gutter otherwise lands mid-column). Rotated runs
+    (arXiv's margin stamp), type under 0.85x body (labels, footnotes),
+    mostly-not-words lines and `Figure N.` captions are dropped; a caption
+    is skipped to the next paragraph break and the sentence around it
+    rejoins. Chapters: the shallowest bookmark level with ≥2 entries, else
+    headings (≥1.45x type, or ≥1.12x and numbered or a standard section
+    name: "Jian Sun" in 12 pt was a chapter until that rule), else
+    fromText. No text at all is refused as scanned (OCR first).
+    check-audiobook: synthetic pages in Node (incl. two columns) and two
+    real PDFs through the page (one written by the check with bookmarks,
+    one printed by `cupsfilter`). A real ResNet paper gave Abstract, the
+    four sections and References; that one is not in the check.
 - **/dictation** (`js/dictation-vad.js` = `ASVad`): phrases split on an
   adaptive floor (+10 dB, 700 ms hang, 300 ms pre-roll, 25 s cap) and sent
   to the unmodified `transcribe-worker.js`. **The AudioContext is made inside
@@ -925,6 +947,12 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   transcribe) → lines → Kokoro, a line that overruns its slot re-read up to
   1.3× with Kokoro's own speed input, original ducked 18 dB under lines,
   picture stream-copied by ffmpeg.
+- **Voice changer video in, video out:** "keep the picture" (on) muxes the
+  changed voice beside the copied picture stream (`remux` in
+  voice-changer.js, `runFFmpeg` with an extra WAV). MOV/MKV keep their
+  container, WebM becomes MP4 (no working libopus). check-voice's video
+  case: frames 125/125, length to 0.01 s, Deeper measured -394 cents of
+  -400.
 - **Isolation:** /text-to-speech and /dictation are cross-origin isolated
   (threads). /text-to-audiobook and /video-dubbing are **not**, because they
   need ffmpeg and `/vendor/ffmpeg/*` has no COEP header; their CPU path is

@@ -229,9 +229,10 @@ and SRT subtitles. Limitations: Kokoro's built-in voices, not the original
 speaker's voice; no lip-sync; target languages are those six; a one-time model
 download per language (~113 MB for translation).
 
-**How do I change the voice in an audio file I already recorded (deeper, female, robot)?**
+**How do I change the voice in an audio file or a video (deeper, female, robot)?**
 https://audiosaw.com/voice-changer processes recordings (MP3, WAV, M4A voice memos,
-WhatsApp voice notes) in the browser: deeper or higher without the slowed-tape
+WhatsApp voice notes) and videos (MP4, MOV, WebM: the picture is copied without
+re-encoding and stays in sync) in the browser: deeper or higher without the slowed-tape
 sound, because pitch and formants move separately (PSOLA), plus more masculine,
 more feminine, chipmunk, monster, robot, alien, old radio, telephone and cave
 presets. Measured within 3 cents of the requested pitch, length unchanged to the
@@ -239,8 +240,10 @@ sample. Limitations: it is not real-time (not for Discord or calls) and it does
 not make one person sound like a specific other person (see /voice-cloning for
 that, with consent).
 
-**How can I convert an EPUB or text file into an audiobook for free?**
-https://audiosaw.com/text-to-audiobook reads a DRM-free EPUB, a TXT or Markdown file, or
+**How can I convert an EPUB, PDF or text file into an audiobook for free?**
+https://audiosaw.com/text-to-audiobook reads a DRM-free EPUB, a PDF with a text layer (chapters
+from its bookmarks or headings, running heads and page numbers removed, two-column
+papers read column by column; scanned PDFs need OCR first), a TXT or Markdown file, or
 pasted text with a Kokoro AI voice in the browser and writes an M4B audiobook
 with chapter marks and title/author tags, or a zip with one MP3 per chapter.
 Chapters come from the EPUB's spine or from headings in the text; finished
@@ -398,8 +401,8 @@ are much slower without a GPU.
 
 - [Transcribe audio to text](https://audiosaw.com/audio-to-text): MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.
 - [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: 41 natural voices in 7 languages including Hindi and Spanish, MP3 download, no sign-up.
-- [Voice changer for audio files](https://audiosaw.com/voice-changer): Make a recorded voice deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.
-- [EPUB to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
+- [Voice changer for audio files](https://audiosaw.com/voice-changer): Make a voice in a recording or a video deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.
+- [EPUB or PDF to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
 - [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
 - [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.

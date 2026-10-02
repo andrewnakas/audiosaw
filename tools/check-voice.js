@@ -169,5 +169,61 @@ for (const id of Object.keys(V.PRESETS)) {
   ok(finite && pk <= 0.8913 && level > 0.2 && y[0].length >= input.length, `preset ${id}: peak ${pk.toFixed(3)}, level x${level.toFixed(2)}, ${(y[0].length / SR).toFixed(2)} s`);
 }
 
-if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
-console.log('\ncheck-voice: all good');
+// Video in, video out, through the real page: a `say` voice on a test
+// picture, the Deeper preset. The picture stream must come back copied
+// (same codec, same frame count), the length kept, and the voice lower by
+// the preset's 4 semitones, within 25 cents through AAC (measured 6). Needs Chrome, macOS say, ffmpeg and the cached
+// ffmpeg core (check-fidelity fetches it).
+async function browser() {
+  const fs = require('fs'), os = require('os'), path = require('path');
+  const { execFileSync } = require('child_process');
+  const { withPage, findChrome } = require('./chrome-harness');
+  const core = path.join(os.homedir(), '.cache', 'audiosaw', 'ffmpeg-core-0.12.6.wasm');
+  let tools = true;
+  try { execFileSync('say', ['-v', '?'], { stdio: 'ignore' }); execFileSync('ffprobe', ['-version'], { stdio: 'ignore' }); } catch (e) { tools = false; }
+  if (!findChrome() || !tools || !fs.existsSync(core)) { console.log('  skip: video test (needs Chrome, say, ffmpeg and the cached ffmpeg core)'); return; }
+  console.log('video in, video out');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-vc-'));
+  execFileSync('say', ['-v', 'Samantha', '-o', path.join(dir, 's.aiff'), 'The keeper lit the lamp at six and climbed the stairs.']);
+  const vid = path.join(dir, 'in.mp4');
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc=s=320x240:r=25:d=5', '-i', path.join(dir, 's.aiff'),
+    '-filter_complex', '[1:a]apad=whole_dur=5[a]', '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', '-t', '5', vid]);
+  await withPage({ routes: { '/__in.mp4': () => fs.readFileSync(vid), '/__core.wasm': () => fs.readFileSync(core) } }, async (page) => {
+    page.listen('Fetch.requestPaused', (p) => page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__core.wasm') }));
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*ffmpeg-core.wasm*' }] });
+    await page.goto('/voice-changer', 1500);
+    const r = await page.eval(`(async () => {
+      const f = new File([await (await fetch('/__in.mp4')).blob()], 'clip.mp4', { type: 'video/mp4' });
+      const dt = new DataTransfer(); dt.items.add(f);
+      const inp = document.querySelector('#fileInput'); inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+      const sel = document.querySelector('#preset'); sel.value = 'deeper'; sel.dispatchEvent(new Event('change'));
+      let got = null; const o = CV.downloadBlob; CV.downloadBlob = (b, name) => { got = { b, name }; };
+      document.querySelector('#convertBtn').click();
+      for (let i = 0; i < 1800 && !got && !/Could not/.test(document.querySelector('#status').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+      CV.downloadBlob = o;
+      if (!got) return { err: document.querySelector('#status').textContent };
+      const u = new Uint8Array(await got.b.arrayBuffer());
+      let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192));
+      return { name: got.name, type: got.b.type, b64: btoa(bin) };
+    })()`, 600000);
+    ok(!r.err, 'a video comes back' + (r.err ? ' — ' + r.err : ': ' + r.name + ' (' + r.type + ')'));
+    if (r.err) return;
+    const out = path.join(dir, 'out.mp4');
+    fs.writeFileSync(out, Buffer.from(r.b64, 'base64'));
+    const probe = (f) => JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-count_packets', '-show_streams', '-show_format', '-of', 'json', f], { encoding: 'utf8' }));
+    const a = probe(vid), b = probe(out);
+    const va = a.streams.find((s) => s.codec_type === 'video'), vb = b.streams.find((s) => s.codec_type === 'video');
+    ok(/\.mp4$/.test(r.name) && vb && vb.codec_name === va.codec_name && vb.nb_read_packets === va.nb_read_packets, 'the picture is copied: ' + (vb ? vb.codec_name + ', ' + vb.nb_read_packets + ' frames of ' + va.nb_read_packets : 'no video stream'));
+    ok(b.streams.some((s) => s.codec_type === 'audio' && s.codec_name === 'aac') && Math.abs(parseFloat(b.format.duration) - parseFloat(a.format.duration)) < 0.1, 'AAC voice, length kept (' + parseFloat(b.format.duration).toFixed(2) + ' s of ' + parseFloat(a.format.duration).toFixed(2) + ')');
+    const pcm = (f) => { const buf = execFileSync('ffmpeg', ['-loglevel', 'error', '-i', f, '-vn', '-ac', '1', '-ar', String(SR), '-f', 'f32le', '-']); return new Float32Array(buf.buffer, buf.byteOffset, buf.length >> 2); };
+    const x = pcm(vid), y = pcm(out), win = [Math.round(0.3 * SR), Math.round(2.5 * SR)];
+    const c = cents(medianF0(y, win), medianF0(x, win));
+    const want = V.PRESETS.deeper.pitch * 100;
+    ok(Math.abs(c - want) < 25, 'the voice in the video is lower: ' + c.toFixed(0) + ' cents (the preset asks for ' + want + ')');
+  });
+}
+
+browser().catch((e) => ok(false, 'video: ' + (e.stack || e))).then(() => {
+  if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
+  console.log('\ncheck-voice: all good');
+});

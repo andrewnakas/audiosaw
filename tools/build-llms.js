@@ -271,9 +271,10 @@ lines.push("and SRT subtitles. Limitations: Kokoro's built-in voices, not the or
 lines.push("speaker's voice; no lip-sync; target languages are those six; a one-time model");
 lines.push('download per language (~113 MB for translation).');
 lines.push('');
-lines.push('**How do I change the voice in an audio file I already recorded (deeper, female, robot)?**');
+lines.push('**How do I change the voice in an audio file or a video (deeper, female, robot)?**');
 lines.push(`${ORIGIN}/voice-changer processes recordings (MP3, WAV, M4A voice memos,`);
-lines.push('WhatsApp voice notes) in the browser: deeper or higher without the slowed-tape');
+lines.push('WhatsApp voice notes) and videos (MP4, MOV, WebM: the picture is copied without');
+lines.push('re-encoding and stays in sync) in the browser: deeper or higher without the slowed-tape');
 lines.push('sound, because pitch and formants move separately (PSOLA), plus more masculine,');
 lines.push('more feminine, chipmunk, monster, robot, alien, old radio, telephone and cave');
 lines.push('presets. Measured within 3 cents of the requested pitch, length unchanged to the');
@@ -281,8 +282,10 @@ lines.push('sample. Limitations: it is not real-time (not for Discord or calls) 
 lines.push('not make one person sound like a specific other person (see /voice-cloning for');
 lines.push('that, with consent).');
 lines.push('');
-lines.push('**How can I convert an EPUB or text file into an audiobook for free?**');
-lines.push(`${ORIGIN}/text-to-audiobook reads a DRM-free EPUB, a TXT or Markdown file, or`);
+lines.push('**How can I convert an EPUB, PDF or text file into an audiobook for free?**');
+lines.push(`${ORIGIN}/text-to-audiobook reads a DRM-free EPUB, a PDF with a text layer (chapters`);
+lines.push('from its bookmarks or headings, running heads and page numbers removed, two-column');
+lines.push('papers read column by column; scanned PDFs need OCR first), a TXT or Markdown file, or');
 lines.push('pasted text with a Kokoro AI voice in the browser and writes an M4B audiobook');
 lines.push('with chapter marks and title/author tags, or a zip with one MP3 per chapter.');
 lines.push("Chapters come from the EPUB's spine or from headings in the text; finished");

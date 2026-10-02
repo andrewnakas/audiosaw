@@ -5,6 +5,7 @@
  *
  *   ASBook.fromText(text)          → { title, chapters: [{ title, text }] }
  *   ASBook.fromEpub(arrayBuffer)   → Promise<{ title, author, chapters }>
+ *   ASBook.fromPdf({ pages, outline, info }) → { title, author, chapters }
  *
  * An EPUB is a zip: META-INF/container.xml names the OPF package, whose
  * <spine> lists the XHTML documents in reading order. Each spine document
@@ -191,6 +192,170 @@
     return { title: meta('title'), author: meta('creator'), chapters: chapters };
   }
 
+
+  /* ----------------------------------------------------------------- pdf */
+
+  // A PDF has no paragraphs, only positioned runs of text, so they are
+  // rebuilt here from what pdf.js reports (audiobook-page.js does the
+  // reading; this part is pure, so check-audiobook runs it in Node):
+  //   pages:   [{ items: [{ str, x, y, w, h }] }]   (PDF space: y grows up)
+  //   outline: [{ title, page, depth }]             (the PDF's bookmarks)
+  // Lines are items at the same height; a gap of more than 1.4 lines, or a
+  // short line ending a sentence, ends a paragraph; "exam-" + "ple" is
+  // rejoined; and a line that recurs at the top or bottom of most pages (a
+  // running head, "Page 3 of 90") is dropped. Chapters come from the
+  // bookmarks when there are at least two at one level; otherwise from
+  // headings in the text (fromText), helped by marking clearly larger type
+  // as a heading.
+  function pdfLines(items) {
+    var its = items.filter(function (i) { return i.str && i.str.trim(); })
+      .sort(function (a, b) { return Math.abs(b.y - a.y) > Math.min(a.h, b.h) * 0.5 ? b.y - a.y : a.x - b.x; });
+    var lines = [];
+    its.forEach(function (i) {
+      var l = lines[lines.length - 1];
+      // Same height, and not across a column gutter (a gap of over two
+      // characters' height between runs is one).
+      var gapX = l ? i.x - l.end : 0, hh = l ? Math.max(l.h, i.h) : 0;
+      if (l && Math.abs(l.y - i.y) <= hh * 0.5 && gapX > -hh && gapX < hh * 2) {
+        var gap = i.x - l.end;
+        if (gap > Math.max(l.h, i.h) * 0.15 && !/\s$/.test(l.text) && !/^\s/.test(i.str)) l.text += ' ';
+        l.text += i.str; l.end = Math.max(l.end, i.x + (i.w || 0)); l.h = Math.max(l.h, i.h);
+      } else lines.push({ text: i.str, x: i.x, y: i.y, h: i.h, end: i.x + (i.w || 0) });
+    });
+    lines.forEach(function (l) { l.text = l.text.replace(/\s+/g, ' ').trim(); });
+    return columns(lines.filter(function (l) { return l.text; }));
+  }
+
+  // Two-column pages (papers, magazines): when most lines sit wholly in the
+  // left or the right half, read full-width lines above the columns (a title,
+  // an abstract), then the left column, then the right, then the rest.
+  function columns(lines) {
+    if (lines.length < 10) return lines;
+    var x0 = Math.min.apply(null, lines.map(function (l) { return l.x; }));
+    var x1 = Math.max.apply(null, lines.map(function (l) { return l.end; }));
+    var mid = (x0 + x1) / 2, slack = (x1 - x0) * 0.04;
+    var side = function (l) { return l.end <= mid + slack ? 'L' : l.x >= mid - slack ? 'R' : 'S'; };
+    var n = { L: 0, R: 0, S: 0 };
+    lines.forEach(function (l) { n[side(l)]++; });
+    if (n.L < 5 || n.R < 5 || n.L + n.R < lines.length * 0.6) return lines;
+    // The columns start at their first full-length line; anything above
+    // that (a title, a short author block split by the gutter) is a header.
+    var colW = (x1 - x0) / 2, body = lines.filter(function (l) { return side(l) !== 'S' && l.end - l.x > colW * 0.6; });
+    var top = body.length ? Math.max.apply(null, body.map(function (l) { return l.y; })) + 1 : Infinity;
+    var byY = function (a, b) { return b.y - a.y; };
+    var head = lines.filter(function (l) { return l.y > top; }).sort(function (a, b) { return Math.abs(b.y - a.y) > 1 ? b.y - a.y : a.x - b.x; });
+    var rest = lines.filter(function (l) { return side(l) === 'S' && l.y <= top; }).sort(byY);
+    var col = function (s) { return lines.filter(function (l) { return side(l) === s && l.y <= top; }).sort(byY); };
+    return head.concat(col('L'), col('R'), rest);
+  }
+
+  var CAPTION = /^(?:figure|fig\.|table)\s*\d+[a-z]?\s*[.:|]/i;
+  var SECTION = /^(?:[A-Z]\.?\s+)?(?:abstract|introduction|background|related work|methods?|materials and methods|results|discussion|conclusions?|acknowledge?ments|references|bibliography|appendix(?:\s+[A-Z0-9]+)?|summary)$/i;
+
+  function median(a) { a = a.slice().sort(function (x, y) { return x - y; }); return a.length ? a[a.length >> 1] : 0; }
+
+  function fromPdf(pdf) {
+    var pages = (pdf.pages || []).map(function (p) { return pdfLines(p.items || []); });
+    // Running heads and folios: the first two and last two lines of a page,
+    // with digits blanked, seen on at least 30% of pages.
+    var PAGE_NO = /^(?:page\s+)?(?:\d{1,4}|[ivxlc]{1,7})(?:\s+of\s+\d{1,4})?$/i;
+    var key = function (t) { return t.toLowerCase().replace(/\d+/g, '#').replace(/\s+/g, ' '); };
+    var seen = {};
+    pages.forEach(function (ls) {
+      var edge = {};
+      ls.slice(0, 2).concat(ls.slice(-2)).forEach(function (l) { edge[key(l.text)] = 1; });
+      Object.keys(edge).forEach(function (k) { seen[k] = (seen[k] || 0) + 1; });
+    });
+    var many = pages.length >= 4 ? Math.max(2, pages.length * 0.3) : Infinity;
+    pages = pages.map(function (ls) {
+      return ls.filter(function (l, i) {
+        var edge = i < 2 || i >= ls.length - 2;
+        return !(edge && (PAGE_NO.test(l.text) || seen[key(l.text)] >= many));
+      });
+    });
+    var all = [].concat.apply([], pages);
+    if (all.length) {
+      // Figure labels, axis numbers and footnotes: clearly smaller type, or
+      // a line that is mostly not words.
+      var h0 = median(all.map(function (l) { return l.h; }));
+      var wordy = function (t) { var w = t.split(/\s+/); return w.filter(function (x) { return /[A-Za-z\u00C0-\u024F\u0900-\u097F]{2,}/.test(x); }).length / w.length; };
+      pages = pages.map(function (ls) { return ls.filter(function (l) { return l.h >= h0 * 0.85 && (wordy(l.text) >= 0.5 || l.text.length > 60); }); });
+      all = [].concat.apply([], pages);
+    }
+    if (!all.length) throw new Error('This PDF has no text to read: it is probably scanned pages (pictures of text). Run it through OCR first, for example in Adobe Acrobat, Google Drive or macOS Preview, then try again.');
+    var bodyH = median(all.map(function (l) { return l.h; }));
+    var bodyW = median(all.map(function (l) { return l.end - l.x; }));
+    // Headings: clearly larger type, or slightly larger type on a short line
+    // that reads like a section title ("3. Experiments").
+    var isHead = function (l) {
+      return l.text.length < 80 && (l.h >= bodyH * 1.45 ||
+        (l.h >= bodyH * 1.12 && (/^\d+(?:\.\d+)*\.?\s+[A-Z][^.!?]*$/.test(l.text) || SECTION.test(l.text))));
+    };
+    var marked = all.filter(isHead).length;
+    var useSize = marked >= 2 && marked <= Math.max(3, pages.length * 2);
+
+    // Text of pages [a, b), with paragraphs and headings.
+    function textOf(a, b, markHeads) {
+      var out = '', prev = null;
+      for (var p = a; p < b; p++) {
+        var ls = pages[p], gaps = [];
+        for (var i = 1; i < ls.length; i++) gaps.push(ls[i - 1].y - ls[i].y);
+        var step = median(gaps.filter(function (g) { return g > 0; })) || bodyH * 1.2;
+        var caption = false;
+        ls.forEach(function (l, i) {
+          // A figure or table caption is skipped up to the next paragraph
+          // break: read aloud, it lands in the middle of a sentence.
+          var gapBreak = i > 0 && ls[i - 1].y - l.y > step * 1.4;
+          if (caption && !gapBreak && !(i > 0 && l.y > ls[i - 1].y)) return;
+          var resumed = caption;
+          caption = false;
+          if (CAPTION.test(l.text)) { caption = true; return; }
+          // Clearly larger type is a heading: its own line, and marked for
+          // fromText when the chapters come from headings.
+          if (isHead(l)) { out += '\n\n' + (markHeads ? '# ' : '') + l.text + '\n\n'; prev = null; return; }
+          var brk = !prev || (i > 0 && ls[i - 1].y - l.y > step * 1.4) ||
+            (prev.end - prev.x < bodyW * 0.75 && /[.!?:"”’)]$/.test(prev.text));
+          // A page break, or a skipped caption, mid-sentence (or mid-word) joins.
+          if (!prev || resumed) brk = !/(?:[a-z,;]|[a-z]-)$/.test(out);
+          if (brk) out += '\n\n' + l.text;
+          else if (/[a-z]-$/.test(out) && /^[a-z]/.test(l.text)) out = out.slice(0, -1) + l.text;
+          else out += ' ' + l.text;
+          prev = l;
+        });
+        prev = null;
+      }
+      return out.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    var info = pdf.info || {}, chapters = [];
+    // Bookmarks: the shallowest level that has two or more entries.
+    var ol = (pdf.outline || []).filter(function (o) { return o.page >= 0 && o.page < pages.length && o.title; });
+    var depths = {};
+    ol.forEach(function (o) { depths[o.depth] = (depths[o.depth] || 0) + 1; });
+    var lvl = Object.keys(depths).map(Number).sort(function (x, y) { return x - y; }).filter(function (d) { return depths[d] >= 2; })[0];
+    if (lvl != null) {
+      var marks = ol.filter(function (o) { return o.depth === lvl; }).sort(function (x, y) { return x.page - y.page; });
+      marks = marks.filter(function (o, i) { return !i || o.page > marks[i - 1].page; });
+      if (marks[0].page > 0) {
+        var pre = textOf(0, marks[0].page, false);
+        if (words(pre) >= MIN_WORDS) chapters.push({ title: 'Opening', text: pre });
+      }
+      marks.forEach(function (o, i) {
+        var t = textOf(o.page, i + 1 < marks.length ? marks[i + 1].page : pages.length, false);
+        // The bookmark's own title is usually the first line of its text.
+        var first = t.split('\n')[0].trim();
+        if (first.toLowerCase() === String(o.title).trim().toLowerCase()) t = t.slice(first.length).trim();
+        if (words(t)) chapters.push({ title: String(o.title).trim(), text: t });
+      });
+      chapters = chapters.filter(function (c) { return !/^(table of )?contents$/i.test(c.title); });
+    }
+    if (!chapters.length) chapters = fromText(textOf(0, pages.length, useSize)).chapters;
+    // Word and print drivers fill Title with the file name.
+    var title = String(info.title || '').trim();
+    if (/^(microsoft word\b|untitled\b)|\.(docx?|pages|odt|rtf|txt|indd)$/i.test(title)) title = '';
+    return { title: title, author: String(info.author || '').trim(), chapters: chapters };
+  }
+
   /* ------------------------------------------------------------ chapters */
 
   // ffmpeg's FFMETADATA1 with one [CHAPTER] per entry; starts and ends in ms.
@@ -211,5 +376,5 @@
     return out.join('\n') + '\n';
   }
 
-  return { fromText: fromText, fromEpub: fromEpub, htmlText: htmlText, words: words, zipIndex: zipIndex, ffmetadata: ffmetadata };
+  return { fromText: fromText, fromEpub: fromEpub, fromPdf: fromPdf, htmlText: htmlText, words: words, zipIndex: zipIndex, ffmetadata: ffmetadata };
 }));

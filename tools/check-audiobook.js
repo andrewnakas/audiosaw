@@ -110,6 +110,148 @@ const epubFiles = [
     ok(/^;FFMETADATA1\n/.test(m) && m.includes('title=A\\=B\\; \\#1') && m.includes('START=2000\nEND=5500\ntitle=Two'), 'ffmetadata escapes and chapter times');
   }
 
+
+  /* ----------------------------------------------------------------- pdf */
+
+  console.log('pdf (layout rebuilt from positioned text)');
+  {
+    // A page as pdf.js reports it: runs with x, y (from the bottom), width, height.
+    const run = (str, x, y, h = 11) => ({ str, x, y, w: str.length * h * 0.5, h });
+    const page = (n, lines, head = true) => ({ items: [].concat(
+      head ? [run('The Keeper — a test book', 72, 770, 9)] : [],
+      lines.map((l, i) => typeof l === 'string' ? run(l, 72, 720 - i * 14) : run(l.t, 72, 720 - i * 14, l.h)),
+      [run(String(n), 300, 40, 9)]) });
+    const P = [
+      page(1, [{ t: 'Chapter One', h: 20 }, 'The lamp was lit every evening at six, an unremark-', 'able ritual that nobody in the village had ever ' + 'watched.', '', 'He climbed the stairs.']),
+      page(2, ['The second page begins mid', 'sentence and carries on here.', { t: 'Chapter Two', h: 20 }, 'A storm came in from the west.']),
+      page(3, ['Waves broke over the rail all night long, and he', 'kept the light burning until dawn.']),
+      page(4, [{ t: 'Chapter Three', h: 20 }, 'Morning was calm.'])
+    ];
+    const r = B.fromPdf({ pages: P, outline: [], info: { title: 'Microsoft Word - keeper.docx' } });
+    ok(r.chapters.map((c) => c.title).join('|') === 'Chapter One|Chapter Two|Chapter Three', 'no bookmarks: larger type and "Chapter N" make the chapters (' + r.chapters.map((c) => c.title).join(' | ') + ')');
+    const all = r.chapters.map((c) => c.text).join('\n\n');
+    ok(/an unremarkable ritual/.test(all), 'a word hyphenated at a line end is rejoined');
+    ok(!/test book/.test(all) && !/(^|\n)\s*\d\s*($|\n)/.test(all), 'the running head and the page numbers are gone');
+    ok(/mid sentence and carries on/.test(all), 'a line wrap inside a sentence is joined');
+    ok(/watched\.\n\nHe climbed/.test(r.chapters[0].text) && /\bmid sentence\b/.test(r.chapters[0].text), 'a gap of more than a line starts a paragraph; a plain line wrap does not');
+    ok(r.title === '', 'a Word file name in the PDF title is ignored');
+    const o = B.fromPdf({ pages: P, outline: [{ title: 'The Keeper', page: 0, depth: 0 }, { title: 'Lamp', page: 0, depth: 1 }, { title: 'Storm', page: 1, depth: 1 }, { title: 'Morning', page: 3, depth: 1 }], info: { title: 'The Keeper', author: 'A. Writer' } });
+    ok(o.chapters.map((c) => c.title).join('|') === 'Lamp|Storm|Morning' && o.title === 'The Keeper' && o.author === 'A. Writer', 'bookmarks: the first level with two or more entries gives the chapters');
+    ok(/storm came in/i.test(o.chapters[1].text) && /kept the light burning/.test(o.chapters[1].text) && !/Morning was calm/.test(o.chapters[1].text), 'a bookmark chapter runs to the page before the next');
+    // A two-column paper page: a full-width title, an author line split by
+    // the gutter, columns of 30-character lines, a caption mid-column, and a
+    // sideways-free layout as pdf.js would report it after the page's filter.
+    {
+      const L = (t, y) => run(t, 60, y, 10), R = (t, y) => run(t, 320, y, 10);
+      const items = [run('A Study of Lighthouses', 150, 740, 16), run('Ann Lee', 150, 715, 11), run('Bo Chan', 330, 715, 11),
+        run('1. Introduction', 60, 690, 12)];
+      const left = ['Lighthouses guide ships into a', 'harbour at night, and keepers', 'tended them by hand for two', 'hundred years until the lamps', 'were automated.', 'Figure 1. A lamp room seen', 'from the gallery outside.', 'The work was lonely and the', 'pay was poor, yet many kept'];
+      const right = ['their posts for decades.', 'Some wrote diaries that now', 'tell us how storms were', 'survived on the rock.', '2. Methods', 'We read forty diaries kept', 'between 1850 and 1920 and', 'counted the storms noted in', 'each of them, year by year.'];
+      // A caption sits in its own space: 10 pt more above and below it.
+      left.forEach((t, i) => items.push(L(t, 670 - i * 13 - (i >= 5 ? 10 : 0) - (i >= 7 ? 10 : 0))));
+      right.forEach((t, i) => items.push(t === '2. Methods' ? run(t, 320, 670 - i * 13, 12) : R(t, 670 - i * 13)));
+      const c = B.fromPdf({ pages: [{ items }], outline: [] });
+      const titles = c.chapters.map((x) => x.title).join('|'), text = c.chapters.map((x) => x.text).join(' ');
+      ok(titles === 'A Study of Lighthouses|1. Introduction|2. Methods', 'two columns: the title and numbered sections become chapters (' + titles + ')');
+      ok(/many kept their posts for decades/.test(text), 'two columns: the left column runs into the right, not across the gutter');
+      ok(!/Figure 1|gallery outside/.test(text) && /were automated\.\n\nThe work was lonely/.test(text), 'a figure caption is skipped and the paragraphs around it stay intact');
+      ok(/^Ann Lee Bo Chan$/.test(c.chapters[0].text), 'the author line split by the gutter stays one line, above the columns');
+    }
+    let msg = '';
+    try { B.fromPdf({ pages: [{ items: [] }, { items: [] }], outline: [] }); } catch (e) { msg = e.message; }
+    ok(/scanned/.test(msg) && /OCR/.test(msg), 'a PDF with no text layer is refused with a reason (scanned pages, OCR)');
+  }
+
+
+  /* -------------------------------------------------------- pdf, browser */
+
+  // A real PDF through the real page and pdf.js. Two files: one written here
+  // (bookmarks one level down, a running head, page numbers, a word split
+  // across pages), and, on macOS, one printed by cupsfilter from a text with
+  // "Chapter N" headings and no bookmarks. Needs only Chrome.
+  function makePdf(pages, outline, info) {
+    const objs = [];
+    const add = (s) => { objs.push(s); return objs.length; };
+    const esc = (t) => t.replace(/[\\()]/g, (c) => '\\' + c);
+    const font = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    const pagesId = objs.length + 1; objs.push(null);
+    const pageIds = pages.map((lines) => {
+      const ops = lines.map((l) => `BT /F1 ${l.size || 11} Tf ${l.x || 72} ${l.y} Td (${esc(l.t)}) Tj ET`).join('\n');
+      const c = add(`<< /Length ${Buffer.byteLength(ops)} >>\nstream\n${ops}\nendstream`);
+      return add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${c} 0 R >>`);
+    });
+    objs[pagesId - 1] = `<< /Type /Pages /Kids [${pageIds.map((i) => i + ' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
+    // Outlines: one top entry (the book) with the chapters as its children.
+    const olId = objs.length + 1; objs.push(null);
+    const topId = objs.length + 1; objs.push(null);
+    const kids = outline.map(() => { objs.push(null); return objs.length; });
+    outline.forEach((o, i) => {
+      objs[kids[i] - 1] = `<< /Title (${esc(o.title)}) /Parent ${topId} 0 R /Dest [${pageIds[o.page]} 0 R /XYZ null null null]` +
+        (i ? ` /Prev ${kids[i - 1]} 0 R` : '') + (i < kids.length - 1 ? ` /Next ${kids[i + 1]} 0 R` : '') + ' >>';
+    });
+    objs[topId - 1] = `<< /Title (${esc(info.title)}) /Parent ${olId} 0 R /Dest [${pageIds[0]} 0 R /XYZ null null null] /First ${kids[0]} 0 R /Last ${kids[kids.length - 1]} 0 R /Count ${kids.length} >>`;
+    objs[olId - 1] = `<< /Type /Outlines /First ${topId} 0 R /Last ${topId} 0 R /Count 1 >>`;
+    const cat = add(`<< /Type /Catalog /Pages ${pagesId} 0 R /Outlines ${olId} 0 R /PageMode /UseOutlines >>`);
+    const inf = add(`<< /Title (${esc(info.title)}) /Author (${esc(info.author)}) >>`);
+    let out = '%PDF-1.4\n';
+    const offs = objs.map((o, i) => { const at = Buffer.byteLength(out); out += `${i + 1} 0 obj\n${o}\nendobj\n`; return at; });
+    const xref = Buffer.byteLength(out);
+    out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offs.map((o) => String(o).padStart(10, '0') + ' 00000 n \n').join('');
+    out += `trailer\n<< /Size ${objs.length + 1} /Root ${cat} 0 R /Info ${inf} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+    return Buffer.from(out, 'latin1');
+  }
+
+  console.log('pdf through the page');
+  if (!require('./chrome-harness').findChrome()) console.log('  skip: needs Chrome');
+  else {
+    const body = (n, lines) => [{ t: 'THE KEEPER', y: 760, size: 9 }].concat(lines.map((t, i) => (typeof t === 'string' ? { t, y: 700 - i * 15 } : Object.assign({ y: 700 - i * 15 }, t))), [{ t: String(n), x: 300, y: 40, size: 9 }]);
+    const pdf = makePdf([
+      body(1, [{ t: 'The Lamp', size: 18 }, 'The lamp was lit every evening at six, and the keeper', 'wrote the time in a book that nobody had read for years.', 'The ritual was so ordinary that it had become unremark-']),
+      body(2, ['able to the whole village.', '', 'He climbed the stairs.']),
+      body(3, [{ t: 'The Storm', size: 18 }, 'A storm came in from the west before midnight.']),
+      body(4, [{ t: 'Morning', size: 18 }, 'Morning was calm, and the sea lay flat and grey.'])
+    ], [{ title: 'The Lamp', page: 0 }, { title: 'The Storm', page: 2 }, { title: 'Morning', page: 3 }], { title: 'The Keeper', author: 'A. Writer' });
+    let cups = null;
+    try {
+      const txt = ['Chapter One', ''].concat(Array(40).fill('The lamp was lit every evening at six and he wrote it down.'), ['', 'Chapter Two', ''], Array(40).fill('A storm came in from the west and he kept the light burning.')).join('\n');
+      const tf = path.join(os.tmpdir(), 'as-check-book.txt');
+      fs.writeFileSync(tf, txt);
+      cups = execFileSync('cupsfilter', ['-m', 'application/pdf', tf], { stdio: ['ignore', 'pipe', 'ignore'] });
+      if (!/^%PDF/.test(cups.slice(0, 5).toString())) cups = null;
+    } catch (e) { cups = null; }
+    await require('./chrome-harness').withPage({ routes: { '/__book.pdf': () => pdf, '/__cups.pdf': () => cups || Buffer.alloc(0) } }, async (page) => {
+      await page.goto('/text-to-audiobook', 1500);
+      const read = (url, name) => page.eval(`(async () => {
+        const f = new File([await (await fetch('${url}')).blob()], '${name}', { type: 'application/pdf' });
+        const dt = new DataTransfer(); dt.items.add(f);
+        const inp = document.querySelector('#fileInput'); const before = window.__ab.book();
+        inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+        for (let i = 0; i < 300 && window.__ab.book() === before && !/Could not/.test(document.querySelector('#status').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+        const b = window.__ab.book();
+        return b && b !== before ? { title: b.title, author: b.author, chapters: b.chapters.map((c) => ({ title: c.title, text: c.text })) } : { err: document.querySelector('#status').textContent };
+      })()`, 120000);
+      const r = await read('/__book.pdf', 'keeper.pdf');
+      ok(!r.err, 'pdf.js reads the PDF on the page' + (r.err ? ' — ' + r.err : ''));
+      if (!r.err) {
+        ok(r.chapters.map((c) => c.title).join('|') === 'The Lamp|The Storm|Morning', 'chapters from the bookmarks (' + r.chapters.map((c) => c.title).join(' | ') + ')');
+        ok(r.title === 'The Keeper' && r.author === 'A. Writer', 'title and author from the PDF');
+        const t = r.chapters[0].text;
+        ok(/become unremarkable to the whole village\./.test(t), 'a word split across a page break is rejoined');
+        ok(!/THE KEEPER/.test(r.chapters.map((c) => c.text).join(' ')) && !/(^|\s)[1-4](\s|$)/.test(r.chapters.map((c) => c.text).join(' ')), 'running head and page numbers dropped');
+        ok(!/^The Lamp/.test(t), 'the chapter text does not repeat its title');
+      }
+      if (cups && cups.length) {
+        const c = await read('/__cups.pdf', 'printed.pdf');
+        const titles = c.err ? '' : c.chapters.map((x) => x.title).join('|');
+        const words = c.err ? 0 : c.chapters.map((x) => x.text).join(' ').split(/\s+/).length;
+        const good = !c.err && titles === 'Chapter One|Chapter Two' && words === 1040;
+        ok(good, 'a PDF printed by macOS: ' + (c.err || titles + ', ' + words + ' words: every one of the 1,040 kept, nothing added'));
+        if (!good && !c.err) console.log('       ' + JSON.stringify(c.chapters.map((x) => x.text.slice(0, 300))));
+      } else console.log('  skip: no cupsfilter to print a second PDF');
+      if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
+    });
+  }
+
   /* ------------------------------------------------------------ browser */
 
   console.log('page');

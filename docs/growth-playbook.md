@@ -741,3 +741,60 @@ not the data, was the gap.
 /audio-editor from chatgpt.com over the next two weeks; `error_type`
 after the new buckets have a week of data; returning-user share on 5 Oct
 (the PWA judgement, §5).
+
+## §13 — Keyword targeting for the voice tools (2 Oct 2026)
+
+Andrew asked for the voice pages to compete on head and long-tail keywords.
+§9 still holds: Google indexes 2 of 63 pages and every non-brand query sits
+at position 60–99, so head terms ("text to speech", "voice changer") are not
+winnable until the domain earns links. The work was aimed at what is
+winnable now: the long tail, and the assistant channel that does not wait
+for Google.
+
+**Method.** Google (`suggestqueries.google.com/complete/search?client=firefox`)
+and Bing (`api.bing.com/osjson.aspx`) autocomplete for ~80 seeds, 1,367
+unique suggestions, kept in the session only. Real demand, not guessed.
+The same modifiers recur on every feature: free, online, no sign-up / no
+login, unlimited / no limit / unlimited words, download MP3, commercial
+use. The site meets all of them; the pages did not say so where it counts.
+
+**One owner per intent** (so pages do not compete):
+
+| Page | Head | Long tail |
+|---|---|---|
+| /text-to-speech | text to speech, AI voice generator, text to MP3 | free no sign-up, unlimited, download MP3, commercial use, Hindi/Spanish TTS, Kokoro TTS online |
+| /voice-changer | voice changer for audio files | deep voice, male to female, chipmunk/robot, make voice deeper (in video) |
+| /text-to-audiobook | EPUB/PDF to audiobook | EPUB to MP3, ebook to audiobook, PDF to audiobook, TXT to MP3 |
+| /dictation | speech to text online, voice typing | voice to text, talk to text, online dictation |
+| /audio-to-text | transcribe audio to text | MP3/video to text, transcribe interview, speaker identification, Whisper online |
+| /video-dubbing | AI dubbing, AI video translator | translate video to English/Spanish, dub a video in another language free |
+| /voice-cloning | voice cloning, clone my voice | free no sign-up, how much audio is needed, clone from audio file, open-source ElevenLabs alternative |
+
+"Voice changer" alone means live apps (Discord, calls), which the site does
+not do; "voice changer for recorded audio / audio file" is the winnable
+form and is heavily suggested. "Dictation" alone is ambiguous (school
+exercises, card games); "speech to text online" and "voice typing" are
+the real heads.
+
+**What shipped.** Titles ≤65 characters (Bing truncates past that) with the
+modifiers; H1s with the head term instead of a slogan; keyword-bearing H2s
+instead of "How it works"; FAQ entries phrased as the actual queries;
+`alternateName` synonyms in the SoftwareApplication schema; tool-graph
+titles (the anchor text of every footer, breadcrumb and related link) made
+keyword-bearing; llms.txt answers for every voice tool, including "Is there
+a free, open-source alternative to ElevenLabs?"; `next` edges into the voice
+tools from the most viewed pages. Two product gaps the long tail exposed
+were built rather than written around: **PDF to audiobook** and **video in,
+video out on the voice changer**. Two stale claims were found on the way
+(the audiobook page said "English only"; the diarization FAQ said 96%).
+
+**Not done, and why.** No per-language TTS landing pages ("text to speech
+Hindi" is large, and India is the #2 country): the site's eight swapped-
+name pages were never indexed (§7), and a Hindi page would need to be
+written in Hindi to be more than that. No "ElevenLabs alternative" page:
+the answer lives in llms.txt and the cloning FAQ, where assistants read it.
+
+**What moves the head terms is off-site:** links. The voice tools are the
+most link-worthy thing the site has (voice cloning and dubbing running
+entirely in a browser tab is a Show HN / r/LocalLLaMA / Hugging Face
+community story). That, and the www→apex redirect (§9), are Andrew's.

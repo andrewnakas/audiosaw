@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EPUB to Audiobook — Free AI Text to Audiobook, MP3 or M4B</title>
-<meta name="description" content="Free ebook to audiobook converter: turn an EPUB, a TXT file or pasted text into an M4B audiobook with chapters, or an MP3 per chapter, read by a natural AI voice in your browser. No sign-up, no upload, no word limit.">
+<title>EPUB or PDF to Audiobook — Free AI Voice, MP3 or M4B, No Sign Up</title>
+<meta name="description" content="Free ebook to audiobook converter: turn an EPUB, a PDF, a TXT file or pasted text into an M4B audiobook with chapters, or an MP3 per chapter, read by a natural AI voice in your browser. No sign-up, no upload, no word limit.">
 <meta name="keywords" content="text to audiobook, epub to audiobook, epub to mp3, ebook to audiobook free, txt to audiobook, make an audiobook, m4b with chapters, ai audiobook narrator, convert book to audio">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/text-to-audiobook">
@@ -18,7 +18,7 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
-<meta property="og:title" content="EPUB to Audiobook — free AI voice, M4B with chapters or MP3">
+<meta property="og:title" content="EPUB or PDF to Audiobook — free AI voice, M4B with chapters or MP3">
 <meta property="og:description" content="An M4B audiobook with chapter marks from any DRM-free EPUB or text, read by an open AI voice on your own machine. Free, no upload.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/text-to-audiobook">
@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -73,12 +73,12 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, with no word limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. The voice model runs on your own computer, so there is nothing per word or per hour to pay for. The only limits are your patience and the browser's storage, and a full novel fits comfortably."}},{"@type":"Question","name":"Can I convert an EPUB to MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose \"MP3 per chapter\" and you get a zip with one MP3 for each chapter, numbered in reading order, which any phone, car stereo or MP3 player can play. Choose M4B instead for a single audiobook file with chapter marks."}},{"@type":"Question","name":"Can I turn a TXT file into an MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a .txt or Markdown file, or paste the text. Lines such as \"Chapter 3\" or \"Part Two\" become chapters; a text with no headings is cut into parts of about six thousand words. For a short text, the text to speech page gives one MP3 straight away."}},{"@type":"Question","name":"Will the M4B show chapters on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, in Apple Books, BookPlayer, Smart AudioBook Player, VLC and most audiobook apps. The chapter track holds the titles shown in the list, which you can edit before you start."}},{"@type":"Question","name":"Can I stop and carry on later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every finished chapter is saved in the browser. Press Make audiobook again with the same book, voice and speed, and the saved chapters are reused; only the unfinished ones are read."}},{"@type":"Question","name":"Why can't it open my Kindle or Apple Books purchase?","acceptedAnswer":{"@type":"Answer","text":"Those files are DRM-protected: encrypted so only the store's app can display them. No browser tool can read them. DRM-free EPUBs, plain text and pasted text all work."}},{"@type":"Question","name":"Is my book uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The book is read in this tab and never sent anywhere; the only downloads are the voice model and the audio encoder, which are the same for everyone."}},{"@type":"Question","name":"Which languages does it read?","acceptedAnswer":{"@type":"Answer","text":"English (American or British voices), Spanish, French, Italian, Brazilian Portuguese and Hindi. Pick a voice in the book's language; number and abbreviation expansion is English-only, so write numbers out in words in other languages for the best result."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free, with no word limit?","acceptedAnswer":{"@type":"Answer","text":"Yes. The voice model runs on your own computer, so there is nothing per word or per hour to pay for. The only limits are your patience and the browser's storage, and a full novel fits comfortably."}},{"@type":"Question","name":"Can I convert an EPUB to MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose \"MP3 per chapter\" and you get a zip with one MP3 for each chapter, numbered in reading order, which any phone, car stereo or MP3 player can play. Choose M4B instead for a single audiobook file with chapter marks."}},{"@type":"Question","name":"Can I turn a PDF into an audiobook?","acceptedAnswer":{"@type":"Answer","text":"Yes, if the PDF has real text in it (you can select words in it). Chapters come from its bookmarks or headings, running headers and page numbers are removed, and two-column papers are read column by column. A scanned PDF has only pictures of text and needs OCR first; the page tells you if that is the case."}},{"@type":"Question","name":"Can I turn a TXT file into an MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a .txt or Markdown file, or paste the text. Lines such as \"Chapter 3\" or \"Part Two\" become chapters; a text with no headings is cut into parts of about six thousand words. For a short text, the text to speech page gives one MP3 straight away."}},{"@type":"Question","name":"Will the M4B show chapters on my phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, in Apple Books, BookPlayer, Smart AudioBook Player, VLC and most audiobook apps. The chapter track holds the titles shown in the list, which you can edit before you start."}},{"@type":"Question","name":"Can I stop and carry on later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every finished chapter is saved in the browser. Press Make audiobook again with the same book, voice and speed, and the saved chapters are reused; only the unfinished ones are read."}},{"@type":"Question","name":"Why can't it open my Kindle or Apple Books purchase?","acceptedAnswer":{"@type":"Answer","text":"Those files are DRM-protected: encrypted so only the store's app can display them. No browser tool can read them. DRM-free EPUBs, plain text and pasted text all work."}},{"@type":"Question","name":"Is my book uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The book is read in this tab and never sent anywhere; the only downloads are the voice model and the audio encoder, which are the same for everyone."}},{"@type":"Question","name":"Which languages does it read?","acceptedAnswer":{"@type":"Answer","text":"English (American or British voices), Spanish, French, Italian, Brazilian Portuguese and Hindi. Pick a voice in the book's language; number and abbreviation expansion is English-only, so write numbers out in words in other languages for the best result."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"EPUB to audiobook"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"EPUB or PDF to audiobook"}]}
 </script>
 <!-- /AS:bcschema -->
 </head>
@@ -101,14 +101,14 @@ window.AS_VERSION = '2026-09-22';
 <nav class="breadcrumb container" aria-label="Breadcrumb">
   <a href="/">Home</a> <span aria-hidden="true">›</span>
   <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
-  <span aria-current="page">EPUB to audiobook</span>
+  <span aria-current="page">EPUB or PDF to audiobook</span>
 </nav>
 <!-- /AS:breadcrumb -->
 
 <main class="container">
   <section class="page-intro">
-    <h1>Text to <span class="ital">audiobook</span>: EPUB to MP3 or M4B.</h1>
-    <p>Drop an EPUB or a TXT file, or paste a text, and get an M4B audiobook with chapter marks, or an MP3 per chapter, read by a natural AI voice. It is an ebook to audiobook converter that needs no account and no software. The voice model runs in your browser, so the book is never uploaded, there is no word limit, and nothing is charged by the hour.</p>
+    <h1>Text to <span class="ital">audiobook</span>: EPUB or PDF to MP3.</h1>
+    <p>Drop an EPUB, a PDF or a TXT file, or paste a text, and get an M4B audiobook with chapter marks, or an MP3 per chapter, read by a natural AI voice. It is an ebook to audiobook converter that needs no account and no software. The voice model runs in your browser, so the book is never uploaded, there is no word limit, and nothing is charged by the hour.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -117,8 +117,8 @@ window.AS_VERSION = '2026-09-22';
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop a book</p>
-      <p>EPUB (DRM-free), TXT or Markdown. Chapters are found from the headings.</p>
-      <input type="file" id="fileInput" accept=".epub,.txt,.md,.markdown,text/plain,application/epub+zip">
+      <p>EPUB (DRM-free), PDF, TXT or Markdown. Chapters are found from the bookmarks or headings.</p>
+      <input type="file" id="fileInput" accept=".epub,.pdf,.txt,.md,.markdown,text/plain,application/epub+zip,application/pdf">
     </div>
     <p class="ab-or">…or paste the text. Lines like "Chapter 3" or "## Title" start a new chapter.</p>
     <textarea id="bookText" class="ab-paste" placeholder="Paste a story, a long article or your manuscript…"></textarea>
@@ -168,7 +168,7 @@ window.AS_VERSION = '2026-09-22';
     <div class="spec-wrap">
       <table class="spec-table">
         <tbody>
-        <tr><th>Input</th><td>DRM-free EPUB, plain text or Markdown, or pasted text</td></tr>
+        <tr><th>Input</th><td>DRM-free EPUB, PDF with a text layer, plain text or Markdown, or pasted text</td></tr>
         <tr><th>Output</th><td>M4B with a chapter track and title/author tags, or one MP3 per chapter in a zip</td></tr>
         <tr><th>Voice</th><td>Kokoro-82M, 41 voices: English (US and UK), Spanish, French, Italian, Brazilian Portuguese and Hindi; speed 0.7×–1.4×</td></tr>
         <tr><th>Time to make</th><td>On a laptop GPU, about half as long as the audio itself; on the CPU, several times as long. A 90,000-word novel is about ten hours of audio</td></tr>
@@ -185,6 +185,9 @@ window.AS_VERSION = '2026-09-22';
     <p>Each chapter is then read sentence by sentence by Kokoro, an open neural text-to-speech model, on your GPU if the browser can use it and on the CPU otherwise. Numbers, prices, years and abbreviations are written out first, so "1847" is read as a year and "Dr." as "Doctor". As soon as a chapter is finished it is compressed — AAC for the M4B, MP3 for the zip — and saved in the browser. A long book never has to sit in memory as raw audio, and an interrupted run carries on from the last finished chapter instead of from page one.</p>
     <p>At the end, the chapters are joined without re-encoding and the M4B gets a chapter track with your titles, plus the book title and author as tags. Apple Books, VLC, Smart AudioBook Player on Android, BookPlayer on iOS and most dedicated audiobook apps show those chapters and remember your place.</p>
 
+    <h2>PDF to audiobook</h2>
+    <p>A PDF is a picture of a page, not a book: it stores where each run of letters is drawn, with no paragraphs, no reading order and no idea what a heading is. So the page rebuilds them. Runs at the same height become lines, a gap of more than a line ends a paragraph, a word hyphenated at the end of a line or a page is joined back up, and the running head and page number that repeat at the top or bottom of every page are dropped. A two-column layout, as in most academic papers and many magazines, is read down the left column and then the right, not straight across the gutter. Figure and table captions are skipped, because read aloud they land in the middle of a sentence, and so are figure labels and footnotes in smaller type. Chapters come from the PDF's own bookmarks when it has them; otherwise from headings in larger type, numbered sections such as "3. Results", and lines like "Chapter 7". On a real two-column paper (He et al., ResNet, CVPR 2016) it found Abstract, the four numbered sections and References, so you can untick the references before you start.</p>
+    <p>What a PDF cannot give is text it does not contain. A scanned book is a stack of photographs of pages, and the page says so rather than reading nothing; run it through OCR first (Adobe Acrobat, Google Drive's "Open with Google Docs", or the text recognition in macOS Preview) and try the result. Password-protected PDFs need the password removed first. Equations, tables and code are read as the characters they contain, which rarely sounds like anything, so for a textbook expect to skip those parts. An EPUB of the same book, where one exists, always reads better: it carries the real paragraphs and chapters.</p>
     <h2>How long it takes to make an audiobook with AI</h2>
     <p>Speech runs at roughly 150 words a minute, so a 90,000-word novel is about ten hours of audio. On a laptop with a GPU that the browser can use (current Chrome or Edge on a desktop), making it takes about half as long as listening to it: a ten-hour novel in about five. On the CPU it takes several times as long. Either way a short story or an article is done in minutes, and a full novel is an evening's or an overnight job. The estimate under the chapter list is for your book and your machine. Keep the tab open; a laptop should be plugged in, because this works its processor hard. Because finished chapters are saved, a full book can be made over several sessions.</p>
 
@@ -201,6 +204,7 @@ window.AS_VERSION = '2026-09-22';
     <!-- AS:faq -->
       <details><summary>Is it free, with no word limit?</summary><p>Yes. The voice model runs on your own computer, so there is nothing per word or per hour to pay for. The only limits are your patience and the browser's storage, and a full novel fits comfortably.</p></details>
       <details><summary>Can I convert an EPUB to MP3?</summary><p>Yes. Choose "MP3 per chapter" and you get a zip with one MP3 for each chapter, numbered in reading order, which any phone, car stereo or MP3 player can play. Choose M4B instead for a single audiobook file with chapter marks.</p></details>
+      <details><summary>Can I turn a PDF into an audiobook?</summary><p>Yes, if the PDF has real text in it (you can select words in it). Chapters come from its bookmarks or headings, running headers and page numbers are removed, and two-column papers are read column by column. A scanned PDF has only pictures of text and needs OCR first; the page tells you if that is the case.</p></details>
       <details><summary>Can I turn a TXT file into an MP3?</summary><p>Yes. Drop a .txt or Markdown file, or paste the text. Lines such as "Chapter 3" or "Part Two" become chapters; a text with no headings is cut into parts of about six thousand words. For a short text, the text to speech page gives one MP3 straight away.</p></details>
       <details><summary>Will the M4B show chapters on my phone?</summary><p>Yes, in Apple Books, BookPlayer, Smart AudioBook Player, VLC and most audiobook apps. The chapter track holds the titles shown in the list, which you can edit before you start.</p></details>
       <details><summary>Can I stop and carry on later?</summary><p>Yes. Every finished chapter is saved in the browser. Press Make audiobook again with the same book, voice and speed, and the saved chapters are reused; only the unfinished ones are read.</p></details>
@@ -342,14 +346,14 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02b"></script>
-<script src="/js/tool-graph.js?v=2026-10-02b"></script>
-<script src="/js/flow.js?v=2026-10-02b"></script>
-<script src="/js/audio-core.js?v=2026-10-02b"></script>
-<script src="/js/consent.js?v=2026-10-02b"></script>
-<script src="/js/tts-engine.js?v=2026-10-02b"></script>
-<script src="/js/book-parse.js?v=2026-10-02b"></script>
-<script src="/js/audiobook-page.js?v=2026-10-02b"></script>
-<script src="/js/pwa.js?v=2026-10-02b"></script>
+<script src="/js/common.js?v=2026-10-02c"></script>
+<script src="/js/tool-graph.js?v=2026-10-02c"></script>
+<script src="/js/flow.js?v=2026-10-02c"></script>
+<script src="/js/audio-core.js?v=2026-10-02c"></script>
+<script src="/js/consent.js?v=2026-10-02c"></script>
+<script src="/js/tts-engine.js?v=2026-10-02c"></script>
+<script src="/js/book-parse.js?v=2026-10-02c"></script>
+<script src="/js/audiobook-page.js?v=2026-10-02c"></script>
+<script src="/js/pwa.js?v=2026-10-02c"></script>
 </body>
 </html>
