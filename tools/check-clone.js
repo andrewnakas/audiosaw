@@ -58,6 +58,7 @@ async function ensure() {
   const { withPage, findChrome } = require('./chrome-harness');
   let hasSay = true;
   try { execFileSync('say', ['-v', '?'], { stdio: 'ignore' }); } catch (e) { hasSay = false; }
+  if (!fs.existsSync(path.join(__dirname, '..', 'voice-cloning.html'))) { console.log('  skip: /voice-cloning is not in this release'); console.log('\ncheck-clone: skipped'); return; }
   if (!findChrome() || !hasSay || !(await ensure())) {
     console.log('  skip: needs Chrome, macOS say and the Chatterbox files in ' + CACHE + ' (CLONE_DOWNLOAD=1 fetches them, 560 MB)');
     console.log('\ncheck-clone: skipped');
