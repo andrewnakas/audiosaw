@@ -963,6 +963,15 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   `deleteDatabase('audiosaw-editor')` from a check while the editor is
   open**: the delete waits for the editor's connection and every later
   `open()` queues behind it, which hung the first version of that check.
+- **Live voice changer** (`js/voice-live.js`, the second section of
+  /voice-changer): one AudioWorklet (Blob URL) does a delay-line pitch shift
+  (two read heads 40 ms apart, sin²/cos² crossfade), ring mod, two RBJ
+  biquads, drive and bit-crush, and posts its own output blocks when
+  recording, so the MP3 is exactly what is heard. No formant hold live (the
+  page says so). check-voice drives it with a fake 200 Hz sawtooth
+  getUserMedia: Deeper records at 158.7 Hz (0.0 cents), no-effect at 200.
+  Other apps cannot use a tab as a mic; the page names virtual cables
+  (VB-CABLE, BlackHole) as untested-by-us, and Voicemod.
 - **Voice changer video in, video out:** "keep the picture" (on) muxes the
   changed voice beside the copied picture stream (`remux` in
   voice-changer.js, `runFFmpeg` with an extra WAV). MOV/MKV keep their

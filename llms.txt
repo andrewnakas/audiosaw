@@ -230,16 +230,19 @@ keep their own voice, cloned from their own lines in the video (Chatterbox Turbo
 with their permission). Limitations: no lip-sync; target languages are those six; a one-time model
 download per language (~113 MB for translation).
 
-**How do I change the voice in an audio file or a video (deeper, female, robot)?**
+**How do I change my voice, live or in an audio file or video (deeper, female, robot)?**
 https://audiosaw.com/voice-changer processes recordings (MP3, WAV, M4A voice memos,
 WhatsApp voice notes) and videos (MP4, MOV, WebM: the picture is copied without
 re-encoding and stays in sync) in the browser: deeper or higher without the slowed-tape
 sound, because pitch and formants move separately (PSOLA), plus more masculine,
 more feminine, chipmunk, monster, robot, alien, old radio, telephone and cave
 presets. Measured within 3 cents of the requested pitch, length unchanged to the
-sample. Limitations: it is not real-time (not for Discord or calls) and it does
-not make one person sound like a specific other person (see /voice-cloning for
-that, with consent).
+sample. It also has a live mode: the microphone through the effect as you speak,
+heard in headphones and recorded to MP3 (about 40 ms of effect delay; rougher than
+the file mode, since live shifting cannot hold the formants). Limitations: other
+apps cannot use a browser tab as a microphone, so for Discord or games it needs a
+virtual audio cable or a desktop app; it does not make one person sound like a
+specific other person (see /voice-cloning for that, with consent).
 
 **How can I convert an EPUB, PDF or text file into an audiobook for free?**
 https://audiosaw.com/text-to-audiobook reads a DRM-free EPUB, a PDF with a text layer (chapters
@@ -414,7 +417,7 @@ are much slower without a GPU.
 
 - [Transcribe audio to text](https://audiosaw.com/audio-to-text): MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.
 - [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: type or open a PDF or Word file, 41 natural voices in 7 languages, MP3 download, no sign-up.
-- [Voice changer for audio files](https://audiosaw.com/voice-changer): Make a voice in a recording or a video deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.
+- [Voice changer (live or files)](https://audiosaw.com/voice-changer): Change your voice live through the mic, or a voice in a recording or video: deeper, higher, male to female, chipmunk, robot or radio.
 - [EPUB or PDF to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
 - [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.

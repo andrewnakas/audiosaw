@@ -231,7 +231,44 @@ async function browser() {
   });
 }
 
-browser().catch((e) => ok(false, 'video: ' + (e.stack || e))).then(() => {
+// The live microphone mode (voice-live.js): getUserMedia is replaced with a
+// 200 Hz sawtooth, as the dictation check does with speech. Deeper (-4) must
+// record at 158.7 Hz and "no effect" at 200, and the recording must save.
+async function live() {
+  const { withPage, findChrome } = require('./chrome-harness');
+  if (!findChrome()) return;
+  console.log('live microphone');
+  await withPage({}, async (page) => {
+    await page.goto('/voice-changer', 1500);
+    const take = (preset) => page.eval(`(async () => {
+      navigator.mediaDevices.getUserMedia = async () => {
+        const c = new AudioContext(), o = c.createOscillator(), lp = c.createBiquadFilter(), d = c.createMediaStreamDestination();
+        o.type = 'sawtooth'; o.frequency.value = 200; lp.frequency.value = 2500; o.connect(lp).connect(d); o.start();
+        window.__fakeMic = c; return d.stream;
+      };
+      const sel = document.querySelector('#livePreset'); sel.value = '${preset}'; sel.dispatchEvent(new Event('change'));
+      await window.__voiceLive.start();
+      await new Promise((r) => setTimeout(r, 600));
+      let saved = null; const o = CV.downloadBlob; CV.downloadBlob = (b, n) => { saved = { size: b.size, n }; };
+      window.__voiceLive.startRec();
+      await new Promise((r) => setTimeout(r, 2500));
+      await window.__voiceLive.stopRec();
+      CV.downloadBlob = o;
+      window.__voiceLive.stop(); window.__fakeMic.close();
+      const L = window.__liveVoice;
+      return { saved, sr: L.sampleRate, x: Array.from(L.samples.subarray(Math.round(L.sampleRate * 0.3))) };
+    })()`, 120000);
+    for (const [preset, st] of [['deeper', -4], ['natural', 0]]) {
+      const r = await take(preset), x = Float32Array.from(r.x);
+      const fr = P.track(x, r.sr, { minHz: 60, maxHz: 500 }).filter((q) => q.clarity > 0.8).map((q) => q.hz).sort((a, b) => a - b);
+      const f0 = fr.length ? fr[fr.length >> 1] : 0, want = 200 * Math.pow(2, st / 12), c = cents(f0, want);
+      ok(r.saved && /live-voice-/.test(r.saved.n) && Math.abs(c) < 15 && x.length > r.sr * 1.5, `live ${preset}: ${f0.toFixed(1)} Hz for ${want.toFixed(1)} (${c.toFixed(1)} cents), ${(x.length / r.sr + 0.3).toFixed(1)} s saved as ${r.saved && r.saved.n}`);
+    }
+    if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 3).join(' | '));
+  });
+}
+
+browser().then(live).catch((e) => ok(false, 'video/live: ' + (e.stack || e))).then(() => {
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
   console.log('\ncheck-voice: all good');
 });

@@ -810,8 +810,8 @@
       ]
     },
     'voice-changer': {
-      cat: 'voice', label: 'voice changer', title: 'Voice changer for audio files',
-      blurb: 'Make a voice in a recording or a video deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.',
+      cat: 'voice', label: 'voice changer', title: 'Voice changer (live or files)',
+      blurb: 'Change your voice live through the mic, or a voice in a recording or video: deeper, higher, male to female, chipmunk, robot or radio.',
       project: 'same',
       next: [
         ['stem-splitter', 'Pull the voice out of a song before changing it'],
