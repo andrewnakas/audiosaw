@@ -153,7 +153,9 @@ with Aborted(); F5/OmniVoice are too large for a tab).
 > Irregular stuff — traffic, keyboard, a dog — needs a neural denoiser; the
 > same page has an AI method (RNNoise) that keeps the voice and drops the rest,
 > in the browser, and it works on video files too. It won't fix music, and
-> other people talking count as voice.
+> other people talking count as voice. If the whole take needs finishing
+> (noise, tone, uneven levels, podcast loudness), https://audiosaw.com/enhance-speech
+> does all of it in one click.
 
 ## What to expect
 
