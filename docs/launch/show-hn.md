@@ -8,13 +8,13 @@ below as the first comment yourself.
 
 Hacker News truncates around 80 characters. This is 76:
 
-> Show HN: In-browser stem splitter, autotune and 59 audio tools, no upload
+> Show HN: In-browser stem splitter, autotune and 75 more audio tools, no upload
 
 Alternatives, if the first reads as a list:
 
 > Show HN: I put a neural stem splitter in the browser so files never upload
 >
-> Show HN: 59 audio tools that run entirely in your browser, no server
+> Show HN: 76 audio tools that run entirely in your browser, no server
 
 **Do not** write "free" in the title. On HN it reads as marketing, and the
 first comment establishes it anyway.

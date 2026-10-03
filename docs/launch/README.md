@@ -5,7 +5,7 @@ Copy and paste; nothing here needs rewriting first.
 
 ## Why this exists
 
-Search Console has indexed **2 of 63 pages**. The other 61 all read "Discovered
+Search Console had indexed **2 of 63 pages** (Sep 2026; the site now has 76 tools on 83 pages). The other 61 all read "Discovered
 – currently not indexed", which on a technically clean site means Google has
 found every page and decided the domain has not earned the crawl. Bing said the
 same thing in plain words the day before: *not enough inbound links from high
@@ -28,17 +28,17 @@ One per week, so each gets its own day and its own audience. Suggested:
 | Week | What | Prerequisite |
 |---|---|---|
 | 1 | Make the repo public | `README.md` and `LICENSE` are already committed |
-| 2 | [Show HN](show-hn.md) | repo public — HN will look |
+| 2 | [Show HN: the voice tools](show-hn-voice.md) — lead with this one; the [original Show HN](show-hn.md) a few months later at the earliest | repo public (it is) |
 | 3 | [Product Hunt](product-hunt.md) | screenshots from the gallery brief |
 | 4 | [Directories](directories.md) | none; can be done any time, in parallel |
-| 5+ | [Reddit](reddit.md) | answer threads as they come up, not on a schedule |
+| 5+ | [Reddit](reddit.md): the r/LocalLLaMA post once, then answer threads as they come up | none |
 
 Do the directories early if you want something running in the background —
 they are the lowest effort and several of them are followed links.
 
 ## Before any of it
 
-- [ ] Repo is public at `github.com/andrewnakas/audiosaw`
+- [x] Repo is public at `github.com/andrewnakas/audiosaw` (checked 3 Oct 2026)
 - [ ] `https://www.audiosaw.com` 301s to the apex (Cloudflare redirect rule,
       **dynamic**: `concat("https://audiosaw.com", http.request.uri.path)` —
       a static rule sends every URL to the homepage)

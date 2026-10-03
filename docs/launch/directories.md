@@ -16,7 +16,7 @@ Reuse these everywhere so the entity reads consistently.
 
 **Short (about 250 chars)**
 
-> AudioSaw is a set of 59 audio tools that run entirely in your browser:
+> AudioSaw is a set of 76 audio tools that run entirely in your browser:
 > convert between formats, cut and join, normalise to a LUFS target, remove
 > noise, split a song into stems with a neural model, and record from a
 > microphone. Files never leave your device.

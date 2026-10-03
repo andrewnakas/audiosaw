@@ -94,6 +94,67 @@ a few well-ranked older threads.
 > The limit is memory rather than policy: around 500 MB per file. Anything
 > longer, split it first.
 
+## A post, not an answer: r/LocalLLaMA
+
+The one place where a post of its own fits, because local models are the
+topic. Post it as a text post with the link inside, flair "Resources" or
+"Other", on a weekday morning US time.
+
+**Title**
+
+> Chatterbox Turbo voice cloning, Kokoro TTS, Whisper with speaker labels and RNNoise, all running in a browser tab (WebGPU, no server)
+
+**Body**
+
+> I've been porting a desktop voice studio's features into static web pages.
+> Everything runs client-side through ONNX Runtime Web / transformers.js:
+>
+> - Chatterbox Turbo (q4f16, ~560 MB) for zero-shot cloning on WebGPU
+> - Kokoro-82M for TTS: fp32 on WebGPU, q8 on CPU
+> - Whisper tiny/base/small, plus pyannote segmentation + WeSpeaker for diarization
+> - OPUS-MT for dubbing out of English, on ORT 1.22 with a hand-written beam search
+> - RNNoise for denoising, in a worker
+>
+> Things that might save someone a day:
+>
+> - ORT 1.26 (what transformers.js 4.2 bundles) rejects 8-bit exports with
+>   "TransposeDQWeightsForMatMulNBits Missing required scale"; q4 works, or
+>   drop to ORT 1.22 for q8.
+> - Chatterbox's conditional decoder on WebGPU degrades with the number of new
+>   tokens per call (8–10 fine, 25 wrong words) and zero-fills past 65,535
+>   samples: decode in 10-token windows with the full prompt each time.
+> - Kokoro fp16 gives wrong audio in a worker on WebGPU; fp32 is fine.
+> - Whisper's word timestamps (the `_timestamped` exports) ran ~0.28 s late in
+>   my tests; a fixed 0.26 s shift brought every word within ±70 ms.
+>
+> Demo: https://audiosaw.com/voice-cloning (and /text-to-speech,
+> /audio-to-text, /video-dubbing). Code, AGPL: https://github.com/andrewnakas/audiosaw
+
+**Answering in the thread**: people will ask about speed (see the Show HN
+draft's numbers), CPU support (cloning needs WebGPU; everything else falls
+back to WASM), and other models (Demucs did not load in ORT Web: 158 MB, dies
+with Aborted(); F5/OmniVoice are too large for a tab).
+
+## Two more worked answers
+
+### "How do I add subtitles to my video for free?" (r/NewTubers, r/VideoEditing)
+
+> If you want them burned in for TikTok/Reels, https://audiosaw.com/add-subtitles-to-video
+> runs Whisper in your browser to write them (nothing uploads), lets you fix
+> the words, then burns them into the picture or adds a subtitle track
+> without re-encoding. There's a short 3–5-word style for vertical video.
+> CapCut does the same with an account; this one's free and local. Hindi and
+> Arabic burn in fine; Chinese/Japanese don't yet (save the SRT instead).
+
+### "Background noise in my recording, how do I remove it?" (r/podcasting, r/youtubers)
+
+> Depends on the noise. Steady hiss/hum/fan: spectral noise reduction
+> (Audacity's, or https://audiosaw.com/noise-reduction on the default method).
+> Irregular stuff — traffic, keyboard, a dog — needs a neural denoiser; the
+> same page has an AI method (RNNoise) that keeps the voice and drops the rest,
+> in the browser, and it works on video files too. It won't fix music, and
+> other people talking count as voice.
+
 ## What to expect
 
 A good answer in an active thread sends tens of visitors, not thousands. The

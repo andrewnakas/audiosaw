@@ -11,7 +11,7 @@ clock from that moment, so anything later gives up hours.
 
 **Tagline** — 60 characters maximum. This is 52:
 
-> 59 audio tools that never upload your file
+> 76 audio tools that never upload your file
 
 Alternatives:
 
@@ -42,7 +42,7 @@ Alternatives:
 > files, and your own machine does every bit of the work. Turn your wifi off
 > after the page loads and it keeps going.
 >
-> There are 59 tools. The ordinary ones convert between formats. The ones I'm
+> There are 76 tools. The ordinary ones convert between formats. The ones I'm
 > actually proud of:
 >
 > 🎤 **Stem splitter** — real neural source separation (MDX-Net) running on
@@ -78,7 +78,7 @@ The first one is the thumbnail and decides whether anyone clicks. Shoot at
 3. **The devtools network tab open next to a completed conversion**, showing
    no outbound request. Overlay: *"No, really — nothing uploads."* This is the
    image that converts sceptics, and nobody else can show it.
-4. **The tool grid**, the rails on the homepage. Overlay: *"59 tools. No
+4. **The tool grid**, the rails on the homepage. Overlay: *"76 tools. No
    account for any of them."*
 5. **The slowed + reverb page** with its controls visible. Overlay: *"The edit
    everyone asks for, in five seconds."*
