@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03i">
-<link rel="stylesheet" href="/css/editor.css?v=2026-10-03i">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03j">
+<link rel="stylesheet" href="/css/editor.css?v=2026-10-03j">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -303,7 +303,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <p>Every effect and every preset is rendered in a browser and checked on each release. The compressor takes 7.5 dB off a tone 10 dB over its threshold at 4:1, as the textbook says it should. The browser's built-in compressor, given the same settings, came out 9.3 dB louder than that because it adds make-up gain it does not report, which is why it is not used here. The limiter was pushed 18 dB into its ceiling and its true peak, measured the way the ITU-R BS.1770 loudness standard measures it, came out at the ceiling and not above. An EQ band at +6 dB boosts a tone at its centre by 6.00 dB. The multiband compressor's three bands sum back to within 0.15 dB of the input when they are not compressing. The limiter looks ahead 4.5 ms; every other track is delayed by the same amount so it stays in time, and the export trims that delay off the front. A mono track sits at −3 dB per side in the centre and at full level on one side when panned hard, the same pan law as before the mixer existed.</p>
 
     <h3>Process: effects that render</h3>
-    <p><strong>Process…</strong> keeps the one-off effects that need to see the whole file. They run the same code as the matching single-purpose page: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a>, <a href="/auto-cut-silence">pause shortening</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
+    <p><strong>Process…</strong> keeps the one-off effects that need to see the whole file. They run the same code as the matching single-purpose page: <a href="/loudness-normalizer">loudness normalization</a> (ITU-R BS.1770, checked against ffmpeg), <a href="/noise-reduction">noise reduction</a> (spectral for steady hiss and hum, and an AI method that removes traffic, typing or barking behind a voice and leaves the clip exactly where it was), <a href="/auto-cut-silence">pause shortening</a>, and speed and <a href="/pitch-shifter">pitch</a> changes through ffmpeg's time-stretch filter. Apply one to a whole clip, or select a range first and only that part changes. Speed and pitch need ffmpeg, which is a one-off 30 MB download the first time you use them.</p>
 
     <h3>Exporting</h3>
     <p>Export mixes every audible track together in 32-bit float, at the audio's own rate by default: a 96 kHz session exports at 96 kHz. You can pick any rate from 44.1 to 192 kHz instead. A clip at a different rate from the export is converted with the same windowed-sinc resampler as <a href="/change-sample-rate">the sample rate converter</a>, not the browser's own conversion. The formats are MP3 (the fast encoder, or LAME at V0 or 320 kbps), WAV at 16-bit, 24-bit or 32-bit float, FLAC at 16 or 24-bit, M4A and OGG. 16- and 24-bit files get triangular dither. An untouched 24-bit clip exported as 24-bit WAV comes out sample for sample the same as the file you put in; that is checked on every release. You can export the whole mix, the selected range, one clip, every track as a separate stem, or the timeline split at its markers, which is how you turn one long recording into numbered files. If the mix would clip, it is turned down so its loudest peak sits at -1 dB; if it would not, it is left exactly as you heard it. For a file going back into another editor, choose 32-bit WAV, which keeps levels above 0 dB intact instead of flattening them.</p>
@@ -477,38 +477,38 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03i"></script>
-<script src="/js/tool-graph.js?v=2026-10-03i"></script>
-<script src="/js/flow.js?v=2026-10-03i"></script>
-<script src="/js/audio-core.js?v=2026-10-03i"></script>
-<script src="/js/tool-shell.js?v=2026-10-03i"></script>
-<script src="/js/loudness.js?v=2026-10-03i"></script>
-<script src="/js/silence-gaps.js?v=2026-10-03i"></script>
-<script src="/js/slowed-reverb.js?v=2026-10-03i"></script>
-<script src="/js/noise-reduction.js?v=2026-10-03i"></script>
-<script src="/js/editor-model.js?v=2026-10-03i"></script>
-<script src="/js/editor-dsp.js?v=2026-10-03i"></script>
-<script src="/js/editor-synth.js?v=2026-10-03i"></script>
-<script src="/js/editor-engine.js?v=2026-10-03i"></script>
-<script src="/js/editor-view.js?v=2026-10-03i"></script>
-<script src="/js/editor-fx.js?v=2026-10-03i"></script>
-<script src="/js/editor-store.js?v=2026-10-03i"></script>
-<script src="/js/project-link.js?v=2026-10-03i"></script>
-<script src="/js/editor-link.js?v=2026-10-03i"></script>
-<script src="/js/bpm-detector.js?v=2026-10-03i"></script>
-<script src="/js/spectral.js?v=2026-10-03i"></script>
-<script src="/js/key-detect.js?v=2026-10-03i"></script>
-<script src="/js/slicer.js?v=2026-10-03i"></script>
-<script src="/js/pitch-track.js?v=2026-10-03i"></script>
-<script src="/js/midi-write.js?v=2026-10-03i"></script>
-<script src="/js/midi-read.js?v=2026-10-03i"></script>
-<script src="/js/piano-roll.js?v=2026-10-03i"></script>
-<script src="/js/editor-midi.js?v=2026-10-03i"></script>
-<script src="/js/editor-fxui.js?v=2026-10-03i"></script>
-<script src="/js/tts-engine.js?v=2026-10-03i"></script>
-<script src="/js/editor-speech.js?v=2026-10-03i"></script>
-<script src="/js/editor-ui.js?v=2026-10-03i"></script>
-<script src="/js/consent.js?v=2026-10-03i"></script>
-<script src="/js/pwa.js?v=2026-10-03i"></script>
+<script src="/js/common.js?v=2026-10-03j"></script>
+<script src="/js/tool-graph.js?v=2026-10-03j"></script>
+<script src="/js/flow.js?v=2026-10-03j"></script>
+<script src="/js/audio-core.js?v=2026-10-03j"></script>
+<script src="/js/tool-shell.js?v=2026-10-03j"></script>
+<script src="/js/loudness.js?v=2026-10-03j"></script>
+<script src="/js/silence-gaps.js?v=2026-10-03j"></script>
+<script src="/js/slowed-reverb.js?v=2026-10-03j"></script>
+<script src="/js/noise-reduction.js?v=2026-10-03j"></script>
+<script src="/js/editor-model.js?v=2026-10-03j"></script>
+<script src="/js/editor-dsp.js?v=2026-10-03j"></script>
+<script src="/js/editor-synth.js?v=2026-10-03j"></script>
+<script src="/js/editor-engine.js?v=2026-10-03j"></script>
+<script src="/js/editor-view.js?v=2026-10-03j"></script>
+<script src="/js/editor-fx.js?v=2026-10-03j"></script>
+<script src="/js/editor-store.js?v=2026-10-03j"></script>
+<script src="/js/project-link.js?v=2026-10-03j"></script>
+<script src="/js/editor-link.js?v=2026-10-03j"></script>
+<script src="/js/bpm-detector.js?v=2026-10-03j"></script>
+<script src="/js/spectral.js?v=2026-10-03j"></script>
+<script src="/js/key-detect.js?v=2026-10-03j"></script>
+<script src="/js/slicer.js?v=2026-10-03j"></script>
+<script src="/js/pitch-track.js?v=2026-10-03j"></script>
+<script src="/js/midi-write.js?v=2026-10-03j"></script>
+<script src="/js/midi-read.js?v=2026-10-03j"></script>
+<script src="/js/piano-roll.js?v=2026-10-03j"></script>
+<script src="/js/editor-midi.js?v=2026-10-03j"></script>
+<script src="/js/editor-fxui.js?v=2026-10-03j"></script>
+<script src="/js/tts-engine.js?v=2026-10-03j"></script>
+<script src="/js/editor-speech.js?v=2026-10-03j"></script>
+<script src="/js/editor-ui.js?v=2026-10-03j"></script>
+<script src="/js/consent.js?v=2026-10-03j"></script>
+<script src="/js/pwa.js?v=2026-10-03j"></script>
 </body>
 </html>

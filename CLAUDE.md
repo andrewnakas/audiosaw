@@ -987,7 +987,9 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   gain), and a periodic tone aliases the correlation: measure on speech.
   `tools/check-denoise.js`: unsteady noise at +3.4 dB SNR -> pauses 43.5 dB
   quieter, speech correlation 0.939 (input 0.828; spectral 10.3 dB, 0.900);
-  at -10.6 dB -> 48.1 dB, 0.687 (input 0.284). ~0.3x realtime.
+  at -10.6 dB -> 48.1 dB, 0.687 (input 0.284). ~0.3x realtime. The editor's
+  Process > "Remove noise (AI)" (`denoiseAI` in editor-fx.js) calls the same
+  `ASDenoise.ai`; check-denoise drives it too (same numbers, exact length).
 - **Video in, video out** on same-length tools: `CV.shell({ video: true })`
   (tool-shell.js) runs the tool's own process() with `fmt: 'wav32f'` for a
   video (when #keepVideo is ticked) and `CV.remuxVideo` puts that beside

@@ -253,7 +253,7 @@
 
   // The editor (/audio-editor) runs the same gate on a clip, so the effect there
   // sounds exactly like this page.
-  window.ASDenoise = { channel: denoiseChannel };
+  window.ASDenoise = { channel: denoiseChannel, ai: aiDenoise };
 
   // Only drive a page that is actually the noise-reduction tool.
   if (!CV.$('#strength')) return;

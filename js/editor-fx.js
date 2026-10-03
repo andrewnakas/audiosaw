@@ -9,6 +9,8 @@
  *
  *   loudness   js/loudness.js     (BS.1770-4, validated against ffmpeg ebur128)
  *   denoise    js/noise-reduction.js's spectral gate
+ *   denoiseAI  the same page's AI method (RNNoise in rnnoise-worker.js),
+ *              sample-aligned, so the clip does not move
  *   pauses     js/silence-gaps.js (checked by tools/check-silence.js)
  *   reverb     js/slowed-reverb.js
  *   speed/pitch  ffmpeg's atempo, the same filter /audio-speed and
@@ -168,6 +170,20 @@
           });
         }
         return next();
+      }
+    },
+    denoiseAI: {
+      label: 'Remove noise (AI)', hint: 'Traffic, typing, barking behind a voice',
+      options: [['0.9', 'Medium'], ['0.7', 'Gentle, keeps some room'], ['1', 'Strong']],
+      run: function (buf, opt, onProgress) {
+        if (!global.ASDenoise || !global.ASDenoise.ai) throw new Error('Noise reduction did not load.');
+        return global.ASDenoise.ai(buf, parseFloat(opt || '0.9'), function (pct, msg) {
+          if (onProgress) onProgress(pct, msg || 'Removing noise (AI)…');
+        }).then(function (ch) {
+          var out = fromChans(ch, buf.sampleRate);
+          out._note = 'AI noise removal (RNNoise): for speech; other voices are kept';
+          return out;
+        });
       }
     },
     pauses: {
@@ -364,7 +380,7 @@
     }
   };
 
-  var ORDER = ['normalize', 'loudness', 'denoise', 'eq', 'compress', 'pauses', 'reverb', 'echo',
+  var ORDER = ['normalize', 'loudness', 'denoise', 'denoiseAI', 'eq', 'compress', 'pauses', 'reverb', 'echo',
     'speed', 'pitch', 'vinyl', 'reverse', 'mono', 'swap', 'invert', 'silence'];
 
   function apply(id, buf, opt, onProgress) {

@@ -95,6 +95,22 @@ async function main() {
         } else console.log('       ' + line + ' (reported: the steady-noise method on unsteady noise)');
       }
     }
+    // The same AI method from the editor's Process menu (ASEditFx denoiseAI):
+    // same length, same place, so the clip does not move on the timeline.
+    {
+      const L = levels[0];
+      await page.goto('/audio-editor', 1500);
+      const res = await page.eval(`(async () => {
+        const ab = await AudioSaw.decodeToAudioBuffer(new File([await (await fetch('/__${L.name}.wav')).blob()], 'n.wav'), null, { quiet: true });
+        const out = await ASEditFx.apply('denoiseAI', ab, '1');
+        return { x: Array.from(out.getChannelData(0)), note: out._note || '' };
+      })()`, 600000);
+      const y = Float32Array.from(res.x);
+      let best = 0, bv = -Infinity;
+      for (let lag = -441; lag <= 441; lag++) { let v = 0; for (let i = lead; i < n - 500; i += 3) if (speaking[i]) v += clean[i] * (y[i + lag] || 0); if (v > bv) { bv = v; best = lag; } }
+      const corr = corrWith(y), drop = db(rmsOn(L.noisy, 0)) - db(rmsOn(y, 0));
+      ok(drop >= 15 && corr >= 0.85 && Math.abs(best) <= SR / 1000 && y.length === n, 'editor Process > Remove noise (AI): pauses ' + drop.toFixed(1) + ' dB quieter, speech correlation ' + corr.toFixed(3) + ', offset ' + (best / SR * 1000).toFixed(2) + ' ms, length ' + (y.length === n ? 'exact' : y.length));
+    }
     if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
   });
 }
