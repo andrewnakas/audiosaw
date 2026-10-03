@@ -291,7 +291,8 @@ into the picture (for Instagram, TikTok and Reels, which ignore subtitle tracks;
 H.264 MP4, sound copied, about 0.7x the video's length to encode for 720p on a
 laptop) or adds them as a subtitle track without re-encoding (seconds). Styles:
 three sizes, top or bottom, white or yellow, outline or dark box, and short 3-5
-word captions for social video. No upload, no account, no watermark.
+word captions for social video, timed on their own words (within about 0.15 s,
+measured). No upload, no account, no watermark.
 Limitations: burned-in text covers Latin, Greek, Cyrillic, Devanagari (Hindi) and
 Arabic scripts, not Chinese, Japanese or Korean; no word-by-word highlighting.
 

@@ -57,6 +57,7 @@
   var burnBtn = $('#burnBtn'), softBtn = $('#softBtn'), dlSrt = $('#dlSrt'), dlVtt = $('#dlVtt');
   if (!dropzone || !goBtn) return;
 
+  var wordTimes = null;
   var file = null, ownSubs = null, cues = null, duration = 0, asr = null, seq = 0, waiting = {}, trackUrl = null, videoUrl = null;
   var baseTitle = document.title;
 
@@ -156,14 +157,21 @@
         duration = buf.duration;
         var mono = buf.numberOfChannels > 1 ? await AudioSaw.mixToMono(buf) : buf;
         var audio = Float32Array.from((await AudioSaw.resampleBuffer(mono, 16000)).getChannelData(0));
+        // Short captions with Whisper base use its timestamped export, whose
+        // word times (corrected in the worker) place each short caption on
+        // its own words. The other sizes spread short captions by length.
+        var words = lenSel && lenSel.value === 'short' && modelSel.value === 'onnx-community/whisper-base';
+        var model = words ? 'onnx-community/whisper-base_timestamped' : modelSel.value;
         var w = whisper();
-        w.postMessage({ type: 'load', model: modelSel.value });
-        var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: taskSel.value }, [audio.buffer]);
+        w.postMessage({ type: 'load', model: model });
+        var done = await call(w, { type: 'run', model: model, audio: audio, language: langSel.value, task: taskSel.value, words: words }, [audio.buffer]);
         asr.terminate(); asr = null;
         segs = done.segments;
+        wordTimes = words && done.words && done.words.length ? done.words : null;
         if (!segs.length) throw new Error('No speech was found in the soundtrack.');
       }
-      cues = ASSubs.normalise(lenSel && lenSel.value === 'short' ? ASSubs.split(segs, 4) : segs, duration);
+      var short = lenSel && lenSel.value === 'short';
+      cues = ASSubs.normalise(short ? (wordTimes && sourceSel.value !== 'file' ? ASSubs.fromWords(wordTimes, 4) : ASSubs.split(segs, 4)) : segs, duration);
       renderCues();
       CV.setProgress(progressBar, 100);
       CV.setStatus(statusEl, 'success', cues.length + ' captions. Check the wording, choose a style, then save.');

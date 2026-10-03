@@ -37,6 +37,58 @@ console.log('parse and split');
   ok(sp.length >= 4 && sp.every((c) => c.text.split(/\s+/).length <= 5) && tiles && Math.abs(sp[sp.length - 1].end - 6) < 1e-9, 'split: short pieces that tile each cue exactly (' + sp.map((c) => c.text).join(' | ') + ')');
 }
 
+{
+  const w = (t, s, e) => ({ text: ' ' + t, start: s, end: e });
+  const c = S.fromWords([w('The', 0.5, 0.7), w('ferry', 0.7, 1), w('leaves', 1, 1.3), w('at', 1.3, 1.4), w('nine.', 1.4, 1.8), w('Bring', 2.6, 2.9), w('a', 2.9, 3), w('coat.', 3, 3.4)], 4);
+  ok(c.length === 2 && c[0].text === 'The ferry leaves at nine.' && c[0].start === 0.5 && c[0].end === 1.8 && c[1].start === 2.6, 'fromWords: short captions on their own words; a lone last word joins the caption before it');
+}
+
+// Word times from the timestamped Whisper base (the worker's words mode),
+// against words placed at known times: each word said on its own by `say`,
+// its leading silence trimmed, laid at an exact offset. Every corrected
+// start within 0.2 s, the median within 0.1 s.
+async function wordTiming() {
+  const { withPage, findChrome } = require('./chrome-harness');
+  const mirror = require('./model-mirror'), R = 'onnx-community/whisper-base_timestamped';
+  if (!findChrome() || !mirror.has(R, mirror.WHISPER_BASE)) { console.log('  skip: word timing (whisper-base_timestamped not in the mirror)'); return; }
+  try { execFileSync('say', ['-v', '?'], { stdio: 'ignore' }); } catch (e) { return; }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-words-'));
+  const sets = [['Daniel', ['harbour', 'lantern', 'morning', 'river', 'window', 'garden', 'thunder', 'silver'], 0.6, 1.15],
+    ['Samantha', ['pencil', 'bottle', 'castle', 'meadow', 'anchor', 'planet', 'copper', 'ribbon', 'falcon', 'orange'], 1.3, 0.8]];
+  const errs = [];
+  await withPage({ headers: true, routes: mirror.routes([R]) }, async (page) => {
+    await mirror.attach(page, [R]);
+    await page.goto('/audio-to-text', 1500);
+    for (const [voice, words, T0, STEP] of sets) {
+      const inputs = [], filt = [];
+      words.forEach((wd, i) => {
+        const a = path.join(dir, voice + i + '.aiff'), b = path.join(dir, voice + i + '.wav');
+        execFileSync('say', ['-v', voice, '-o', a, wd]);
+        execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', a, '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,aresample=16000', '-ac', '1', b]);
+        inputs.push('-i', b); filt.push(`[${i}:a]adelay=${Math.round((T0 + STEP * i) * 1000)}[w${i}]`);
+      });
+      const pcm = execFileSync('ffmpeg', ['-loglevel', 'error', ...inputs, '-filter_complex', filt.join(';') + ';' + words.map((_, i) => `[w${i}]`).join('') + `amix=inputs=${words.length}:normalize=0,apad=whole_dur=11[a]`, '-map', '[a]', '-ar', '16000', '-ac', '1', '-t', '11', '-f', 'f32le', '-']);
+      const b64 = pcm.toString('base64');
+      const r = await page.eval(`(async () => {
+        const bin = atob('${b64}'); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+        const a = new Float32Array(u.buffer);
+        const w = new Worker('/js/transcribe-worker.js', { type: 'module' });
+        const r = await new Promise((res) => { w.onmessage = (e) => { if (e.data.type === 'done') res(e.data); if (e.data.type === 'error') res({ err: e.data.message }); };
+          w.postMessage({ type: 'run', model: '${R}', audio: a, language: 'en', task: 'transcribe', words: true }, [a.buffer]); });
+        w.terminate(); return r;
+      })()`, 900000);
+      if (r.err) { ok(false, 'word timing: ' + r.err); continue; }
+      words.forEach((wd, i) => {
+        const hit = (r.words || []).find((x) => x.text.toLowerCase().replace(/[^a-z]/g, '').startsWith(wd.slice(0, 5)));
+        errs.push(hit ? Math.abs(hit.start - (T0 + STEP * i)) : 9);
+      });
+    }
+  });
+  errs.sort((a, b) => a - b);
+  const med = errs[errs.length >> 1], worst = errs[errs.length - 1];
+  ok(errs.length === 18 && med < 0.1 && worst < 0.2, 'word times (timestamped Whisper base, corrected): median ' + (med * 1000).toFixed(0) + ' ms, worst ' + (worst * 1000).toFixed(0) + ' ms over 18 words, two voices');
+}
+
 async function browser() {
   const { withPage, findChrome } = require('./chrome-harness');
   const core = path.join(os.homedir(), '.cache', 'audiosaw', 'ffmpeg-core-0.12.6.wasm');
@@ -131,7 +183,7 @@ async function browser() {
   });
 }
 
-browser().catch((e) => ok(false, 'browser: ' + (e.stack || e))).then(() => {
+browser().then(wordTiming).catch((e) => ok(false, 'browser: ' + (e.stack || e))).then(() => {
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
   console.log('\ncheck-subtitles: all good');
 });

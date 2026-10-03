@@ -171,5 +171,35 @@
     return out;
   }
 
-  return { toSRT: toSRT, toVTT: toVTT, toText: toText, normalise: normalise, stamp: stamp, parse: parse, split: split };
+  // Short captions from word times: up to maxWords words each (breaking after
+  // punctuation when it can), from the first word's start to the last
+  // word's end, held until the next caption when the gap is under 0.3 s.
+  function fromWords(words, maxWords) {
+    maxWords = maxWords || 4;
+    var out = [], cur = [];
+    var flush = function () {
+      if (!cur.length) return;
+      var last = out[out.length - 1];
+      // A lone word close behind a caption joins it rather than flashing up
+      // on its own.
+      if (cur.length === 1 && last && cur[0].start - last.end < 0.3 && last.text.split(' ').length <= maxWords) {
+        last.text += ' ' + cur[0].text.trim(); last.end = cur[0].end; cur = []; return;
+      }
+      out.push({ text: cur.map(function (w) { return w.text.trim(); }).join(' '), start: cur[0].start, end: cur[cur.length - 1].end });
+      cur = [];
+    };
+    (words || []).forEach(function (w, i) {
+      if (!String(w.text || '').trim() || w.start == null) return;
+      var prev = cur[cur.length - 1];
+      if (prev && w.start - prev.end > 0.6) flush();
+      cur.push(w);
+      var rest = words.length - i - 1;
+      if (cur.length >= maxWords || (cur.length >= 2 && /[,.;:!?…]["'”’)]*$/.test(w.text.trim()) && rest >= 2)) flush();
+    });
+    flush();
+    for (var j = 0; j + 1 < out.length; j++) if (out[j + 1].start - out[j].end < 0.3) out[j].end = out[j + 1].start;
+    return out;
+  }
+
+  return { toSRT: toSRT, toVTT: toVTT, toText: toText, normalise: normalise, stamp: stamp, parse: parse, split: split, fromWords: fromWords };
 });

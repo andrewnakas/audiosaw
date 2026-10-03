@@ -1099,8 +1099,14 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     `say` video, dubbed into Spanish and heard back by Whisper in Spanish.
 - **/add-subtitles-to-video** (`js/subtitle-page.js`): captions from
   Whisper (transcribe-worker.js) or the user's SRT/VTT (`ASSubs.parse`),
-  "short" 3-5 word captions (`ASSubs.split`, spread by length, not word
-  times), an editable list previewed through a `<track>`, then either
+  "short" 3-5 word captions: with Whisper base, from word times
+  (`ASSubs.fromWords`; the worker's `words: true` runs the
+  `whisper-base_timestamped` export with `return_timestamps: 'word'`);
+  with tiny/small, `ASSubs.split` spreads them by length. **Word times run
+  late**: 120-340 ms on 18 words at known positions (two voices), so the
+  worker moves them 0.26 s earlier; held out on a third voice: -50..+70 ms
+  (median 20). check-subtitles requires median < 0.1 s, worst < 0.2 s
+  (measured 40/140; that set is the one the 0.26 was fitted on), an editable list previewed through a `<track>`, then either
   burned in (ffmpeg `subtitles` filter: this core has libass, freetype and
   fribidi; Noto Sans SemiBold TTF from `vendor/fonts/` written beside the
   SRT, `fontsdir=.`; x264 superfast CRF 20, audio copied) or added as a

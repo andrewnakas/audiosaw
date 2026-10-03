@@ -22,7 +22,9 @@
  *   out: { type: 'status', phase: 'model'|'session'|'run', pct, detail }
  *        { type: 'ready', backend, threads, model }
  *        { type: 'partial', text }
- *        { type: 'done', segments: [{ text, start, end }], text, language }
+ *        { type: 'done', segments: [{ text, start, end }], text, language,
+ *          words: [{ text, start, end }] (only with msg.words: a
+ *          _timestamped model, whose cross-attentions give word times) }
  *        { type: 'error', message }
  */
 
@@ -245,17 +247,38 @@ async function run(msg) {
   var opts = {
     chunk_length_s: CHUNK_S,
     stride_length_s: STRIDE_S,
-    return_timestamps: true,
+    return_timestamps: msg.words ? 'word' : true,
     streamer: streamer
   };
   if (msg.language && msg.language !== 'auto') opts.language = msg.language;
   if (msg.task === 'translate') opts.task = 'translate';
 
   var out = await transcriber(audio, opts);
-  var segs = (out.chunks || []).map(function (c) {
+  var chunks = (out.chunks || []).map(function (c) {
     return { text: c.text, start: c.timestamp ? c.timestamp[0] : null, end: c.timestamp ? c.timestamp[1] : null };
   });
-  post('done', { segments: segs, text: out.text || '', seconds: (Date.now() - started) / 1000 });
+  if (!msg.words) { post('done', { segments: chunks, text: out.text || '', seconds: (Date.now() - started) / 1000 }); return; }
+  // Word mode: the chunks are words. Phrases are rebuilt from them, cut at a
+  // sentence end, a pause over 0.6 s, or about two subtitle lines of text.
+  // Whisper's cross-attention word times run late: measured on 18 words at
+  // known positions (two voices, check-subtitles), every start 120-340 ms
+  // after the truth, median 280-300. Moving them all 0.26 s earlier leaves
+  // each within about 0.15 s.
+  var WORD_LEAD = 0.26;
+  var words = chunks.filter(function (w) { return w.text && w.text.trim(); }).map(function (w) {
+    var s = w.start == null ? null : Math.max(0, w.start - WORD_LEAD), e = w.end == null ? null : Math.max(0, w.end - WORD_LEAD);
+    if (s != null && e != null && e < s + 0.05) e = s + 0.05;
+    return { text: w.text, start: s, end: e };
+  });
+  var segs = [], cur = null;
+  words.forEach(function (w, i) {
+    var gap = cur && w.start != null && cur.end != null ? w.start - cur.end : 0;
+    if (!cur || gap > 0.6 || cur.text.length > 80) { cur = { text: '', start: w.start, end: w.end }; segs.push(cur); }
+    cur.text += w.text; cur.end = w.end;
+    if (/[.!?…]["'”’)]*\s*$/.test(w.text)) cur = null;
+  });
+  segs.forEach(function (s) { s.text = s.text.trim(); });
+  post('done', { segments: segs, words: words, text: out.text || '', seconds: (Date.now() - started) / 1000 });
 }
 
 function fmt(s) {

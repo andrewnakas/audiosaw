@@ -333,7 +333,8 @@ lines.push('into the picture (for Instagram, TikTok and Reels, which ignore subt
 lines.push("H.264 MP4, sound copied, about 0.7x the video's length to encode for 720p on a");
 lines.push('laptop) or adds them as a subtitle track without re-encoding (seconds). Styles:');
 lines.push('three sizes, top or bottom, white or yellow, outline or dark box, and short 3-5');
-lines.push('word captions for social video. No upload, no account, no watermark.');
+lines.push('word captions for social video, timed on their own words (within about 0.15 s,');
+lines.push('measured). No upload, no account, no watermark.');
 lines.push('Limitations: burned-in text covers Latin, Greek, Cyrillic, Devanagari (Hindi) and');
 lines.push('Arabic scripts, not Chinese, Japanese or Korean; no word-by-word highlighting.');
 lines.push('');

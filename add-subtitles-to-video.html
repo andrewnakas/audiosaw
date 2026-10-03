@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03g">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03h">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -203,7 +203,7 @@ window.AS_VERSION = '2026-09-22';
         <tbody>
         <tr><th>Captions</th><td>OpenAI Whisper (tiny, base or small) in your browser: 99 languages, or translated into English; or your own SRT/VTT</td></tr>
         <tr><th>Editing</th><td>Every caption in an editable list, with a live preview on the video</td></tr>
-        <tr><th>Styles</th><td>Three sizes, top or bottom, white or yellow, outline or dark box; short 3–5 word captions for social video</td></tr>
+        <tr><th>Styles</th><td>Three sizes, top or bottom, white or yellow, outline or dark box; short 3–5 word captions for social video, timed on their own words</td></tr>
         <tr><th>Burned in</th><td>Drawn into the picture with libass and Noto Sans (Latin, Greek, Cyrillic, Devanagari, Arabic), re-encoded as H.264 MP4; the sound is kept as it is</td></tr>
         <tr><th>Subtitle track</th><td>Added beside the untouched picture in seconds: MP4/MOV (mov_text), MKV (SRT) or WebM (WebVTT)</td></tr>
         <tr><th>Also saves</th><td>SRT and VTT files</td></tr>
@@ -223,7 +223,7 @@ window.AS_VERSION = '2026-09-22';
     <p><strong>A subtitle track</strong> sits beside the picture, like the subtitles on a film file. Nothing is re-encoded, so it takes seconds and the quality is exactly the original's. Viewers turn it on and off in the player's CC menu: VLC, QuickTime and most desktop and TV players handle it. Social apps ignore subtitle tracks, so for those, burn them in. For YouTube, upload the SRT file alongside the video instead; YouTube Studio reads it directly and keeps the captions searchable.</p>
 
     <h2>Captions for TikTok, Reels and Shorts</h2>
-    <p>"Short, 3–5 words" splits each sentence into quick captions, the style that keeps a vertical video readable at a glance. Whisper times whole phrases rather than single words, so the short captions are spread across each phrase in proportion to their length: close enough to follow speech at a normal pace, not the word-by-word karaoke highlighting some apps do. Use Large and the dark box for busy footage; white with an outline suits darker scenes. Captions placed at the top stay clear of the app buttons along the bottom of a vertical feed.</p>
+    <p>"Short, 3–5 words" splits each sentence into quick captions, the style that keeps a vertical video readable at a glance. With the default accuracy (Whisper base), each short caption is timed on its own words: a version of the model that reports when every word is spoken is used for this, and its times are corrected for a lag it has. Measured on words placed at known moments, three voices, every word Whisper recognised started within 0.15 seconds of the truth, the median within 0.05. With the tiny or small model, short captions are spread across each phrase in proportion to their length instead, which is close at a normal pace of speech. There is no word-by-word karaoke highlighting. Use Large and the dark box for busy footage; white with an outline suits darker scenes. Captions placed at the top stay clear of the app buttons along the bottom of a vertical feed.</p>
 
     <h2>Using your own subtitles</h2>
     <p>Choose "my subtitle file" and pick an SRT or VTT, or drop it together with the video. Times are read as written, formatting tags are removed, and every caption lands in the same editable list, so you can also use this page to burn a translator's SRT into a video or fix a typo in one. To translate captions into Spanish, French, Italian, Portuguese or Hindi and have them spoken, use <a href="/video-dubbing">video dubbing</a>; for a plain transcript, <a href="/audio-to-text">audio to text</a>.</p>
@@ -378,13 +378,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03g"></script>
-<script src="/js/tool-graph.js?v=2026-10-03g"></script>
-<script src="/js/flow.js?v=2026-10-03g"></script>
-<script src="/js/audio-core.js?v=2026-10-03g"></script>
-<script src="/js/consent.js?v=2026-10-03g"></script>
-<script src="/js/subtitles.js?v=2026-10-03g"></script>
-<script src="/js/subtitle-page.js?v=2026-10-03g"></script>
-<script src="/js/pwa.js?v=2026-10-03g"></script>
+<script src="/js/common.js?v=2026-10-03h"></script>
+<script src="/js/tool-graph.js?v=2026-10-03h"></script>
+<script src="/js/flow.js?v=2026-10-03h"></script>
+<script src="/js/audio-core.js?v=2026-10-03h"></script>
+<script src="/js/consent.js?v=2026-10-03h"></script>
+<script src="/js/subtitles.js?v=2026-10-03h"></script>
+<script src="/js/subtitle-page.js?v=2026-10-03h"></script>
+<script src="/js/pwa.js?v=2026-10-03h"></script>
 </body>
 </html>
