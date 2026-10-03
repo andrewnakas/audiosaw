@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Remove Background Noise from Audio and Video — Free, No Upload</title>
-<meta name="description" content="Remove background noise from audio or video for free: hiss, hum, fan and air-conditioning noise, with spectral gating in your browser. A video comes back as a video with the picture untouched. No sign-up, nothing uploaded.">
+<title>AI Background Noise Remover — Audio and Video, Free, No Upload</title>
+<meta name="description" content="Remove background noise from audio or video for free: hiss, hum and fans with spectral gating, or traffic, keyboards and barking behind a voice with an AI denoiser (RNNoise), all in your browser. Video stays video. No sign-up, nothing uploaded.">
 <meta name="keywords" content="remove background noise from audio, noise reduction online, audio noise remover, remove hiss from recording, remove hum from audio, denoise audio free, clean up audio recording">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/noise-reduction">
@@ -19,7 +19,7 @@
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
 <meta property="og:title" content="Remove Background Noise from Audio">
-<meta property="og:description" content="Remove background noise from audio or video for free: hiss, hum, fan and air-conditioning noise, with spectral gating in your browser. A video comes back as a video with the picture untouched. No sign-up, nothing uploaded.">
+<meta property="og:description" content="Remove background noise from audio or video for free: hiss, hum and fans with spectral gating, or traffic, keyboards and barking behind a voice with an AI denoiser (RNNoise), all in your browser. Video stays video. No sign-up, nothing uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://audiosaw.com/noise-reduction">
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03h">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03i">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I remove background noise from a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM and, with \"keep the picture\" ticked, you get the video back with the cleaned sound and the picture copied untouched, so nothing is re-compressed and the sound stays in sync. On a test clip the picture came back with every frame and the cleaned sound lined up to the sample (0.0 ms of offset)."}},{"@type":"Question","name":"What kind of noise can this actually remove?","acceptedAnswer":{"@type":"Answer","text":"Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down."}},{"@type":"Question","name":"Can it remove someone talking in the background, or a dog barking?","acceptedAnswer":{"@type":"Answer","text":"No. Those are irregular, so there is no steady noise floor to estimate. Removing them needs source separation, which is a different and much harder problem. Cutting around them is usually the practical answer."}},{"@type":"Question","name":"Why does my voice sound slightly hollow afterwards?","acceptedAnswer":{"@type":"Answer","text":"You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music."}},{"@type":"Question","name":"Why is this slower than the other tools?","acceptedAnswer":{"@type":"Answer","text":"Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer."}},{"@type":"Question","name":"Should I denoise before or after normalizing?","acceptedAnswer":{"@type":"Answer","text":"Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I remove background noise from a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM and, with \"keep the picture\" ticked, you get the video back with the cleaned sound and the picture copied untouched, so nothing is re-compressed and the sound stays in sync. On a test clip the picture came back with every frame and the cleaned sound lined up to the sample (0.0 ms of offset)."}},{"@type":"Question","name":"What kind of noise can this actually remove?","acceptedAnswer":{"@type":"Answer","text":"Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down."}},{"@type":"Question","name":"Can it remove a dog barking, traffic or keyboard noise?","acceptedAnswer":{"@type":"Answer","text":"Yes, with the AI method: choose \"Any noise behind a voice (AI)\". It keeps the voice and drops irregular noise such as traffic, typing and barking, which spectral gating cannot. Other people talking in the background are voices too, so it keeps them; for those, cutting around them is still the practical answer."}},{"@type":"Question","name":"Why does my voice sound slightly hollow afterwards?","acceptedAnswer":{"@type":"Answer","text":"You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music."}},{"@type":"Question","name":"Why is this slower than the other tools?","acceptedAnswer":{"@type":"Answer","text":"Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer."}},{"@type":"Question","name":"Should I denoise before or after normalizing?","acceptedAnswer":{"@type":"Answer","text":"Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to remove background noise from a recording in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your recording", "text": "Drag an MP3, WAV, M4A or FLAC onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Pick a strength", "text": "Medium for speech, Gentle for music, Strong for genuinely noisy recordings."}, {"@type": "HowToStep", "position": 3, "name": "Remove the noise", "text": "The file is analysed to find the noise floor, then processed. This takes longer than a plain conversion."}, {"@type": "HowToStep", "position": 4, "name": "Download and compare", "text": "Listen against the original before discarding it, especially for music."}]}
@@ -111,6 +111,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
     <div id="controls" style="display:none">
       <div class="controls">
+        <label>Method
+          <select id="method">
+            <option value="spectral" selected>Steady noise: hiss, hum, fans (spectral)</option>
+            <option value="ai">Any noise behind a voice: traffic, keyboard, crowd (AI)</option>
+          </select>
+        </label>
         <label>Strength
           <select id="strength">
             <option value="gentle">Gentle — safest for music</option>
@@ -161,7 +167,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
         <tbody>
         <tr><th>Method</th><td>Short-time Fourier transform with per-band spectral gating</td></tr>
         <tr><th>Removes well</th><td>Fan hum, air conditioning, tape hiss, preamp hiss, mains hum</td></tr>
-        <tr><th>Does not remove</th><td>Coughs, door slams, traffic, other voices — anything irregular</td></tr>
+        <tr><th>Does not remove</th><td>Spectral: anything irregular (coughs, traffic, keyboards). AI: other people's voices, and it is for speech, not music</td></tr>
         <tr><th>Noise profile</th><td>Estimated automatically from the whole file</td></tr>
         <tr><th>Output format</th><td>MP3 (128–320 kbps) or WAV</td></tr>
         <tr><th>Practical size limit</th><td>~500 MB per file (browser memory)</td></tr>
@@ -179,8 +185,10 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>The attenuation uses a soft knee rather than a hard cut. A hard gate produces the warbling, underwater artefact that people associate with badly denoised audio — sounds flickering in and out as they cross the threshold. Easing between attenuated and untouched avoids most of that.</p>
     <h2>What it fixes, and what it can't</h2>
 <p><strong>It fixes steady noise.</strong> That means anything continuous and unchanging: computer fans, air conditioning, refrigerator hum, the 50 or 60 Hz buzz from bad grounding, tape hiss, the hiss of a cheap preamp or a phone microphone turned up too far. These are the things that make an otherwise fine recording sound amateur, and they come out cleanly.</p>
-<p><strong>It cannot fix irregular noise.</strong> A cough, a door closing, a car passing, a chair creaking, someone else talking in the background — none of these are stationary, so there is no consistent floor to estimate and nothing for a spectral gate to grip. Removing those requires source separation, which is a fundamentally different and much harder problem.</p>
-<p>This distinction is worth understanding before you spend time on settings. If your recording has a hum, this will fix it. If your recording has a dog barking, nothing here will help and you will need to <a href="/audio-cutter">cut around it</a>.</p>
+<p><strong>Spectral gating cannot fix irregular noise.</strong> A cough, a door closing, a car passing, a keyboard, a dog barking: none of these are stationary, so there is no consistent floor to estimate and nothing for a spectral gate to grip. That is what the <strong>AI method</strong> is for.</p>
+    <h2>The AI method: any noise behind a voice</h2>
+    <p>Choose "Any noise behind a voice (AI)" and the page runs RNNoise, a small neural network from Xiph (the Opus codec people) trained on thousands of hours of speech and noise to keep a voice and drop everything else. It does not need the noise to be steady: traffic, keyboard clatter, a fan that speeds up, a café's clatter and a dog barking between sentences are all fair game. It runs in your browser like the rest of the page, at about a third of the audio's length on a laptop, and the result lines up with the original to the sample, so a video stays in sync.</p>
+    <p>Measured on speech under noise bursts and clicks that switch on and off, the kind spectral gating cannot touch: at a realistic level (the voice a little louder than the noise), the pauses came out 43.5 dB quieter and the speech matched the clean original at a correlation of 0.94, against 10 dB and 0.90 for spectral gating. With noise three times louder than the voice, the pauses still came out 48 dB quieter, and the speech went from barely recognisable (0.28) to clearly there (0.69). It is built for voices: it will not clean up music, and it keeps human voices, so other people talking in the background stay. Strength blends the cleaned voice with the original: gentle keeps some room sound, strong is the cleanest.</p>
     <h2>Choosing a strength</h2>
 <p><strong>Medium</strong> is the right default for speech and handles most room tone and fan noise without touching the voice.</p>
 <p><strong>Gentle</strong> is the setting for music. Music occupies far more of the spectrum than speech does, including quiet passages that a more aggressive gate would mistake for noise — reverb tails, cymbal decay and the quiet end of a fade are all vulnerable. Gentle removes less noise but is much less likely to dull the recording.</p>
@@ -197,7 +205,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <!-- AS:faq -->
       <details><summary>Can I remove background noise from a video?</summary><p>Yes. Drop the MP4, MOV or WebM and, with "keep the picture" ticked, you get the video back with the cleaned sound and the picture copied untouched, so nothing is re-compressed and the sound stays in sync. On a test clip the picture came back with every frame and the cleaned sound lined up to the sample (0.0 ms of offset).</p></details>
       <details><summary>What kind of noise can this actually remove?</summary><p>Steady, continuous noise: fan and air-conditioning hum, refrigerator noise, mains buzz, tape hiss, and the hiss of a cheap microphone or preamp. These have a constant signature that spectral gating can identify and pull down.</p></details>
-      <details><summary>Can it remove someone talking in the background, or a dog barking?</summary><p>No. Those are irregular, so there is no steady noise floor to estimate. Removing them needs source separation, which is a different and much harder problem. Cutting around them is usually the practical answer.</p></details>
+      <details><summary>Can it remove a dog barking, traffic or keyboard noise?</summary><p>Yes, with the AI method: choose "Any noise behind a voice (AI)". It keeps the voice and drops irregular noise such as traffic, typing and barking, which spectral gating cannot. Other people talking in the background are voices too, so it keeps them; for those, cutting around them is still the practical answer.</p></details>
       <details><summary>Why does my voice sound slightly hollow afterwards?</summary><p>You are probably on Strong. At high reduction levels, content that overlaps with the noise in frequency gets removed along with it. Drop to Medium, or Gentle for music.</p></details>
       <details><summary>Why is this slower than the other tools?</summary><p>Because it transforms the audio into the frequency domain and back rather than just re-encoding it. Every frame is analysed twice. A few minutes of audio takes seconds; a long interview takes noticeably longer.</p></details>
       <details><summary>Should I denoise before or after normalizing?</summary><p>Denoise first, normalize afterwards. Noise reduction lowers the overall level, so normalizing last puts the result where you want it. If the recording has long gaps, remove the silence before either step.</p></details>
@@ -338,14 +346,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03h"></script>
-<script src="/js/tool-graph.js?v=2026-10-03h"></script>
-<script src="/js/flow.js?v=2026-10-03h"></script>
-<script src="/js/project-link.js?v=2026-10-03h"></script>
-<script src="/js/audio-core.js?v=2026-10-03h"></script>
-<script src="/js/tool-shell.js?v=2026-10-03h"></script>
-<script src="/js/consent.js?v=2026-10-03h"></script>
-<script src="/js/noise-reduction.js?v=2026-10-03h"></script>
-<script src="/js/pwa.js?v=2026-10-03h"></script>
+<script src="/js/common.js?v=2026-10-03i"></script>
+<script src="/js/tool-graph.js?v=2026-10-03i"></script>
+<script src="/js/flow.js?v=2026-10-03i"></script>
+<script src="/js/project-link.js?v=2026-10-03i"></script>
+<script src="/js/audio-core.js?v=2026-10-03i"></script>
+<script src="/js/tool-shell.js?v=2026-10-03i"></script>
+<script src="/js/consent.js?v=2026-10-03i"></script>
+<script src="/js/noise-reduction.js?v=2026-10-03i"></script>
+<script src="/js/pwa.js?v=2026-10-03i"></script>
 </body>
 </html>

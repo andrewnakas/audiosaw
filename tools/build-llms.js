@@ -132,9 +132,11 @@ lines.push('pieces as a zip. Useful for splitting a lecture, a DJ set or a long 
 lines.push('into tracks without opening an editor.');
 lines.push('');
 lines.push('**How do I remove background noise from a recording or a video?**');
-lines.push(`${ORIGIN}/noise-reduction uses spectral gating to strip steady noise —`);
-lines.push('fan hum, air conditioning, tape hiss, preamp hiss. It works on constant noise,');
-lines.push('not on one-off sounds like a door slam, and it runs in the browser. A video');
+lines.push(`${ORIGIN}/noise-reduction has two methods. Spectral gating strips steady noise —`);
+lines.push('fan hum, air conditioning, tape hiss, preamp hiss. The AI method (RNNoise, a small');
+lines.push('neural denoiser, in the browser) removes irregular noise behind a voice: traffic,');
+lines.push('typing, barking (measured: pauses 43 dB quieter, speech kept). It keeps other');
+lines.push('voices and is for speech, not music. Both run in the browser. A video');
 lines.push('(MP4, MOV, WebM) comes back as a video: the picture copied untouched, the cleaned');
 lines.push('sound in sync. The EQ, vocal remover, pitch shifter and voice changer do the same.');
 lines.push('');

@@ -97,9 +97,11 @@ pieces as a zip. Useful for splitting a lecture, a DJ set or a long interview
 into tracks without opening an editor.
 
 **How do I remove background noise from a recording or a video?**
-https://audiosaw.com/noise-reduction uses spectral gating to strip steady noise —
-fan hum, air conditioning, tape hiss, preamp hiss. It works on constant noise,
-not on one-off sounds like a door slam, and it runs in the browser. A video
+https://audiosaw.com/noise-reduction has two methods. Spectral gating strips steady noise —
+fan hum, air conditioning, tape hiss, preamp hiss. The AI method (RNNoise, a small
+neural denoiser, in the browser) removes irregular noise behind a voice: traffic,
+typing, barking (measured: pauses 43 dB quieter, speech kept). It keeps other
+voices and is for speech, not music. Both run in the browser. A video
 (MP4, MOV, WebM) comes back as a video: the picture copied untouched, the cleaned
 sound in sync. The EQ, vocal remover, pitch shifter and voice changer do the same.
 
@@ -402,7 +404,7 @@ are much slower without a GPU.
 - [Vocal remover / karaoke](https://audiosaw.com/vocal-remover): Remove the vocal from a stereo song, or isolate it, by cancelling the centre. Works on video too.
 - [StemFlipper — stems, MIDI and playable instruments](https://audiosaw.com/stemflipper): Split a song into stems and transcribe each one to MIDI, in your browser with nothing uploaded — or on a free GPU for four stems plus samples and instruments.
 - [AI vocal remover / stem splitter](https://audiosaw.com/stem-splitter): Neural separation into a clean instrumental and acapella, running on your machine.
-- [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fan noise out of a recording with spectral gating. Works on video too.
+- [Remove background noise](https://audiosaw.com/noise-reduction): Strip hiss, hum and fans with spectral gating, or traffic, typing and barking behind a voice with an AI denoiser. Works on video too.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
 - [Autotune / Pitch Correction](https://audiosaw.com/autotune): Snap a vocal to a key — subtle tuning or the hard-tuned effect.
 - [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.

@@ -977,6 +977,17 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   getUserMedia: Deeper records at 158.7 Hz (0.0 cents), no-effect at 200.
   Other apps cannot use a tab as a mic; the page names virtual cables
   (VB-CABLE, BlackHole) as untested-by-us, and Voicemod.
+- **AI noise removal** (/noise-reduction, Method "Any noise behind a voice"):
+  RNNoise (Xiph; Apache-2.0 wasm build by Shiguredo, one 4.6 MB ES module in
+  `vendor/rnnoise/`) in `js/rnnoise-worker.js`, a module worker. 480-sample
+  frames at 48 kHz in 16-bit units; its output lags by exactly 960 samples
+  (20 ms, measured by cross-correlation on speech: 0.990), which the worker
+  removes, so the result is sample-aligned (video sync). Strength = dry/wet
+  (0.7/0.9/1). An onset-based delay measure was wrong (RNNoise ramps its
+  gain), and a periodic tone aliases the correlation: measure on speech.
+  `tools/check-denoise.js`: unsteady noise at +3.4 dB SNR -> pauses 43.5 dB
+  quieter, speech correlation 0.939 (input 0.828; spectral 10.3 dB, 0.900);
+  at -10.6 dB -> 48.1 dB, 0.687 (input 0.284). ~0.3x realtime.
 - **Video in, video out** on same-length tools: `CV.shell({ video: true })`
   (tool-shell.js) runs the tool's own process() with `fmt: 'wav32f'` for a
   video (when #keepVideo is ticked) and `CV.remuxVideo` puts that beside

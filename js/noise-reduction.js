@@ -22,6 +22,11 @@
 (function () {
   'use strict';
 
+  var ASSET_V = (function () {
+    var m = document.currentScript && /[?&]v=([^&]+)/.exec(document.currentScript.src);
+    return m ? m[1] : '1';
+  })();
+
   var FFT_SIZE = 2048;
   var HOP = FFT_SIZE / 4;   // 75% overlap — enough that Hann analysis/synthesis sums flat
 
@@ -175,9 +180,57 @@
     return out;
   }
 
+  /*
+   * The AI method: RNNoise (rnnoise-worker.js), a small recurrent network
+   * trained to keep a voice and drop everything else, including the
+   * irregular noise spectral gating cannot touch: keyboards, traffic, a dog,
+   * a room full of people. It runs at 48 kHz, so each channel goes there and
+   * back through the site's sinc resampler; the worker removes its 20 ms of
+   * delay, so the result lines up with the original to the sample.
+   * `mix` blends the cleaned voice with the original (the strength presets),
+   * which keeps a little room sound and hides the network's artefacts.
+   */
+  function aiDenoise(buf, mix, onProgress) {
+    var sr = buf.sampleRate, n = buf.length, chans = CV.channelsOf(buf);
+    var up = sr === 48000 ? Promise.resolve(buf) : AudioSaw.resampleBuffer(buf, 48000);
+    return up.then(function (b48) {
+      var c48 = CV.channelsOf(b48).map(function (c) { return Float32Array.from(c); });
+      return new Promise(function (resolve, reject) {
+        var w = new Worker('/js/rnnoise-worker.js?v=' + ASSET_V, { type: 'module' });
+        w.onmessage = function (e) {
+          var m = e.data || {};
+          if (m.type === 'progress') onProgress(8 + m.pct * 0.75, 'Removing noise (AI)…');
+          else if (m.type === 'done') { w.terminate(); resolve(m.channels); }
+          else if (m.type === 'error') { w.terminate(); reject(new Error(m.message)); }
+        };
+        w.onerror = function (e) { w.terminate(); reject(new Error('The AI denoiser could not start' + (e && e.message ? ' (' + e.message + ')' : ''))); };
+        w.postMessage({ type: 'run', channels: c48 }, c48.map(function (c) { return c.buffer; }));
+      });
+    }).then(function (den48) {
+      var back = sr === 48000 ? Promise.resolve(AudioSaw.makeBuffer(den48, 48000)) : AudioSaw.resampleBuffer(AudioSaw.makeBuffer(den48, 48000), sr);
+      return back.then(function (b) {
+        return CV.channelsOf(b).map(function (c, ch) {
+          var o = new Float32Array(n), d = chans[ch];
+          for (var i = 0; i < n; i++) o[i] = mix * (i < c.length ? c[i] : 0) + (1 - mix) * d[i];
+          return o;
+        });
+      });
+    });
+  }
+
   function process(file, opts, onProgress) {
     onProgress(2, 'Decoding…');
     return AudioSaw.decodeToAudioBuffer(file).then(function (buf) {
+      if (opts.method === 'ai') {
+        return aiDenoise(buf, opts.mix, onProgress).then(function (outChans) {
+          var b = CV.bufferFrom(outChans, buf.sampleRate);
+          b.srcInfo = buf.srcInfo;
+          onProgress(92, 'Encoding…');
+          return CV.encodeBuffer(b, opts.fmt, opts.bitrate, function (pct) { onProgress(92 + pct * 0.08); });
+        }).then(function (blob) {
+          return { name: AudioSaw.rename(file.name, opts.fmt).replace(/\.([^.]+)$/, '-denoised.$1'), blob: blob };
+        });
+      }
       var chans = CV.channelsOf(buf);
       var outChans = [];
       for (var c = 0; c < chans.length; c++) {
@@ -227,6 +280,10 @@
       };
       var s = map[strength] || map.medium;
       return {
+        method: CV.$('#method') ? CV.$('#method').value : 'spectral',
+        // The AI method's strength is how much of the cleaned voice replaces
+        // the original: gentle keeps some room sound.
+        mix: { gentle: 0.7, medium: 0.9, strong: 1 }[strength] || 0.9,
         sensitivity: s.sensitivity,
         reduction: s.reduction,
         fmt: (CV.$('#outFmt').value || 'mp3').toLowerCase(),

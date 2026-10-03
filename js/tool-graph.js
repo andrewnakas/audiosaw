@@ -546,7 +546,7 @@
     },
     'noise-reduction': {
       cat: 'repair', label: 'remove noise', title: 'Remove background noise',
-      blurb: 'Strip hiss, hum and fan noise out of a recording with spectral gating. Works on video too.',
+      blurb: 'Strip hiss, hum and fans with spectral gating, or traffic, typing and barking behind a voice with an AI denoiser. Works on video too.',
       project: 'same',
       next: [
         ['normalize-audio', 'Denoising lowers the level — put it back'],
