@@ -1028,6 +1028,14 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     to run; that is why check-clone runs two voices.
   - The browser's CPU build runs none of these models (no
     GatherBlockQuantized kernel in q4, q4f16 or q8).
+  - **Voice to voice is a measured no-go (3 Oct)**: decoding a source's
+    own `encode_speech` tokens with the target as reference moves the voice
+    (a Daniel line came out at 160 Hz against Samantha's 175, timing kept)
+    but loses about half the words, at every window setting tried (10/2,
+    8/0, 10/4, 6/2). Even the reference's own tokens re-decoded in its own
+    voice came back garbled, so it is the encoder-token path through the
+    WebGPU decoder, not the windows; language-model tokens decode cleanly.
+    The handler was removed; re-test with another decoder export first.
 - **Speaker labels on /audio-to-text** (`js/diarize.js` = `ASDiar`,
   `js/diarize-worker.js`): pyannote segmentation-3.0 (MIT, 6 MB) marks speech
   and voice changes, WeSpeaker ResNet34 (CC-BY-4.0, 26.5 MB, credited on the

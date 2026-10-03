@@ -24,10 +24,6 @@
  *   in : { type: 'load' }
  *        { type: 'reference', audio: Float32Array (24 kHz mono) }
  *        { type: 'synth', seq, text }
- *        { type: 'convert', seq, audio: Float32Array (24 kHz mono) }
- *          voice to voice: the source's own speech tokens (from the same
- *          speech encoder) decoded in the reference's voice. No language
- *          model, so it keeps the source's words and timing.
  *   out: { type: 'status', phase, pct, detail }
  *        { type: 'ready' }
  *        { type: 'referenced', seconds }
@@ -261,39 +257,11 @@ async function decode(T, S, body) {
   return out.subarray(0, Math.min(filled, out.length)).slice();
 }
 
-// Voice to voice. The speech encoder's tokens are the content of the speech
-// (25 a second); the voice comes from the decoder's speaker conditioning,
-// which is the reference's. Encoded in 10 s pieces, each decoded in the
-// same windows as synth().
-var VC_PIECE = 10 * SR;
-async function convert(m) {
-  await load();
-  if (!ref) throw new Error('Record or choose the target voice first.');
-  var t0 = Date.now(), T = ref.audio_features.ort_tensor.constructor, S = model.sessions;
-  var parts = [], n = 0, src = m.audio;
-  for (var a = 0; a < src.length; a += VC_PIECE) {
-    var piece = src.subarray(a, Math.min(src.length, a + VC_PIECE));
-    if (piece.length < SR * 0.3) break;
-    post('progress', { tokens: Math.round(a / SR * 25) });
-    var enc = await model.encode_speech(new Tensor('float32', piece.slice(), [1, piece.length]));
-    var toks = Array.from(enc.audio_tokens.ort_tensor.data, Number);
-    var w = await decode(T, S, toks);
-    parts.push(w); n += w.length;
-  }
-  var out = new Float32Array(n), o = 0;
-  parts.forEach(function (p) { out.set(p, o); o += p.length; });
-  return { samples: out, ms: Date.now() - t0 };
-}
-
 self.onmessage = async function (e) {
   var m = e.data || {};
   try {
     if (m.type === 'load') await load();
     else if (m.type === 'reference') await reference(m.audio);
-    else if (m.type === 'convert') {
-      var c = await convert(m);
-      post('audio', { seq: m.seq, samples: c.samples, ms: c.ms }, [c.samples.buffer]);
-    }
     else if (m.type === 'synth') {
       var r = await synth(m);
       post('audio', { seq: m.seq, samples: r.samples, tokens: r.tokens, ms: r.ms, timing: lastTiming }, [r.samples.buffer]);
