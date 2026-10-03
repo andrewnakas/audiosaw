@@ -81,7 +81,7 @@ async function browser() {
       if (!window.__subs) return { err: document.querySelector('#status').textContent };
       const u = new Uint8Array(await window.__subs.blob.arrayBuffer());
       let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192));
-      return { cues, b64: btoa(bin), ms: performance.now() - t0 };
+      return { cues, b64: btoa(bin), ms: performance.now() - t0, font: window.__subPage.font() };
     })()`, 1800000);
     const save = (r, name) => { const f = path.join(dir, name); fs.writeFileSync(f, Buffer.from(r.b64, 'base64')); return f; };
     const probe = (f) => JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-count_packets', '-show_streams', '-show_format', '-of', 'json', f], { encoding: 'utf8' }));
@@ -107,6 +107,15 @@ async function browser() {
       ok(sub && sub.codec_name === 'mov_text' && vo.nb_read_packets === vi.nb_read_packets && vo.codec_name === vi.codec_name, 'a mov_text track beside the untouched picture (' + (sub ? sub.codec_name : 'no track') + ', ' + vo.nb_read_packets + ' frames)');
       const text = execFileSync('ffmpeg', ['-loglevel', 'error', '-i', f, '-map', '0:s:0', '-f', 'srt', '-'], { encoding: 'utf8' });
       ok(/00:00:02,000 --> 00:00:05,000/.test(text) && /harbour is quiet tonight/.test(text), 'the track reads back with its time and text');
+    }
+
+    // Hindi and Arabic: libass shapes them (HarfBuzz) given the right font,
+    // which the page picks from the captions' script.
+    for (const [lang, line, want] of [['Hindi', 'नमस्ते, आज हम रसोई का नल ठीक करेंगे।', 'Devanagari'], ['Arabic', 'مرحبا، سنصلح صنبور المطبخ اليوم.', 'Arabic']]) {
+      const h = await run({ video: '/__in.mp4', srt: '1\n00:00:02,000 --> 00:00:05,000\n' + line + '\n', out: 'burn' });
+      if (h.err) { ok(false, lang + ' burn: ' + h.err); continue; }
+      const f = save(h, lang + '.mp4'), during = bright(f, 3.5), before = bright(f, 1.0);
+      ok(new RegExp(want).test(h.font) && before === 0 && during > 150, lang + ' captions burn in with ' + h.font + ' (' + during + ' bright pixels in the cue, ' + before + ' before)');
     }
 
     if (haveWhisper) {

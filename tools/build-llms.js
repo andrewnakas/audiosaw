@@ -334,8 +334,8 @@ lines.push("H.264 MP4, sound copied, about 0.7x the video's length to encode for
 lines.push('laptop) or adds them as a subtitle track without re-encoding (seconds). Styles:');
 lines.push('three sizes, top or bottom, white or yellow, outline or dark box, and short 3-5');
 lines.push('word captions for social video. No upload, no account, no watermark.');
-lines.push('Limitations: burned-in text covers Latin, Greek and Cyrillic scripts only; no');
-lines.push('word-by-word highlighting.');
+lines.push('Limitations: burned-in text covers Latin, Greek, Cyrillic, Devanagari (Hindi) and');
+lines.push('Arabic scripts, not Chinese, Japanese or Korean; no word-by-word highlighting.');
 lines.push('');
 lines.push('**Is there a free online multitrack audio editor that does not upload files?**');
 lines.push(`Yes: ${ORIGIN}/audio-editor is a non-destructive multitrack editor that runs`);

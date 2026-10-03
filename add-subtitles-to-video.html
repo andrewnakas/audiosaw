@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03f">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03g">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -79,7 +79,7 @@ window.AS_VERSION = '2026-09-22';
 </style>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this auto caption generator really free, with no watermark?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark and no limit on how many videos you caption. Everything runs in your browser, so there is nothing to pay for per minute."}},{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed and re-assembled in this tab. The only downloads are the speech model and the video encoder, the same for everyone, once."}},{"@type":"Question","name":"How do I add subtitles to a video for Instagram or TikTok?","acceptedAnswer":{"@type":"Answer","text":"Drop the video, choose \"Short, 3–5 words\", press Make the captions, check them, then press Burn into the video. The captions become part of the picture, which is what Instagram, TikTok and Reels need: they ignore separate subtitle tracks."}},{"@type":"Question","name":"Can I add an SRT file to a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the video and the SRT together, or choose \"My subtitle file\". Burn it into the picture, or add it as a subtitle track without re-encoding, which takes seconds."}},{"@type":"Question","name":"Which languages does it understand?","acceptedAnswer":{"@type":"Answer","text":"Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic scripts; for other scripts, save the SRT or add a subtitle track."}},{"@type":"Question","name":"Will burning in the captions lower the quality?","acceptedAnswer":{"@type":"Answer","text":"The picture is re-encoded once as high-quality H.264 (CRF 20), which is visually very close to the original at normal viewing. If you need the picture untouched, add the captions as a subtitle track instead."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this auto caption generator really free, with no watermark?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark and no limit on how many videos you caption. Everything runs in your browser, so there is nothing to pay for per minute."}},{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed and re-assembled in this tab. The only downloads are the speech model and the video encoder, the same for everyone, once."}},{"@type":"Question","name":"How do I add subtitles to a video for Instagram or TikTok?","acceptedAnswer":{"@type":"Answer","text":"Drop the video, choose \"Short, 3–5 words\", press Make the captions, check them, then press Burn into the video. The captions become part of the picture, which is what Instagram, TikTok and Reels need: they ignore separate subtitle tracks."}},{"@type":"Question","name":"Can I add an SRT file to a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the video and the SRT together, or choose \"My subtitle file\". Burn it into the picture, or add it as a subtitle track without re-encoding, which takes seconds."}},{"@type":"Question","name":"Which languages does it understand?","acceptedAnswer":{"@type":"Answer","text":"Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic, Hindi (Devanagari) and Arabic scripts; for others, such as Chinese or Japanese, save the SRT or add a subtitle track."}},{"@type":"Question","name":"Will burning in the captions lower the quality?","acceptedAnswer":{"@type":"Answer","text":"The picture is re-encoded once as high-quality H.264 (CRF 20), which is visually very close to the original at normal viewing. If you need the picture untouched, add the captions as a subtitle track instead."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -204,7 +204,7 @@ window.AS_VERSION = '2026-09-22';
         <tr><th>Captions</th><td>OpenAI Whisper (tiny, base or small) in your browser: 99 languages, or translated into English; or your own SRT/VTT</td></tr>
         <tr><th>Editing</th><td>Every caption in an editable list, with a live preview on the video</td></tr>
         <tr><th>Styles</th><td>Three sizes, top or bottom, white or yellow, outline or dark box; short 3–5 word captions for social video</td></tr>
-        <tr><th>Burned in</th><td>Drawn into the picture with libass and Noto Sans, re-encoded as H.264 MP4; the sound is kept as it is</td></tr>
+        <tr><th>Burned in</th><td>Drawn into the picture with libass and Noto Sans (Latin, Greek, Cyrillic, Devanagari, Arabic), re-encoded as H.264 MP4; the sound is kept as it is</td></tr>
         <tr><th>Subtitle track</th><td>Added beside the untouched picture in seconds: MP4/MOV (mov_text), MKV (SRT) or WebM (WebVTT)</td></tr>
         <tr><th>Also saves</th><td>SRT and VTT files</td></tr>
         <tr><th>Uploads your video</th><td>No. It never leaves the tab; no watermark, no account</td></tr>
@@ -229,7 +229,7 @@ window.AS_VERSION = '2026-09-22';
     <p>Choose "my subtitle file" and pick an SRT or VTT, or drop it together with the video. Times are read as written, formatting tags are removed, and every caption lands in the same editable list, so you can also use this page to burn a translator's SRT into a video or fix a typo in one. To translate captions into Spanish, French, Italian, Portuguese or Hindi and have them spoken, use <a href="/video-dubbing">video dubbing</a>; for a plain transcript, <a href="/audio-to-text">audio to text</a>.</p>
 
     <h2>What it can't do</h2>
-    <p>Burned-in captions use Noto Sans, which covers the Latin, Greek and Cyrillic alphabets; Chinese, Japanese, Korean, Arabic and Indic scripts are not drawn yet, so for those languages save the SRT or add a subtitle track, which the player draws with its own fonts. There is no word-by-word highlighting, no animated caption styles and no emoji. Whisper does not separate speakers here; the <a href="/audio-to-text">audio to text</a> page labels who is speaking. Very long or very high-resolution videos take a long time to burn in a browser and need plenty of memory; trim to the part you need with your editor first.</p>
+    <p>Burned-in captions are drawn in Noto Sans for the Latin, Greek and Cyrillic alphabets, Noto Sans Devanagari for Hindi, Marathi and Nepali, and Noto Sans Arabic for Arabic, Persian and Urdu, with the letters properly joined and ordered (right to left for Arabic); the font follows the captions' main script, so one video gets one script. Chinese, Japanese, Korean, Bengali, Tamil and other scripts are not drawn yet: for those, save the SRT or add a subtitle track, which the player draws with its own fonts. There is no word-by-word highlighting, no animated caption styles and no emoji. Whisper does not separate speakers here; the <a href="/audio-to-text">audio to text</a> page labels who is speaking. Very long or very high-resolution videos take a long time to burn in a browser and need plenty of memory; trim to the part you need with your editor first.</p>
   </section>
 
   <section class="faq">
@@ -239,7 +239,7 @@ window.AS_VERSION = '2026-09-22';
       <details><summary>Is my video uploaded?</summary><p>No. The video is read, transcribed and re-assembled in this tab. The only downloads are the speech model and the video encoder, the same for everyone, once.</p></details>
       <details><summary>How do I add subtitles to a video for Instagram or TikTok?</summary><p>Drop the video, choose "Short, 3–5 words", press Make the captions, check them, then press Burn into the video. The captions become part of the picture, which is what Instagram, TikTok and Reels need: they ignore separate subtitle tracks.</p></details>
       <details><summary>Can I add an SRT file to a video?</summary><p>Yes. Drop the video and the SRT together, or choose "My subtitle file". Burn it into the picture, or add it as a subtitle track without re-encoding, which takes seconds.</p></details>
-      <details><summary>Which languages does it understand?</summary><p>Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic scripts; for other scripts, save the SRT or add a subtitle track.</p></details>
+      <details><summary>Which languages does it understand?</summary><p>Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic, Hindi (Devanagari) and Arabic scripts; for others, such as Chinese or Japanese, save the SRT or add a subtitle track.</p></details>
       <details><summary>Will burning in the captions lower the quality?</summary><p>The picture is re-encoded once as high-quality H.264 (CRF 20), which is visually very close to the original at normal viewing. If you need the picture untouched, add the captions as a subtitle track instead.</p></details>
       <!-- /AS:faq -->
   </section>
@@ -378,13 +378,13 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03f"></script>
-<script src="/js/tool-graph.js?v=2026-10-03f"></script>
-<script src="/js/flow.js?v=2026-10-03f"></script>
-<script src="/js/audio-core.js?v=2026-10-03f"></script>
-<script src="/js/consent.js?v=2026-10-03f"></script>
-<script src="/js/subtitles.js?v=2026-10-03f"></script>
-<script src="/js/subtitle-page.js?v=2026-10-03f"></script>
-<script src="/js/pwa.js?v=2026-10-03f"></script>
+<script src="/js/common.js?v=2026-10-03g"></script>
+<script src="/js/tool-graph.js?v=2026-10-03g"></script>
+<script src="/js/flow.js?v=2026-10-03g"></script>
+<script src="/js/audio-core.js?v=2026-10-03g"></script>
+<script src="/js/consent.js?v=2026-10-03g"></script>
+<script src="/js/subtitles.js?v=2026-10-03g"></script>
+<script src="/js/subtitle-page.js?v=2026-10-03g"></script>
+<script src="/js/pwa.js?v=2026-10-03g"></script>
 </body>
 </html>

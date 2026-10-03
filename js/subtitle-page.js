@@ -29,7 +29,23 @@
 
   var $ = CV.$;
   var MAX_BYTES = 600 * 1048576;
-  var FONT = { file: 'NotoSans-SemiBold.ttf', url: '/vendor/fonts/NotoSans-SemiBold.ttf?v=2.013', name: 'Noto Sans SemiBold' };
+  // libass in this ffmpeg core shapes text with HarfBuzz, so Devanagari
+  // conjuncts and joined, right-to-left Arabic come out right, given a font
+  // that has them. One font per video, picked by the captions' main script:
+  // fallback between fonts is not something to count on here.
+  var FONTS = {
+    latin: { file: 'NotoSans-SemiBold.ttf', url: '/vendor/fonts/NotoSans-SemiBold.ttf?v=2.015', name: 'Noto Sans SemiBold' },
+    deva: { file: 'NotoSansDevanagari-SemiBold.ttf', url: '/vendor/fonts/NotoSansDevanagari-SemiBold.ttf?v=2.007', name: 'Noto Sans Devanagari SemiBold' },
+    arab: { file: 'NotoSansArabic-SemiBold.ttf', url: '/vendor/fonts/NotoSansArabic-SemiBold.ttf?v=2.013', name: 'Noto Sans Arabic SemiBold' }
+  };
+  function pickFont(list) {
+    var t = list.map(function (c) { return c.text; }).join(' ');
+    var deva = (t.match(/[\u0900-\u097F]/g) || []).length, arab = (t.match(/[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
+    var latin = (t.match(/[A-Za-z\u00C0-\u024F\u0370-\u03FF\u0400-\u04FF]/g) || []).length;
+    if (deva > latin && deva >= arab) return FONTS.deva;
+    if (arab > latin) return FONTS.arab;
+    return FONTS.latin;
+  }
 
   var dropzone = $('#dropzone'), fileInput = $('#fileInput'), fileList = $('#fileList');
   var controls = $('#controls'), goBtn = $('#convertBtn');
@@ -209,20 +225,20 @@
   // ASS style for libass. SRT cues are laid out on libass's default 384x288
   // script canvas, so sizes and margins are in those units, whatever the
   // video's resolution.
-  function forceStyle() {
+  function forceStyle(fontName) {
     var size = { s: 16, m: 20, l: 26 }[sizeSel ? sizeSel.value : 'm'] || 20;
     var col = colourSel && colourSel.value === 'yellow' ? '&H0000E5FF' : '&H00FFFFFF';
     var top = posSel && posSel.value === 'top';
     var box = bgSel && bgSel.value === 'box';
-    return ['FontName=' + FONT.name, 'FontSize=' + size, 'PrimaryColour=' + col, 'Alignment=' + (top ? 8 : 2), 'MarginV=' + (top ? 14 : 18),
+    return ['FontName=' + (fontName || FONTS.latin.name), 'FontSize=' + size, 'PrimaryColour=' + col, 'Alignment=' + (top ? 8 : 2), 'MarginV=' + (top ? 14 : 18),
       box ? 'BorderStyle=3' : 'BorderStyle=1', box ? 'OutlineColour=&H80000000' : 'OutlineColour=&H00000000', 'BackColour=&H80000000',
       box ? 'Outline=1' : 'Outline=1.6', 'Shadow=' + (box ? 0 : 0.6), 'Bold=0'].join(',');
   }
 
-  var fontBytes = null;
-  async function font() {
-    if (!fontBytes) fontBytes = new Uint8Array(await (await fetch(FONT.url)).arrayBuffer());
-    return fontBytes;
+  var fontBytes = {};
+  async function font(F) {
+    if (!fontBytes[F.file]) fontBytes[F.file] = new Uint8Array(await (await fetch(F.url)).arrayBuffer());
+    return fontBytes[F.file];
   }
 
   function base() { return file.name.replace(/\.[^.]+$/, ''); }
@@ -233,16 +249,16 @@
     var t0 = Date.now();
     try {
       setProgress(2, 'Loading the video encoder…');
-      var srt = new TextEncoder().encode(ASSubs.toSRT(live(), duration));
+      var srt = new TextEncoder().encode(ASSubs.toSRT(live(), duration)), F = pickFont(live());
       var inExt = ext(file);
       var audio = /^(mp4|m4v|mov)$/.test(inExt) ? ['-c:a', 'copy'] : ['-c:a', 'aac', '-b:a', '192k'];
       var out = await AudioSaw.runFFmpeg(file, inExt,
-        ['-vf', "subtitles=subs.srt:fontsdir=.:force_style='" + forceStyle() + "'", '-c:v', 'libx264', '-preset', 'superfast', '-crf', '20', '-pix_fmt', 'yuv420p']
+        ['-vf', "subtitles=subs.srt:fontsdir=.:force_style='" + forceStyle(F.name) + "'", '-c:v', 'libx264', '-preset', 'superfast', '-crf', '20', '-pix_fmt', 'yuv420p']
           .concat(audio, ['-movflags', '+faststart']),
         'mp4', 'video/mp4', function (p, msg) { setProgress(p, msg); }, 'Writing the captions into the picture…',
         // A copy: ffmpeg's writeFile transfers the buffer to its worker, and a
         // second burn would find the cached one detached.
-        { files: [{ name: 'subs.srt', data: srt }, { name: FONT.file, data: (await font()).slice() }] });
+        { files: [{ name: 'subs.srt', data: srt }, { name: F.file, data: (await font(F)).slice() }] });
       CV.setProgress(progressBar, 100);
       CV.setStatus(statusEl, 'success', 'Done in ' + Math.round((Date.now() - t0) / 1000) + ' s: the captions are part of the picture now, so they show everywhere.');
       window.__subs = { kind: 'burn', blob: out, cues: live().length };
@@ -287,5 +303,5 @@
   dlSrt.addEventListener('click', function () { if (cues) CV.downloadBlob(new Blob([ASSubs.toSRT(live(), duration)], { type: 'application/x-subrip;charset=utf-8' }), base() + '.srt', { again: true }); });
   dlVtt.addEventListener('click', function () { if (cues) CV.downloadBlob(new Blob([ASSubs.toVTT(live(), duration)], { type: 'text/vtt;charset=utf-8' }), base() + '.vtt', { again: true }); });
 
-  window.__subPage = { make: make, burn: burn, soft: soft, cues: function () { return cues; }, style: forceStyle };
+  window.__subPage = { make: make, burn: burn, soft: soft, cues: function () { return cues; }, style: forceStyle, font: function () { return cues && pickFont(live()).name; } };
 })();

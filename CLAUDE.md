@@ -1111,8 +1111,11 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   the caption drawn only inside its cue; audio packets identical; the soft
   track reads back. **The font bytes must be copied per burn**: ffmpeg's
   writeFile transfers the buffer, and the second burn found it detached.
-  Latin/Greek/Cyrillic only (no HarfBuzz shaping tested; CJK needs a 16 MB
-  font).
+  The core's libass shapes with HarfBuzz: Devanagari conjuncts and joined
+  RTL Arabic render right (checked by eye, 3 Oct). `pickFont` chooses one of
+  three vendored Noto fonts (Latin/Greek/Cyrillic, Devanagari, Arabic) by
+  the captions' main script; cross-font fallback is not relied on. CJK
+  needs a ~16 MB font and is not offered.
 - **Dubbing in the speaker's own voice** ("use each speaker's own voice",
   English output on WebGPU only; the box is the consent): `cloneAll` in
   dubbing-page.js cuts ~5 s of each speaker's own longest lines from the
