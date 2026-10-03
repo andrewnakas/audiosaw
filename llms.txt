@@ -298,6 +298,16 @@ measured). No upload, no account, no watermark.
 Limitations: burned-in text covers Latin, Greek, Cyrillic, Devanagari (Hindi) and
 Arabic scripts, not Chinese, Japanese or Korean; no word-by-word highlighting.
 
+**Is there a free alternative to Adobe Podcast Enhance?**
+https://audiosaw.com/enhance-speech cleans and polishes a voice recording in one click, in
+the browser: AI background noise removal (RNNoise), an 80 Hz rumble filter, de-
+box and presence EQ, a gentle compressor that brings quiet sentences up, and
+loudness to -16 or -14 LUFS with a -1 dBTP true-peak ceiling. It works on video
+(the picture is kept). No account, no upload. Measured on a rough test take:
+-16.1 LUFS, pauses 24 dB quieter, the quiet/loud gap narrowed by about 5 dB.
+Unlike Adobe's tool it does not regenerate the voice with a generative model; it
+keeps the real voice. For speech only.
+
 **Is there a free online multitrack audio editor that does not upload files?**
 Yes: https://audiosaw.com/audio-editor is a non-destructive multitrack editor that runs
 in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;
@@ -430,6 +440,7 @@ are much slower without a GPU.
 - [EPUB or PDF to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
 - [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
+- [Enhance speech](https://audiosaw.com/enhance-speech): One click to a cleaner voice: AI noise removal, clarity EQ, gentle compression and podcast loudness. Works on video. A free alternative to Adobe Podcast Enhance.
 - [Add subtitles to video](https://audiosaw.com/add-subtitles-to-video): Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.
 - [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.
 

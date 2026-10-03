@@ -65,7 +65,8 @@ const CHECKS = [
   ['check-editor-speech.js'],
   ['check-subtitles.js'],
   ['check-video-tools.js'],
-  ['check-denoise.js']
+  ['check-denoise.js'],
+  ['check-enhance.js']
 ];
 
 let failed = 0;

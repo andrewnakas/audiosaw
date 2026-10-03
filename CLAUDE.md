@@ -977,6 +977,16 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   getUserMedia: Deeper records at 158.7 Hz (0.0 cents), no-effect at 200.
   Other apps cannot use a tab as a mic; the page names virtual cables
   (VB-CABLE, BlackHole) as untested-by-us, and Voicemod.
+- **/enhance-speech** (`js/speech-enhance.js` = `ASEnhance`, UMD;
+  `js/enhance-page.js`): AI denoise (`ASDenoise.ai`, optional) -> `pre`:
+  80 Hz HP x2, -2.5 dB @ 250 Hz, +3 dB @ 3.5 kHz, a hand-written 3:1
+  compressor 8 dB under the speech level (not DynamicsCompressorNode, which
+  adds make-up gain) -> loudness measured on a 48 kHz copy -> `finish`:
+  gain + true-peak limit at -1 dBTP. The limiter costs ~0.5 LU on a peaky
+  take, so the page re-measures and corrects once. Honest about not being a
+  generative "studio voice" like Adobe's. check-enhance: -16.1 LUFS,
+  -1.00 dBTP (ebur128), quiet/loud gap 11.5 -> 6.8 dB, pauses 24.4 dB down,
+  40 Hz rumble gone, exact length, 0.32 ms offset. Video via the shell.
 - **AI noise removal** (/noise-reduction, Method "Any noise behind a voice"):
   RNNoise (Xiph; Apache-2.0 wasm build by Shiguredo, one 4.6 MB ES module in
   `vendor/rnnoise/`) in `js/rnnoise-worker.js`, a module worker. 480-sample

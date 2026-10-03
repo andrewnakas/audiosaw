@@ -419,7 +419,8 @@
         ['audio-compressor', 'Reduce dynamic range when the target will not fit'],
         ['normalize-audio', 'Set a peak ceiling instead of a loudness target'],
         ['audio-joiner', 'Assemble the episode once each part matches'],
-        ['podcast-prep', 'Get the rest of the episode spec right too']
+        ['podcast-prep', 'Get the rest of the episode spec right too'],
+        ['enhance-speech', 'For a voice: clean it up and level it in one step']
       ]
     },
     'normalize-audio': {
@@ -554,7 +555,8 @@
         ['silence-remover', 'Cut the dead air as well'],
         ['audio-to-text-prep', 'Now send it to be transcribed'],
         ['stem-splitter', 'Separate the voice from the background instead of filtering it'],
-        ['audio-to-text', 'Transcribe it: clean audio transcribes far better']
+        ['audio-to-text', 'Transcribe it: clean audio transcribes far better'],
+        ['enhance-speech', 'Noise removal plus clarity EQ and podcast loudness, in one click']
       ]
     },
     'audio-eq': {
@@ -659,7 +661,8 @@
         ['record-computer-audio', 'Record what a tab is playing instead of the microphone'],
         ['voice-changer', 'Make the recording deeper, higher or a robot'],
         ['dictation', 'Want the words, not the audio? Dictate'],
-        ['audio-to-text', 'Transcribe what you just recorded']
+        ['audio-to-text', 'Transcribe what you just recorded'],
+        ['enhance-speech', 'Make the take sound finished: noise, tone and loudness in one click']
       ]
     },
     'record-computer-audio': {
@@ -855,6 +858,18 @@
         ['add-subtitles-to-video', 'Burn captions into the dubbed video']
       ]
     },
+    'enhance-speech': {
+      cat: 'voice', label: 'enhance speech', title: 'Enhance speech',
+      blurb: 'One click to a cleaner voice: AI noise removal, clarity EQ, gentle compression and podcast loudness. Works on video. A free alternative to Adobe Podcast Enhance.',
+      project: 'same',
+      next: [
+        ['auto-cut-silence', 'Then cut the long pauses out'],
+        ['audio-to-text', 'Transcribe it: a cleaned voice transcribes better'],
+        ['noise-reduction', 'Just the noise removal, with more control'],
+        ['loudness-normalizer', 'Just the loudness, for music or a mix'],
+        ['audio-editor', 'Edit the cleaned take on a timeline']
+      ]
+    },
     'add-subtitles-to-video': {
       cat: 'voice', label: 'add subtitles', title: 'Add subtitles to video',
       blurb: 'Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.',
@@ -1003,6 +1018,7 @@
     ['voice-recorder', 'record something'],
     ['audio-to-text', 'transcribe to text'],
     ['add-subtitles-to-video', 'add captions to a video'],
+    ['enhance-speech', 'make a voice sound better'],
     ['stem-splitter', 'separate the vocals'],
     ['split-audio', 'split a long recording'],
     ['noise-reduction', 'remove background noise'],
@@ -1084,7 +1100,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'voice-cloning', 'audio-to-text', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'enhance-speech', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enhance Speech Free — Make a Voice Recording Sound Better, AI</title>
+<meta name="description" content="Make a voice recording sound better in one click: AI background noise removal, rumble filter, clarity EQ, gentle compression and podcast loudness, in your browser. A free alternative to Adobe Podcast Enhance. Works on video. Nothing uploaded.">
+<meta name="keywords" content="enhance speech, enhance audio, adobe podcast enhance alternative, make voice sound better, improve audio quality, podcast audio, voice clarity, clean up audio">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/enhance-speech">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Enhance Speech — make a voice recording sound better, free, in your browser">
+<meta property="og:description" content="AI noise removal, clarity EQ, compression and podcast loudness in one click, in your browser. Nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/enhance-speech">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03l">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Enhance Speech",
+  "alternateName": ["Adobe Podcast Enhance alternative", "Enhance audio", "Make voice sound better", "Podcast audio cleanup"],
+  "featureList": "One-click speech enhancement in the browser: AI background noise removal (RNNoise), 80 Hz rumble filter, de-box and presence EQ, gentle compression, loudness to -16 or -14 LUFS with a -1 dBTP true-peak ceiling, video in and out, no upload",
+  "url": "https://audiosaw.com/enhance-speech",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-10-03"
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this a free alternative to Adobe Podcast Enhance?","acceptedAnswer":{"@type":"Answer","text":"For cleaning up a real voice, yes: AI noise removal, EQ, compression and loudness in one click, free, with no account and no upload. Adobe's tool regenerates the voice with a generative model, which this does not; it keeps your voice and polishes it."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in this browser tab. The only download is the AI denoiser itself, about 5 MB, once."}},{"@type":"Question","name":"Will it make my voice sound like a different person?","acceptedAnswer":{"@type":"Answer","text":"No. It does not re-synthesise the voice; it removes noise and adjusts tone and level, so it is still your voice, cleaner and more even."}},{"@type":"Question","name":"Can I enhance the sound of a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM and, with \"keep the picture\" ticked, you get the video back with the enhanced sound, the picture copied untouched and in sync."}},{"@type":"Question","name":"What loudness should I choose?","acceptedAnswer":{"@type":"Answer","text":"-16 LUFS for podcasts and spoken audio, -14 LUFS for YouTube. The true peak is held at -1 dBTP either way, so it does not clip when the platform converts it."}},{"@type":"Question","name":"Does it work on music?","acceptedAnswer":{"@type":"Answer","text":"No, it is built for speech: the AI denoiser treats instruments as noise. For music, use the EQ and the loudness normalizer instead."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to make a voice recording sound better in your browser", "totalTime": "PT2M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "name": "Drop the recording", "text": "Drop an audio file or a video on the enhance speech page."}, {"@type": "HowToStep", "name": "Pick the loudness", "text": "Choose -16 LUFS for podcasts or -14 LUFS for YouTube, and leave AI noise removal on."}, {"@type": "HowToStep", "name": "Enhance and download", "text": "Press Enhance. The cleaned, levelled file downloads; a video comes back as a video."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Enhance speech"}]}
+</script>
+<!-- /AS:bcschema -->
+<style>
+.tool-app label.check{display:block;margin:.45rem 0}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Enhance speech</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Enhance <span class="ital">speech</span>: one click to a cleaner voice.</h1>
+    <p>Drop a voice recording, a podcast take, a lecture or a phone video and get it back sounding like it was recorded on purpose: background noise taken out by an AI denoiser, low rumble filtered, the voice made clearer, quiet and loud sentences evened out, and the whole thing brought to podcast or YouTube loudness without clipping. It runs in your browser, so nothing is uploaded, there is no sign-up and no minute limit.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a voice recording or video</p>
+      <p>MP3, WAV, M4A voice memos, FLAC, or an MP4, MOV or WebM video. Speech works best.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Loudness
+          <select id="target">
+            <option value="-16" selected>-16 LUFS — podcasts, Apple, Spotify speech</option>
+            <option value="-14">-14 LUFS — YouTube, music platforms</option>
+            <option value="-19">-19 LUFS — quieter, for narration with room to spare</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps — balanced</option>
+            <option value="320">320 kbps — maximum</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="aiNoise" checked> remove background noise with AI (traffic, typing, fans, a dog); untick for an already clean studio recording</label>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the enhanced sound</label>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Enhance</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="spec-wrap" id="report" hidden>
+      <table class="spec-table"><tbody>
+        <tr><th>Loudness before</th><td id="rLoudIn">—</td></tr>
+        <tr><th>Loudness after</th><td id="rLoudOut">—</td></tr>
+        <tr><th>Compression</th><td id="rComp">—</td></tr>
+        <tr><th>True peak after</th><td id="rPeak">—</td></tr>
+        <tr><th>Background noise</th><td id="rNoise">—</td></tr>
+      </tbody></table>
+    </div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Noise</th><td>RNNoise, a small neural denoiser from Xiph, removes noise behind a voice, steady or not</td></tr>
+        <tr><th>Tone</th><td>80 Hz high-pass (rumble, desk thumps), -2.5 dB at 250 Hz (boxiness), +3 dB at 3.5 kHz (presence)</td></tr>
+        <tr><th>Level</th><td>A gentle 3:1 compressor that brings quiet sentences up towards loud ones, then loudness to -16 or -14 LUFS (ITU-R BS.1770) with a -1 dBTP true-peak ceiling</td></tr>
+        <tr><th>Video</th><td>MP4, MOV or WebM in; the same video back with the enhanced sound, the picture untouched</td></tr>
+        <tr><th>Uploads your file</th><td>No — everything runs in this tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What it does to your recording, step by step</h2>
+    <p>Most rough recordings have the same four problems, and this fixes them in the order a sound engineer would. First, <strong>noise</strong>: an AI denoiser (RNNoise, trained by Xiph on thousands of hours of speech and noise) keeps the voice and pulls down everything else, including the irregular noise a classic noise gate cannot touch, such as traffic, keyboards and a fan that changes speed. Second, <strong>rumble</strong>: a high-pass filter at 80 Hz removes the low thuds of a desk, a car or a handled phone, which eat loudness without adding anything you can hear as voice. Third, <strong>tone</strong>: a small cut at 250 Hz takes out the boxy sound of a small room, and a lift at 3.5 kHz brings forward the consonants that make speech intelligible on phone speakers and earbuds. Fourth, <strong>level</strong>: a gentle compressor narrows the gap between the loud and quiet moments, then the whole file is brought to a standard loudness, with a true-peak limiter so it never clips.</p>
+    <p>Measured on a test recording with a speaker who drops about 12 dB for one sentence, noise bursts and clicks under the voice, and a 40 Hz rumble: the result landed at -16.1 LUFS with its true peak at -1.0 dBTP; the quiet sentence came up, so the gap between it and the loud ones went from 11.5 dB to 6.8 dB; the pauses came down 24 dB relative to the voice; and the rumble all but disappeared. The voice stays where it was to a third of a millisecond and the file is exactly as long as before, so a video stays in sync. A 13-second clip took about 8 seconds on a laptop.</p>
+
+    <h2>Enhance speech vs Adobe Podcast Enhance</h2>
+    <p>Adobe's Enhance Speech is a generative model: it listens to your recording and re-synthesises the voice as if it were recorded in a studio. That can sound remarkable, and it can also change the voice, invent consonants, or turn a rough take into a slightly different person; it needs an Adobe account and an upload, with a limit on the free tier. This page does the opposite: it keeps your real voice and cleans and polishes it with tools whose effect you can predict, on your own computer. A recording made in a bathroom will still sound like a bathroom, a little less so; a recording made in a reasonable room with a fan running and an uneven speaker will sound properly finished. If you need the studio regeneration, Adobe's tool is the one for that.</p>
+
+    <h2>Getting the best result</h2>
+    <p>Choose -16 LUFS for a podcast (Apple and Spotify both play speech at about that level) and -14 for YouTube. Leave AI noise removal on unless the recording is already clean, in which case untick it: on a studio voice it has nothing to remove and can only take a little air away. Enhance before you edit if the levels are all over the place, or after editing if you are assembling several takes, so they all end up at the same loudness. For a video, the picture is copied untouched and the sound stays in sync, so you can use the result straight away. To cut out long pauses as well, run the result through <a href="/auto-cut-silence">auto-cut silence</a>; to transcribe it, <a href="/audio-to-text">audio to text</a> reads a cleaned recording more accurately.</p>
+
+    <h2>What it can't do</h2>
+    <p>It is for speech. On music, the denoiser treats instruments as noise and the EQ is wrong for them; for a song, use the <a href="/audio-eq">EQ</a> and the <a href="/loudness-normalizer">loudness normalizer</a> separately. Other people talking in the background are voices, so the denoiser keeps them. It does not remove echo or reverb from a big room, does not fix distortion from a microphone that was too close or too loud, and cannot bring back words that the noise drowned out completely. And it does not change a voice into a studio voice: for that kind of regeneration, see the comparison above.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this a free alternative to Adobe Podcast Enhance?</summary><p>For cleaning up a real voice, yes: AI noise removal, EQ, compression and loudness in one click, free, with no account and no upload. Adobe's tool regenerates the voice with a generative model, which this does not; it keeps your voice and polishes it.</p></details>
+      <details><summary>Is my recording uploaded?</summary><p>No. Everything runs in this browser tab. The only download is the AI denoiser itself, about 5 MB, once.</p></details>
+      <details><summary>Will it make my voice sound like a different person?</summary><p>No. It does not re-synthesise the voice; it removes noise and adjusts tone and level, so it is still your voice, cleaner and more even.</p></details>
+      <details><summary>Can I enhance the sound of a video?</summary><p>Yes. Drop the MP4, MOV or WebM and, with "keep the picture" ticked, you get the video back with the enhanced sound, the picture copied untouched and in sync.</p></details>
+      <details><summary>What loudness should I choose?</summary><p>-16 LUFS for podcasts and spoken audio, -14 LUFS for YouTube. The true peak is held at -1 dBTP either way, so it does not clip when the platform converts it.</p></details>
+      <details><summary>Does it work on music?</summary><p>No, it is built for speech: the AI denoiser treats instruments as noise. For music, use the EQ and the loudness normalizer instead.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/auto-cut-silence"><h3>Auto-Cut Silence</h3><p>Then cut the long pauses out.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>Transcribe it: a cleaned voice transcribes better.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Just the noise removal, with more control.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Just the loudness, for music or a mix.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Edit the cleaned take on a timeline.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-03l"></script>
+<script src="/js/tool-graph.js?v=2026-10-03l"></script>
+<script src="/js/flow.js?v=2026-10-03l"></script>
+<script src="/js/project-link.js?v=2026-10-03l"></script>
+<script src="/js/audio-core.js?v=2026-10-03l"></script>
+<script src="/js/loudness.js?v=2026-10-03l"></script>
+<script src="/js/tool-shell.js?v=2026-10-03l"></script>
+<script src="/js/consent.js?v=2026-10-03l"></script>
+<script src="/js/noise-reduction.js?v=2026-10-03l"></script>
+<script src="/js/speech-enhance.js?v=2026-10-03l"></script>
+<script src="/js/enhance-page.js?v=2026-10-03l"></script>
+<script src="/js/pwa.js?v=2026-10-03l"></script>
+</body>
+</html>
