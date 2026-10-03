@@ -225,8 +225,9 @@ Brazilian Portuguese or Hindi, an OPUS-MT model translates on from English. The
 lines are editable before they are voiced, each person in the video can get a
 different voice (speakers are found automatically), the original audio is ducked
 18 dB or replaced, and the picture is copied without re-encoding. Out: MP4, MP3
-and SRT subtitles. Limitations: Kokoro's built-in voices, not the original
-speaker's voice; no lip-sync; target languages are those six; a one-time model
+and SRT subtitles. For English dubs on a computer with WebGPU, each speaker can
+keep their own voice, cloned from their own lines in the video (Chatterbox Turbo,
+with their permission). Limitations: no lip-sync; target languages are those six; a one-time model
 download per language (~113 MB for translation).
 
 **How do I change the voice in an audio file or a video (deeper, female, robot)?**
@@ -243,7 +244,7 @@ that, with consent).
 **How can I convert an EPUB, PDF or text file into an audiobook for free?**
 https://audiosaw.com/text-to-audiobook reads a DRM-free EPUB, a PDF with a text layer (chapters
 from its bookmarks or headings, running heads and page numbers removed, two-column
-papers read column by column; scanned PDFs need OCR first), a TXT or Markdown file, or
+papers read column by column; scanned PDFs need OCR first), a Word .docx (Heading styles become chapters), a TXT or Markdown file, or
 pasted text with a Kokoro AI voice in the browser and writes an M4B audiobook
 with chapter marks and title/author tags, or a zip with one MP3 per chapter.
 Chapters come from the EPUB's spine or from headings in the text; finished
@@ -400,7 +401,7 @@ are much slower without a GPU.
 ## Voice & speech
 
 - [Transcribe audio to text](https://audiosaw.com/audio-to-text): MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.
-- [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: 41 natural voices in 7 languages including Hindi and Spanish, MP3 download, no sign-up.
+- [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: type or open a PDF or Word file, 41 natural voices in 7 languages, MP3 download, no sign-up.
 - [Voice changer for audio files](https://audiosaw.com/voice-changer): Make a voice in a recording or a video deeper or higher, male to female, chipmunk, robot or radio, without the slowed-tape sound.
 - [EPUB or PDF to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.

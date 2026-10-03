@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://huggingface.co" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-02c">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02e">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -108,7 +108,7 @@ window.AS_VERSION = '2026-09-22';
 <main class="container">
   <section class="page-intro">
     <h1>Text to <span class="ital">audiobook</span>: EPUB or PDF to MP3.</h1>
-    <p>Drop an EPUB, a PDF or a TXT file, or paste a text, and get an M4B audiobook with chapter marks, or an MP3 per chapter, read by a natural AI voice. It is an ebook to audiobook converter that needs no account and no software. The voice model runs in your browser, so the book is never uploaded, there is no word limit, and nothing is charged by the hour.</p>
+    <p>Drop an EPUB, a PDF, a Word document or a TXT file, or paste a text, and get an M4B audiobook with chapter marks, or an MP3 per chapter, read by a natural AI voice. It is an ebook to audiobook converter that needs no account and no software. The voice model runs in your browser, so the book is never uploaded, there is no word limit, and nothing is charged by the hour.</p>
   </section>
 
   <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
@@ -117,8 +117,8 @@ window.AS_VERSION = '2026-09-22';
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop a book</p>
-      <p>EPUB (DRM-free), PDF, TXT or Markdown. Chapters are found from the bookmarks or headings.</p>
-      <input type="file" id="fileInput" accept=".epub,.pdf,.txt,.md,.markdown,text/plain,application/epub+zip,application/pdf">
+      <p>EPUB (DRM-free), PDF, Word (.docx), TXT or Markdown. Chapters are found from the bookmarks or headings.</p>
+      <input type="file" id="fileInput" accept=".epub,.pdf,.docx,.txt,.md,.markdown,text/plain,application/epub+zip,application/pdf">
     </div>
     <p class="ab-or">…or paste the text. Lines like "Chapter 3" or "## Title" start a new chapter.</p>
     <textarea id="bookText" class="ab-paste" placeholder="Paste a story, a long article or your manuscript…"></textarea>
@@ -168,7 +168,7 @@ window.AS_VERSION = '2026-09-22';
     <div class="spec-wrap">
       <table class="spec-table">
         <tbody>
-        <tr><th>Input</th><td>DRM-free EPUB, PDF with a text layer, plain text or Markdown, or pasted text</td></tr>
+        <tr><th>Input</th><td>DRM-free EPUB, PDF with a text layer, Word (.docx), plain text or Markdown, or pasted text</td></tr>
         <tr><th>Output</th><td>M4B with a chapter track and title/author tags, or one MP3 per chapter in a zip</td></tr>
         <tr><th>Voice</th><td>Kokoro-82M, 41 voices: English (US and UK), Spanish, French, Italian, Brazilian Portuguese and Hindi; speed 0.7×–1.4×</td></tr>
         <tr><th>Time to make</th><td>On a laptop GPU, about half as long as the audio itself; on the CPU, several times as long. A 90,000-word novel is about ten hours of audio</td></tr>
@@ -346,14 +346,14 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-02c"></script>
-<script src="/js/tool-graph.js?v=2026-10-02c"></script>
-<script src="/js/flow.js?v=2026-10-02c"></script>
-<script src="/js/audio-core.js?v=2026-10-02c"></script>
-<script src="/js/consent.js?v=2026-10-02c"></script>
-<script src="/js/tts-engine.js?v=2026-10-02c"></script>
-<script src="/js/book-parse.js?v=2026-10-02c"></script>
-<script src="/js/audiobook-page.js?v=2026-10-02c"></script>
-<script src="/js/pwa.js?v=2026-10-02c"></script>
+<script src="/js/common.js?v=2026-10-02e"></script>
+<script src="/js/tool-graph.js?v=2026-10-02e"></script>
+<script src="/js/flow.js?v=2026-10-02e"></script>
+<script src="/js/audio-core.js?v=2026-10-02e"></script>
+<script src="/js/consent.js?v=2026-10-02e"></script>
+<script src="/js/tts-engine.js?v=2026-10-02e"></script>
+<script src="/js/book-parse.js?v=2026-10-02e"></script>
+<script src="/js/audiobook-page.js?v=2026-10-02e"></script>
+<script src="/js/pwa.js?v=2026-10-02e"></script>
 </body>
 </html>

@@ -37,6 +37,7 @@
   var controls = $('#controls'), goBtn = $('#convertBtn'), dubBtn = $('#dubBtn');
   var taskSel = $('#task'), langSel = $('#language'), modelSel = $('#model');
   var voiceSel = $('#voice'), bgSel = $('#background'), perSpk = $('#perSpeaker'), spkBox = $('#speakerVoices');
+  var ownVoice = $('#ownVoice'), ownNote = $('#ownVoiceNote');
   var statusEl = $('#status'), progressWrap = $('#progressWrap'), progressBar = $('#progressBar');
   var linesPanel = $('#linesPanel'), linesEl = $('#lines'), resultEl = $('#result'), videoEl = $('#preview');
   var dlVideo = $('#dlVideo'), dlAudio = $('#dlAudio'), dlSrt = $('#dlSrt');
@@ -143,6 +144,7 @@
       var into = /^to:/.test(taskSel.value) ? taskSel.value.slice(3) : null;
       var done = await call(w, { type: 'run', model: modelSel.value, audio: audio, language: langSel.value, task: into ? 'translate' : taskSel.value }, [audio.buffer]);
       var segs = done.segments;
+      spokenLang = String(done.language || langSel.value || '').toLowerCase();
       speakers = 0; speakerVoice = {};
       if (perSpk && perSpk.checked) {
         setProgress(48, 'Telling the speakers apart…');
@@ -168,7 +170,8 @@
       CV.setStatus(statusEl, 'success', lines.length + ' lines. Check the wording below, then make the dub.');
       linesPanel.hidden = false;
       linesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      voice();   // start the voice model downloading while they read
+      gateOwnVoice();
+      if (!useOwn()) voice();   // start the voice model downloading while they read
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not transcribe the video. ' + (e.message || e), e);
     }
@@ -254,6 +257,90 @@
 
   /* ------------------------------------------------------------ step 4-6 */
 
+  /* ------------------------------------------- each speaker's own voice */
+
+  // "Use each speaker's own voice": Chatterbox Turbo (clone-worker.js, the
+  // /voice-cloning model) reads every line in a voice cloned from that
+  // speaker's own lines in the video. English only, WebGPU only; the box is
+  // the same consent the cloning page asks for.
+  var spokenLang = '', cloner = null, cloneWait = {}, cloneSeq = 0;
+  function englishOut() {
+    if (target) return false;
+    if (taskSel.value === 'translate') return true;
+    return /^(en|english)$/.test(spokenLang) || langSel.value === 'en';
+  }
+  function useOwn() { return !!(ownVoice && ownVoice.checked && navigator.gpu && englishOut()); }
+  function gateOwnVoice() {
+    if (!ownVoice) return;
+    var why = !navigator.gpu ? 'needs WebGPU (desktop Chrome or Edge)' : (lines && !englishOut() ? 'speaks English only, so it is off for this dub' : '');
+    ownVoice.disabled = !!why;
+    if (why) ownVoice.checked = false;
+    if (ownNote) ownNote.textContent = why ? 'Voice cloning ' + why + '.' : '';
+  }
+  if (ownVoice) { gateOwnVoice(); [taskSel, langSel].forEach(function (s) { s.addEventListener('change', gateOwnVoice); }); }
+
+  function clonerWorker() {
+    if (cloner) return cloner;
+    cloner = new Worker('/js/clone-worker.js?v=' + ASSET_V, { type: 'module' });
+    cloner.onmessage = function (e) {
+      var m = e.data || {};
+      if (m.type === 'status') CV.setStatus(statusEl, 'info', m.detail);
+      var key = m.type === 'referenced' ? 'ref' : m.seq;
+      if (m.type === 'error' && !cloneWait[key]) key = Object.keys(cloneWait)[0];
+      if ((m.type === 'referenced' || m.type === 'audio' || m.type === 'error') && cloneWait[key]) {
+        var w = cloneWait[key]; delete cloneWait[key];
+        if (m.type === 'error') w.reject(new Error(m.message || 'Voice cloning failed.')); else w.resolve(m);
+      }
+    };
+    cloner.postMessage({ type: 'load' });
+    return cloner;
+  }
+  function cloneCall(key, msg, transfer) {
+    return new Promise(function (resolve, reject) { cloneWait[key] = { resolve: resolve, reject: reject }; clonerWorker().postMessage(msg, transfer || []); });
+  }
+
+  // About five seconds of one speaker's own speech, from their longest lines
+  // in the original: mono, 24 kHz, silence trimmed, levelled. Null when the
+  // speaker says less than three seconds in the whole video.
+  async function referenceFor(list, mono24) {
+    var parts = [], have = 0;
+    list.slice().sort(function (a, b) { return (b.end - b.start) - (a.end - a.start); }).forEach(function (l) {
+      if (have >= 5.5 * TTS_SR) return;
+      var x = ASTTS.trimSilence(mono24.subarray(Math.floor(l.start * TTS_SR), Math.min(mono24.length, Math.ceil(l.end * TTS_SR))), 0.01, Math.round(0.08 * TTS_SR));
+      if (x.length > 0.4 * TTS_SR) { parts.push(x); have += x.length; }
+    });
+    if (have < 3 * TTS_SR) return null;
+    var out = new Float32Array(Math.min(have, 5 * TTS_SR)), o = 0;
+    for (var i = 0; i < parts.length && o < out.length; i++) { var n = Math.min(parts[i].length, out.length - o); out.set(parts[i].subarray(0, n), o); o += n; }
+    var pk = 0; for (var j = 0; j < out.length; j++) pk = Math.max(pk, Math.abs(out[j]));
+    if (pk > 0) for (var k = 0; k < out.length; k++) out[k] *= 0.9 / pk;
+    return out;
+  }
+
+  // Every line in its own speaker's cloned voice, grouped by speaker so the
+  // reference is encoded once each. Returns { samples: [per line], fallback }.
+  async function cloneAll(live) {
+    var mono = orig.numberOfChannels > 1 ? await AudioSaw.mixToMono(orig) : orig;
+    var m24 = (await AudioSaw.resampleBuffer(mono, TTS_SR)).getChannelData(0);
+    var groups = {};
+    live.forEach(function (l, i) { var k = speakers > 1 && l.speaker ? l.speaker : 0; (groups[k] = groups[k] || []).push(i); });
+    var out = new Array(live.length), fallback = [], done = 0;
+    for (var k in groups) {
+      var ref = await referenceFor(groups[k].map(function (i) { return live[i]; }), m24);
+      if (!ref) { fallback.push(k); continue; }
+      setProgress(50 + 40 * done / live.length, 'Listening to ' + (k > 0 ? 'speaker ' + k : 'the speaker') + '\'s voice…');
+      await cloneCall('ref', { type: 'reference', audio: ref }, [ref.buffer]);
+      for (var g = 0; g < groups[k].length; g++) {
+        var i = groups[k][g];
+        setProgress(50 + 40 * done / live.length, 'Cloning line ' + (done + 1) + ' of ' + live.length + (k > 0 ? ' (speaker ' + k + ')' : '') + '…');
+        var s = ++cloneSeq, r = await cloneCall(s, { type: 'synth', seq: s, text: live[i].text });
+        var x = ASTTS.trimSilence(r.samples), y = new Float32Array(x.length); y.set(x);
+        out[i] = y; done++;
+      }
+    }
+    return { samples: out, fallback: fallback };
+  }
+
   async function speak(text, id, speed) {
     var m = await call(voice(), { type: 'synth', job: 1, text: text, lang: ASTTS.voice(id).lang, mix: [{ id: id, w: 1 }], speed: speed });
     var x = ASTTS.trimSilence(m.samples);
@@ -267,12 +354,23 @@
     try {
       var live = lines.filter(function (l) { return l.text.trim(); });
       var placed = [], dub24 = new Float32Array(Math.ceil(total * TTS_SR) + TTS_SR * 4), over = 0;
+      var cloned = useOwn() ? await cloneAll(live) : null;
+      if (cloned && cloned.fallback.length) CV.setStatus(statusEl, 'warn', (cloned.fallback[0] > 0 ? 'Speaker ' + cloned.fallback.join(', ') : 'The speaker') + ' says less than three seconds, too little to clone; a built-in voice reads those lines.');
       for (var i = 0; i < live.length; i++) {
-        setProgress(50 + 40 * i / live.length, 'Voicing line ' + (i + 1) + ' of ' + live.length + '…');
         var vid = speakers > 1 && live[i].speaker ? (speakerVoice[live[i].speaker] || id) : id;
-        var x = await speak(live[i].text, vid, 1);
-        var f = ASDub.fit(live, i, x.length / TTS_SR, total);
-        if (f.speed > 1) x = await speak(live[i].text, vid, f.speed);
+        var x, f;
+        if (cloned && cloned.samples[i]) {
+          // The cloning model has no speed input: an overlong line is
+          // time-stretched at the same pitch instead (PSOLA, ASVoice.stretch).
+          x = cloned.samples[i];
+          f = ASDub.fit(live, i, x.length / TTS_SR, total);
+          if (f.speed > 1) x = ASVoice.stretch([x], TTS_SR, 1 / f.speed)[0];
+        } else {
+          setProgress(50 + 40 * i / live.length, 'Voicing line ' + (i + 1) + ' of ' + live.length + '…');
+          x = await speak(live[i].text, vid, 1);
+          f = ASDub.fit(live, i, x.length / TTS_SR, total);
+          if (f.speed > 1) x = await speak(live[i].text, vid, f.speed);
+        }
         var a = Math.round(f.start * TTS_SR);
         if (a + x.length > dub24.length) x = x.subarray(0, Math.max(0, dub24.length - a));
         dub24.set(x, a);
@@ -297,6 +395,11 @@
       var base = file.name.replace(/\.[^.]+$/, '');
       outputs = { srt: srt, base: base };
       outputs.audio = await AudioSaw.encode(mixBuf, 'mp3', { bitrate: 192 });
+      // Labelled in its own tags, as every voice this site makes is.
+      outputs.audio = new Blob([ASTTS.tagMp3(new Uint8Array(await outputs.audio.arrayBuffer()), {
+        title: base + ' (dubbed)', software: 'AudioSaw video dubbing',
+        comment: cloned ? 'Dubbed with cloned synthetic voices (Chatterbox Turbo) at audiosaw.com/video-dubbing' : 'Dubbed with synthetic speech (Kokoro-82M) at audiosaw.com/video-dubbing'
+      })], { type: 'audio/mpeg' });
       if (/^video\//.test(file.type) || /\.(mp4|mov|webm|m4v|mkv)$/i.test(file.name)) {
         setProgress(95, 'Putting the new soundtrack on the video…');
         var wav = AudioSaw.floatWav(mixBuf);
@@ -317,7 +420,7 @@
       CV.setStatus(statusEl, 'success', 'Dubbed ' + live.length + ' lines in ' + Math.round((Date.now() - t0) / 1000) + ' s' +
         (over ? '; ' + over + ' line' + (over > 1 ? 's run' : ' runs') + ' past the next — shorten ' + (over > 1 ? 'them' : 'it') + ' and dub again' : '') + '.');
       resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      window.__dub = { outputs: outputs, placed: placed, lines: live.map(function (l) { return { text: l.text, start: l.start, end: l.end, speaker: l.speaker || 0, voice: speakers > 1 && l.speaker ? speakerVoice[l.speaker] : voiceSel.value }; }) };
+      window.__dub = { cloned: !!cloned, outputs: outputs, placed: placed, lines: live.map(function (l) { return { text: l.text, start: l.start, end: l.end, speaker: l.speaker || 0, voice: speakers > 1 && l.speaker ? speakerVoice[l.speaker] : voiceSel.value }; }) };
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not make the dub. ' + (e.message || e), e);
     }

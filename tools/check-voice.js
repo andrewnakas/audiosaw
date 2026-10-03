@@ -161,6 +161,14 @@ for (const fr of [0.85, 1.2]) {
   const want = medianF0(steady, [4410, 83790]) * Math.pow(2, -4 / 12), got = medianF0(y, [4410, 83790]);
   ok(Math.abs(cents(got, want)) < 5, `no pauses: still shifted (${got.toFixed(1)} Hz, ${cents(got, want).toFixed(1)} cents)`);
 }
+{
+  // stretch(): /video-dubbing fits a cloned line to its slot with it.
+  const src = voice(150, 2.0);
+  const [y] = V.stretch([src], SR, 1 / 1.3);
+  const lenOk = Math.abs(y.length - Math.round(src.length / 1.3)) <= 1;
+  const c = cents(medianF0(y, [4410, Math.round(y.length - 4410)]), medianF0(src, [4410, src.length - 4410]));
+  ok(lenOk && Math.abs(c) < 5, `stretch: 1.3x faster is ${(src.length / y.length).toFixed(3)}x as short, pitch moved ${c.toFixed(1)} cents`);
+}
 for (const id of Object.keys(V.PRESETS)) {
   if (id === 'custom') continue;
   const y = V.apply([input], SR, V.PRESETS[id]);

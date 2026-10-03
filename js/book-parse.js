@@ -6,6 +6,9 @@
  *   ASBook.fromText(text)          → { title, chapters: [{ title, text }] }
  *   ASBook.fromEpub(arrayBuffer)   → Promise<{ title, author, chapters }>
  *   ASBook.fromPdf({ pages, outline, info }) → { title, author, chapters }
+ *   ASBook.fromDocx(arrayBuffer)   → Promise<{ title, author, chapters }>
+ *   ASBook.readFile(file, onStatus) → any of the above (browser; pdf.js is
+ *     imported only for a PDF)
  *
  * An EPUB is a zip: META-INF/container.xml names the OPF package, whose
  * <spine> lists the XHTML documents in reading order. Each spine document
@@ -356,6 +359,96 @@
     return { title: title, author: String(info.author || '').trim(), chapters: chapters };
   }
 
+
+  /* ---------------------------------------------------------------- docx */
+
+  // A Word file is a zip with the text in word/document.xml: paragraphs are
+  // <w:p>, runs of text <w:t>, and a paragraph styled Heading 1-3 or Title is
+  // a heading (marked "#" for fromText, so it becomes a chapter).
+  async function fromDocx(buffer) {
+    var b = new Uint8Array(buffer), idx;
+    try { idx = zipIndex(b); } catch (e) { throw new Error('This is not a valid Word (.docx) file. An old .doc file has to be saved as .docx first.'); }
+    if (!idx['word/document.xml']) throw new Error('This is not a Word (.docx) file.');
+    var xml = await zipRead(b, idx, 'word/document.xml');
+    var body = (xml.match(/<w:body>([\s\S]*)<\/w:body>/) || [0, xml])[1];
+    var lines = (body.match(/<w:p[ >][\s\S]*?<\/w:p>/g) || []).map(function (p) {
+      var style = (/<w:pStyle w:val="([^"]+)"/.exec(p) || [])[1] || '';
+      var t = '', m, re = /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:(tab|br|cr)\b[^>]*\/>/g;
+      while ((m = re.exec(p))) t += m[1] != null ? m[1] : (m[2] === 'tab' ? ' ' : '\n');
+      t = decodeEntities(t).replace(/[ \t]+/g, ' ').trim();
+      if (!t) return '';
+      // Built-in heading styles keep English ids (Heading1, Title) whatever
+      // the document's language.
+      return /^(?:heading ?[1-3]|title)$/i.test(style) && t.length < 120 ? '# ' + t : t;
+    });
+    var text = lines.join('\n\n').replace(/\n{3,}/g, '\n\n');
+    if (!text.trim()) throw new Error('There is no text in that Word file.');
+    var book = fromText(text);
+    var core = idx['docProps/core.xml'] ? await zipRead(b, idx, 'docProps/core.xml') : '';
+    var dc = function (tag) { var m = new RegExp('<dc:' + tag + '[^>]*>([\\s\\S]*?)</dc:' + tag + '>').exec(core); return m ? decodeEntities(m[1]).trim() : ''; };
+    return { title: book.title || dc('title'), author: dc('creator'), chapters: book.chapters };
+  }
+
+  /* -------------------------------------------------------- any file (web) */
+
+  var ACCEPT = ['.txt', '.md', '.markdown', '.text', '.epub', '.pdf', '.docx'];
+
+  // A PDF's text layer through pdf.js (vendor/pdfjs, loaded only now), as
+  // positioned runs for ASBook.fromPdf, plus its bookmarks as page numbers.
+  var PDFJS = '/vendor/pdfjs/pdf.min.mjs?v=6.3.289';
+  async function readPdf(f, onStatus) {
+    var pdfjs = await import(PDFJS);
+    pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs?v=6.3.289';
+    var task = pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()), isEvalSupported: false }), doc;
+    try { doc = await task.promise; }
+    catch (e) {
+      if (e && e.name === 'PasswordException') throw new Error('This PDF is password-protected. Open it, save a copy without the password, and try that.');
+      throw e;
+    }
+    var pages = [];
+    for (var n = 1; n <= doc.numPages; n++) {
+      if (n % 10 === 1) onStatus('Reading ' + f.name + '… page ' + n + ' of ' + doc.numPages);
+      var page = await doc.getPage(n), tc = await page.getTextContent();
+      // Upright text only: sideways runs are margin stamps (arXiv's) and
+      // labels on rotated figures.
+      pages.push({ items: tc.items.filter(function (it) { return typeof it.str === 'string' && it.transform && Math.abs(it.transform[1]) < 0.01 && Math.abs(it.transform[2]) < 0.01; }).map(function (it) {
+        var t = it.transform;
+        return { str: it.str, x: t[4], y: t[5], w: it.width, h: Math.hypot(t[2], t[3]) || it.height || 10 };
+      }) });
+      page.cleanup();
+    }
+    var outline = [];
+    async function walk(items, depth) {
+      for (var i = 0; i < (items || []).length; i++) {
+        var o = items[i], dest = o.dest, pageIx = -1;
+        try {
+          if (typeof dest === 'string') dest = await doc.getDestination(dest);
+          if (Array.isArray(dest) && dest[0] != null) pageIx = typeof dest[0] === 'number' ? dest[0] : await doc.getPageIndex(dest[0]);
+        } catch (e) { /* a broken bookmark is skipped */ }
+        outline.push({ title: o.title, page: pageIx, depth: depth });
+        if (depth < 2) await walk(o.items, depth + 1);
+      }
+    }
+    try { await walk(await doc.getOutline(), 0); } catch (e) { outline = []; }
+    var info = {};
+    try { info = (await doc.getMetadata()).info || {}; } catch (e) {}
+    task.destroy();
+    return fromPdf({ pages: pages, outline: outline, info: { title: info.Title, author: info.Author } });
+  }
+
+
+  // In the browser: any supported file → { title, author, chapters }.
+  async function readFile(f, onStatus) {
+    onStatus = onStatus || function () {};
+    var n = f.name || '', b;
+    if (/\.epub$/i.test(n)) b = await fromEpub(await f.arrayBuffer());
+    else if (/\.pdf$/i.test(n) || f.type === 'application/pdf') b = await readPdf(f, onStatus);
+    else if (/\.docx$/i.test(n)) b = await fromDocx(await f.arrayBuffer());
+    else if (/\.doc$/i.test(n)) throw new Error('Old Word .doc files cannot be read; open it in Word or Pages and save it as .docx, or as plain text.');
+    else b = fromText(await f.text());
+    return b;
+  }
+
   /* ------------------------------------------------------------ chapters */
 
   // ffmpeg's FFMETADATA1 with one [CHAPTER] per entry; starts and ends in ms.
@@ -376,5 +469,5 @@
     return out.join('\n') + '\n';
   }
 
-  return { fromText: fromText, fromEpub: fromEpub, fromPdf: fromPdf, htmlText: htmlText, words: words, zipIndex: zipIndex, ffmetadata: ffmetadata };
+  return { fromText: fromText, fromEpub: fromEpub, fromPdf: fromPdf, fromDocx: fromDocx, readFile: readFile, ACCEPT: ACCEPT, htmlText: htmlText, words: words, zipIndex: zipIndex, ffmetadata: ffmetadata };
 }));

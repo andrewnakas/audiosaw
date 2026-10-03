@@ -266,6 +266,82 @@ async function browserTo() {
   });
 }
 
+// In the speaker's own voice: a woman's English `say` clip, "use each
+// speaker's own voice" ticked. The default dub voice is a man (Michael,
+// ~120 Hz), so a dub that lands near her pitch was cloned from her; Whisper
+// must still read it back. Needs WebGPU and Chatterbox in
+// ~/.cache/audiosaw/chatterbox (check-clone.js with CLONE_DOWNLOAD=1).
+async function browserOwn() {
+  if (!process.env.DUBBING_BROWSER) return;
+  const fs = require('fs'), os = require('os'), path = require('path');
+  const { execFileSync } = require('child_process');
+  const { withPage } = require('./chrome-harness');
+  const mirror = require('./model-mirror');
+  require('../js/pitch-track.js');
+  const cache = path.join(os.homedir(), '.cache', 'audiosaw'), cb = path.join(cache, 'chatterbox'), WB = 'onnx-community/whisper-base';
+  if (!fs.existsSync(path.join(cb, 'conditional_decoder_q4f16.onnx'))) { console.log('  skip: own voice (Chatterbox not cached; check-clone.js with CLONE_DOWNLOAD=1)'); return; }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-dub-own-'));
+  const SENT = 'The ferry leaves the harbour at nine. Bring a warm coat, because the wind on the water is cold.';
+  execFileSync('say', ['-v', 'Samantha', '-o', path.join(dir, 's.aiff'), SENT]);
+  const vid = path.join(dir, 'in.mp4');
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=teal:s=320x240:r=25:d=10', '-i', path.join(dir, 's.aiff'),
+    '-filter_complex', '[1:a]adelay=600|600,apad=whole_dur=10[a]', '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', '-ac', '2', '-t', '10', vid]);
+  const routes = Object.assign(mirror.routes([WB]), {
+    '/__in.mp4': () => fs.readFileSync(vid),
+    '/__core.wasm': () => fs.readFileSync(path.join(cache, 'ffmpeg-core-0.12.6.wasm'))
+  });
+  fs.readdirSync(cb).forEach((f) => { routes['/__cb/' + f] = () => fs.readFileSync(path.join(cb, f)); });
+  await withPage({ headers: true, routes, args: ['--enable-unsafe-webgpu', '--use-angle=metal', '--ignore-gpu-blocklist'] }, async (page) => {
+    page.listen('Fetch.requestPaused', (p) => {
+      const u = p.request.url.split('?')[0];
+      const wb = /whisper-base\/resolve\/[^/]+\/(.+)$/.exec(u);
+      const to = wb ? '/__hf/' + WB + '/' + wb[1] : /ffmpeg-core\.wasm/.test(u) ? '/__core.wasm' : '/__cb/' + u.split('/').pop();
+      page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url(to) });
+    });
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/ResembleAI/chatterbox-turbo-ONNX*' }, { urlPattern: '*huggingface.co/onnx-community/whisper-base/*' }, { urlPattern: '*unpkg.com*ffmpeg-core.wasm*' }] });
+    await page.goto('/video-dubbing', 1500);
+    const r = await page.eval(`(async () => {
+      const f = new File([await (await fetch('/__in.mp4')).blob()], 'ferry.mp4', { type: 'video/mp4' });
+      const dt = new DataTransfer(); dt.items.add(f);
+      const inp = document.querySelector('#fileInput'); inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+      document.querySelector('#task').value = 'transcribe'; document.querySelector('#language').value = 'en';
+      document.querySelector('#language').dispatchEvent(new Event('change'));
+      const own = document.querySelector('#ownVoice'); own.checked = true;
+      await window.__dubPage.transcribe();
+      if (!window.__dubPage.state().lines) return { err: 'transcribe: ' + document.querySelector('#status').textContent };
+      const enabled = !own.disabled && own.checked;
+      await window.__dubPage.dub();
+      const d = window.__dub;
+      if (!d || !d.outputs.audio) return { err: 'dub: ' + document.querySelector('#status').textContent };
+      const u = new Uint8Array(await d.outputs.audio.arrayBuffer());
+      // ID3 text frames are UTF-16: look at both byte alignments.
+      const head = u.subarray(0, 8192), tagged = [0, 1].some((o) => new TextDecoder('utf-16le').decode(head.subarray(o, o + ((head.length - o) & ~1))).includes('cloned synthetic voices'));
+      const ab = await AudioSaw.decodeToAudioBuffer(new File([d.outputs.audio], 'dub.mp3'), null, { quiet: true });
+      const mono = ab.numberOfChannels > 1 ? await AudioSaw.mixToMono(ab) : ab;
+      const a = Float32Array.from((await AudioSaw.resampleBuffer(mono, 16000)).getChannelData(0));
+      const ch = Array.from(a);
+      const w = new Worker('/js/transcribe-worker.js', { type: 'module' });
+      const heard = await new Promise((res) => { w.onmessage = (e) => { if (e.data.type === 'done') res(e.data.text); if (e.data.type === 'error') res('ERR ' + e.data.message); };
+        w.postMessage({ type: 'run', model: 'onnx-community/whisper-base', audio: a, language: 'en', task: 'transcribe' }, [a.buffer]); });
+      return { enabled, cloned: d.cloned, tagged, heard, ch, placed: d.placed, status: document.querySelector('#status').textContent };
+    })()`, 2400000);
+    ok(!r.err, 'own voice: transcribed and dubbed' + (r.err ? ' — ' + r.err : ''));
+    if (r.err) return;
+    ok(r.enabled && r.cloned, 'the own-voice box is available for an English dub on a GPU, and was used');
+    const x = Float32Array.from(r.ch), sr = 16000;
+    const hz = [].concat(...r.placed.map((p) => ASPitch.track(x.subarray(Math.floor(p.start * sr), Math.floor((p.start + p.seconds) * sr)), sr, { minHz: 60, maxHz: 400 })
+      .filter((q) => q.clarity > 0.8).map((q) => q.hz))).sort((a, b) => a - b);
+    const f0 = hz.length ? hz[hz.length >> 1] : 0;
+    ok(f0 > 150, 'the dub is in her register, not the default man\'s voice (median ' + f0.toFixed(0) + ' Hz; Michael is about 120)');
+    // Whisper writes "nine" as 9 and spells harbour either way.
+    const norm = (t) => t.toLowerCase().replace(/\b9\b/g, 'nine').replace(/[^a-z ]/g, ' ');
+    const keys = ['ferry', 'harbo', 'nine', 'warm', 'coat', 'wind', 'water', 'cold'];
+    const hit = keys.filter((k) => norm(r.heard).includes(k)).length;
+    ok(hit >= 6, 'and it is intelligible: "' + r.heard.trim() + '" (' + hit + '/' + keys.length + ' key words)');
+    ok(r.tagged, 'the MP3 is tagged as cloned synthetic voices');
+  });
+}
+
 // Two speakers, one voice each: a Daniel/Samantha conversation dubbed with
 // "a different voice for each speaker" — two speakers found, voices
 // alternating with them, and the man's lines lower than the woman's.
@@ -335,7 +411,9 @@ async function browserTwo() {
   });
 }
 
-browser().then(browserEs).then(browserTo).then(browserTwo).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
+// DUB_ONLY=own (or en, es, to, two) runs one page case.
+const only = (name, fn) => () => (!process.env.DUB_ONLY || process.env.DUB_ONLY === name ? fn() : null);
+Promise.resolve().then(only('en', browser)).then(only('es', browserEs)).then(only('to', browserTo)).then(only('own', browserOwn)).then(only('two', browserTwo)).catch((e) => ok(false, 'page test: ' + (e.stack || e))).then(() => {
   if (failed) { console.log(`\n${failed} check(s) failed`); process.exit(1); }
   console.log('\ncheck-dubbing: all good');
 });

@@ -435,6 +435,40 @@
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !goBtn.disabled) goBtn.click();
   });
 
+  // "Open a file": a TXT, PDF, Word or EPUB file read into the box by ASBook
+  // (book-parse.js; pdf.js is imported only for a PDF). Chapter titles stay
+  // as their own paragraphs. Past the limit the box gets the first 20,000
+  // characters, cut at a paragraph, and the note says where the rest can go.
+  var fileBtn = $('#ttsFileBtn'), fileIn = $('#ttsFile');
+  if (fileBtn && fileIn && window.ASBook) {
+    fileBtn.addEventListener('click', function () { fileIn.click(); });
+    fileIn.addEventListener('change', async function () {
+      var f = fileIn.files && fileIn.files[0];
+      fileIn.value = '';
+      if (!f) return;
+      try {
+        CV.setStatus(statusEl, 'info', 'Reading ' + f.name + '…');
+        var b = await ASBook.readFile(f, function (m) { CV.setStatus(statusEl, 'info', m); });
+        var text = b.chapters.map(function (c, i) {
+          return (b.chapters.length > 1 || !/^(Part 1|Opening)$/.test(c.title) ? c.title + '.\n\n' : '') + c.text;
+        }).join('\n\n').trim();
+        if (b.chapters.length === 1 && /^(Part 1|Opening)$/.test(b.chapters[0].title)) text = b.chapters[0].text.trim();
+        var cut = text.length > MAX_CHARS;
+        if (cut) {
+          var at = text.lastIndexOf('\n\n', MAX_CHARS);
+          text = text.slice(0, at > MAX_CHARS * 0.6 ? at : MAX_CHARS);
+        }
+        textEl.value = text;
+        countChars();
+        CV.setStatus(statusEl, cut ? 'warn' : 'success', cut
+          ? 'Loaded the first ' + text.length.toLocaleString() + ' characters of ' + f.name + '. For the whole thing as one file with chapters, use the text to audiobook page.'
+          : 'Loaded ' + f.name + '. Press Speak, or edit the text first.');
+      } catch (e) {
+        CV.setStatus(statusEl, 'error', 'Could not read that file. ' + (e.message || e), e);
+      }
+    });
+  }
+
   // ?text= prefill, for links from other pages.
   (function prefill() {
     var q = /[?&]text=([^&]+)/.exec(location.search);

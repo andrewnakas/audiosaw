@@ -293,6 +293,11 @@
 .ed-form output { margin-left: auto; font: 0.78rem/1 var(--mono); color: var(--muted); }
 .ed-form .ed-check { flex-wrap: nowrap; font-weight: 500; }
 .ed-form .ed-check input { width: 20px; height: 20px; accent-color: var(--amber); flex: none; }
+.ed-form textarea {
+  flex: 1 1 100%; min-height: 6em; resize: vertical; font: 500 0.95rem/1.4 var(--sans); padding: 9px 10px;
+  border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink);
+}
+.ed-form .ed-note { margin: 0; font: 0.8rem/1.4 var(--sans); color: var(--muted); }
 .ed-keys { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
 .ed-keys th { text-align: left; padding: 6px 10px 6px 0; white-space: nowrap; vertical-align: top; }
 .ed-keys td { padding: 6px 0; color: var(--ink-soft); }

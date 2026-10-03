@@ -90,6 +90,21 @@ const epubFiles = [
 ];
 
 (async () => {
+  console.log('docx');
+  {
+    const para = (t, style) => `<w:p>${style ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>` : ''}<w:r><w:t xml:space="preserve">${t}</w:t></w:r></w:p>`;
+    const split = `<w:p><w:r><w:t>Split </w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>across</w:t></w:r><w:r><w:tab/><w:t>runs &amp; tabs.</w:t></w:r></w:p>`;
+    const doc = `<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:w="x"><w:body>${para('The Keeper', 'Title')}${para('Chapter One', 'Heading1')}${para(long('Lamp'))}${split}${para('Chapter Two', 'Heading1')}${para(long('Storm'))}<w:sectPr/></w:body></w:document>`;
+    const core = '<cp:coreProperties xmlns:dc="d"><dc:title>The Keeper Doc</dc:title><dc:creator>A. Writer</dc:creator></cp:coreProperties>';
+    const b = await B.fromDocx(zip([{ name: '[Content_Types].xml', data: '<Types/>' }, { name: 'word/document.xml', data: doc }, { name: 'docProps/core.xml', data: core }]));
+    ok(b.chapters.map((c) => c.title).join('|') === 'The Keeper|Chapter One|Chapter Two' || b.chapters.map((c) => c.title).join('|') === 'Chapter One|Chapter Two', 'Word headings become chapters (' + b.chapters.map((c) => c.title).join(' | ') + ')');
+    ok(b.chapters.some((c) => /Split across runs & tabs\./.test(c.text)), 'runs are joined, tabs become spaces, entities decoded');
+    ok(b.author === 'A. Writer' && /The Keeper/.test(b.title || ''), 'title and author from the document properties');
+    let msg = '';
+    try { await B.fromDocx(Buffer.from('not a zip at all')); } catch (e) { msg = e.message; }
+    ok(/not a valid Word/.test(msg), 'a file that is not a .docx is refused with a reason');
+  }
+
   console.log('epub');
   {
     const b = await B.fromEpub(zip(epubFiles));
@@ -219,7 +234,9 @@ const epubFiles = [
       cups = execFileSync('cupsfilter', ['-m', 'application/pdf', tf], { stdio: ['ignore', 'pipe', 'ignore'] });
       if (!/^%PDF/.test(cups.slice(0, 5).toString())) cups = null;
     } catch (e) { cups = null; }
-    await require('./chrome-harness').withPage({ routes: { '/__book.pdf': () => pdf, '/__cups.pdf': () => cups || Buffer.alloc(0) } }, async (page) => {
+    const para = (t, style) => `<w:p>${style ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>` : ''}<w:r><w:t>${t}</w:t></w:r></w:p>`;
+    const docx = zip([{ name: 'word/document.xml', data: `<w:document xmlns:w="x"><w:body>${para('Opening Words', 'Heading1')}${para('The keeper climbed the stairs at dusk.')}</w:body></w:document>` }]);
+    await require('./chrome-harness').withPage({ routes: { '/__book.pdf': () => pdf, '/__cups.pdf': () => cups || Buffer.alloc(0), '/__w.docx': () => docx } }, async (page) => {
       await page.goto('/text-to-audiobook', 1500);
       const read = (url, name) => page.eval(`(async () => {
         const f = new File([await (await fetch('${url}')).blob()], '${name}', { type: 'application/pdf' });
@@ -248,6 +265,20 @@ const epubFiles = [
         ok(good, 'a PDF printed by macOS: ' + (c.err || titles + ', ' + words + ' words: every one of the 1,040 kept, nothing added'));
         if (!good && !c.err) console.log('       ' + JSON.stringify(c.chapters.map((x) => x.text.slice(0, 300))));
       } else console.log('  skip: no cupsfilter to print a second PDF');
+      // The text to speech page's "Open a file" reads the same files into its box.
+      await page.goto('/text-to-speech', 1500);
+      const tts = (url, name, type) => page.eval(`(async () => {
+        const f = new File([await (await fetch('${url}')).blob()], '${name}', { type: '${type}' });
+        const dt = new DataTransfer(); dt.items.add(f);
+        const box = document.querySelector('#status'); box.textContent = '';
+        const inp = document.querySelector('#ttsFile'); inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+        for (let i = 0; i < 300 && !/Loaded|Could not/.test(box.textContent); i++) await new Promise((r) => setTimeout(r, 100));
+        return { text: document.querySelector('#ttsText').value, status: box.textContent };
+      })()`, 120000);
+      const w = await tts('/__w.docx', 'note.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      ok(/Opening Words\.\s+The keeper climbed the stairs at dusk\./.test(w.text) && /Loaded note\.docx/.test(w.status), 'text to speech opens a Word file into the box: ' + JSON.stringify(w.text));
+      const pf = await tts('/__book.pdf', 'keeper.pdf', 'application/pdf');
+      ok(/The Lamp\./.test(pf.text) && /become unremarkable/.test(pf.text) && /Morning\./.test(pf.text) && !/THE KEEPER/.test(pf.text), 'and a PDF, chapters as headings, running head gone (' + pf.text.length + ' chars)');
       if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
     });
   }

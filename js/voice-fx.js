@@ -222,6 +222,18 @@
     return out.map(function (c) { return c.length === n ? c : c.subarray(0, n); });
   }
 
+  /*
+   * stretch(channels, sr, factor): the same voice, same pitch, `factor` times
+   * as long (0.77 = played 1.3x faster). For /video-dubbing, where a cloned
+   * line has to fit its slot and the cloning model has no speed input.
+   */
+  function stretch(channels, sr, factor) {
+    if (Math.abs(factor - 1) < 1e-3) return channels.map(function (c) { return c.slice(); });
+    var tr = f0Track(mono(channels), sr);
+    var mk = marks(mono(channels), sr, tr);
+    return psola(channels, mk, function () { return 1; }, factor);
+  }
+
   /* ------------------------------------------------------------- colour */
 
   function ringMod(channels, sr, hz, mix) {
@@ -344,7 +356,7 @@
   }
 
   return {
-    PRESETS: PRESETS, apply: apply, shift: shift, f0Track: f0Track, marks: marks, psola: psola,
+    PRESETS: PRESETS, apply: apply, shift: shift, stretch: stretch, f0Track: f0Track, marks: marks, psola: psola,
     ringMod: ringMod, band: band, drive: drive, lofi: lofi, reverb: reverb, peak: peak
   };
 }));

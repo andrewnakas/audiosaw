@@ -938,6 +938,12 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     real PDFs through the page (one written by the check with bookmarks,
     one printed by `cupsfilter`). A real ResNet paper gave Abstract, the
     four sections and References; that one is not in the check.
+  - **Word (.docx)**: `ASBook.fromDocx` reads word/document.xml (runs,
+    tabs, breaks; `Heading1-3`/`Title` styles, whose ids are English in
+    every language, become "#" chapters). `ASBook.readFile(file)` is the one
+    browser entry point for every format, used by the audiobook page and by
+    /text-to-speech's "Open a file" (first 20,000 characters, cut at a
+    paragraph, with a pointer to the audiobook maker past that).
 - **/dictation** (`js/dictation-vad.js` = `ASVad`): phrases split on an
   adaptive floor (+10 dB, 700 ms hang, 300 ms pre-roll, 25 s cap) and sent
   to the unmodified `transcribe-worker.js`. **The AudioContext is made inside
@@ -947,6 +953,16 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   transcribe) → lines → Kokoro, a line that overruns its slot re-read up to
   1.3× with Kokoro's own speed input, original ducked 18 dB under lines,
   picture stream-copied by ffmpeg.
+- **"Add speech…" in the editor** (`js/editor-speech.js`, Project and track
+  menus): tts-worker.js → a tagged 16-bit WAV → the editor's own
+  `importFiles`, so autosave/undo are the import path's. It goes on the
+  selected track only if that track is empty for the speech's length at the
+  playhead, else on a new track: importFiles' "at" placement carves.
+  `tools/check-editor-speech.js` (Kokoro q8 from the cache) checks both
+  placements, the export, the stored tag and undo. **Do not
+  `deleteDatabase('audiosaw-editor')` from a check while the editor is
+  open**: the delete waits for the editor's connection and every later
+  `open()` queues behind it, which hung the first version of that check.
 - **Voice changer video in, video out:** "keep the picture" (on) muxes the
   changed voice beside the copied picture stream (`remux` in
   voice-changer.js, `runFFmpeg` with an extra WAV). MOV/MKV keep their
@@ -1049,6 +1065,17 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     which is what the page gets: /video-dubbing is not isolated. Also
     check-dubbing's into-Spanish case (DUBBING_BROWSER=1): an English
     `say` video, dubbed into Spanish and heard back by Whisper in Spanish.
+- **Dubbing in the speaker's own voice** ("use each speaker's own voice",
+  English output on WebGPU only; the box is the consent): `cloneAll` in
+  dubbing-page.js cuts ~5 s of each speaker's own longest lines from the
+  original as the reference, encodes it once per speaker, and runs every
+  line of theirs through clone-worker.js. Chatterbox has no speed input,
+  so an overlong line is fitted with `ASVoice.stretch` (PSOLA at the same
+  pitch; check-voice: 1.300x, 2.3 cents). A speaker with under 3 s falls
+  back to a Kokoro voice. The dub MP3 is tagged (cloned or synthetic).
+  check-dubbing `DUB_ONLY=own` (DUBBING_BROWSER=1, Chatterbox cached): a
+  woman's clip dubs at a median 171 Hz (default voice ~120), 6-8 of 8 key
+  words back from Whisper. ID3 comments are UTF-16: search both alignments.
 - **Per-speaker dubbing:** "a different voice for each speaker" runs the same
   diarization; `ASDub.merge` never joins lines across a change of speaker,
   and voices default to alternating man/woman. check-dubbing's two-person case

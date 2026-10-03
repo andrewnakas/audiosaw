@@ -16,7 +16,7 @@
 
   var CV = global.CV, M = global.ASEditModel, E = global.ASEditEngine;
   var V = global.ASEditView, FX = global.ASEditFx, ST = global.ASEditStore;
-  var D = global.ASEditDsp, FXUI = global.ASEditFxUI, LINK = global.ASEditLink, L = global.ASLink, MIDI = global.ASEditMidi;
+  var D = global.ASEditDsp, FXUI = global.ASEditFxUI, LINK = global.ASEditLink, L = global.ASLink, MIDI = global.ASEditMidi, SPEECH = global.ASEditSpeech;
   if (!CV || !M || !E || !V || !FX || !ST || !D || !FXUI || !LINK || !L) {
     console.error('[audio-editor] a script is missing or loaded out of order; the editor cannot start.');
     return;
@@ -1266,6 +1266,7 @@
         { v: 'selall', label: 'Select all clips on this track' },
         { v: 'inst', label: 'Instrument for MIDI…', hint: MIDI.instLabel(t.inst || 'keys') },
         { v: 'midi', label: 'New MIDI clip here', hint: 'at the playhead' },
+        { v: 'speech', label: 'Add speech here…', hint: 'AI voice' },
         '-',
         { v: 'remove', label: 'Delete track', danger: true }
       ]);
@@ -1279,6 +1280,7 @@
       if (v === 'lane') { closeSheet(); laneSheet(id); return; }
       if (v === 'inst') { closeSheet(); MIDI.instrumentSheet(id); return; }
       if (v === 'midi') { closeSheet(); S.selTrack = id; MIDI.newClip(); return; }
+      if (v === 'speech') { closeSheet(); S.selTrack = id; SPEECH.open(); return; }
       if (v === 'mute') edit(function (p) { M.setTrack(p, id, { mute: !t.mute }); }, { noRestart: true });
       if (v === 'solo') edit(function (p) { M.setTrack(p, id, { solo: !t.solo }); }, { noRestart: true });
       if (v === 'up') edit(function (p) { M.moveTrack(p, id, -1); });
@@ -2636,6 +2638,7 @@
       { v: 'add', label: 'Add audio…' },
       { v: 'track', label: 'Add an empty track' },
       { v: 'midi', label: 'New MIDI clip', hint: 'at the playhead' },
+      { v: 'speech', label: 'Add speech…', hint: 'AI voice, at the playhead' },
       { v: 'save', label: 'Save project file (.audiosaw)', hint: '⌘S', disabled: !hasClips() },
       { v: 'open', label: 'Open project file…' },
       '-',
@@ -2652,6 +2655,7 @@
       if (v === 'add') el.fileInput.click();
       if (v === 'track') edit(function (p) { S.selTrack = M.addTrack(p); });
       if (v === 'midi') MIDI.newClip();
+      if (v === 'speech') SPEECH.open();
       if (v === 'save') saveProjectFile();
       if (v === 'open') $('#edProjectInput').click();
       if (v === 'full') toggleFull();
@@ -2991,6 +2995,11 @@
     S: S, buffers: buffers, edit: edit, status: status, toast: toast, openSheet: openSheet, closeSheet: closeSheet, menuHtml: menuHtml,
     isBusy: function () { return busy; }, setBusy: function (b) { busy = b; },
     select: function (cid) { if (cid) { S.sel = {}; S.sel[cid] = true; S.range = null; refresh(); } }
+  });
+
+  SPEECH.init({
+    S: S, esc: esc, menuHtml: menuHtml, openSheet: openSheet, closeSheet: closeSheet, isTouchUI: isTouchUI,
+    isBusy: function () { return busy; }, status: status, toast: toast, importFiles: importFiles
   });
 
   LINK.init({

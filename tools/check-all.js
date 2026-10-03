@@ -61,7 +61,8 @@ const CHECKS = [
   ['check-translate.js'],
   ['check-dubbing.js'],
   ['check-clone.js'],
-  ['check-diarize.js']
+  ['check-diarize.js'],
+  ['check-editor-speech.js']
 ];
 
 let failed = 0;

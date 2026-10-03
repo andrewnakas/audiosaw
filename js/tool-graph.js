@@ -794,7 +794,7 @@
     },
     'text-to-speech': {
       cat: 'voice', label: 'text → speech', title: 'Text to speech',
-      blurb: 'A free AI voice generator in your browser: 41 natural voices in 7 languages including Hindi and Spanish, MP3 download, no sign-up.',
+      blurb: 'A free AI voice generator in your browser: type or open a PDF or Word file, 41 natural voices in 7 languages, MP3 download, no sign-up.',
       next: [
         ['audio-editor', 'Line the voice-over up against music and video'],
         ['loudness-normalizer', 'Bring the narration to podcast or YouTube loudness'],
