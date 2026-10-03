@@ -207,6 +207,7 @@
 
   CV.shell({
     accept: null,
+    video: true,   // same length out as in: a video comes back as a video
     zipName: 'audiosaw-denoised.zip',
     failMessage: 'Could not clean that file. ',
     readOpts: function () {

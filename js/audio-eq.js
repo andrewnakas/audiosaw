@@ -83,6 +83,7 @@
 
   CV.shell({
     accept: null,
+    video: true,   // same length out as in: a video comes back as a video
     zipName: 'audiosaw-eq.zip',
     failMessage: 'Could not apply EQ. ',
     readOpts: function () {

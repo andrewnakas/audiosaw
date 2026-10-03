@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vocal Remover — make a karaoke track in your browser (free, no upload)</title>
+<title>Vocal Remover — Karaoke Track from a Song or Video, Free, No Upload</title>
 <meta name="description" content="Remove or isolate vocals free in your browser. Centre-channel cancellation with a bass-preserving crossover, so the backing keeps its low end. No upload.">
 <meta name="keywords" content="vocal remover, remove vocals from song, karaoke maker, instrumental maker, acapella extractor, vocal isolator free, remove vocals online no upload">
 <meta name="robots" content="index,follow">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this actually remove vocals, or just make them quieter?","acceptedAnswer":{"@type":"Answer","text":"On a well-mixed stereo track it removes them almost entirely. On tracks with heavy reverb or double-tracked vocals it reduces them substantially but leaves a residue, because the parts of the vocal that are not dead centre cannot be cancelled."}},{"@type":"Question","name":"Why does it say my file is mono?","acceptedAnswer":{"@type":"Answer","text":"Centre cancellation works by subtracting the right channel from the left. In a mono file both channels are identical, so subtracting them gives silence — there is no stereo information to separate. You need a genuine stereo mix."}},{"@type":"Question","name":"Is this the same as AI stem separation?","acceptedAnswer":{"@type":"Answer","text":"No. Tools like Demucs and Spleeter use trained models to identify and separate instruments, and get better results on difficult material. They also need a large model download and much more processing. This is centre cancellation: instant, private, and effective on most conventional mixes."}},{"@type":"Question","name":"Why does the instrumental sound thin?","acceptedAnswer":{"@type":"Answer","text":"Because kick and bass are usually centred too, so a plain cancellation removes them. Raise the 'keep bass below' crossover to 300 Hz and the low end comes back. That setting exists specifically to fix this."}},{"@type":"Question","name":"Can I get a clean acapella out of it?","acceptedAnswer":{"@type":"Answer","text":"Partly. Isolating the centre keeps the vocal but also keeps anything else centred, typically kick and snare. It is good enough for learning a part or checking lyrics, not usually clean enough to build a new production around."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I remove the vocals from a video?","acceptedAnswer":{"@type":"Answer","text":"Yes, if its sound is stereo. Drop the video and, with \"keep the picture\" ticked, it comes back as a video with the vocals taken out and the picture copied untouched, in sync. For a cleaner result on a full mix, the AI stem splitter separates the voice with a neural model."}},{"@type":"Question","name":"Does this actually remove vocals, or just make them quieter?","acceptedAnswer":{"@type":"Answer","text":"On a well-mixed stereo track it removes them almost entirely. On tracks with heavy reverb or double-tracked vocals it reduces them substantially but leaves a residue, because the parts of the vocal that are not dead centre cannot be cancelled."}},{"@type":"Question","name":"Why does it say my file is mono?","acceptedAnswer":{"@type":"Answer","text":"Centre cancellation works by subtracting the right channel from the left. In a mono file both channels are identical, so subtracting them gives silence — there is no stereo information to separate. You need a genuine stereo mix."}},{"@type":"Question","name":"Is this the same as AI stem separation?","acceptedAnswer":{"@type":"Answer","text":"No. Tools like Demucs and Spleeter use trained models to identify and separate instruments, and get better results on difficult material. They also need a large model download and much more processing. This is centre cancellation: instant, private, and effective on most conventional mixes."}},{"@type":"Question","name":"Why does the instrumental sound thin?","acceptedAnswer":{"@type":"Answer","text":"Because kick and bass are usually centred too, so a plain cancellation removes them. Raise the 'keep bass below' crossover to 300 Hz and the low end comes back. That setting exists specifically to fix this."}},{"@type":"Question","name":"Can I get a clean acapella out of it?","acceptedAnswer":{"@type":"Answer","text":"Partly. Isolating the centre keeps the vocal but also keeps anything else centred, typically kick and snare. It is good enough for learning a part or checking lyrics, not usually clean enough to build a new production around."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to remove vocals from a song in your browser", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop a stereo song", "text": "Drag an MP3, WAV, M4A or FLAC onto the drop area. It must be a stereo mix — mono files have no channel difference to work with."}, {"@type": "HowToStep", "position": 2, "name": "Choose instrumental or acapella", "text": "Instrumental cancels the centre to remove the vocal. Acapella keeps the centre to isolate it."}, {"@type": "HowToStep", "position": 3, "name": "Set the bass crossover", "text": "Leave it at 200 Hz for most music. Raise it if the backing track sounds thin."}, {"@type": "HowToStep", "position": 4, "name": "Process and download", "text": "The result is produced in the page and downloads automatically. Nothing is uploaded."}]}
@@ -102,9 +102,9 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
-      <p class="big">drop a stereo song</p>
-      <p>MP3, WAV, M4A, FLAC — must be stereo, not mono.</p>
-      <input type="file" id="fileInput" accept="audio/*" multiple>
+      <p class="big">drop a stereo song or video</p>
+      <p>MP3, WAV, M4A, FLAC, or a video with stereo sound — must be stereo, not mono.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v" multiple>
     </div>
 
     <div class="file-list" id="fileList"></div>
@@ -154,6 +154,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the new sound</label>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Process</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -211,6 +212,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
+      <details><summary>Can I remove the vocals from a video?</summary><p>Yes, if its sound is stereo. Drop the video and, with "keep the picture" ticked, it comes back as a video with the vocals taken out and the picture copied untouched, in sync. For a cleaner result on a full mix, the AI stem splitter separates the voice with a neural model.</p></details>
       <details><summary>Does this actually remove vocals, or just make them quieter?</summary><p>On a well-mixed stereo track it removes them almost entirely. On tracks with heavy reverb or double-tracked vocals it reduces them substantially but leaves a residue, because the parts of the vocal that are not dead centre cannot be cancelled.</p></details>
       <details><summary>Why does it say my file is mono?</summary><p>Centre cancellation works by subtracting the right channel from the left. In a mono file both channels are identical, so subtracting them gives silence — there is no stereo information to separate. You need a genuine stereo mix.</p></details>
       <details><summary>Is this the same as AI stem separation?</summary><p>No. Tools like Demucs and Spleeter use trained models to identify and separate instruments, and get better results on difficult material. They also need a large model download and much more processing. This is centre cancellation: instant, private, and effective on most conventional mixes.</p></details>
@@ -354,15 +356,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03b"></script>
-<script src="/js/tool-graph.js?v=2026-10-03b"></script>
-<script src="/js/flow.js?v=2026-10-03b"></script>
-<script src="/js/project-link.js?v=2026-10-03b"></script>
-<script src="/js/audio-core.js?v=2026-10-03b"></script>
-<script src="/js/loudness.js?v=2026-10-03b"></script>
-<script src="/js/tool-shell.js?v=2026-10-03b"></script>
-<script src="/js/consent.js?v=2026-10-03b"></script>
-<script src="/js/vocal-remover.js?v=2026-10-03b"></script>
-<script src="/js/pwa.js?v=2026-10-03b"></script>
+<script src="/js/common.js?v=2026-10-03c"></script>
+<script src="/js/tool-graph.js?v=2026-10-03c"></script>
+<script src="/js/flow.js?v=2026-10-03c"></script>
+<script src="/js/project-link.js?v=2026-10-03c"></script>
+<script src="/js/audio-core.js?v=2026-10-03c"></script>
+<script src="/js/loudness.js?v=2026-10-03c"></script>
+<script src="/js/tool-shell.js?v=2026-10-03c"></script>
+<script src="/js/consent.js?v=2026-10-03c"></script>
+<script src="/js/vocal-remover.js?v=2026-10-03c"></script>
+<script src="/js/pwa.js?v=2026-10-03c"></script>
 </body>
 </html>

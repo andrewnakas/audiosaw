@@ -5,11 +5,9 @@
  * of the first file and plays it, so trying presets does not mean
  * downloading each one.
  *
- * A video comes back as a video ("keep the picture", on by default): the
- * changed voice is muxed beside the original picture stream, copied by
- * ffmpeg without re-encoding. The audio is the same length to the sample,
- * so it stays in sync. MOV and MKV keep their container; WebM becomes MP4,
- * because WebM needs Opus and libopus in this ffmpeg core does not work.
+ * A video comes back as a video ("keep the picture", on by default), through
+ * CV.shell's video option (tool-shell.js): the changed voice is the same
+ * length to the sample, so it stays in sync with the copied picture.
  */
 (function () {
   'use strict';
@@ -73,34 +71,14 @@
     return res;
   }
 
-  var VIDEO = /\.(mp4|m4v|mov|mkv|webm)$/i;
-  function isVideo(file) { return VIDEO.test(file.name) || /^video\//.test(file.type || ''); }
-
-  async function remux(file, rendered, onProgress) {
-    var ext = ((/\.([^.]+)$/.exec(file.name) || [])[1] || 'mp4').toLowerCase();
-    var outExt = ext === 'mov' || ext === 'mkv' ? ext : 'mp4';
-    var wav = new Uint8Array(await AudioSaw.floatWav(rendered).arrayBuffer());
-    var blob = await AudioSaw.runFFmpeg(file, ext,
-      ['-i', 'voice.wav', '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k'].concat(outExt === 'mp4' ? ['-movflags', '+faststart'] : []),
-      outExt, outExt === 'mov' ? 'video/quicktime' : outExt === 'mkv' ? 'video/x-matroska' : 'video/mp4',
-      function (p, msg) { onProgress(70 + p * 0.3, msg); }, 'Putting the new voice on the video…',
-      { files: [{ name: 'voice.wav', data: wav }] });
-    return { name: file.name.replace(/\.[^.]+$/, '') + '-' + 'voice.' + outExt, blob: blob };
-  }
-
   function process(file, opts, onProgress) {
     onProgress(5, 'Decoding…');
     return AudioSaw.decodeToAudioBuffer(file).then(function (buf) {
       return render(buf, opts.fx, onProgress);
     }).then(function (rendered) {
-      if (opts.keepVideo && isVideo(file)) return remux(file, rendered, onProgress).then(function (r) {
-        r.name = r.name.replace(/-voice\./, '-' + (opts.presetId || 'voice') + '.');
-        return r;
-      });
       onProgress(70, 'Encoding…');
       return CV.encodeBuffer(rendered, opts.fmt, opts.bitrate, function (pct) { onProgress(70 + pct * 0.3); });
     }).then(function (blob) {
-      if (blob && blob.blob) return blob;
       return {
         name: AudioSaw.rename(file.name, opts.fmt).replace(/\.([^.]+)$/, '-' + (opts.presetId || 'voice') + '.$1'),
         blob: blob
@@ -110,6 +88,7 @@
 
   var shell = CV.shell({
     accept: null,
+    video: true,   // same length out as in: a video comes back as a video
     zipName: 'audiosaw-voice-changer.zip',
     failMessage: 'Could not change that voice. ',
     readOpts: function () {
@@ -117,8 +96,7 @@
         fx: settings(),
         presetId: presetSel ? presetSel.value : 'custom',
         fmt: ($('#outFmt').value || 'mp3').toLowerCase(),
-        bitrate: $('#bitrate').value,
-        keepVideo: !$('#keepVideo') || $('#keepVideo').checked
+        bitrate: $('#bitrate').value
       };
     },
     process: process

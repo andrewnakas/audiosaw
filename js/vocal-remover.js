@@ -90,6 +90,7 @@
 
   CV.shell({
     accept: null,
+    video: true,   // same length out as in: a video comes back as a video
     zipName: 'audiosaw-vocal-remover.zip',
     failMessage: 'Could not process that file. ',
     readOpts: function () {

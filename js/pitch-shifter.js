@@ -135,6 +135,7 @@
 
   shellApi = CV.shell({
     accept: null,
+    video: true,   // same length out as in: a video comes back as a video
     zipName: 'audiosaw-pitch.zip',
     failMessage: 'Could not shift the pitch. ',
     readOpts: function () {

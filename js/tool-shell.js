@@ -20,6 +20,13 @@
  *       // return a Blob, {name, blob}, or an array of {name, blob}
  *     }
  *   });
+ *
+ * cfg.video: the tool keeps the length of its input, so a video can come
+ * back as a video. For a video file (with #keepVideo ticked, or absent) the
+ * tool's own process() runs with its output forced to 32-bit float WAV, and
+ * that is muxed beside the original picture stream, copied without
+ * re-encoding (CV.remuxVideo). Float WAV because MP3 and AAC add encoder
+ * delay, which would move the sound against the picture.
  */
 (function (global) {
   'use strict';
@@ -39,6 +46,28 @@
       btn.removeAttribute('aria-busy');
     }
   }
+
+  var VIDEO_EXT = /\.(mp4|m4v|mov|mkv|webm)$/i;
+  function isVideoFile(f) { return !!f && (VIDEO_EXT.test(f.name || '') || /^video\//.test(f.type || '')); }
+
+  // The new sound beside the original picture: the video stream is copied
+  // untouched and the audio becomes AAC 192 kbps. MOV and MKV keep their
+  // container; everything else becomes MP4 (WebM would need Opus, and
+  // libopus in this ffmpeg core does not work).
+  async function remuxVideo(file, audio, onProgress) {
+    var ext = ((/\.([^.]+)$/.exec(file.name) || [])[1] || 'mp4').toLowerCase();
+    var outExt = ext === 'mov' || ext === 'mkv' ? ext : 'mp4';
+    var wav = audio instanceof Blob ? audio : global.AudioSaw.floatWav(audio);
+    var blob = await global.AudioSaw.runFFmpeg(file, ext,
+      ['-i', 'newaudio.wav', '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k'].concat(outExt === 'mp4' ? ['-movflags', '+faststart'] : []),
+      outExt, outExt === 'mov' ? 'video/quicktime' : outExt === 'mkv' ? 'video/x-matroska' : 'video/mp4',
+      onProgress, 'Putting the new sound on the video…',
+      { files: [{ name: 'newaudio.wav', data: new Uint8Array(await wav.arrayBuffer()) }] });
+    if (CV.signal) CV.signal.output(outExt.toUpperCase() + ' video — the picture copied untouched, the new sound as AAC 192 kbps');
+    return { blob: blob, ext: outExt };
+  }
+  CV.isVideoFile = isVideoFile;
+  CV.remuxVideo = remuxVideo;
 
   function shell(cfg) {
     var $ = CV.$;
@@ -108,12 +137,22 @@
         var prefix = files.length > 1 ? '[' + idx + '/' + files.length + '] ' : '';
         try {
           /* eslint-disable no-loop-func */
-          var got = await cfg.process(f, opts, (function (i) {
+          var report = (function (i) {
             return function (pct, msg) {
               CV.setProgress(progressBar, ((i + (pct / 100)) / files.length) * 100);
               if (msg) CV.setStatus(statusEl, 'info', prefix + msg);
             };
-          })(i));
+          })(i);
+          var keep = $('#keepVideo');
+          var asVideo = cfg.video && isVideoFile(f) && (!keep || keep.checked);
+          var got = await cfg.process(f, asVideo ? Object.assign({}, opts, { fmt: 'wav32f', video: true }) : opts,
+            asVideo ? function (pct, msg) { report(pct * 0.7, msg); } : report);
+          if (asVideo) {
+            var one = Array.isArray(got) ? got[0] : got, audioBlob = one && one.blob ? one.blob : one;
+            var mux = await remuxVideo(f, audioBlob, function (pct, msg) { report(70 + pct * 0.3, msg); });
+            var stem = one && one.name ? one.name.replace(/\.[^.]+$/, '') : f.name.replace(/\.[^.]+$/, '');
+            got = { name: stem + '.' + mux.ext, blob: mux.blob };
+          }
           /* eslint-enable no-loop-func */
           (Array.isArray(got) ? got : [got]).forEach(function (o) {
             if (!o) return;

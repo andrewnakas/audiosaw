@@ -498,7 +498,7 @@
     // ---- Clean up & separate ----------------------------------------------
     'vocal-remover': {
       cat: 'repair', label: 'vocal remover', title: 'Vocal remover / karaoke',
-      blurb: 'Remove the vocal from a stereo song, or isolate it, by cancelling the centre.',
+      blurb: 'Remove the vocal from a stereo song, or isolate it, by cancelling the centre. Works on video too.',
       project: 'same',
       next: [
         ['stem-splitter', 'The AI version — works on mono and off-centre vocals'],
@@ -546,7 +546,7 @@
     },
     'noise-reduction': {
       cat: 'repair', label: 'remove noise', title: 'Remove background noise',
-      blurb: 'Strip hiss, hum and fan noise out of a recording with spectral gating.',
+      blurb: 'Strip hiss, hum and fan noise out of a recording with spectral gating. Works on video too.',
       project: 'same',
       next: [
         ['normalize-audio', 'Denoising lowers the level — put it back'],

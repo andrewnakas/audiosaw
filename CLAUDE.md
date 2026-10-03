@@ -972,12 +972,16 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   getUserMedia: Deeper records at 158.7 Hz (0.0 cents), no-effect at 200.
   Other apps cannot use a tab as a mic; the page names virtual cables
   (VB-CABLE, BlackHole) as untested-by-us, and Voicemod.
-- **Voice changer video in, video out:** "keep the picture" (on) muxes the
-  changed voice beside the copied picture stream (`remux` in
-  voice-changer.js, `runFFmpeg` with an extra WAV). MOV/MKV keep their
-  container, WebM becomes MP4 (no working libopus). check-voice's video
-  case: frames 125/125, length to 0.01 s, Deeper measured -394 cents of
-  -400.
+- **Video in, video out** on same-length tools: `CV.shell({ video: true })`
+  (tool-shell.js) runs the tool's own process() with `fmt: 'wav32f'` for a
+  video (when #keepVideo is ticked) and `CV.remuxVideo` puts that beside
+  the copied picture (MOV/MKV keep their container, else MP4: no working
+  libopus). Float WAV because MP3/AAC encoder delay would move the sound
+  against the picture. On: voice changer, noise reduction, EQ, vocal
+  remover, pitch shifter. NOT nightcore/slowed-reverb/speed/silence tools:
+  they change the length. `tools/check-video-tools.js`: all five keep every
+  frame and the length; noise reduction and EQ measure 0.0 ms of offset.
+  check-voice's own video case: Deeper -394 cents of -400.
 - **Isolation:** /text-to-speech and /dictation are cross-origin isolated
   (threads). /text-to-audiobook and /video-dubbing are **not**, because they
   need ffmpeg and `/vendor/ffmpeg/*` has no COEP header; their CPU path is

@@ -131,10 +131,12 @@ lines.push('fixed-length chunks, or at the silent gaps between sections, and ret
 lines.push('pieces as a zip. Useful for splitting a lecture, a DJ set or a long interview');
 lines.push('into tracks without opening an editor.');
 lines.push('');
-lines.push('**How do I remove background noise from a recording?**');
+lines.push('**How do I remove background noise from a recording or a video?**');
 lines.push(`${ORIGIN}/noise-reduction uses spectral gating to strip steady noise —`);
 lines.push('fan hum, air conditioning, tape hiss, preamp hiss. It works on constant noise,');
-lines.push('not on one-off sounds like a door slam, and it runs in the browser.');
+lines.push('not on one-off sounds like a door slam, and it runs in the browser. A video');
+lines.push('(MP4, MOV, WebM) comes back as a video: the picture copied untouched, the cleaned');
+lines.push('sound in sync. The EQ, vocal remover, pitch shifter and voice changer do the same.');
 lines.push('');
 lines.push('**Can I edit MP3 tags and cover art without re-encoding?**');
 lines.push(`Yes. ${ORIGIN}/mp3-tag-editor reads existing ID3 tags, writes ID3v2.3,`);
