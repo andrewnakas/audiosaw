@@ -50,7 +50,7 @@ async function main() {
   await withPage({ routes: { '/__in.mp4': () => fs.readFileSync(vid), '/__core.wasm': () => fs.readFileSync(core) } }, async (page) => {
     page.listen('Fetch.requestPaused', (p) => page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__core.wasm') }));
     await page.send('Fetch.enable', { patterns: [{ urlPattern: '*ffmpeg-core.wasm*' }] });
-    for (const [slug, shape] of [['noise-reduction', true], ['audio-eq', true], ['vocal-remover', false], ['pitch-shifter', false], ['voice-changer', false], ['amplify-audio', true]]) {
+    for (const [slug, shape] of [['noise-reduction', true], ['audio-eq', true], ['vocal-remover', false], ['pitch-shifter', false], ['voice-changer', false], ['amplify-audio', true], ['loudness-normalizer', true]]) {
       await page.goto('/' + slug, 1500);
       const r = await page.eval(`(async () => {
         const f = new File([await (await fetch('/__in.mp4')).blob()], 'clip.mp4', { type: 'video/mp4' });
@@ -65,7 +65,7 @@ async function main() {
         if (!got) return { err: document.querySelector('#status').textContent };
         const u = new Uint8Array(await got.b.arrayBuffer());
         let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192));
-        return { n: got.n, b64: btoa(bin), saved: (document.querySelector('.signal-out, [data-sig=out]') || {}).textContent || '' };
+        return { n: got.n, b64: btoa(bin), loudAfter: (document.querySelector('#loudAfter') || {}).textContent || '' };
       })()`, 900000);
       if (r.err) { ok(false, slug + ': ' + r.err); continue; }
       const out = path.join(dir, slug + '.mp4');
@@ -82,6 +82,19 @@ async function main() {
       ].filter(Boolean);
       let sync = '';
       if (shape) { const L = lag(xin, xo, Math.round(0.05 * SR)); sync = ', sound offset ' + (L / SR * 1000).toFixed(1) + ' ms'; if (Math.abs(L) > 0.002 * SR) parts.push('out of sync by ' + (L / SR * 1000).toFixed(1) + ' ms'); }
+      if (slug === 'loudness-normalizer') {
+        // The promise is about the file: the loudness the page reports and
+        // a true peak under the -1 dBTP ceiling, in the AAC that was written,
+        // by ffmpeg's ebur128 (the reference). This clip's peaks stop it short
+        // of -14 LUFS, which the page reports rather than clipping.
+        const log = require('child_process').spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', out, '-vn', '-af', 'ebur128=peak=true', '-f', 'null', '-'], { encoding: 'utf8' }).stderr;
+        const I = parseFloat((/I:\s+(-?[\d.]+) LUFS\s*\n\s*Threshold[\s\S]*?Summary/.exec(log) || /Summary:[\s\S]*?I:\s+(-?[\d.]+) LUFS/.exec(log) || [])[1]);
+        const TP = parseFloat((/True peak:\s*\n\s*Peak:\s+(-?[\d.]+) dBFS/.exec(log) || [])[1]);
+        const said = parseFloat(r.loudAfter);
+        sync += ', ' + I.toFixed(1) + ' LUFS (page says ' + r.loudAfter + '), ' + TP.toFixed(2) + ' dBTP';
+        if (!(Math.abs(I - said) < 0.5)) parts.push('loudness ' + I + ' vs the page ' + r.loudAfter);
+        if (!(TP <= -1 + 0.05)) parts.push('true peak ' + TP + ' over -1 dBTP');
+      }
       ok(!parts.length, slug + ': video in, video out (' + (vo ? vo.nb_read_packets : 0) + '/' + vi.nb_read_packets + ' frames copied, ' + parseFloat(po.format.duration).toFixed(2) + ' s' + sync + ')' + (parts.length ? ' — ' + parts.join('; ') : ''));
     }
     if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));

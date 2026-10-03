@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03d">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03e">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -58,7 +58,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What LUFS should I use for Spotify?","acceptedAnswer":{"@type":"Answer","text":"-14 LUFS integrated, with a true peak no higher than -1 dBTP. YouTube, Amazon Music and Tidal use the same figure. Apple Music and Apple Podcasts use -16."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Measurement and gain both run in your browser tab. You can disconnect from the internet after the page loads and it still works."}},{"@type":"Question","name":"How is this different from the normalize tool?","acceptedAnswer":{"@type":"Answer","text":"That one sets the loudest sample to a ceiling, which says nothing about perceived loudness — two files peak-normalized identically can differ by 10 LU. This measures loudness the way streaming platforms do and matches that."}},{"@type":"Question","name":"Should I master louder than -14 to stand out?","acceptedAnswer":{"@type":"Answer","text":"No. The platform turns anything louder back down to its own target, so all you lose is dynamic range. That is why the loudness war ended when normalization became standard."}},{"@type":"Question","name":"Why did it stop short of my target?","acceptedAnswer":{"@type":"Answer","text":"Because reaching it would have pushed the true peak past your ceiling. This tool only applies gain — it will not compress your file to hit a number. Run it through the compressor first, then normalize."}},{"@type":"Question","name":"What is a true peak, and why -1 dBTP?","acceptedAnswer":{"@type":"Answer","text":"The reconstructed waveform between samples can be louder than any stored sample, and an encoder will clip on that. Measuring with oversampling catches it, and the 1 dB of headroom is there to survive the platform re-encoding your file."}},{"@type":"Question","name":"Does it change the dynamics of my mix?","acceptedAnswer":{"@type":"Answer","text":"Not at all. One gain figure is applied across the whole file. Nothing is compressed, limited or equalised."}},{"@type":"Question","name":"Can I normalize a whole podcast at once?","acceptedAnswer":{"@type":"Answer","text":"You can, but it is usually the wrong move. A single gain on a finished episode shifts everything together and does not fix a quiet guest. Normalize each source to the same target, then join them."}},{"@type":"Question","name":"Which target for an audiobook?","acceptedAnswer":{"@type":"Answer","text":"ACX asks for RMS between -23 and -18 dB with peaks under -3 dB, which is a different measurement, but -19 LUFS with a -3 dBTP ceiling lands comfortably inside it."}},{"@type":"Question","name":"Is the measurement accurate?","acceptedAnswer":{"@type":"Answer","text":"It is validated against ffmpeg ebur128, the reference implementation, to within 0.05 LU across tones, noise, drums, speech and mono files. The check is in the repository."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I normalize the loudness of a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM and, with \"keep the picture\" ticked, its sound is measured and brought to your target, then the video comes back with the picture copied untouched and the sound in sync. The true-peak ceiling is checked on the AAC that goes into the video, so it holds in the file you get."}},{"@type":"Question","name":"What LUFS should I use for Spotify?","acceptedAnswer":{"@type":"Answer","text":"-14 LUFS integrated, with a true peak no higher than -1 dBTP. YouTube, Amazon Music and Tidal use the same figure. Apple Music and Apple Podcasts use -16."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Measurement and gain both run in your browser tab. You can disconnect from the internet after the page loads and it still works."}},{"@type":"Question","name":"How is this different from the normalize tool?","acceptedAnswer":{"@type":"Answer","text":"That one sets the loudest sample to a ceiling, which says nothing about perceived loudness — two files peak-normalized identically can differ by 10 LU. This measures loudness the way streaming platforms do and matches that."}},{"@type":"Question","name":"Should I master louder than -14 to stand out?","acceptedAnswer":{"@type":"Answer","text":"No. The platform turns anything louder back down to its own target, so all you lose is dynamic range. That is why the loudness war ended when normalization became standard."}},{"@type":"Question","name":"Why did it stop short of my target?","acceptedAnswer":{"@type":"Answer","text":"Because reaching it would have pushed the true peak past your ceiling. This tool only applies gain — it will not compress your file to hit a number. Run it through the compressor first, then normalize."}},{"@type":"Question","name":"What is a true peak, and why -1 dBTP?","acceptedAnswer":{"@type":"Answer","text":"The reconstructed waveform between samples can be louder than any stored sample, and an encoder will clip on that. Measuring with oversampling catches it, and the 1 dB of headroom is there to survive the platform re-encoding your file."}},{"@type":"Question","name":"Does it change the dynamics of my mix?","acceptedAnswer":{"@type":"Answer","text":"Not at all. One gain figure is applied across the whole file. Nothing is compressed, limited or equalised."}},{"@type":"Question","name":"Can I normalize a whole podcast at once?","acceptedAnswer":{"@type":"Answer","text":"You can, but it is usually the wrong move. A single gain on a finished episode shifts everything together and does not fix a quiet guest. Normalize each source to the same target, then join them."}},{"@type":"Question","name":"Which target for an audiobook?","acceptedAnswer":{"@type":"Answer","text":"ACX asks for RMS between -23 and -18 dB with peaks under -3 dB, which is a different measurement, but -19 LUFS with a -3 dBTP ceiling lands comfortably inside it."}},{"@type":"Question","name":"Is the measurement accurate?","acceptedAnswer":{"@type":"Answer","text":"It is validated against ffmpeg ebur128, the reference implementation, to within 0.05 LU across tones, noise, drums, speech and mono files. The check is in the repository."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -152,6 +152,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video at the new loudness</label>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Measure &amp; normalize</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -212,6 +213,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
+      <details><summary>Can I normalize the loudness of a video?</summary><p>Yes. Drop the MP4, MOV or WebM and, with "keep the picture" ticked, its sound is measured and brought to your target, then the video comes back with the picture copied untouched and the sound in sync. The true-peak ceiling is checked on the AAC that goes into the video, so it holds in the file you get.</p></details>
       <details><summary>What LUFS should I use for Spotify?</summary><p>-14 LUFS integrated, with a true peak no higher than -1 dBTP. YouTube, Amazon Music and Tidal use the same figure. Apple Music and Apple Podcasts use -16.</p></details>
       <details><summary>Is my file uploaded?</summary><p>No. Measurement and gain both run in your browser tab. You can disconnect from the internet after the page loads and it still works.</p></details>
       <details><summary>How is this different from the normalize tool?</summary><p>That one sets the loudest sample to a ceiling, which says nothing about perceived loudness — two files peak-normalized identically can differ by 10 LU. This measures loudness the way streaming platforms do and matches that.</p></details>
@@ -357,15 +359,15 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03d"></script>
-<script src="/js/tool-graph.js?v=2026-10-03d"></script>
-<script src="/js/flow.js?v=2026-10-03d"></script>
-<script src="/js/project-link.js?v=2026-10-03d"></script>
-<script src="/js/audio-core.js?v=2026-10-03d"></script>
-<script src="/js/tool-shell.js?v=2026-10-03d"></script>
-<script src="/js/loudness.js?v=2026-10-03d"></script>
-<script src="/js/loudness-page.js?v=2026-10-03d"></script>
-<script src="/js/consent.js?v=2026-10-03d"></script>
-<script src="/js/pwa.js?v=2026-10-03d"></script>
+<script src="/js/common.js?v=2026-10-03e"></script>
+<script src="/js/tool-graph.js?v=2026-10-03e"></script>
+<script src="/js/flow.js?v=2026-10-03e"></script>
+<script src="/js/project-link.js?v=2026-10-03e"></script>
+<script src="/js/audio-core.js?v=2026-10-03e"></script>
+<script src="/js/tool-shell.js?v=2026-10-03e"></script>
+<script src="/js/loudness.js?v=2026-10-03e"></script>
+<script src="/js/loudness-page.js?v=2026-10-03e"></script>
+<script src="/js/consent.js?v=2026-10-03e"></script>
+<script src="/js/pwa.js?v=2026-10-03e"></script>
 </body>
 </html>

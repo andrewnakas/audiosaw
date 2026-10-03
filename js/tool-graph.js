@@ -413,7 +413,7 @@
     // ---- Loudness & channels ---------------------------------------------
     'loudness-normalizer': {
       cat: 'levels', label: 'lufs normalize', title: 'LUFS Loudness Normalizer',
-      blurb: 'Match the loudness target Spotify, Apple or broadcast expects.',
+      blurb: 'Match the loudness target Spotify, Apple or broadcast expects. Works on video too.',
       project: 'same',
       next: [
         ['audio-compressor', 'Reduce dynamic range when the target will not fit'],

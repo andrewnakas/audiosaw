@@ -27,6 +27,7 @@
   function setRow(id, text) { var el = $(id); if (el) el.textContent = text; }
 
   CV.shell({
+    video: true,   // gain only: the same length out, so a video comes back as a video
     accept: ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.oga', '.opus',
       '.aif', '.aiff', '.m4b', '.wma', '.mp4', '.mov', '.webm', '.mkv'],
     zipName: 'audiosaw-normalized.zip',
@@ -129,23 +130,28 @@
       if (report) report.hidden = false;
 
       onProgress(88, 'Encoding…');
-      var enc = function () {
-        return CV.encodeBuffer(outBuf, opts.format, opts.bitrate, function (pct) {
+      var enc = function (tok, br) {
+        return CV.encodeBuffer(outBuf, tok || opts.format, br || opts.bitrate, function (pct) {
           onProgress(88 + Math.max(0, Math.min(8, (pct - 55) * 0.2)), 'Encoding…');
         });
       };
       var blob = await enc();
+      // For a video the file's sound will be the AAC 192 kbps that
+      // CV.remuxVideo writes, so that is the encode whose peak is checked;
+      // the float WAV handed to the remux is turned down with it.
+      var VIDEO_AAC = 192;
+      var probe = opts.video ? await enc('m4a', VIDEO_AAC) : blob;
 
       // A lossy encoder rebuilds the waveform, and its peaks can land higher
       // than the ones we measured: decode what was written, measure its true
       // peak, and if it passed the ceiling, turn down by the overshoot and
       // encode again. The ceiling is a promise about the file, not about the
       // samples before the encoder.
-      var fmtTok = AudioSaw.resolveFormat(opts.format, opts.bitrate);
-      if (!AudioSaw.isLossless(fmtTok)) {
+      var fmtTok = opts.video ? 'm4a' : AudioSaw.resolveFormat(opts.format, opts.bitrate);
+      if (opts.video || !AudioSaw.isLossless(fmtTok)) {
         for (var attempt = 0; attempt < 3; attempt++) {
           onProgress(96, 'Checking the peak of the encoded file…');
-          var dec = await AudioSaw.decodeToAudioBuffer(new File([blob], 'check.' + AudioSaw.extFor(fmtTok)), null, { quiet: true });
+          var dec = await AudioSaw.decodeToAudioBuffer(new File([probe], 'check.' + AudioSaw.extFor(fmtTok)), null, { quiet: true });
           var dch = [];
           for (var dc = 0; dc < dec.numberOfChannels; dc++) dch.push(dec.getChannelData(dc));
           var encPeak = global.ASLoudness.toDb(global.ASLoudness.truePeak(dch));
@@ -165,6 +171,7 @@
           }
           onProgress(88, 'Encoding again, ' + back.toFixed(2) + ' dB lower…');
           blob = await enc();
+          probe = opts.video ? await enc('m4a', VIDEO_AAC) : blob;
         }
       }
       return blob;

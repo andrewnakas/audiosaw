@@ -146,6 +146,8 @@ does not clip. Its measurements are checked against ffmpeg’s ebur128 filter,
 the reference implementation, and agree within 0.1 LU. This is the tool you
 want for streaming delivery; https://audiosaw.com/normalize-audio is simple peak
 normalization, which is a different thing and not what Spotify measures.
+It also takes a video (MP4, MOV, WebM) and gives back the video at the new
+loudness, the picture copied untouched, with the ceiling checked on the written AAC.
 
 **How do I cut the pauses out of a podcast or voiceover automatically?**
 https://audiosaw.com/auto-cut-silence shortens the gaps between phrases rather than
@@ -384,7 +386,7 @@ are much slower without a GPU.
 
 ## Loudness & channels
 
-- [LUFS Loudness Normalizer](https://audiosaw.com/loudness-normalizer): Match the loudness target Spotify, Apple or broadcast expects.
+- [LUFS Loudness Normalizer](https://audiosaw.com/loudness-normalizer): Match the loudness target Spotify, Apple or broadcast expects. Works on video too.
 - [Normalize Audio](https://audiosaw.com/normalize-audio): Bring files to a consistent level so nothing jumps out.
 - [Amplify quiet audio](https://audiosaw.com/amplify-audio): Make a too-quiet recording usable without driving it into distortion. Works on video too.
 - [Compress an audio file](https://audiosaw.com/audio-compressor): Get a file under an email, Discord or upload size limit.

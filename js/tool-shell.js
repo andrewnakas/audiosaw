@@ -145,7 +145,7 @@
           })(i);
           var keep = $('#keepVideo');
           var asVideo = cfg.video && isVideoFile(f) && (!keep || keep.checked);
-          var got = await cfg.process(f, asVideo ? Object.assign({}, opts, { fmt: 'wav32f', video: true }) : opts,
+          var got = await cfg.process(f, asVideo ? Object.assign({}, opts, { fmt: 'wav32f', format: 'wav32f', video: true }) : opts,
             asVideo ? function (pct, msg) { report(pct * 0.7, msg); } : report);
           if (asVideo) {
             var one = Array.isArray(got) ? got[0] : got, audioBlob = one && one.blob ? one.blob : one;

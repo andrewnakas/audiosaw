@@ -978,8 +978,13 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   the copied picture (MOV/MKV keep their container, else MP4: no working
   libopus). Float WAV because MP3/AAC encoder delay would move the sound
   against the picture. On: voice changer, noise reduction, EQ, vocal
-  remover, pitch shifter, and /amplify-audio (its inline script calls
-  `CV.remuxVideo` itself; it now includes tool-shell.js for that). NOT nightcore/slowed-reverb/speed/silence tools:
+  remover, pitch shifter, /amplify-audio (its inline script calls
+  `CV.remuxVideo` itself; it now includes tool-shell.js for that) and
+  /loudness-normalizer. The shell forces both `fmt` and `format`. For a
+  video the normalizer checks its true-peak ceiling on an AAC 192 encode,
+  the one the remux writes, and turns the WAV down with it; check-video-
+  tools reads the written MP4 with ebur128: the page's LUFS to 0.1 and
+  -1.10 dBTP under a -1 ceiling. NOT nightcore/slowed-reverb/speed/silence tools:
   they change the length. `tools/check-video-tools.js`: all five keep every
   frame and the length; noise reduction and EQ measure 0.0 ms of offset.
   check-voice's own video case: Deeper -394 cents of -400.

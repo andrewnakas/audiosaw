@@ -188,6 +188,8 @@ lines.push('does not clip. Its measurements are checked against ffmpeg’s ebur1
 lines.push('the reference implementation, and agree within 0.1 LU. This is the tool you');
 lines.push(`want for streaming delivery; ${ORIGIN}/normalize-audio is simple peak`);
 lines.push('normalization, which is a different thing and not what Spotify measures.');
+lines.push('It also takes a video (MP4, MOV, WebM) and gives back the video at the new');
+lines.push('loudness, the picture copied untouched, with the ceiling checked on the written AAC.');
 lines.push('');
 lines.push('**How do I cut the pauses out of a podcast or voiceover automatically?**');
 lines.push(`${ORIGIN}/auto-cut-silence shortens the gaps between phrases rather than`);
