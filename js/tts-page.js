@@ -220,6 +220,7 @@
     worker = new Worker('/js/tts-worker.js?v=' + ASSET_V + (backend ? '&backend=' + backend : '') + (ph ? '&ph=' + ph[1] : ''));
     worker.onmessage = function (e) {
       var m = e.data || {};
+      if (m.job != null && batch && batch.jobs[m.job]) { batchMessage(m); return; }
       if (m.type === 'status') onStatus(m);
       else if (m.type === 'ready') { ready = m; describe(); }
       else if (m.type === 'note') { gpuUsable = false; describe(); }
@@ -408,6 +409,76 @@
     dlBtn.disabled = false;
   }
 
+  /* --------------------------------------------------------------- batch */
+
+  // One file per line, zipped: e-learning modules, game voice lines, phone
+  // prompts. Same worker, same voice and speed; each line is chunked and
+  // joined exactly as Speak does, then encoded and tagged on its own.
+  var batch = null, batchBtn = $('#batchBtn');
+  function batchMessage(m) {
+    var j = batch.jobs[m.job];
+    if (m.type === 'error') { delete batch.jobs[m.job]; j.reject(new Error(m.message || 'failed')); return; }
+    if (m.type !== 'audio') return;
+    var x = ASTTS.trimSilence(m.samples), piece = new Float32Array(x.length);
+    piece.set(x);
+    j.parts[m.seq] = piece; j.got++;
+    if (j.got === j.chunks.length) {
+      delete batch.jobs[m.job];
+      var n = 0;
+      j.parts.forEach(function (p, i) { n += p.length + (i < j.parts.length - 1 ? Math.round(j.chunks[i].pause * SR) : 0); });
+      var all = new Float32Array(n), o = 0;
+      j.parts.forEach(function (p, i) { all.set(p, o); o += p.length + (i < j.parts.length - 1 ? Math.round(j.chunks[i].pause * SR) : 0); });
+      j.resolve(all);
+    }
+  }
+  function sayLine(text, mix, speed) {
+    var chunks = ASTTS.chunk(text);
+    if (!chunks.length) return Promise.resolve(new Float32Array(0));
+    var w = ensureWorker(), id = ++job;
+    return new Promise(function (resolve, reject) {
+      batch.jobs[id] = { chunks: chunks, parts: [], got: 0, resolve: resolve, reject: reject };
+      chunks.forEach(function (c, i) { w.postMessage({ type: 'synth', job: id, seq: i, text: c.text, lang: mixLang(mix), mix: mix, speed: speed }); });
+    });
+  }
+  async function runBatch() {
+    var lines = ASTTS.parseBatch(textEl.value);
+    if (lines.length < 2) { CV.setStatus(statusEl, 'warn', 'Batch makes one file per line: put each line on its own line (at least two), optionally as "name | text".'); return; }
+    if (pending) cancel();
+    batch = { jobs: {}, stop: false };
+    var mix = currentMix(), speed = +speedEl.value || 1, fmt = fmtSel ? fmtSel.value : 'mp3', label = mixName(mix), out = [], t0 = Date.now();
+    goBtn.disabled = true; if (batchBtn) batchBtn.disabled = true; if (stopBtn) stopBtn.disabled = false;
+    progressWrap.style.display = '';
+    try {
+      for (var i = 0; i < lines.length; i++) {
+        if (batch.stop) throw new Error('stopped');
+        CV.setProgress(progressBar, 100 * i / lines.length);
+        setTitle(100 * i / lines.length);
+        CV.setStatus(statusEl, 'info', (ready ? 'Speaking' : 'Loading the voice model, then speaking') + ' line ' + (i + 1) + ' of ' + lines.length + '…');
+        var x = await sayLine(lines[i].text, mix, speed);
+        var blob = await AudioSaw.encode(AudioSaw.makeBuffer([x], SR), fmt, { bitrate: 192 });
+        var bytes = new Uint8Array(await blob.arrayBuffer()), tag = {
+          title: lines[i].text.slice(0, 80), artist: 'AI voice: ' + label, software: 'AudioSaw text-to-speech (Kokoro-82M)',
+          comment: 'Synthetic speech generated with Kokoro-82M at audiosaw.com/text-to-speech'
+        };
+        if (fmt === 'mp3') bytes = ASTTS.tagMp3(bytes, tag); else if (fmt === 'wav16') bytes = ASTTS.tagWav(bytes, tag);
+        out.push({ name: lines[i].name + '.' + AudioSaw.extFor(fmt), blob: new Blob([bytes], { type: blob.type }), seconds: x.length / SR });
+      }
+      CV.setStatus(statusEl, 'info', 'Packing ' + out.length + ' files…');
+      var zip = await AudioSaw.zipBlobs(out);
+      window.__ttsBatch = out.map(function (o) { return { name: o.name, seconds: o.seconds, size: o.blob.size }; });
+      CV.downloadBlob(zip, 'audiosaw-speech-' + out.length + '-files.zip');
+      CV.setStatus(statusEl, 'success', out.length + ' files, ' + out.reduce(function (a, o) { return a + o.seconds; }, 0).toFixed(0) + ' s of speech, made in ' + Math.round((Date.now() - t0) / 1000) + ' s and zipped.');
+    } catch (e) {
+      if (e.message === 'stopped') CV.setStatus(statusEl, 'info', 'Stopped after ' + out.length + ' of ' + lines.length + ' lines.');
+      else CV.setStatus(statusEl, 'error', 'Batch failed at line ' + (out.length + 1) + '. ' + (e.message || e), e);
+    }
+    batch = null;
+    setTitle(null);
+    CV.setProgress(progressBar, 100);
+    goBtn.disabled = !textEl.value.trim(); if (batchBtn) batchBtn.disabled = false; if (stopBtn) stopBtn.disabled = true;
+  }
+  if (batchBtn) batchBtn.addEventListener('click', function () { if (textEl.value.trim()) runBatch(); });
+
   /* ------------------------------------------------------------------ ui */
 
   goBtn.addEventListener('click', function () {
@@ -416,6 +487,14 @@
     speak(textEl.value);
   });
   if (stopBtn) stopBtn.addEventListener('click', function () {
+    if (batch) {
+      batch.stop = true;
+      Object.keys(batch.jobs).forEach(function (j) {
+        if (worker) worker.postMessage({ type: 'cancel', job: +j });
+        var w = batch.jobs[j]; delete batch.jobs[j]; w.reject(new Error('stopped'));
+      });
+      return;
+    }
     var wasRunning = !!pending;
     cancel();
     stopBtn.disabled = true;

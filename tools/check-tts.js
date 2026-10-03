@@ -240,8 +240,44 @@ async function browser() {
   }
 }
 
+// Batch: one file per line, zipped (the "One file per line" button).
+function ok2(c, m) { console.log((c ? '  ok  ' : '  FAIL ') + m); if (!c) failed++; }
+{
+  console.log('batch lines');
+  const b = T.parseBatch('intro | Welcome to the course.\nstep-1\tTurn off the water.\n\nNo name on this one.\nintro | Same name again.');
+  ok2(b.length === 4 && b[0].name === 'intro' && b[1].name === 'step-1' && /^003-no-name-on-this-one$/.test(b[2].name) && b[3].name === 'intro-2' && b[3].text === 'Same name again.',
+    '"name | text", tab and plain lines; names made unique (' + b.map((x) => x.name).join(', ') + ')');
+  ok2(T.parseBatch(Array(250).fill('line').join('\n')).length === T.MAX_BATCH, 'at most ' + T.MAX_BATCH + ' lines');
+}
+async function batchPage() {
+  const { withPage, findChrome } = require('./chrome-harness');
+  if (!findChrome() || !FILES.every((f) => fs.existsSync(path.join(CACHE, path.basename(f))))) return;
+  const routes = {};
+  for (const f of FILES) routes['/__kokoro/' + path.basename(f)] = () => fs.readFileSync(path.join(CACHE, path.basename(f)));
+  console.log('batch page (wasm)');
+  await withPage({ routes, headers: true }, async (page) => {
+    page.listen('Fetch.requestPaused', (p) => page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__kokoro/' + p.request.url.split('?')[0].split('/').pop()) }));
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*huggingface.co/onnx-community/Kokoro*' }] });
+    await page.goto('/text-to-speech?backend=wasm', 1500);
+    const r = await page.eval(`(async () => {
+      document.querySelector('#ttsText').value = 'welcome | Welcome to the first lesson.\\nThe water must be off before you start.\\nlast | That is all for today. See you next time.';
+      document.querySelector('#ttsText').dispatchEvent(new Event('input'));
+      let got = null; const o = CV.downloadBlob; CV.downloadBlob = (b, n) => { got = { size: b.size, n }; };
+      document.querySelector('#batchBtn').click();
+      for (let i = 0; i < 3000 && !got && !/failed|Stopped/.test(document.querySelector('#status').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+      CV.downloadBlob = o;
+      return { got, files: window.__ttsBatch, status: document.querySelector('#status').textContent };
+    })()`, 600000);
+    const names = (r.files || []).map((f) => f.name);
+    ok2(r.got && /audiosaw-speech-3-files\.zip/.test(r.got.n) && names.join(',') === 'welcome.mp3,002-the-water-must-be-off.mp3,last.mp3', 'three lines become three named MP3s in one zip (' + names.join(', ') + ')');
+    ok2((r.files || []).every((f) => f.seconds > 1 && f.seconds < 6 && f.size > 10000), 'each is speech of a sensible length (' + (r.files || []).map((f) => f.seconds.toFixed(2) + ' s').join(', ') + ')');
+    if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 3).join(' | '));
+  });
+}
+
 (async () => {
   try { await browser(); } catch (e) { console.log('  FAIL browser: ' + (e.stack || e)); failed++; }
+  try { await batchPage(); } catch (e) { console.log('  FAIL batch: ' + (e.stack || e)); failed++; }
   if (failed) { console.log('\n' + failed + ' check(s) failed'); process.exit(1); }
   console.log('\ncheck-tts: all good');
 })();

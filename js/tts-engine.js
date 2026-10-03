@@ -241,6 +241,34 @@
 
   // → [{ text, pause }] where pause is the silence (s) to put after the chunk:
   // longer at a paragraph end than between sentences.
+  // Batch mode: one file per non-empty line. "name | text" or "name<TAB>text"
+  // (a spreadsheet's two columns pasted) names the file; otherwise it is the
+  // line's number and first words. Names are made safe for every OS and
+  // unique; at most MAX_BATCH lines.
+  var MAX_BATCH = 200;
+  function slug(s) {
+    return String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\s.-]/g, '').trim()
+      .replace(/\s+/g, '-').replace(/^[.-]+/, '').slice(0, 60).replace(/[.-]+$/, '').toLowerCase();
+  }
+  function parseBatch(text) {
+    var out = [], seen = {};
+    String(text || '').replace(/\r\n?/g, '\n').split('\n').forEach(function (line) {
+      if (out.length >= MAX_BATCH) return;
+      var raw = line.trim();
+      if (!raw) return;
+      var name = '', body = raw, m = /^([^\t|]{1,80}?)\s*(?:\t|\s\|\s)\s*(.+)$/.exec(raw);
+      if (m) { name = slug(m[1].replace(/\.(mp3|wav|m4a)$/i, '')); body = m[2].trim(); }
+      if (!body) return;
+      var n = out.length + 1;
+      var base = name || (('00' + n).slice(-3) + '-' + (slug(body.split(/\s+/).slice(0, 5).join(' ')) || 'line'));
+      var unique = base, k = 2;
+      while (seen[unique]) unique = base + '-' + k++;
+      seen[unique] = 1;
+      out.push({ name: unique, text: body });
+    });
+    return out;
+  }
+
   function chunk(text, opts) {
     opts = opts || {};
     var target = opts.target || TARGET;
@@ -399,7 +427,7 @@
   }
 
   return {
-    tagMp3: tagMp3, tagWav: tagWav, fillVoiceSelect: fillVoiceSelect, voiceLabel: voiceLabel, LANGS: LANGS,
+    parseBatch: parseBatch, MAX_BATCH: MAX_BATCH, tagMp3: tagMp3, tagWav: tagWav, fillVoiceSelect: fillVoiceSelect, voiceLabel: voiceLabel, LANGS: LANGS,
     SAMPLE_RATE: SAMPLE_RATE, STYLE_DIM: STYLE_DIM, STYLE_ROWS: STYLE_ROWS, MAX_TOKENS: MAX_TOKENS,
     VOCAB: VOCAB, VOICES: VOICES, voice: voice,
     normalize: normalize, fixPhonemes: fixPhonemes, splitPunct: splitPunct, phonemize: phonemize,

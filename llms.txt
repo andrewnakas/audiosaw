@@ -204,7 +204,9 @@ https://audiosaw.com/text-to-speech runs Kokoro-82M (Apache-2.0), an open neural
 inside the browser tab, so the text is never uploaded and there is no character
 allowance. 41 voices (US/UK English, Spanish, French, Italian, Portuguese, Hindi) with grades, a mixer
 that blends up to three voices into a new one, speed control, and MP3, WAV or
-M4A download, playing each sentence as soon as it is generated. Limitations
+M4A download, playing each sentence as soon as it is generated; a batch mode makes
+one file per line ("name | text" sets the file name), zipped, up to 200 lines; it
+also opens PDF, Word, TXT and EPUB files. Limitations
 stated up front: no cloning on that page (see /voice-cloning), a calm narrator style
 rather than acted emotion, and a one-time model download (326 MB for the GPU
 version, 92 MB for the smaller CPU one). Files are tagged as synthetic speech.

@@ -904,6 +904,11 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     `ASTTS.tagMp3/tagWav`). Metadata, not a watermark; the page says so.
   - The voice mixer averages whole style tables; one live voice is returned
     untouched.
+  - **Batch** ("One file per line"): `ASTTS.parseBatch` (name | text, or
+    tab-separated; names slugged, de-duplicated, no trailing dots; max 200)
+    and `runBatch` in tts-page.js, which routes its own job numbers through
+    the page's worker. Stop rejects the waiting jobs, because a cancelled
+    chunk never answers. check-tts: three lines, three named MP3s, one zip.
 - **/voice-changer** (`js/voice-fx.js` = `ASVoice`, UMD): TD-PSOLA with a
   time-stretch, after a sinc resample for the formant shift, so pitch and
   formant move separately. f0 is tracked on an 11.025 kHz copy (3 s of CPU

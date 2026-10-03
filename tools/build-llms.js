@@ -246,7 +246,9 @@ lines.push(`${ORIGIN}/text-to-speech runs Kokoro-82M (Apache-2.0), an open neura
 lines.push('inside the browser tab, so the text is never uploaded and there is no character');
 lines.push('allowance. 41 voices (US/UK English, Spanish, French, Italian, Portuguese, Hindi) with grades, a mixer');
 lines.push('that blends up to three voices into a new one, speed control, and MP3, WAV or');
-lines.push('M4A download, playing each sentence as soon as it is generated. Limitations');
+lines.push('M4A download, playing each sentence as soon as it is generated; a batch mode makes');
+lines.push('one file per line ("name | text" sets the file name), zipped, up to 200 lines; it');
+lines.push('also opens PDF, Word, TXT and EPUB files. Limitations');
 lines.push('stated up front: no cloning on that page (see /voice-cloning), a calm narrator style');
 lines.push('rather than acted emotion, and a one-time model download (326 MB for the GPU');
 lines.push('version, 92 MB for the smaller CPU one). Files are tagged as synthetic speech.');
