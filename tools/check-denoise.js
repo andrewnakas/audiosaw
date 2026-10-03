@@ -111,6 +111,42 @@ async function main() {
       const corr = corrWith(y), drop = db(rmsOn(L.noisy, 0)) - db(rmsOn(y, 0));
       ok(drop >= 15 && corr >= 0.85 && Math.abs(best) <= SR / 1000 && y.length === n, 'editor Process > Remove noise (AI): pauses ' + drop.toFixed(1) + ' dB quieter, speech correlation ' + corr.toFixed(3) + ', offset ' + (best / SR * 1000).toFixed(2) + ' ms, length ' + (y.length === n ? 'exact' : y.length));
     }
+    // The voice recorder's "clean up background noise (AI)": two takes of the
+    // same noisy speech played in as the microphone, one plain, one cleaned.
+    // Recording latency makes sample alignment moot here, so the measure is
+    // the quietest tenth of 20 ms frames (the pauses): at least 10 dB lower.
+    {
+      const L = levels[0];
+      await page.goto('/voice-recorder', 1500);
+      const take = (clean) => page.eval(`(async () => {
+        navigator.mediaDevices.getUserMedia = async () => {
+          const c = new AudioContext(); const ab = await c.decodeAudioData(await (await fetch('/__${L.name}.wav')).arrayBuffer());
+          const s = c.createBufferSource(); s.buffer = ab; const d = c.createMediaStreamDestination(); s.connect(d); s.start();
+          window.__mic = c; return d.stream;
+        };
+        document.querySelector('#recordBtn').click();
+        await new Promise((r) => setTimeout(r, 9000));
+        document.querySelector('#stopBtn').click();
+        for (let i = 0; i < 100 && document.querySelector('#controls').style.display === 'none'; i++) await new Promise((r) => setTimeout(r, 100));
+        document.querySelector('#aiClean').checked = ${clean};
+        document.querySelector('#outFmt').value = 'wav32f';
+        let got = null; const o = CV.downloadBlob; CV.downloadBlob = (b, nm) => { got = { b, nm }; };
+        document.querySelector('#saveBtn').click();
+        for (let i = 0; i < 600 && !got && !/Could not/.test(document.querySelector('#status').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+        CV.downloadBlob = o; window.__mic.close();
+        document.querySelector('#resetBtn').click();
+        if (!got) return { err: document.querySelector('#status').textContent };
+        const ab = await AudioSaw.decodeToAudioBuffer(new File([got.b], 'r.wav'), null, { quiet: true });
+        const x = ab.getChannelData(0), fr = Math.round(ab.sampleRate * 0.02), e = [];
+        for (let a = ab.sampleRate; a + fr < x.length; a += fr) { let q = 0; for (let i = a; i < a + fr; i++) q += x[i] * x[i]; e.push(q / fr); }
+        e.sort((p, q) => p - q);
+        let lo = 0; const k = Math.max(1, Math.floor(e.length / 10)); for (let i = 0; i < k; i++) lo += e[i];
+        return { name: got.nm, quiet: 10 * Math.log10(lo / k + 1e-20), secs: ab.duration };
+      })()`, 300000);
+      const plain = await take(false), cleaned = await take(true);
+      if (plain.err || cleaned.err) ok(false, 'voice recorder: ' + (plain.err || cleaned.err));
+      else ok(/-clean\.wav$/.test(cleaned.name) && plain.quiet - cleaned.quiet >= 10, 'voice recorder AI clean-up: the pauses ' + (plain.quiet - cleaned.quiet).toFixed(1) + ' dB quieter than the plain take (' + cleaned.name + ', ' + cleaned.secs.toFixed(1) + ' s)');
+    }
     if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
   });
 }

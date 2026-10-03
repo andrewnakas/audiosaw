@@ -406,6 +406,19 @@
       }
       CV.setProgress(progressBar, 40);
 
+      // The AI clean-up: the same RNNoise method as /noise-reduction, aligned
+      // to the sample, applied to this take before it is encoded.
+      var clean = $('#aiClean');
+      if (clean && clean.checked && window.ASDenoise && window.ASDenoise.ai) {
+        CV.setStatus(statusEl, 'info', 'Cleaning up background noise (AI)…');
+        var den = await window.ASDenoise.ai(buf, 0.9, function (pct) { CV.setProgress(progressBar, 10 + pct * 0.3); });
+        var info = buf.srcInfo;
+        buf = CV.bufferFrom(den, buf.sampleRate);
+        buf.srcInfo = info;
+        name = name.replace(/\.([^.]+)$/, '-clean.$1');
+        CV.setStatus(statusEl, 'info', 'Encoding…');
+      }
+
       var out = await AudioSaw.encode(buf, AudioSaw.resolveFormat(fmt, bitrate), {
         bitrate: AudioSaw.bitrateOf(bitrate), srcInfo: buf.srcInfo,
         onProgress: function (pct) { CV.setProgress(progressBar, 40 + pct * 0.6); }
@@ -423,7 +436,7 @@
       row.appendChild(label);
       var btn = document.createElement('button');
       btn.className = 'btn btn-small'; btn.textContent = 'download';
-      btn.onclick = function () { CV.downloadBlob(out, name); };
+      btn.onclick = function () { CV.downloadBlob(out, name, { again: true }); };
       row.appendChild(btn);
       resultList.appendChild(row);
     } catch (e) {

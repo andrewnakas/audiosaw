@@ -990,6 +990,10 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   at -10.6 dB -> 48.1 dB, 0.687 (input 0.284). ~0.3x realtime. The editor's
   Process > "Remove noise (AI)" (`denoiseAI` in editor-fx.js) calls the same
   `ASDenoise.ai`; check-denoise drives it too (same numbers, exact length).
+  /voice-recorder's "clean up background noise (AI)" (off by default) runs
+  it on the take before encoding; check-denoise records the noisy fixture
+  through a fake mic twice: the cleaned take's quietest tenth of frames is
+  19.9 dB below the plain one's (which already had browser suppression).
 - **Video in, video out** on same-length tools: `CV.shell({ video: true })`
   (tool-shell.js) runs the tool's own process() with `fmt: 'wav32f'` for a
   video (when #keepVideo is ticked) and `CV.remuxVideo` puts that beside

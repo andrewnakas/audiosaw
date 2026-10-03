@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03j">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03k">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my recording uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The audio is captured by your browser, encoded by JavaScript in this page, and saved by your browser's download mechanism. No server is involved. You can confirm it by watching your browser's network tab while recording — nothing is sent."}},{"@type":"Question","name":"Is there a time limit?","acceptedAnswer":{"@type":"Answer","text":"No fixed limit. The recording is held in memory until you save it, so the practical ceiling is your available RAM. For sessions over an hour, save in sections to be safe."}},{"@type":"Question","name":"Why does it ask for microphone permission?","acceptedAnswer":{"@type":"Answer","text":"Because browsers require explicit consent before any page can access a microphone. The prompt comes from your browser, not from us, and the permission only lasts for this site."}},{"@type":"Question","name":"Should I use the noise suppression?","acceptedAnswer":{"@type":"Answer","text":"For speech, yes. It removes room echo, keyboard noise and steady hum before recording. For singing or music, choose studio instead: the processing is tuned for voice and will treat sustained notes as noise."}},{"@type":"Question","name":"What is the best quality it can record?","acceptedAnswer":{"@type":"Answer","text":"Studio mode: stereo, no processing, 32-bit float at whatever rate your microphone or interface runs (48 kHz for most, 96 kHz if the interface is set to it). Save as WAV 32-bit float or 24-bit, or FLAC 24-bit, and nothing is lost between the microphone and the file. MP3 at V0 is the best of the compressed choices."}},{"@type":"Question","name":"The recording is too quiet — can I fix it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it, then run it through the amplifier or the normalizer. Clipping, on the other hand, is not fixable, so watch for the meter turning red while you record."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my recording uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The audio is captured by your browser, encoded by JavaScript in this page, and saved by your browser's download mechanism. No server is involved. You can confirm it by watching your browser's network tab while recording — nothing is sent."}},{"@type":"Question","name":"Is there a time limit?","acceptedAnswer":{"@type":"Answer","text":"No fixed limit. The recording is held in memory until you save it, so the practical ceiling is your available RAM. For sessions over an hour, save in sections to be safe."}},{"@type":"Question","name":"Why does it ask for microphone permission?","acceptedAnswer":{"@type":"Answer","text":"Because browsers require explicit consent before any page can access a microphone. The prompt comes from your browser, not from us, and the permission only lasts for this site."}},{"@type":"Question","name":"Can it remove background noise from my recording?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tick \"clean up background noise (AI)\" before you save, and an AI denoiser running in your browser removes traffic, typing, fans and barking behind your voice. It is for speech, not music."}},{"@type":"Question","name":"Should I use the noise suppression?","acceptedAnswer":{"@type":"Answer","text":"For speech, yes. It removes room echo, keyboard noise and steady hum before recording. For singing or music, choose studio instead: the processing is tuned for voice and will treat sustained notes as noise."}},{"@type":"Question","name":"What is the best quality it can record?","acceptedAnswer":{"@type":"Answer","text":"Studio mode: stereo, no processing, 32-bit float at whatever rate your microphone or interface runs (48 kHz for most, 96 kHz if the interface is set to it). Save as WAV 32-bit float or 24-bit, or FLAC 24-bit, and nothing is lost between the microphone and the file. MP3 at V0 is the best of the compressed choices."}},{"@type":"Question","name":"The recording is too quiet — can I fix it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it, then run it through the amplifier or the normalizer. Clipping, on the other hand, is not fixable, so watch for the meter turning red while you record."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to record your voice in a browser without uploading", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Press record", "text": "Your browser will ask for microphone permission the first time. The prompt is the browser's own."}, {"@type": "HowToStep", "position": 2, "name": "Watch the level meter", "text": "Aim for the middle of the range. Red means clipping, which cannot be repaired afterwards."}, {"@type": "HowToStep", "position": 3, "name": "Press stop when you're done", "text": "The recording is held in the page — nothing has been sent anywhere."}, {"@type": "HowToStep", "position": 4, "name": "Choose a format and save", "text": "MP3 for sharing, WAV if the audio is going into an editor. The file downloads from your browser."}]}
@@ -152,6 +152,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="aiClean"> clean up background noise (AI): traffic, typing, a fan, a barking dog. For speech; it keeps other voices</label>
       <div class="actions">
         <button class="btn" id="saveBtn" data-track="convert">Save recording</button>
       </div>
@@ -198,6 +199,8 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p><strong>Switch to "studio" for music, singing, or anything you will edit.</strong> The processing is tuned for speech and will fight you: noise suppression treats sustained notes as noise, and auto gain pumps the level between phrases. Studio mode turns all three off, asks for both channels of the input (a stereo mic, or both inputs of an audio interface), and keeps the raw samples as 32-bit float at the microphone's own sample rate. Nothing is compressed at any point, so a WAV or FLAC saved from it is exactly what the microphone delivered. The line under the record button says what the browser actually gave you: some built-in microphones are mono whatever you ask for.</p>
 <p>Watch the level meter while you talk. You want it moving through the middle of its range, occasionally reaching the upper part, and turning red only rarely. Red means clipping, and clipped audio cannot be repaired afterwards — no amount of processing recovers a squared-off waveform. If it is consistently red, move further from the microphone or turn its input level down in your operating system's sound settings.</p>
 <p>If the recording came out too quiet, that is fixable: run it through <a href="/amplify-audio">the amplifier</a> or <a href="/normalize-audio">the normalizer</a> afterwards.</p>
+    <h2>Clean up background noise with AI</h2>
+    <p>Tick "clean up background noise (AI)" before saving and the take goes through RNNoise, the same small neural denoiser as the AI method on the <a href="/noise-reduction">noise reduction</a> page. It keeps the voice and pulls down what is around it: traffic, keyboard clatter, a fan, a dog barking between sentences. It works on the finished recording, in the browser, and the file is saved with "-clean" in its name. Measured on a take recorded through this page with noise bursts and clicks under the speech, the pauses came out 19.9 dB quieter than the same take saved without it, and that plain take already had the browser's own noise suppression. It is for speech: leave it off for music, and other people talking in the room count as voices and stay.</p>
     <h2>Limits worth knowing</h2>
 <p><strong>The recording lives in memory until you save it.</strong> There is no time limit as such, but a very long session on a machine with little free memory can fail, and closing or reloading the tab loses the recording. For anything longer than about an hour, save in sections.</p>
 <p><strong>The permission prompt is the browser's, not ours.</strong> If you block it by accident, the site cannot re-ask — you need to re-allow it from the icon in your address bar.</p>
@@ -211,6 +214,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Is my recording uploaded anywhere?</summary><p>No. The audio is captured by your browser, encoded by JavaScript in this page, and saved by your browser's download mechanism. No server is involved. You can confirm it by watching your browser's network tab while recording — nothing is sent.</p></details>
       <details><summary>Is there a time limit?</summary><p>No fixed limit. The recording is held in memory until you save it, so the practical ceiling is your available RAM. For sessions over an hour, save in sections to be safe.</p></details>
       <details><summary>Why does it ask for microphone permission?</summary><p>Because browsers require explicit consent before any page can access a microphone. The prompt comes from your browser, not from us, and the permission only lasts for this site.</p></details>
+      <details><summary>Can it remove background noise from my recording?</summary><p>Yes. Tick "clean up background noise (AI)" before you save, and an AI denoiser running in your browser removes traffic, typing, fans and barking behind your voice. It is for speech, not music.</p></details>
       <details><summary>Should I use the noise suppression?</summary><p>For speech, yes. It removes room echo, keyboard noise and steady hum before recording. For singing or music, choose studio instead: the processing is tuned for voice and will treat sustained notes as noise.</p></details>
       <details><summary>What is the best quality it can record?</summary><p>Studio mode: stereo, no processing, 32-bit float at whatever rate your microphone or interface runs (48 kHz for most, 96 kHz if the interface is set to it). Save as WAV 32-bit float or 24-bit, or FLAC 24-bit, and nothing is lost between the microphone and the file. MP3 at V0 is the best of the compressed choices.</p></details>
       <details><summary>The recording is too quiet — can I fix it?</summary><p>Yes. Save it, then run it through the amplifier or the normalizer. Clipping, on the other hand, is not fixable, so watch for the meter turning red while you record.</p></details>
@@ -355,13 +359,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03j"></script>
-<script src="/js/tool-graph.js?v=2026-10-03j"></script>
-<script src="/js/flow.js?v=2026-10-03j"></script>
-<script src="/js/audio-core.js?v=2026-10-03j"></script>
-<script src="/js/tool-shell.js?v=2026-10-03j"></script>
-<script src="/js/consent.js?v=2026-10-03j"></script>
-<script src="/js/voice-recorder.js?v=2026-10-03j"></script>
-<script src="/js/pwa.js?v=2026-10-03j"></script>
+<script src="/js/common.js?v=2026-10-03k"></script>
+<script src="/js/tool-graph.js?v=2026-10-03k"></script>
+<script src="/js/flow.js?v=2026-10-03k"></script>
+<script src="/js/audio-core.js?v=2026-10-03k"></script>
+<script src="/js/tool-shell.js?v=2026-10-03k"></script>
+<script src="/js/noise-reduction.js?v=2026-10-03k"></script>
+<script src="/js/consent.js?v=2026-10-03k"></script>
+<script src="/js/voice-recorder.js?v=2026-10-03k"></script>
+<script src="/js/pwa.js?v=2026-10-03k"></script>
 </body>
 </html>
