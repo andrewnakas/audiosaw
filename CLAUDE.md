@@ -978,7 +978,8 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   the copied picture (MOV/MKV keep their container, else MP4: no working
   libopus). Float WAV because MP3/AAC encoder delay would move the sound
   against the picture. On: voice changer, noise reduction, EQ, vocal
-  remover, pitch shifter. NOT nightcore/slowed-reverb/speed/silence tools:
+  remover, pitch shifter, and /amplify-audio (its inline script calls
+  `CV.remuxVideo` itself; it now includes tool-shell.js for that). NOT nightcore/slowed-reverb/speed/silence tools:
   they change the length. `tools/check-video-tools.js`: all five keep every
   frame and the length; noise reduction and EQ measure 0.0 ms of offset.
   check-voice's own video case: Deeper -394 cents of -400.

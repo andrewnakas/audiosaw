@@ -2,7 +2,8 @@
 /*
  * Video in, video out on the same-length audio tools (CV.shell's `video`
  * option, CV.remuxVideo in tool-shell.js): /noise-reduction, /audio-eq,
- * /vocal-remover, /pitch-shifter and /voice-changer.
+ * /vocal-remover, /pitch-shifter and /voice-changer, and /amplify-audio (its own
+ * page script, through the same CV.remuxVideo).
  *
  * Each page gets a 6 s MP4 (a test picture; speech in stereo, with a hum
  * and noise under it) and must hand back a video whose picture stream is the
@@ -49,7 +50,7 @@ async function main() {
   await withPage({ routes: { '/__in.mp4': () => fs.readFileSync(vid), '/__core.wasm': () => fs.readFileSync(core) } }, async (page) => {
     page.listen('Fetch.requestPaused', (p) => page.send('Fetch.continueRequest', { requestId: p.requestId, url: page.url('/__core.wasm') }));
     await page.send('Fetch.enable', { patterns: [{ urlPattern: '*ffmpeg-core.wasm*' }] });
-    for (const [slug, shape] of [['noise-reduction', true], ['audio-eq', true], ['vocal-remover', false], ['pitch-shifter', false], ['voice-changer', false]]) {
+    for (const [slug, shape] of [['noise-reduction', true], ['audio-eq', true], ['vocal-remover', false], ['pitch-shifter', false], ['voice-changer', false], ['amplify-audio', true]]) {
       await page.goto('/' + slug, 1500);
       const r = await page.eval(`(async () => {
         const f = new File([await (await fetch('/__in.mp4')).blob()], 'clip.mp4', { type: 'video/mp4' });

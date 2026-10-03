@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boost / amplify audio volume — make quiet recordings louder (free, no upload)</title>
+<title>Increase Volume of Audio or Video Online — Free, No Distortion</title>
 <meta name="description" content="Boost a quiet voice memo, faint lecture or hard-to-hear Zoom call by 3, 6, 10 or 20 dB. Free, clipping-safe, in your browser. No Audacity, no upload.">
 <meta name="keywords" content="amplify audio, boost audio volume, make audio louder online, increase mp3 volume, quiet voice memo louder, boost audio db, audio volume booster free, audacity amplify online, mp3 louder no upload">
 <meta name="robots" content="index,follow">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-03c">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-03d">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What's a dB?","acceptedAnswer":{"@type":"Answer","text":"Decibels — a logarithmic unit for loudness. +6 dB is double the amplitude. +10 dB is roughly double the perceived loudness. Negative dB is quieter (which is why \"0 dB\" on a meter is the loudest, not the quietest)."}},{"@type":"Question","name":"Will the file get bigger after amplifying?","acceptedAnswer":{"@type":"Answer","text":"WAV: same size (uncompressed). MP3: very slightly bigger if you re-encode at the same bitrate, because louder signals compress slightly differently. Not enough to matter."}},{"@type":"Question","name":"Should I amplify before or after compressing to MP3?","acceptedAnswer":{"@type":"Answer","text":"Before, if you have a choice. Amplify the highest-quality source you have (WAV, the original recording) then encode. If all you have is an MP3, amplifying it here is fine — we decode it back to audio first."}},{"@type":"Question","name":"Why does my amplified file sound the same?","acceptedAnswer":{"@type":"Answer","text":"Probably because the original was already loud enough that the limiter caught most of the boost. Run it through our normalizer instead — that'll tell you whether there's headroom to grow into."}},{"@type":"Question","name":"Can I make a file softer (negative dB)?","acceptedAnswer":{"@type":"Answer","text":"Not on this page — we only boost. For attenuation you can normalize to a lower target (e.g., -12 dB) using the normalizer."}},{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab."}},{"@type":"Question","name":"How do I make a quiet MP3 louder?","acceptedAnswer":{"@type":"Answer","text":"Drop the MP3 here, pick a gain amount (6 dB doubles perceived loudness, 10 dB is a big boost, 20 dB is roughly max for already-recorded voice). Click Amplify. We'll boost the signal and limit it just below clipping so it doesn't distort. Download the louder file."}},{"@type":"Question","name":"What's the difference between amplify and normalize?","acceptedAnswer":{"@type":"Answer","text":"Normalize sets the loudest peak to a target level (usually -1 dB or -3 dB). Amplify adds a fixed amount of gain regardless of where the peaks are. If you want \"as loud as it can go without clipping,\" use our normalizer. If you want \"a specific amount louder than before,\" use this."}},{"@type":"Question","name":"Won't boosting make it clip and distort?","acceptedAnswer":{"@type":"Answer","text":"No. After the boost, a limiter looks 1.5 ms ahead and turns the gain down just before any peak that would pass -1 dBTP, then lets it back up over about 80 ms. It measures true peak: the waveform between samples as well as the samples themselves, which is what a D/A converter or an MP3 encoder reproduces. If you ask for more gain than the file can take, the loudest moments are turned down smoothly instead of being squared off. Anything that stays under the ceiling is boosted by exactly the amount you chose and not touched otherwise."}},{"@type":"Question","name":"What about noise — will it get louder too?","acceptedAnswer":{"@type":"Answer","text":"Yes — amplification raises everything proportionally, including background noise. If the source is hissy, the result will be louder hiss too. For voice recordings with bad noise, use our silence remover first (cuts dead-air gaps) and consider denoising in a DAW before amplifying."}},{"@type":"Question","name":"How much is too much amplification?","acceptedAnswer":{"@type":"Answer","text":"For a typical recording, 6-10 dB is a big audible difference. 15-20 dB is the upper end for usable audio — past that, you're mostly boosting noise. If you need more than 20 dB, the original recording probably had a fundamental input problem; consider re-recording if you can."}},{"@type":"Question","name":"Does it upload the file?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser. The file never leaves your machine."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I increase the volume of a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the MP4, MOV or WebM and, with \"keep the picture\" ticked, you get the video back louder, with the picture copied untouched and the sound in sync. The same true-peak limiter keeps the boosted sound from clipping."}},{"@type":"Question","name":"What's a dB?","acceptedAnswer":{"@type":"Answer","text":"Decibels — a logarithmic unit for loudness. +6 dB is double the amplitude. +10 dB is roughly double the perceived loudness. Negative dB is quieter (which is why \"0 dB\" on a meter is the loudest, not the quietest)."}},{"@type":"Question","name":"Will the file get bigger after amplifying?","acceptedAnswer":{"@type":"Answer","text":"WAV: same size (uncompressed). MP3: very slightly bigger if you re-encode at the same bitrate, because louder signals compress slightly differently. Not enough to matter."}},{"@type":"Question","name":"Should I amplify before or after compressing to MP3?","acceptedAnswer":{"@type":"Answer","text":"Before, if you have a choice. Amplify the highest-quality source you have (WAV, the original recording) then encode. If all you have is an MP3, amplifying it here is fine — we decode it back to audio first."}},{"@type":"Question","name":"Why does my amplified file sound the same?","acceptedAnswer":{"@type":"Answer","text":"Probably because the original was already loud enough that the limiter caught most of the boost. Run it through our normalizer instead — that'll tell you whether there's headroom to grow into."}},{"@type":"Question","name":"Can I make a file softer (negative dB)?","acceptedAnswer":{"@type":"Answer","text":"Not on this page — we only boost. For attenuation you can normalize to a lower target (e.g., -12 dB) using the normalizer."}},{"@type":"Question","name":"Does my audio get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab."}},{"@type":"Question","name":"How do I make a quiet MP3 louder?","acceptedAnswer":{"@type":"Answer","text":"Drop the MP3 here, pick a gain amount (6 dB doubles perceived loudness, 10 dB is a big boost, 20 dB is roughly max for already-recorded voice). Click Amplify. We'll boost the signal and limit it just below clipping so it doesn't distort. Download the louder file."}},{"@type":"Question","name":"What's the difference between amplify and normalize?","acceptedAnswer":{"@type":"Answer","text":"Normalize sets the loudest peak to a target level (usually -1 dB or -3 dB). Amplify adds a fixed amount of gain regardless of where the peaks are. If you want \"as loud as it can go without clipping,\" use our normalizer. If you want \"a specific amount louder than before,\" use this."}},{"@type":"Question","name":"Won't boosting make it clip and distort?","acceptedAnswer":{"@type":"Answer","text":"No. After the boost, a limiter looks 1.5 ms ahead and turns the gain down just before any peak that would pass -1 dBTP, then lets it back up over about 80 ms. It measures true peak: the waveform between samples as well as the samples themselves, which is what a D/A converter or an MP3 encoder reproduces. If you ask for more gain than the file can take, the loudest moments are turned down smoothly instead of being squared off. Anything that stays under the ceiling is boosted by exactly the amount you chose and not touched otherwise."}},{"@type":"Question","name":"What about noise — will it get louder too?","acceptedAnswer":{"@type":"Answer","text":"Yes — amplification raises everything proportionally, including background noise. If the source is hissy, the result will be louder hiss too. For voice recordings with bad noise, use our silence remover first (cuts dead-air gaps) and consider denoising in a DAW before amplifying."}},{"@type":"Question","name":"How much is too much amplification?","acceptedAnswer":{"@type":"Answer","text":"For a typical recording, 6-10 dB is a big audible difference. 15-20 dB is the upper end for usable audio — past that, you're mostly boosting noise. If you need more than 20 dB, the original recording probably had a fundamental input problem; consider re-recording if you can."}},{"@type":"Question","name":"Does it upload the file?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser. The file never leaves your machine."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -90,7 +90,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 
 <main class="container">
   <section class="page-intro">
-    <h1>Amplify <span class="ital">quiet audio</span>. Without distorting it.</h1>
+    <h1>Make <span class="ital">quiet audio</span> or video louder, without distortion.</h1>
     <p>That lecture you recorded with your phone in your pocket. The voice memo where you forgot to hold the phone up. The Zoom call where one person was on a laptop mic in another room. Drop it here, pick how many dB to boost, and we'll lift the level with a true-peak limiter so it gets louder without clipping. No DAW, no Audacity, no upload.</p>
   </section>
 
@@ -99,9 +99,9 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="tool-app">
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
-      <p class="big">drop your quiet audio file</p>
-      <p>MP3, WAV, M4A, voice memos, lecture recordings. One file at a time.</p>
-      <input type="file" id="fileInput" accept="audio/*">
+      <p class="big">drop a quiet audio file or video</p>
+      <p>MP3, WAV, M4A, voice memos, lecture recordings, or an MP4, MOV or WebM video. One file at a time.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v">
     </div>
 
     <div class="file-list" id="fileList"></div>
@@ -140,6 +140,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
           </select>
         </label>
       </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video, louder</label>
       <div class="actions">
         <button class="btn" id="convertBtn" disabled>Amplify</button>
         <button class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -180,6 +181,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
+      <details><summary>Can I increase the volume of a video?</summary><p>Yes. Drop the MP4, MOV or WebM and, with "keep the picture" ticked, you get the video back louder, with the picture copied untouched and the sound in sync. The same true-peak limiter keeps the boosted sound from clipping.</p></details>
       <details><summary>What's a dB?</summary><p>Decibels — a logarithmic unit for loudness. +6 dB is double the amplitude. +10 dB is roughly double the perceived loudness. Negative dB is quieter (which is why "0 dB" on a meter is the loudest, not the quietest).</p></details>
       <details><summary>Will the file get bigger after amplifying?</summary><p>WAV: same size (uncompressed). MP3: very slightly bigger if you re-encode at the same bitrate, because louder signals compress slightly differently. Not enough to matter.</p></details>
       <details><summary>Should I amplify before or after compressing to MP3?</summary><p>Before, if you have a choice. Amplify the highest-quality source you have (WAV, the original recording) then encode. If all you have is an MP3, amplifying it here is fine — we decode it back to audio first.</p></details>
@@ -328,13 +330,14 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-10-03c"></script>
-<script src="/js/tool-graph.js?v=2026-10-03c"></script>
-<script src="/js/flow.js?v=2026-10-03c"></script>
-<script src="/js/project-link.js?v=2026-10-03c"></script>
-<script src="/js/audio-core.js?v=2026-10-03c"></script>
-<script src="/js/loudness.js?v=2026-10-03c"></script>
-<script src="/js/consent.js?v=2026-10-03c"></script>
+<script src="/js/common.js?v=2026-10-03d"></script>
+<script src="/js/tool-graph.js?v=2026-10-03d"></script>
+<script src="/js/flow.js?v=2026-10-03d"></script>
+<script src="/js/project-link.js?v=2026-10-03d"></script>
+<script src="/js/audio-core.js?v=2026-10-03d"></script>
+<script src="/js/loudness.js?v=2026-10-03d"></script>
+<script src="/js/tool-shell.js?v=2026-10-03d"></script>
+<script src="/js/consent.js?v=2026-10-03d"></script>
 <script>
 (function(){
   if (!window.CV || !window.AudioSaw) { console.error('AudioSaw: script order broken'); return; }
@@ -400,16 +403,23 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       CV.setStatus(statusEl, 'info', 'Boosting +'+gainDb+' dB with a true-peak limiter…');
       var lim = amplifyBuffer(ab, gainDb);
       CV.setProgress(progressBar, 60);
-      var blob;
-      CV.setStatus(statusEl, 'info', 'Encoding…');
-      blob = await AudioSaw.encode(ab, AudioSaw.resolveFormat(target, bitrate), {
-        bitrate: AudioSaw.bitrateOf(bitrate),
-        onProgress: function (pct) {
-          CV.setProgress(progressBar, 60 + pct * 0.4);
-        }
-      });
-      var base = AudioSaw.rename(f.name, target).replace(/\.[^.]+$/, '');
-      var finalName = base + '-boost' + gainDb + 'dB.' + AudioSaw.extFor(target);
+      var blob, finalName, keep = $('#keepVideo');
+      if (CV.isVideoFile && CV.isVideoFile(f) && (!keep || keep.checked)) {
+        // A video stays a video: the louder sound beside the copied picture.
+        var mux = await CV.remuxVideo(f, ab, function (pct, msg) { CV.setProgress(progressBar, 60 + pct * 0.4); if (msg) CV.setStatus(statusEl, 'info', msg); });
+        blob = mux.blob;
+        finalName = f.name.replace(/\.[^.]+$/, '') + '-boost' + gainDb + 'dB.' + mux.ext;
+      } else {
+        CV.setStatus(statusEl, 'info', 'Encoding…');
+        blob = await AudioSaw.encode(ab, AudioSaw.resolveFormat(target, bitrate), {
+          bitrate: AudioSaw.bitrateOf(bitrate),
+          onProgress: function (pct) {
+            CV.setProgress(progressBar, 60 + pct * 0.4);
+          }
+        });
+        var base = AudioSaw.rename(f.name, target).replace(/\.[^.]+$/, '');
+        finalName = base + '-boost' + gainDb + 'dB.' + AudioSaw.extFor(target);
+      }
       CV.downloadBlob(blob, finalName);
       CV.setStatus(statusEl, 'success', 'Done — '+finalName);
       var row = document.createElement('div'); row.className='file-item';
@@ -418,11 +428,11 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       var s = document.createElement('span'); s.className='size'; s.textContent=CV.fmtBytes(blob.size);
       label.appendChild(n); label.appendChild(s); row.appendChild(label);
       var btn = document.createElement('button'); btn.className='btn btn-small'; btn.textContent='download again';
-      btn.onclick = function(){ CV.downloadBlob(blob, finalName); };
+      btn.onclick = function(){ CV.downloadBlob(blob, finalName, { again: true }); };
       row.appendChild(btn); resultList.appendChild(row);
       if (adPost) adPost.classList.add('visible');
     } catch(e){
-      CV.setStatus(statusEl, 'error', e.message || String(e));
+      CV.setStatus(statusEl, 'error', e.message || String(e), e);
     } finally {
       convertBtn.disabled = !files.length; resetBtn.disabled = false;
       CV.setProgress(progressBar, 100);
@@ -430,6 +440,6 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   });
 })();
 </script>
-<script src="/js/pwa.js?v=2026-10-03c"></script>
+<script src="/js/pwa.js?v=2026-10-03d"></script>
 </body>
 </html>

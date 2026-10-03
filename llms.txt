@@ -386,7 +386,7 @@ are much slower without a GPU.
 
 - [LUFS Loudness Normalizer](https://audiosaw.com/loudness-normalizer): Match the loudness target Spotify, Apple or broadcast expects.
 - [Normalize Audio](https://audiosaw.com/normalize-audio): Bring files to a consistent level so nothing jumps out.
-- [Amplify quiet audio](https://audiosaw.com/amplify-audio): Make a too-quiet recording usable without driving it into distortion.
+- [Amplify quiet audio](https://audiosaw.com/amplify-audio): Make a too-quiet recording usable without driving it into distortion. Works on video too.
 - [Compress an audio file](https://audiosaw.com/audio-compressor): Get a file under an email, Discord or upload size limit.
 - [Stereo to mono](https://audiosaw.com/stereo-to-mono): Fix one-sided recordings and halve the size of voice files.
 - [Mono to stereo](https://audiosaw.com/mono-to-stereo): Honest dual-mono for software that insists on two channels.

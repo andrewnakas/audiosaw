@@ -437,7 +437,7 @@
     },
     'amplify-audio': {
       cat: 'levels', label: 'amplify', title: 'Amplify quiet audio',
-      blurb: 'Make a too-quiet recording usable without driving it into distortion.',
+      blurb: 'Make a too-quiet recording usable without driving it into distortion. Works on video too.',
       project: 'same',
       next: [
         ['normalize-audio', 'Target a consistent level instead of a gain amount'],
