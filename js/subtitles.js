@@ -1,5 +1,6 @@
 /*
- * Subtitle and transcript writers for /audio-to-text.
+ * Subtitle and transcript writers (and a reader) for /audio-to-text and
+ * /add-subtitles-to-video.
  *
  * Input is the segment list Whisper returns: [{ text, start, end }] in seconds.
  * UMD so tools/check-srt.js can run it in Node and parse the output back with
@@ -116,5 +117,59 @@
     return out ? out + '\n' : '';
   }
 
-  return { toSRT: toSRT, toVTT: toVTT, toText: toText, normalise: normalise, stamp: stamp };
+  // SRT or WebVTT text → [{ text, start, end }]. Lenient the way players are:
+  // cue numbers optional, comma or dot before the milliseconds, hours
+  // optional, VTT settings after the times ignored, tags stripped.
+  function parseTime(t) {
+    var m = /(?:(\d+):)?(\d{1,2}):(\d{1,2})[,.](\d{1,3})/.exec(t);
+    if (!m) return NaN;
+    return (+(m[1] || 0)) * 3600 + (+m[2]) * 60 + (+m[3]) + (+(m[4] + '00').slice(0, 3)) / 1000;
+  }
+  function parse(text) {
+    var blocks = String(text || '').replace(/^﻿/, '').replace(/\r\n?/g, '\n').split(/\n\s*\n/);
+    var out = [];
+    blocks.forEach(function (b) {
+      var lines = b.split('\n').filter(function (l) { return l.trim() !== ''; });
+      var k = 0;
+      while (k < lines.length && lines[k].indexOf('-->') < 0) k++;
+      if (k >= lines.length) return;   // WEBVTT header, NOTE, STYLE, numbering only
+      var tm = lines[k].split('-->');
+      var start = parseTime(tm[0]), end = parseTime(tm[1] || '');
+      var body = lines.slice(k + 1).join('\n').replace(/<[^>]+>/g, '').replace(/\{\\[^}]*\}/g, '').trim();
+      if (isFinite(start) && body) out.push({ text: body, start: start, end: isFinite(end) ? end : NaN });
+    });
+    return out;
+  }
+
+  // Short captions for social video: each cue cut into pieces of at most
+  // `maxWords` words (breaking after punctuation when it can), each timed in
+  // proportion to its share of the cue's characters. Whisper gives no word
+  // times, so this is an even spread, not word-accurate.
+  function split(segs, maxWords) {
+    maxWords = maxWords || 4;
+    var out = [];
+    normalise(segs).forEach(function (c) {
+      var words = c.text.replace(/\n/g, ' ').split(/\s+/).filter(Boolean);
+      if (words.length <= maxWords) { out.push(c); return; }
+      var parts = [], cur = [];
+      words.forEach(function (w, i) {
+        cur.push(w);
+        var room = words.length - i - 1;
+        if (cur.length >= maxWords || (cur.length >= 2 && /[,.;:!?]$/.test(w) && room >= 2)) { parts.push(cur.join(' ')); cur = []; }
+      });
+      if (cur.length) {
+        if (cur.length === 1 && parts.length) parts[parts.length - 1] += ' ' + cur[0];
+        else parts.push(cur.join(' '));
+      }
+      var total = parts.reduce(function (a, p) { return a + p.length; }, 0), t = c.start, span = c.end - c.start;
+      parts.forEach(function (p, i) {
+        var e = i === parts.length - 1 ? c.end : t + span * p.length / total;
+        out.push({ text: p, start: t, end: e });
+        t = e;
+      });
+    });
+    return out;
+  }
+
+  return { toSRT: toSRT, toVTT: toVTT, toText: toText, normalise: normalise, stamp: stamp, parse: parse, split: split };
 });

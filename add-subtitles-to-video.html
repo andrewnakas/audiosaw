@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Subtitles to Video Free — Auto Captions, No Watermark</title>
+<meta name="description" content="Free auto caption generator: add subtitles to a video in your browser. Whisper writes the captions in 99 languages or English, you edit them, then burn them in for TikTok and Instagram or add an SRT track. No upload, no watermark, no sign-up.">
+<meta name="keywords" content="add subtitles to video, auto caption generator, add captions to video, burn subtitles into video, subtitle generator free, add srt to mp4, captions for tiktok, no watermark">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/add-subtitles-to-video">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Add Subtitles to a Video — free auto captions, burned in or as a track">
+<meta property="og:description" content="Whisper writes the captions in your browser; edit them and burn them in for TikTok and Instagram. No upload, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/add-subtitles-to-video">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://huggingface.co" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-02f">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Add Subtitles to Video",
+  "alternateName": ["Auto caption generator", "Burn subtitles into video", "Add SRT to MP4", "Subtitle generator"],
+  "url": "https://audiosaw.com/add-subtitles-to-video",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Automatic captions with Whisper in the browser (99 languages, or translated into English), your own SRT or VTT, an editable caption list with live preview, short captions for social video, burned-in captions (libass, Noto Sans, H.264 MP4) or a soft subtitle track without re-encoding, SRT and VTT export, no upload, no watermark",
+  "dateModified": "2026-10-02"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.dub-lines{max-height:28rem;overflow:auto;border:1px solid var(--line,#d9cdb8);border-radius:8px;padding:.25rem .75rem;margin:.75rem 0}
+.dub-line{display:grid;grid-template-columns:7.5rem 1fr auto;gap:.5rem .75rem;align-items:start;padding:.45rem 0;border-bottom:1px dashed var(--line,#d9cdb8)}
+.dub-line:last-child{border-bottom:0}
+.dub-line textarea{width:100%;box-sizing:border-box;font:inherit;line-height:1.45;padding:.3rem .45rem;border:1px solid var(--line,#d9cdb8);border-radius:6px;background:var(--paper,#fff);color:inherit;resize:vertical}
+.dub-time,.dub-state{font-size:.85rem;color:var(--ink-soft,#5b5346);font-variant-numeric:tabular-nums;padding-top:.35rem}
+@media (max-width:560px){.dub-line{grid-template-columns:1fr}.dub-time,.dub-state{padding-top:0}}
+#preview{width:100%;max-height:60vh;border-radius:8px;background:#000;margin:.75rem 0}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+.dub-line{grid-template-columns:7.5rem 1fr}
+[data-auto][hidden],[data-own][hidden]{display:none!important}
+.sub-seek{background:none;border:0;padding:.35rem 0 0;text-align:left;cursor:pointer;color:var(--ink-soft,#5b5346);font:inherit;font-size:.85rem;text-decoration:underline dotted}
+#preview::cue{font-family:"IBM Plex Sans",system-ui,sans-serif}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this auto caption generator really free, with no watermark?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark and no limit on how many videos you caption. Everything runs in your browser, so there is nothing to pay for per minute."}},{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The video is read, transcribed and re-assembled in this tab. The only downloads are the speech model and the video encoder, the same for everyone, once."}},{"@type":"Question","name":"How do I add subtitles to a video for Instagram or TikTok?","acceptedAnswer":{"@type":"Answer","text":"Drop the video, choose \"Short, 3–5 words\", press Make the captions, check them, then press Burn into the video. The captions become part of the picture, which is what Instagram, TikTok and Reels need: they ignore separate subtitle tracks."}},{"@type":"Question","name":"Can I add an SRT file to a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop the video and the SRT together, or choose \"My subtitle file\". Burn it into the picture, or add it as a subtitle track without re-encoding, which takes seconds."}},{"@type":"Question","name":"Which languages does it understand?","acceptedAnswer":{"@type":"Answer","text":"Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic scripts; for other scripts, save the SRT or add a subtitle track."}},{"@type":"Question","name":"Will burning in the captions lower the quality?","acceptedAnswer":{"@type":"Answer","text":"The picture is re-encoded once as high-quality H.264 (CRF 20), which is visually very close to the original at normal viewing. If you need the picture untouched, add the captions as a subtitle track instead."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Add subtitles to video"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Add subtitles to video</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Add <span class="ital">subtitles</span> to a video, free.</h1>
+    <p>An auto caption generator that runs in your browser: drop a video and Whisper writes the captions, in the language spoken or translated into English. Check the words, pick a style, and get the video back with the subtitles burned into the picture for Instagram, TikTok and Reels, or added as a subtitle track you can switch on and off. You can also bring your own SRT. The video is never uploaded, there is no watermark and no sign-up.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a video</p>
+      <p>MP4, MOV, WebM or MKV, up to about 600 MB. Drop an SRT or VTT with it to use your own subtitles.</p>
+      <input type="file" id="fileInput" accept="video/*,.mkv,.m4v,.srt,.vtt" multiple>
+    </div>
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Captions from
+          <select id="source">
+            <option value="auto" selected>The speech (automatic)</option>
+            <option value="file">My subtitle file (SRT or VTT)</option>
+          </select>
+        </label>
+        <label data-auto>Language
+          <select id="task">
+            <option value="transcribe" selected>As spoken</option>
+            <option value="translate">Translated into English</option>
+          </select>
+        </label>
+        <label data-auto>Spoken language
+          <select id="language">
+            <option value="auto" selected>Detect automatically</option>
+            <option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option>
+            <option value="de">German</option><option value="it">Italian</option><option value="pt">Portuguese</option>
+            <option value="nl">Dutch</option><option value="pl">Polish</option><option value="ru">Russian</option>
+            <option value="uk">Ukrainian</option><option value="tr">Turkish</option><option value="id">Indonesian</option>
+            <option value="vi">Vietnamese</option><option value="sv">Swedish</option><option value="ro">Romanian</option>
+          </select>
+        </label>
+        <label data-auto>Accuracy
+          <select id="model">
+            <option value="onnx-community/whisper-base" selected>Good (Whisper base, 135 MB)</option>
+            <option value="onnx-community/whisper-small">Best (Whisper small, 285 MB)</option>
+            <option value="onnx-community/whisper-tiny">Fastest (Whisper tiny, 90 MB)</option>
+          </select>
+        </label>
+        <label>Caption length
+          <select id="length">
+            <option value="full" selected>Sentences, up to two lines</option>
+            <option value="short">Short, 3–5 words (social video)</option>
+          </select>
+        </label>
+      </div>
+      <div class="result-actions" data-own hidden>
+        <button class="btn btn-secondary" id="srtBtn" type="button">Choose an SRT or VTT file</button>
+        <span class="control-note" id="srtName"></span>
+        <input type="file" id="srtInput" accept=".srt,.vtt" hidden>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Make the captions</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="cuesPanel" hidden>
+      <video id="preview" class="sub-preview" controls playsinline preload="metadata"></video>
+      <div class="controls">
+        <label>Size <select id="subSize"><option value="s">Small</option><option value="m" selected>Medium</option><option value="l">Large</option></select></label>
+        <label>Position <select id="subPos"><option value="bottom" selected>Bottom</option><option value="top">Top</option></select></label>
+        <label>Colour <select id="subColour"><option value="white" selected>White</option><option value="yellow">Yellow</option></select></label>
+        <label>Background <select id="subBg"><option value="outline" selected>Outline</option><option value="box">Dark box</option></select></label>
+      </div>
+      <div class="dub-lines" id="cues"></div>
+      <div class="result-actions">
+        <button class="btn" id="burnBtn" type="button">Burn into the video (MP4)</button>
+        <button class="btn btn-secondary" id="softBtn" type="button">Add as a subtitle track (fast)</button>
+        <button class="btn btn-secondary" id="dlSrt" type="button">Download SRT</button>
+        <button class="btn btn-secondary" id="dlVtt" type="button">Download VTT</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Captions</th><td>OpenAI Whisper (tiny, base or small) in your browser: 99 languages, or translated into English; or your own SRT/VTT</td></tr>
+        <tr><th>Editing</th><td>Every caption in an editable list, with a live preview on the video</td></tr>
+        <tr><th>Styles</th><td>Three sizes, top or bottom, white or yellow, outline or dark box; short 3–5 word captions for social video</td></tr>
+        <tr><th>Burned in</th><td>Drawn into the picture with libass and Noto Sans, re-encoded as H.264 MP4; the sound is kept as it is</td></tr>
+        <tr><th>Subtitle track</th><td>Added beside the untouched picture in seconds: MP4/MOV (mov_text), MKV (SRT) or WebM (WebVTT)</td></tr>
+        <tr><th>Also saves</th><td>SRT and VTT files</td></tr>
+        <tr><th>Uploads your video</th><td>No. It never leaves the tab; no watermark, no account</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How the automatic captions are made</h2>
+    <p>The soundtrack is decoded in the tab and handed to Whisper, the open speech recognition model from OpenAI, running in the browser through ONNX Runtime. It returns the speech as timed phrases with punctuation and capitals. Each phrase becomes a caption of up to two lines of 42 characters, the line length broadcasters and Netflix use, and stays on screen for at least a third of a second. Whisper base is accurate for clear speech in English and the major European languages; choose small for accents, noisy rooms or other languages, at the cost of a bigger one-time download. "Translated into English" makes English captions from speech in any language, in the same pass.</p>
+    <p>Machine captions are good, not perfect. Names and technical words are written the way they sound, so the list exists to fix them before you save. Click a caption's time to play the video from there and hear it. The preview on the video uses your browser's own caption display, so the size and font there are approximate; the saved video uses the style you chose.</p>
+
+    <h2>Burned-in captions or a subtitle track</h2>
+    <p><strong>Burned in</strong> means the words are drawn into the pixels of every frame. They show on every phone, in every app and in every feed, including Instagram, TikTok, Reels, YouTube Shorts, LinkedIn and X, where most people watch with the sound off. The price is that the picture is encoded again, as H.264 at high quality (CRF 20), which takes a little while in a browser: measured on a laptop (Apple, 8 cores), 30 seconds of 720p took about 21 seconds; a machine busy with other work took two to three times as long, and 1080p or 4K take proportionally longer. The sound is copied untouched where the container allows it.</p>
+    <p><strong>A subtitle track</strong> sits beside the picture, like the subtitles on a film file. Nothing is re-encoded, so it takes seconds and the quality is exactly the original's. Viewers turn it on and off in the player's CC menu: VLC, QuickTime and most desktop and TV players handle it. Social apps ignore subtitle tracks, so for those, burn them in. For YouTube, upload the SRT file alongside the video instead; YouTube Studio reads it directly and keeps the captions searchable.</p>
+
+    <h2>Captions for TikTok, Reels and Shorts</h2>
+    <p>"Short, 3–5 words" splits each sentence into quick captions, the style that keeps a vertical video readable at a glance. Whisper times whole phrases rather than single words, so the short captions are spread across each phrase in proportion to their length: close enough to follow speech at a normal pace, not the word-by-word karaoke highlighting some apps do. Use Large and the dark box for busy footage; white with an outline suits darker scenes. Captions placed at the top stay clear of the app buttons along the bottom of a vertical feed.</p>
+
+    <h2>Using your own subtitles</h2>
+    <p>Choose "my subtitle file" and pick an SRT or VTT, or drop it together with the video. Times are read as written, formatting tags are removed, and every caption lands in the same editable list, so you can also use this page to burn a translator's SRT into a video or fix a typo in one. To translate captions into Spanish, French, Italian, Portuguese or Hindi and have them spoken, use <a href="/video-dubbing">video dubbing</a>; for a plain transcript, <a href="/audio-to-text">audio to text</a>.</p>
+
+    <h2>What it can't do</h2>
+    <p>Burned-in captions use Noto Sans, which covers the Latin, Greek and Cyrillic alphabets; Chinese, Japanese, Korean, Arabic and Indic scripts are not drawn yet, so for those languages save the SRT or add a subtitle track, which the player draws with its own fonts. There is no word-by-word highlighting, no animated caption styles and no emoji. Whisper does not separate speakers here; the <a href="/audio-to-text">audio to text</a> page labels who is speaking. Very long or very high-resolution videos take a long time to burn in a browser and need plenty of memory; trim to the part you need with your editor first.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this auto caption generator really free, with no watermark?</summary><p>Yes. There is no account, no watermark and no limit on how many videos you caption. Everything runs in your browser, so there is nothing to pay for per minute.</p></details>
+      <details><summary>Is my video uploaded?</summary><p>No. The video is read, transcribed and re-assembled in this tab. The only downloads are the speech model and the video encoder, the same for everyone, once.</p></details>
+      <details><summary>How do I add subtitles to a video for Instagram or TikTok?</summary><p>Drop the video, choose "Short, 3–5 words", press Make the captions, check them, then press Burn into the video. The captions become part of the picture, which is what Instagram, TikTok and Reels need: they ignore separate subtitle tracks.</p></details>
+      <details><summary>Can I add an SRT file to a video?</summary><p>Yes. Drop the video and the SRT together, or choose "My subtitle file". Burn it into the picture, or add it as a subtitle track without re-encoding, which takes seconds.</p></details>
+      <details><summary>Which languages does it understand?</summary><p>Whisper transcribes 99 languages and can translate any of them into English captions. Burned-in captions are drawn in Latin, Greek and Cyrillic scripts; for other scripts, save the SRT or add a subtitle track.</p></details>
+      <details><summary>Will burning in the captions lower the quality?</summary><p>The picture is re-encoded once as high-quality H.264 (CRF 20), which is visually very close to the original at normal viewing. If you need the picture untouched, add the captions as a subtitle track instead.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>Just the transcript or the SRT, with speaker labels.</p></a>
+      <a class="card" href="/video-dubbing"><h3>AI video dubbing and translation</h3><p>A voice-over in another language instead of captions.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean the sound first: clearer speech, better captions.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Take the soundtrack out of the video.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 to MP3</h3><p>Keep only the audio.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-02f"></script>
+<script src="/js/tool-graph.js?v=2026-10-02f"></script>
+<script src="/js/flow.js?v=2026-10-02f"></script>
+<script src="/js/audio-core.js?v=2026-10-02f"></script>
+<script src="/js/consent.js?v=2026-10-02f"></script>
+<script src="/js/subtitles.js?v=2026-10-02f"></script>
+<script src="/js/subtitle-page.js?v=2026-10-02f"></script>
+<script src="/js/pwa.js?v=2026-10-02f"></script>
+</body>
+</html>

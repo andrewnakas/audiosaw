@@ -1065,6 +1065,22 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     which is what the page gets: /video-dubbing is not isolated. Also
     check-dubbing's into-Spanish case (DUBBING_BROWSER=1): an English
     `say` video, dubbed into Spanish and heard back by Whisper in Spanish.
+- **/add-subtitles-to-video** (`js/subtitle-page.js`): captions from
+  Whisper (transcribe-worker.js) or the user's SRT/VTT (`ASSubs.parse`),
+  "short" 3-5 word captions (`ASSubs.split`, spread by length, not word
+  times), an editable list previewed through a `<track>`, then either
+  burned in (ffmpeg `subtitles` filter: this core has libass, freetype and
+  fribidi; Noto Sans SemiBold TTF from `vendor/fonts/` written beside the
+  SRT, `fontsdir=.`; x264 superfast CRF 20, audio copied) or added as a
+  track (stream copy; mov_text/srt/webvtt by container). Measured
+  (check-subtitles, idle): 30 s of 720p burned in ~21 s with superfast;
+  under load average 30+ the same took 56 s (veryfast 78), so do not
+  quote a loaded run;
+  the caption drawn only inside its cue; audio packets identical; the soft
+  track reads back. **The font bytes must be copied per burn**: ffmpeg's
+  writeFile transfers the buffer, and the second burn found it detached.
+  Latin/Greek/Cyrillic only (no HarfBuzz shaping tested; CJK needs a 16 MB
+  font).
 - **Dubbing in the speaker's own voice** ("use each speaker's own voice",
   English output on WebGPU only; the box is the consent): `cloneAll` in
   dubbing-page.js cuts ~5 s of each speaker's own longest lines from the

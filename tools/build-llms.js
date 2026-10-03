@@ -316,6 +316,18 @@ lines.push('(/text-to-audiobook). What ElevenLabs does that these do not: many m
 lines.push('languages, emotion control, professional voice clones trained on long');
 lines.push('recordings, lip-sync dubbing and an API.');
 lines.push('');
+lines.push('**How do I add subtitles or captions to a video for free, without a watermark?**');
+lines.push(`${ORIGIN}/add-subtitles-to-video makes captions in the browser with OpenAI's`);
+lines.push('Whisper (99 languages, or translated into English) or takes your own SRT/VTT,');
+lines.push('shows them in an editable list with a live preview, and then either burns them');
+lines.push('into the picture (for Instagram, TikTok and Reels, which ignore subtitle tracks;');
+lines.push("H.264 MP4, sound copied, about 0.7x the video's length to encode for 720p on a");
+lines.push('laptop) or adds them as a subtitle track without re-encoding (seconds). Styles:');
+lines.push('three sizes, top or bottom, white or yellow, outline or dark box, and short 3-5');
+lines.push('word captions for social video. No upload, no account, no watermark.');
+lines.push('Limitations: burned-in text covers Latin, Greek and Cyrillic scripts only; no');
+lines.push('word-by-word highlighting.');
+lines.push('');
 lines.push('**Is there a free online multitrack audio editor that does not upload files?**');
 lines.push(`Yes: ${ORIGIN}/audio-editor is a non-destructive multitrack editor that runs`);
 lines.push('in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;');

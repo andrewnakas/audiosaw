@@ -782,6 +782,7 @@
       blurb: 'MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.',
       next: [
         ['noise-reduction', 'Clean a noisy recording first; Whisper hears through less hiss'],
+        ['add-subtitles-to-video', 'Put the captions on the video itself, burned in'],
         ['extract-audio', 'Pull the soundtrack out of a video you want subtitled'],
         ['audio-cutter', 'Transcribe only the part you need'],
         ['split-audio', 'Break a recording over two hours into parts'],
@@ -850,7 +851,19 @@
         ['stem-splitter', 'Take the original voice out of the music before dubbing'],
         ['extract-audio', 'Pull the new soundtrack back out of the video'],
         ['text-to-speech', 'Write your own narration instead'],
-        ['audio-editor', 'Fine-tune the timing of each line by hand']
+        ['audio-editor', 'Fine-tune the timing of each line by hand'],
+        ['add-subtitles-to-video', 'Burn captions into the dubbed video']
+      ]
+    },
+    'add-subtitles-to-video': {
+      cat: 'voice', label: 'add subtitles', title: 'Add subtitles to video',
+      blurb: 'Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.',
+      next: [
+        ['audio-to-text', 'Just the transcript or the SRT, with speaker labels'],
+        ['video-dubbing', 'A voice-over in another language instead of captions'],
+        ['noise-reduction', 'Clean the sound first: clearer speech, better captions'],
+        ['extract-audio', 'Take the soundtrack out of the video'],
+        ['mp4-to-mp3', 'Keep only the audio']
       ]
     },
     'voice-cloning': {
@@ -989,6 +1002,7 @@
     ['audio-editor', 'edit & mix tracks'],
     ['voice-recorder', 'record something'],
     ['audio-to-text', 'transcribe to text'],
+    ['add-subtitles-to-video', 'add captions to a video'],
     ['stem-splitter', 'separate the vocals'],
     ['split-audio', 'split a long recording'],
     ['noise-reduction', 'remove background noise'],
@@ -1070,7 +1084,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'voice-cloning', 'audio-to-text', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
       ]
     },
     {

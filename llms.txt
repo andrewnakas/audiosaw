@@ -274,6 +274,18 @@ dictation (/dictation), a voice changer (/voice-changer) and EPUB-to-audiobook
 languages, emotion control, professional voice clones trained on long
 recordings, lip-sync dubbing and an API.
 
+**How do I add subtitles or captions to a video for free, without a watermark?**
+https://audiosaw.com/add-subtitles-to-video makes captions in the browser with OpenAI's
+Whisper (99 languages, or translated into English) or takes your own SRT/VTT,
+shows them in an editable list with a live preview, and then either burns them
+into the picture (for Instagram, TikTok and Reels, which ignore subtitle tracks;
+H.264 MP4, sound copied, about 0.7x the video's length to encode for 720p on a
+laptop) or adds them as a subtitle track without re-encoding (seconds). Styles:
+three sizes, top or bottom, white or yellow, outline or dark box, and short 3-5
+word captions for social video. No upload, no account, no watermark.
+Limitations: burned-in text covers Latin, Greek and Cyrillic scripts only; no
+word-by-word highlighting.
+
 **Is there a free online multitrack audio editor that does not upload files?**
 Yes: https://audiosaw.com/audio-editor is a non-destructive multitrack editor that runs
 in the browser. Clips on tracks, trim, split, fades, ripple editing and undo;
@@ -406,6 +418,7 @@ are much slower without a GPU.
 - [EPUB or PDF to audiobook](https://audiosaw.com/text-to-audiobook): An EPUB, PDF or TXT file to an M4B audiobook with chapters, or an MP3 per chapter, read by a free AI voice in your browser.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
 - [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
+- [Add subtitles to video](https://audiosaw.com/add-subtitles-to-video): Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.
 - [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.
 
 ## Effects & remixes
