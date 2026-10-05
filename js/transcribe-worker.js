@@ -38,8 +38,22 @@ var STRIDE_S = 5;
 env.allowLocalModels = false;
 env.useBrowserCache = true;
 
-var isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(self.navigator.userAgent || '');
-env.backends.onnx.wasm.wasmPaths = isSafari
+// The page spawns this as transcribe-worker.js?v=<token>[&backend=wasm][&safe=1].
+//   backend=wasm  skip WebGPU (the URL switch /audio-to-text?backend=wasm);
+//   safe=1        the page's one retry after a model failed to load for a
+//                 reason other than the network: the plain wasm build on one
+//                 thread, no WebGPU. It has to be a new worker, because ORT
+//                 remembers a failed initWasm() and refuses every later one.
+var QS = new URLSearchParams(self.location.search);
+var SAFE = QS.get('safe') === '1';
+var FORCE_WASM = SAFE || QS.get('backend') === 'wasm';
+
+// The asyncify build does not run on WebKit. Every browser on iOS is WebKit,
+// whatever its name: Chrome (CriOS) and Firefox (FxiOS) on an iPhone used to
+// slip past a Safari-only test and get the asyncify build.
+var UA = self.navigator.userAgent || '';
+var isWebKit = /^((?!chrome|android|crios|fxios).)*safari/i.test(UA) || /iPhone|iPad|iPod|CriOS|FxiOS|EdgiOS/.test(UA);
+env.backends.onnx.wasm.wasmPaths = isWebKit || SAFE
   ? { mjs: VENDOR + 'ort-wasm-simd-threaded.mjs?v=1.26.0-dev.20260416', wasm: VENDOR + 'ort-wasm-simd-threaded.wasm?v=1.26.0-dev.20260416' }
   : { mjs: VENDOR + 'ort-wasm-simd-threaded.asyncify.mjs?v=1.26.0-dev.20260416', wasm: VENDOR + 'ort-wasm-simd-threaded.asyncify.wasm?v=1.26.0-dev.20260416' };
 
@@ -93,7 +107,7 @@ env.fetch = resumableFetch;
 
 // Threads need SharedArrayBuffer, which needs the page to be cross-origin
 // isolated. Leave one core for the page.
-var THREADS = self.crossOriginIsolated
+var THREADS = self.crossOriginIsolated && !SAFE
   ? Math.max(1, Math.min(8, (self.navigator.hardwareConcurrency || 4) - 1))
   : 1;
 env.backends.onnx.wasm.numThreads = THREADS;
@@ -112,6 +126,7 @@ function post(type, payload) {
 }
 
 async function gpuOK() {
+  if (FORCE_WASM) return false;
   try {
     if (!self.navigator.gpu) return false;
     var a = await self.navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -286,15 +301,23 @@ function fmt(s) {
   return Math.round(s / 60) + ' min';
 }
 
+// A failed 'load' is not reported: the 'run' that follows waits on the same
+// load and reports it. Reporting both counted every failure twice.
+// stage says whether the model never loaded ('load') or the run itself
+// failed ('run'); the page retries a non-network 'load' failure once in a
+// safe worker.
 self.onmessage = async function (e) {
   var m = e.data || {};
+  var stage = 'load';
   try {
-    if (m.type === 'load') await load(m.model);
+    if (m.type === 'load') await load(m.model).catch(function () {});
     else if (m.type === 'run') {
       await load(m.model);
+      stage = 'run';
       await run(m);
     }
   } catch (err) {
-    post('error', { message: (err && err.message) || String(err) });
+    var message = (err && err.message) || String(err);
+    post('error', { message: message, stage: stage, network: /download kept failing/.test(message), safe: SAFE });
   }
 };

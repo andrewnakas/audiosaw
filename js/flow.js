@@ -116,6 +116,16 @@
       action: null
     },
     {
+      // ONNX Runtime wraps every backend failure in "no available backend
+      // found. ERR: [wasm] …", which the next kind would file as a missing
+      // feature. When what is wrapped is an allocation that failed, it is a
+      // device out of memory (a phone, usually), not an old browser.
+      id: 'memory',
+      test: /no available backend[\s\S]*(RangeError|out of memory|could not allocate|Cannot allocate|allocation fail)/i,
+      message: 'The device ran out of memory loading the model. A smaller model, or a laptop or desktop, will get through it.',
+      action: null
+    },
+    {
       // A browser without a feature the tool relies on: AudioWorklet,
       // OfflineAudioContext, MediaRecorder, WebAssembly, workers, WebGPU.
       // Named APIs only: a generic TypeError is far more often our own bug,

@@ -67,11 +67,23 @@
   var duration = 0;
   var downloadedOnce = false;
   var baseTitle = document.title;
+  // ?backend=wasm skips the GPU. safeMode is the one automatic retry after a
+  // model failed to load for a reason other than the network (see the worker).
+  var forceWasm = /[?&]backend=wasm\b/.test(location.search);
+  var safeMode = false;
+
+  // Phones get Whisper tiny by default. Base needs a 135 MB download and
+  // several times that in memory, and on 1-4 Oct a third of this page's
+  // errors were phones running out of it; the FAQ already says tiny is the
+  // one that works on a phone. The choice stays in the menu.
+  var uad = navigator.userAgentData;
+  var mobile = (uad && uad.mobile) || /Android|iPhone|iPad|iPod|Mobile/.test(navigator.userAgent || '');
+  if (mobile && modelSel && modelSel.value === 'onnx-community/whisper-base') modelSel.value = 'onnx-community/whisper-tiny';
 
   /* --------------------------------------------------------- environment */
 
   function probeGpu() {
-    if (!navigator.gpu) { gpuUsable = false; describe(); return; }
+    if (!navigator.gpu || forceWasm) { gpuUsable = false; describe(); return; }
     navigator.gpu.requestAdapter({ powerPreference: 'high-performance' })
       .then(function (a) { gpuUsable = !!a; describe(); })
       .catch(function () { gpuUsable = false; describe(); });
@@ -120,7 +132,7 @@
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker('/js/transcribe-worker.js?v=' + ASSET_V, { type: 'module' });
+    worker = new Worker('/js/transcribe-worker.js?v=' + ASSET_V + (forceWasm ? '&backend=wasm' : '') + (safeMode ? '&safe=1' : ''), { type: 'module' });
     worker.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') onStatus(m);
@@ -128,10 +140,10 @@
       else if (m.type === 'note') { gpuUsable = false; describe(); }
       else if (m.type === 'partial') onPartial(m.text);
       else if (m.type === 'done') onDone(m);
-      else if (m.type === 'error') onError(m.message);
+      else if (m.type === 'error') onWorkerError(m);
     };
     worker.onerror = function (e) {
-      onError('The transcription worker could not start' + (e && e.message ? ' (' + e.message + ')' : '') + '. Your browser may be blocking it.');
+      onWorkerError({ stage: 'load', message: 'The transcription worker could not start' + (e && e.message ? ' (' + e.message + ')' : '') + '. Your browser may be blocking it.' });
     };
     return worker;
   }
@@ -152,6 +164,24 @@
     liveEl.hidden = false;
     liveEl.textContent += text;
     liveEl.scrollTop = liveEl.scrollHeight;
+  }
+
+  // The model failed to load on this browser's first choice of engine (the
+  // GPU, or the threaded CPU build). Before showing an error, try once more
+  // in a fresh worker on the plain CPU build: slower, but it is what runs
+  // where the others do not. A dropped download is not retried here; the
+  // worker already resumed it and the message says to press again.
+  function onWorkerError(m) {
+    if (m.stage === 'load' && !m.network && !safeMode && files.length) {
+      safeMode = true;
+      gpuUsable = false;
+      try { worker.terminate(); } catch (e) {}
+      worker = null;
+      CV.setStatus(statusEl, 'info', 'The fast engine would not start in this browser — retrying on the simpler CPU engine…');
+      transcribe();
+      return;
+    }
+    onError(m.message);
   }
 
   function onError(message) {
@@ -271,6 +301,13 @@
   bind('#dlVtt', function () { if (segments) save(ASSubs.toVTT(cueSegments(), duration), 'vtt', 'text/vtt'); });
   bind('#copyBtn', function () {
     var btn = this;
+    // Copying the transcript is using it, as much as downloading a .txt.
+    // Before this, only downloads counted, and a visitor who copied the text
+    // into their notes looked like one who gave up.
+    if (segments && !downloadedOnce) {
+      downloadedOnce = true;
+      CV.track('convert_success', { tool: 'audio-to-text', target_format: 'copy' });
+    }
     var done = function () { btn.textContent = 'copied'; setTimeout(function () { btn.textContent = 'copy text'; }, 1500); };
     if (navigator.clipboard) navigator.clipboard.writeText(textEl.value).then(done, function () { textEl.select(); });
     else { textEl.select(); try { document.execCommand('copy'); done(); } catch (e) {} }
@@ -309,7 +346,9 @@
       '.mp4', '.mov', '.mkv', '.m4v', '.m4b', '.amr', '.3gp']);
   if (resetBtn) resetBtn.addEventListener('click', reset);
 
-  goBtn.addEventListener('click', async function () {
+  goBtn.addEventListener('click', function () { downloadedOnce = false; transcribe(); });
+
+  async function transcribe() {
     if (!files.length) return;
     goBtn.disabled = true;
     resetBtn.disabled = true;
@@ -333,7 +372,7 @@
     } catch (e) {
       onError(e.message || String(e));
     }
-  });
+  }
 
   describe();
   probeGpu();

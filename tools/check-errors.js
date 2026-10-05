@@ -71,6 +71,8 @@ const TABLE = [
   ['Could not start studio recording in this browser. Cannot read properties of undefined (reading \'addModule\') Voice mode still works.', dom('TypeError', 'Cannot read properties of undefined (reading \'addModule\')'), 'unsupported_api'],
   ['This browser cannot record audio here (not supported in this browser: NotSupportedError).', dom('NotSupportedError', 'no audio types'), 'unsupported_api'],
   ['Separation failed. The separation worker could not start. Your browser may be blocking it.', null, 'unsupported_api'],
+  ['Transcription failed. no available backend found. ERR: [wasm] RangeError: WebAssembly.Memory(): could not allocate memory', null, 'memory'],
+  ['Transcription failed. no available backend found. ERR: [wasm] Error: previous call to \'initWasm()\' failed.', null, 'unsupported_api'],
   ['Could not hand it over: the browser has too little storage left for a 40 MB clip.', null, 'storage'],
   ['Export failed: The quota has been exceeded.', dom('QuotaExceededError', 'The quota has been exceeded.'), 'storage'],
   ['Could not process that file. memory access out of bounds', dom('RuntimeError', 'memory access out of bounds'), 'codec_crash'],
