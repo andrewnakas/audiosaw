@@ -56,37 +56,49 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </header>
 
 <main class="container">
-  <section class="page-intro"><h1>Privacy</h1><p>Last updated: 2026</p></section>
+  <section class="page-intro"><h1>Privacy</h1><p>Last updated: 5 October 2026</p></section>
   <section class="content-section">
     <h2><span class="num">01.</span>The short version</h2>
-    <p>Your audio files stay on your computer. Every tool here runs in your browser tab — no upload, no server-side processing, nothing. If you don't believe me, load the page, switch to airplane mode, and try a file. Still works.</p>
+    <p>Your audio, video and text stay on your device. Every tool here runs in your browser tab: nothing you open is uploaded, and there is no server-side processing. The only things fetched from the network are the tools themselves (code, codecs and, for the AI tools, model files), which are the same for every visitor and contain nothing of yours. Once a tool has loaded, you can switch to airplane mode and it keeps working; an AI tool needs the network the first time, to download its model.</p>
 
     <h2><span class="num">02.</span>What does get collected</h2>
     <ul>
       <li>Normal web-server logs. The host (Cloudflare Pages) records request data — IP, user-agent, which URL you hit — the same as basically every site. Used for outages and abuse, kept briefly.</li>
-      <li>Google Analytics 4 — aggregated traffic counts (page views, country, browser), plus which tool you used, which format you picked, how long a conversion took, and a size band for the file. No audio data, no filenames, no personal identifiers. To be precise about how this works: the analytics script loads on every page, and your consent choice controls whether it is allowed to store anything on your device. Decline and it runs without cookies, which means you are counted but not recognised on a later visit.</li>
-      <li>A few localStorage keys, all of them on your device and readable by nobody else: <code>fex_consent_v1</code> (your consent choice), your last-used bitrate and format so the dropdowns remember them, and the last five tools you used so the homepage can offer them back to you.</li>
+      <li>Google Analytics 4 — aggregated traffic counts (page views, country, browser), plus which tool you used, the file extension going in and coming out, whether the file was dropped or browsed for, how long a conversion took, a size band for the file, and a short category when something fails (for example "decode" or "memory"). No audio data, no filenames, no error text, no personal identifiers. To be precise about how this works: the analytics script loads on every page, and your consent choice controls whether it is allowed to store anything on your device. Decline and it runs without cookies, which means you are counted but not recognised on a later visit.</li>
     </ul>
 
-    <h2><span class="num">03.</span>What does NOT get collected</h2>
+    <h2><span class="num">03.</span>What is stored on your device, and only there</h2>
     <ul>
-      <li>The audio files you convert, cut, or join. We don't have them. They never leave your browser tab.</li>
+      <li>localStorage: <code>fex_consent_v1</code> (your consent choice), your last-used formats and settings so the controls remember them, and the last few tools you used so the homepage can offer them back to you.</li>
+      <li>IndexedDB: the audio editor's project and its audio (so it survives a reload), audiobook chapters already read (so a long book can be finished later), a clip handed between the editor and another tool, and a file shared to the installed app. Nobody but you can read these; clear them by clearing this site's data in your browser.</li>
+      <li>Cache Storage: the FFmpeg codec and the AI model files, so they are downloaded once rather than on every visit.</li>
+    </ul>
+
+    <h2><span class="num">04.</span>What does NOT get collected</h2>
+    <ul>
+      <li>The files you convert, cut, record, transcribe or synthesise, and the text you type into the speech tools. We don't have them. They never leave your browser tab.</li>
+      <li>Your microphone or a tab you record. The recording tools read them only while you are recording, and the audio goes into the file you download, nowhere else.</li>
       <li>The names of the files you process, or any of their contents. The settings you choose are counted — that a conversion was 320 kbps, say — but never tied to a file or a person.</li>
       <li>Advertising of any kind. There are no ads on this site and no ad network is loaded. There used to be an ad script here; it has been removed.</li>
       <li>Account info. There are no accounts to make.</li>
     </ul>
 
-    <h2><span class="num">04.</span>Third parties</h2>
+    <h2><span class="num">05.</span>Third parties</h2>
     <ul>
       <li>Google Analytics 4 — aggregated, anonymised traffic counts. <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
       <li>Cloudflare Pages (hosting and CDN).</li>
-      <li>unpkg — one 30 MB WebAssembly file (the FFmpeg core) loads from this public CDN the first time you use a tool that needs it, and is then cached on your device. unpkg sees your IP at that moment; it does not see your audio. Every other library is served from this site.</li>
+      <li>unpkg, or jsDelivr if unpkg is unreachable — one 30 MB WebAssembly file (the FFmpeg core) loads from this public CDN the first time you use a tool that needs it, and is then cached on your device.</li>
+      <li>Hugging Face — the AI tools (transcription, text to speech, voice cloning, dubbing, translation, speaker labels, the stem splitter) download their open model files from huggingface.co the first time you use them.</li>
     </ul>
+    <p>Each of these sees your IP address at the moment of the download, as any web server would. None of them sees your audio or your text. Every other library is served from this site.</p>
 
-    <h2><span class="num">05.</span>Your options</h2>
-    <p>Clear cookies any time from your browser settings. Or block JavaScript — the tools won't function, but you can still read these pages.</p>
+    <h2><span class="num">06.</span>Files the voice tools make</h2>
+    <p>Speech made by the text-to-speech, voice-cloning and dubbing tools carries a short note in the file's own metadata saying it is synthetic (or a cloned voice). It is written into the file on your device and is not reported anywhere.</p>
 
-    <h2><span class="num">06.</span>Questions</h2>
+    <h2><span class="num">07.</span>Your options</h2>
+    <p>Change your analytics choice any time from "cookie settings" in the footer. Clear this site's cookies and stored data from your browser settings to remove everything listed above. Or block JavaScript — the tools won't function, but you can still read these pages.</p>
+
+    <h2><span class="num">08.</span>Questions</h2>
     <p>See <a href="/contact">contact</a>.</p>
   </section>
 </main>
