@@ -376,6 +376,15 @@ numbers; tighten the check before quoting a new one.
     not `error`: they are user-side misses and must not count as
     `convert_error` (the `empty` kind's "no audio" regex would also
     misdescribe them as a file problem).
+- `js/mp3-to-mp4-page.js`: `/mp3-to-mp4`, audio plus a picture into an MP4
+  (your image whole on a blurred copy or cropped, or a generated cover with
+  the title and the track's waveform; 16:9, 1:1, 9:16). **The still is not
+  encoded for the whole song**: 25 fps x264 in wasm took 526 s for 4 minutes
+  of 1080p. Two seconds of 25 fps are encoded once and looped under the audio
+  by stream copy (`-stream_loop -1`, `-c:v copy`, `-t` the audio's length):
+  4 minutes in ~20 s. AAC input is copied, anything else is AAC 320k.
+  In 9:16 the text and waveform stay above the bottom fifth, where the feeds
+  draw their own caption and buttons.
 - `js/piano-roll.js` (`ASPianoRoll`): the note editor on `/audio-to-midi`.
   Transcriptions land on the roll, and the .mid is written from the roll's
   notes when "Download .mid" is pressed. `convert_success` therefore fires on

@@ -798,3 +798,112 @@ the answer lives in llms.txt and the cloning FAQ, where assistants read it.
 most link-worthy thing the site has (voice cloning and dubbing running
 entirely in a browser tab is a Show HN / r/LocalLLaMA / Hugging Face
 community story). That, and the www→apex redirect (§9), are Andrew's.
+
+## §14 — The growth read, and where it leaks (5 Oct 2026)
+
+Andrew: "results look good — maximise the growth." Read from GA4 "Audio
+Saw", Search Console and Bing on 5 Oct, week 27 Sep–3 Oct against 20–26 Sep.
+
+| | This week | Last week |
+|---|---|---|
+| Sessions | **2,066** (+40%) | 1,474 |
+| Active users / new | 1,463 / 1,391 (+44% / +46%) | 1,014 / 950 |
+| AI Assistant sessions | 1,386 (+43%), 67% of all | 972 |
+| Organic / Direct | 331 (+32%) / 300 (+70%) | 251 / 176 |
+| chatgpt.com · google · bing | 1,393 · 168 · 101 | 1,014 · 136 · 78 |
+| Users who started a tool / finished | 791 / 530 (**67%**) | 544 / 424 (78%) |
+| convert_error events | 442 (+93%), 150 users | 229, 98 users |
+
+28 days: 5,626 sessions, 3,815 from assistants. This week's 1,463 users is
+about 6,300 a month: the 10K target of §12 is about 1.6x away.
+
+**Assistants pick up a new page in about a day, if the job is common.**
+ChatGPT landings this week: /voice-recorder 265, /stem-splitter 186,
+**/audio-to-text 141** (shipped 1 Oct), /audio-editor 132, / 100,
+/split-audio 87, **/text-to-speech 83** (shipped 2 Oct). Pages for
+narrower jobs got nothing: /voice-cloning 1, /dictation and
+/add-subtitles-to-video 0, /text-to-audiobook 6, /video-dubbing 13.
+Same build quality, opposite results; the difference is how many people
+ask an assistant for that job. So new pages should be chosen by how often
+the task is asked for, not by how impressive the model is.
+
+**The growth leaks after the click.** Completion fell from 78% to 67% as the
+new AI pages took traffic. By users, this week:
+
+| Page | Viewed | Started | Succeeded | Errored |
+|---|---|---|---|---|
+| /audio-to-text | 145 | 107 | 14 | 24 |
+| /stem-splitter | 193 | 97 | 32 | 26 |
+| /text-to-speech | 103 | 63 | 26 | 3 |
+| /voice-recorder | 237 | 139 | 138 | 20 |
+| /video-dubbing | 14 | 9 | 0 | 2 |
+
+`error_type` since the 1 Oct buckets (1–4 Oct, 261 events, 104 users):
+unsupported_api 71 (19 users), other 50 (28), wrong_type 35 (16), memory 29
+(16), mic_denied 16, codec_load 14, decode 13. /audio-to-text alone: 96
+events from 34 users — unsupported_api 52 (16), memory 18 (10), other 15 (6).
+Its visitors are 43% phones (Android 47 users, iOS 38).
+
+Two of those numbers were partly the instrument. /audio-to-text counted a
+success only on a download, so copying the transcript looked like giving
+up, and a failed model load posted two errors. /text-to-speech has the same
+shape (success = download; listening in the page is not counted); left as
+is, but read its rate as a floor.
+
+**Retention (the §5 one-month judgement).** Of this week's 1,463 users,
+1,391 were new: about 5% came back, and the installed app ("pwa" source)
+opened 11 sessions (15 the week before). The PWA and recents work keeps
+the people who return, but return visits are not where growth comes from;
+nothing more is planned there.
+
+**Search.** Google is unchanged: 470 clicks in 28 days, 401 of them
+"audiosaw"; the indexing report still says 2 of 63 (and has not refreshed
+since ~19 Sep). Bing is the search channel that works: clicks rose from about
+8 a day in early September to 35 on 3 Oct, non-brand at positions 3–9
+(flac to wav, autotune online, audio joiner, m4b to mp3, stereo to mono).
+"how to remove background noise audio" has 1.1K impressions at 6.2 and no
+clicks; /noise-reduction as a page, 1.3K and 0.4%. **Bing lists most pages as
+www.audiosaw.com/…**: the missing www→apex 301 (§9, Andrew's) now visibly
+splits the site's Bing presence.
+
+**Shipped 5 Oct:**
+
+- /audio-to-text: a model that fails to load for a non-network reason is
+  retried once in a new worker on the plain CPU build, one thread, no
+  WebGPU (ORT refuses every initWasm() after a failed one). Every iOS
+  browser gets the WebKit build: CriOS/FxiOS slipped past the Safari test.
+  Phones default to Whisper tiny. One failure, one error event. Copy counts
+  as `convert_success` with `target_format: copy`. `?backend=wasm`.
+- flow.js: ORT's "no available backend" wrapping an allocation failure is
+  `memory`, not `unsupported_api`.
+- /stem-splitter: browsers with no `navigator.gpu` at all were never shown
+  an estimate (the cost was only set after an adapter probe). Past five
+  minutes' estimate the page offers "just the first 30 seconds first",
+  ticked by default past ten, and links the cutter and the instant vocal
+  remover.
+- **/mp3-to-mp4**: audio plus a picture into an MP4 for YouTube, Instagram
+  and TikTok. The first page chosen by the rule above: putting audio on
+  YouTube is a question people ask assistants every day, and the answers
+  today are upload-and-watermark sites. A 4-minute 1080p video in ~20 s,
+  by encoding two seconds of the still and looping it by stream copy.
+- Bing descriptions for /noise-reduction and /audio-reverser now answer the
+  query people type.
+
+**Strategy from here, in order:**
+
+1. **Conversion before acquisition.** Every visitor ChatGPT sends to a page
+   that fails is a recommendation it may stop making. Re-read the funnel
+   table above on ~12 Oct: /audio-to-text success users should be well over
+   14 a week with copy counted and the retry in; /stem-splitter over 32.
+   If /audio-to-text's `unsupported_api` persists, the next step is a
+   coarse `error_detail` enumeration for the backend failures, registered
+   as a dimension the same day.
+2. **New pages for common jobs.** Pick by how often the task is asked for.
+   Judge /mp3-to-mp4 by chatgpt.com landings in its first week, against
+   /audio-to-text's 141 and /voice-cloning's 1.
+3. **Bing, not Google, for search.** Descriptions that answer the query on
+   pages at positions 5–9 with impressions and no clicks; IndexNow after
+   every deploy.
+4. **Andrew's three:** the www→apex 301 (now costing Bing visibly), the
+   launch kit (`docs/launch/`, still the only thing that can move Google's
+   2 of 63), and registering `file_ext`, `target_format` and `pick_method`.

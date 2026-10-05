@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MP3 to MP4 — Add a Picture to Audio for YouTube, Free</title>
+<meta name="description" content="Turn an MP3 into an MP4 video with a picture: your cover art or a generated one with the waveform, sized for YouTube, Instagram or TikTok. Free, no watermark, no upload.">
+<meta name="keywords" content="mp3 to mp4, add image to mp3, audio to video, mp3 to video for youtube, convert mp3 to mp4 with picture, audio to mp4, wav to mp4, upload mp3 to youtube">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/mp3-to-mp4">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="MP3 to MP4 — put a picture to your audio for YouTube, Instagram or TikTok">
+<meta property="og:description" content="Your cover art or a generated one with the waveform, made into an MP4 in your browser. No upload, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/mp3-to-mp4">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-05b">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MP3 to MP4",
+  "alternateName": [
+    "Audio to video converter",
+    "Add image to MP3",
+    "MP3 to video for YouTube",
+    "Audio to MP4"
+  ],
+  "url": "https://audiosaw.com/mp3-to-mp4",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Any audio file plus a picture into an H.264 MP4 at 25 fps; your own image (whole on a blurred background, or cropped to fill) or a generated cover with the title and the track's own waveform; 16:9 1920x1080, 1:1 1080x1080 or 9:16 1080x1920; AAC 320 kbps or the original AAC copied untouched; several tracks at once; nothing uploaded, no watermark",
+  "dateModified": "2026-10-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.cover-wrap{margin:.75rem 0;text-align:center}
+#cover{max-width:100%;max-height:60vh;border-radius:8px;box-shadow:0 1px 0 var(--line,#d9cdb8),0 6px 24px rgba(0,0,0,.12);background:#000}
+.controls input[type=text]{font:inherit;padding:.35rem .5rem;border:1px solid var(--line,#d9cdb8);border-radius:6px;background:var(--paper,#fff);color:inherit;min-width:12rem}
+[data-img][hidden],[data-gen][hidden]{display:none!important}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+</style>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this MP3 to MP4 converter free, with no watermark?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no account, no watermark on the picture and no limit on how many videos you make. Everything runs in your browser, so there is no server time to pay for."}},{"@type":"Question","name":"Is my audio uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The audio and the picture are read and combined in this tab. The only download is the video codec, which is the same for everyone and contains nothing of yours."}},{"@type":"Question","name":"How do I upload an MP3 to YouTube?","acceptedAnswer":{"@type":"Answer","text":"YouTube only accepts video, so turn the MP3 into an MP4 with a picture first: drop it here, keep the 16:9 shape, choose your cover or a generated one, and press Make the MP4. Then upload the MP4 in YouTube Studio as usual."}},{"@type":"Question","name":"Can I make a video for Instagram or TikTok from audio?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose 1:1 for an Instagram feed post, or 9:16 for Reels, TikTok and YouTube Shorts. The video is H.264 at 25 frames a second with AAC sound, which both apps take."}},{"@type":"Question","name":"Can I add a picture to a WAV or M4A, not just an MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. WAV, M4A, FLAC, OGG, AIFF, WMA and voice-note formats all work. An M4A that is already AAC is copied into the video without re-encoding."}},{"@type":"Question","name":"Will the sound quality drop?","acceptedAnswer":{"@type":"Answer","text":"Barely, and only once: audio that is not already AAC is encoded to AAC at 320 kbps. The platforms re-encode every upload anyway, so start from your best file, a WAV or FLAC if you have one."}},{"@type":"Question","name":"Can I convert a whole album at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop all the tracks and each one becomes its own MP4 with the same picture, titled from its file name. To make one long video of the whole album, join the tracks first with the audio joiner."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Other format conversions","item":"https://audiosaw.com/tools#formats"},{"@type":"ListItem","position":3,"name":"MP3 to MP4 with a picture"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#formats">Other format conversions</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">MP3 to MP4 with a picture</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>MP3 to MP4: put a <span class="ital">picture</span> to your audio.</h1>
+    <p>YouTube, Instagram and TikTok take video, not MP3. Drop a song, a podcast episode or a voice memo, add your cover art or let the page draw one with the title and the track's own waveform, and get an MP4 sized for the feed you are posting to. It is made in this browser tab: nothing is uploaded, there is no watermark and no length limit beyond what your computer can hold.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the audio (and a picture)</p>
+      <p>MP3, WAV, M4A, FLAC, OGG and most other audio. Drop a JPG or PNG with it to use as the picture, or several tracks to make one video each.</p>
+      <input type="file" id="fileInput" accept="audio/*,image/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma,.m4b,.amr" multiple>
+    </div>
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Shape
+          <select id="shape">
+            <option value="landscape" selected>16:9 — YouTube (1920×1080)</option>
+            <option value="square">1:1 — Instagram feed (1080×1080)</option>
+            <option value="portrait">9:16 — Shorts, Reels, TikTok (1080×1920)</option>
+          </select>
+        </label>
+        <label>Picture
+          <select id="picture">
+            <option value="generated" selected>A generated cover</option>
+            <option value="image">My own image</option>
+          </select>
+        </label>
+        <label data-img hidden>Fit
+          <select id="fit">
+            <option value="contain" selected>Whole picture, blurred behind</option>
+            <option value="fill">Fill the frame (crops the edges)</option>
+          </select>
+        </label>
+        <label data-gen>Colours
+          <select id="palette">
+            <option value="ember" selected>Ember</option>
+            <option value="night">Night</option>
+            <option value="forest">Forest</option>
+            <option value="paper">Paper</option>
+            <option value="mono">Black and white</option>
+          </select>
+        </label>
+      </div>
+      <div class="result-actions" data-img hidden>
+        <button class="btn btn-secondary" id="imageBtn" type="button">Choose a picture</button>
+        <span class="control-note" id="imageName"></span>
+        <input type="file" id="imageInput" accept="image/*" hidden>
+      </div>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="withText" checked> Text on the picture</label>
+        <label>Title <input type="text" id="titleText" maxlength="90"></label>
+        <label>Second line <input type="text" id="subText" maxlength="90" placeholder="Artist, show or date"></label>
+        <label class="check"><input type="checkbox" id="withWave" checked> Draw the waveform</label>
+      </div>
+      <div class="cover-wrap"><canvas id="cover" width="1920" height="1080" aria-label="Preview of the video's picture"></canvas></div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Make the MP4</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>Any audio the site reads (MP3, WAV, M4A, FLAC, OGG, AIFF, WMA, AMR…), one track or many</td></tr>
+        <tr><th>Picture</th><td>Your JPG, PNG or WebP, whole on a blurred copy of itself or cropped to fill; or a generated cover with a title, a second line and the track's waveform</td></tr>
+        <tr><th>Shapes</th><td>16:9 1920×1080, 1:1 1080×1080, 9:16 1080×1920</td></tr>
+        <tr><th>Video</th><td>H.264 MP4, 25 fps, yuv420p, fast-start for streaming</td></tr>
+        <tr><th>Sound</th><td>AAC at 320 kbps, or the original AAC copied untouched</td></tr>
+        <tr><th>Speed</th><td>A four-minute song in about 20 seconds on a laptop, after a one-time 30 MB codec download</td></tr>
+        <tr><th>Uploads your audio</th><td>No. No watermark, no account, no limit on how many</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to convert an MP3 to MP4 for YouTube</h2>
+    <p>Drop the MP3 above. Leave the shape on 16:9, pick a picture, check the title, and press Make the MP4. The file downloads when it is ready, and you upload that to YouTube Studio like any other video. YouTube has no "upload audio" button; a still picture under the sound is how every music channel, podcast clip and lyric-free upload you have seen was made, and a 1920×1080 frame is what the player is shaped for, so there are no black bars on a desktop.</p>
+    <p>The page opens the codec once (a 30 MB download that the browser keeps), so the first video takes longer than the next. After that, the work is mostly the sound: the picture is turned into two seconds of video and that clip is repeated under the audio without being encoded again, which is why a long track does not take proportionally long.</p>
+
+    <h2>Your artwork, or a cover drawn for you</h2>
+    <p><strong>My own image</strong> takes a single JPG, PNG or WebP. A square album cover in a 16:9 frame would leave two empty bands, so by default the whole picture sits in the middle on a blurred, darkened copy of itself, the look most music uploads use. "Fill the frame" crops it instead, which suits a landscape photo. Drop the picture together with the audio, or choose it afterwards.</p>
+    <p><strong>A generated cover</strong> is for when you have no artwork: a gradient in one of five colour sets, the title (taken from the file name, editable) in large type, an optional second line for the artist, show or date, and the waveform of your actual track drawn across it. The waveform is static: it shows the shape of the whole piece, loud parts and quiet parts, rather than moving with the sound.</p>
+
+    <h2>Sizes for YouTube, Instagram, TikTok and Shorts</h2>
+    <p>16:9 at 1920×1080 is for a normal YouTube video and for anything watched on a computer or TV. 1:1 at 1080×1080 is the Instagram and Facebook feed post. 9:16 at 1080×1920 is the vertical shape of YouTube Shorts, Instagram Reels and TikTok, and the text and waveform move up so the app's own buttons do not cover them. Shorts must be three minutes or less, so cut a longer track to the part you want with the <a href="/audio-cutter">audio cutter</a> first; Reels and TikTok change their own limits often enough that it is worth checking the app before a long upload.</p>
+
+    <h2>What happens to the sound</h2>
+    <p>MP4 carries AAC audio, which every platform accepts. If your file is already AAC (most M4A files, and audio saved from an iPhone), it is copied into the MP4 untouched. Anything else is encoded once to AAC at 320 kbps, the top of the range. YouTube, Instagram and TikTok all re-encode every upload for streaming, so what you give them is the best copy viewers will ever hear from; a 320 kbps AAC made from a 320 kbps MP3 is not where the quality goes. If you are starting from a WAV or FLAC master, upload from that rather than from an MP3 of it.</p>
+    <p>Check the level before you post. A quiet podcast or a home recording will sound weak next to everything else in the feed; the <a href="/loudness-normalizer">loudness normalizer</a> brings it to the -14 LUFS that YouTube and Spotify play at, and the result can go straight back into this page.</p>
+
+    <h2>Several tracks at once</h2>
+    <p>Drop a whole album or a run of episodes and each track becomes its own MP4 with the same picture and settings, titled from its file name. To post a full album or a DJ set as one long video instead, join the tracks into one file with the <a href="/audio-joiner">audio joiner</a> and bring that here.</p>
+
+    <h2>What it can't do</h2>
+    <p>There is one picture per video: no slideshow, no moving visualiser and no scrolling lyrics. For words on screen that follow the audio, make the MP4 here and then run it through <a href="/add-subtitles-to-video">add subtitles to video</a>, which writes timed captions from the speech or singing. Making a video does not change who owns the music: YouTube's Content ID matches the sound, not the picture, so a commercial song will be claimed whatever image is on it. And very long audio is limited by memory, since the whole file is held in the tab while the MP4 is written; an hour of MP3 is fine on a laptop, while several hours of WAV is better cut into parts.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this MP3 to MP4 converter free, with no watermark?</summary><p>Yes. There is no account, no watermark on the picture and no limit on how many videos you make. Everything runs in your browser, so there is no server time to pay for.</p></details>
+      <details><summary>Is my audio uploaded?</summary><p>No. The audio and the picture are read and combined in this tab. The only download is the video codec, which is the same for everyone and contains nothing of yours.</p></details>
+      <details><summary>How do I upload an MP3 to YouTube?</summary><p>YouTube only accepts video, so turn the MP3 into an MP4 with a picture first: drop it here, keep the 16:9 shape, choose your cover or a generated one, and press Make the MP4. Then upload the MP4 in YouTube Studio as usual.</p></details>
+      <details><summary>Can I make a video for Instagram or TikTok from audio?</summary><p>Yes. Choose 1:1 for an Instagram feed post, or 9:16 for Reels, TikTok and YouTube Shorts. The video is H.264 at 25 frames a second with AAC sound, which both apps take.</p></details>
+      <details><summary>Can I add a picture to a WAV or M4A, not just an MP3?</summary><p>Yes. WAV, M4A, FLAC, OGG, AIFF, WMA and voice-note formats all work. An M4A that is already AAC is copied into the video without re-encoding.</p></details>
+      <details><summary>Will the sound quality drop?</summary><p>Barely, and only once: audio that is not already AAC is encoded to AAC at 320 kbps. The platforms re-encode every upload anyway, so start from your best file, a WAV or FLAC if you have one.</p></details>
+      <details><summary>Can I convert a whole album at once?</summary><p>Yes. Drop all the tracks and each one becomes its own MP4 with the same picture, titled from its file name. To make one long video of the whole album, join the tracks first with the audio joiner.</p></details>
+      <!-- /AS:faq -->
+  </section>
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Cut it to the part you want to post (Shorts are three minutes).</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring a quiet track up to the -14 LUFS YouTube plays at.</p></a>
+      <a class="card" href="/add-subtitles-to-video"><h3>Add subtitles to video</h3><p>Add timed captions or lyrics to the video you made.</p></a>
+      <a class="card" href="/audio-joiner"><h3>Audio Joiner</h3><p>Join an album or a set into one track for one long video.</p></a>
+      <a class="card" href="/mp4-to-mp3"><h3>MP4 to MP3</h3><p>The other way: the audio out of a video.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-05b"></script>
+<script src="/js/tool-graph.js?v=2026-10-05b"></script>
+<script src="/js/flow.js?v=2026-10-05b"></script>
+<script src="/js/audio-core.js?v=2026-10-05b"></script>
+<script src="/js/consent.js?v=2026-10-05b"></script>
+<script src="/js/mp3-to-mp4-page.js?v=2026-10-05b"></script>
+<script src="/js/pwa.js?v=2026-10-05b"></script>
+</body>
+</html>

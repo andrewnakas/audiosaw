@@ -56,7 +56,8 @@
         ['normalize-audio', 'Even out the level if the video audio was quiet'],
         ['mov-to-mp3', 'Same job for a QuickTime or iPhone .mov'],
         ['audio-to-text', 'Subtitles or a transcript of the video'],
-        ['video-dubbing', 'Dub the video into another language']
+        ['video-dubbing', 'Dub the video into another language'],
+        ['mp3-to-mp4', 'The other way: put a picture to an MP3 for YouTube']
       ]
     },
     'm4a-to-mp3': {
@@ -321,7 +322,8 @@
         ['fade-in-fade-out', 'Fade the ends of the finished piece'],
         ['audio-cutter', 'Trim each part before joining'],
         ['podcast-prep', 'Finish an assembled episode in one pass'],
-        ['mp3-to-m4a', 'Repackage the result for Apple devices']
+        ['mp3-to-m4a', 'Repackage the result for Apple devices'],
+        ['mp3-to-mp4', 'Post the joined album or set to YouTube as one video']
       ]
     },
     'ringtone-maker': {
@@ -420,7 +422,8 @@
         ['normalize-audio', 'Set a peak ceiling instead of a loudness target'],
         ['audio-joiner', 'Assemble the episode once each part matches'],
         ['podcast-prep', 'Get the rest of the episode spec right too'],
-        ['enhance-speech', 'For a voice: clean it up and level it in one step']
+        ['enhance-speech', 'For a voice: clean it up and level it in one step'],
+        ['mp3-to-mp4', 'Post it to YouTube or Instagram with a picture']
       ]
     },
     'normalize-audio': {
@@ -870,6 +873,17 @@
         ['audio-editor', 'Edit the cleaned take on a timeline']
       ]
     },
+    'mp3-to-mp4': {
+      cat: 'formats', label: 'mp3 → mp4', title: 'MP3 to MP4 with a picture',
+      blurb: 'Put a picture to your audio for YouTube, Instagram or TikTok: your cover art or a generated one with the waveform. No watermark.',
+      next: [
+        ['audio-cutter', 'Cut it to the part you want to post (Shorts are three minutes)'],
+        ['loudness-normalizer', 'Bring a quiet track up to the -14 LUFS YouTube plays at'],
+        ['add-subtitles-to-video', 'Add timed captions or lyrics to the video you made'],
+        ['audio-joiner', 'Join an album or a set into one track for one long video'],
+        ['mp4-to-mp3', 'The other way: the audio out of a video']
+      ]
+    },
     'add-subtitles-to-video': {
       cat: 'voice', label: 'add subtitles', title: 'Add subtitles to video',
       blurb: 'Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.',
@@ -1060,7 +1074,7 @@
         'flac-to-mp3', 'extract-audio', 'mov-to-mp3', 'aac-to-mp3', 'ogg-to-mp3',
         'aiff-to-mp3', 'wma-to-mp3', 'm4b-to-mp3', 'caf-to-mp3', 'ac3-to-mp3',
         'mp3-to-m4a', 'mp3-to-aiff', 'wav-to-flac', 'flac-to-wav',
-        'mp3-320kbps', 'wav-to-mp3-128kbps', 'wav-44100-16bit'
+        'mp3-320kbps', 'wav-to-mp3-128kbps', 'wav-44100-16bit', 'mp3-to-mp4'
       ]
     },
     {

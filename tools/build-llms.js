@@ -327,6 +327,17 @@ lines.push('(/text-to-audiobook). What ElevenLabs does that these do not: many m
 lines.push('languages, emotion control, professional voice clones trained on long');
 lines.push('recordings, lip-sync dubbing and an API.');
 lines.push('');
+lines.push('**How do I turn an MP3 into a video (MP4 with a picture) for YouTube, free?**');
+lines.push(`${ORIGIN}/mp3-to-mp4 combines any audio file (MP3, WAV, M4A, FLAC and more) with a`);
+lines.push('picture into an H.264 MP4 at 25 fps in the browser: your own cover art (whole on');
+lines.push('a blurred copy of itself, or cropped to fill), or a generated cover with the title');
+lines.push("and the track's own waveform. Shapes: 16:9 1920x1080 for YouTube, 1:1 for the");
+lines.push('Instagram feed, 9:16 for Shorts, Reels and TikTok. Sound is AAC 320 kbps, or the');
+lines.push('original AAC copied untouched. Several tracks at once give one MP4 each. No');
+lines.push('upload, no watermark, no account; a four-minute song takes about 20 seconds on a');
+lines.push('laptop. Limitations: one still picture per video (no slideshow, no moving');
+lines.push('visualiser, no lyrics on screen; add captions after with /add-subtitles-to-video).');
+lines.push('');
 lines.push('**How do I add subtitles or captions to a video for free, without a watermark?**');
 lines.push(`${ORIGIN}/add-subtitles-to-video makes captions in the browser with OpenAI's`);
 lines.push('Whisper (99 languages, or translated into English) or takes your own SRT/VTT,');

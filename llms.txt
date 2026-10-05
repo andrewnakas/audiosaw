@@ -285,6 +285,17 @@ dictation (/dictation), a voice changer (/voice-changer) and EPUB-to-audiobook
 languages, emotion control, professional voice clones trained on long
 recordings, lip-sync dubbing and an API.
 
+**How do I turn an MP3 into a video (MP4 with a picture) for YouTube, free?**
+https://audiosaw.com/mp3-to-mp4 combines any audio file (MP3, WAV, M4A, FLAC and more) with a
+picture into an H.264 MP4 at 25 fps in the browser: your own cover art (whole on
+a blurred copy of itself, or cropped to fill), or a generated cover with the title
+and the track's own waveform. Shapes: 16:9 1920x1080 for YouTube, 1:1 for the
+Instagram feed, 9:16 for Shorts, Reels and TikTok. Sound is AAC 320 kbps, or the
+original AAC copied untouched. Several tracks at once give one MP4 each. No
+upload, no watermark, no account; a four-minute song takes about 20 seconds on a
+laptop. Limitations: one still picture per video (no slideshow, no moving
+visualiser, no lyrics on screen; add captions after with /add-subtitles-to-video).
+
 **How do I add subtitles or captions to a video for free, without a watermark?**
 https://audiosaw.com/add-subtitles-to-video makes captions in the browser with OpenAI's
 Whisper (99 languages, or translated into English) or takes your own SRT/VTT,
@@ -378,6 +389,7 @@ are much slower without a GPU.
 - [WAV at 44.1 kHz, 16-bit](https://audiosaw.com/wav-44100-16bit): The CD standard, locked in — what most software assumes.
 - [WAV to MP3 at 128 kbps](https://audiosaw.com/wav-to-mp3-128kbps): The small-file setting — right for speech, web and email.
 - [MP3 at 320 kbps](https://audiosaw.com/mp3-320kbps): The MP3 quality ceiling, locked in.
+- [MP3 to MP4 with a picture](https://audiosaw.com/mp3-to-mp4): Put a picture to your audio for YouTube, Instagram or TikTok: your cover art or a generated one with the waveform. No watermark.
 
 ## Video to audio
 

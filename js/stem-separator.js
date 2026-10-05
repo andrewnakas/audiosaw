@@ -36,6 +36,15 @@
   var progressBar = $('#progressBar');
   var resultList = $('#resultList');
   var envEl = $('#envNote');
+  // On the CPU a four-minute song is half an hour. Without a way to hear the
+  // result first, most of the people who started that wait left before it
+  // ended (GA4, 27 Sep-3 Oct: 97 started, 32 finished). The first 30 seconds
+  // take a minute or two and show whether the full run is worth it.
+  var previewWrap = $('#previewWrap');
+  var previewBox = $('#previewOnly');
+  var previewTouched = false;
+  var PREVIEW_S = 30;
+  var previewRun = false;
 
   if (!dropzone) return;
 
@@ -55,7 +64,10 @@
   // working GPU. This is cheap, runs once on load, and is the difference
   // between an honest estimate and a wrong one.
   function probeGpu() {
-    if (!navigator.gpu) { gpuUsable = false; describeEnvironment(null); return; }
+    // No WebGPU at all (most phones, Firefox, older Safari) is the CPU path
+    // too. This used to return without a cost, so exactly the visitors facing
+    // the long wait were never shown an estimate.
+    if (!navigator.gpu) { gpuUsable = false; costPerSecond = costPerSecond || 10; describeEnvironment(null); return; }
     navigator.gpu.requestAdapter({ powerPreference: 'high-performance' })
       .then(function (adapter) {
         gpuUsable = !!adapter;
@@ -100,14 +112,26 @@
 
     // Once both the backend and the track length are known, say plainly how
     // long this is going to take rather than letting someone discover it.
+    var longWait = false;
     if (costPerSecond && trackSeconds) {
       var est = trackSeconds * costPerSecond;
       parts.push('Estimated ' + fmtDuration(est) + ' for this track.');
-      if (est > 600) {
-        parts.push('That is a long wait — consider trimming to the section you need first.');
+      longWait = est > 600;
+      if (previewWrap) {
+        previewWrap.hidden = !(est > 300 && trackSeconds > PREVIEW_S + 5);
+        if (!previewTouched) previewBox.checked = longWait && !previewWrap.hidden;
       }
     }
     envEl.textContent = parts.join(' ');
+    if (longWait) {
+      envEl.appendChild(document.createTextNode(' That is a long wait: try the first 30 seconds, trim to the part you need with the '));
+      var a1 = document.createElement('a'); a1.href = '/audio-cutter'; a1.textContent = 'audio cutter';
+      envEl.appendChild(a1);
+      envEl.appendChild(document.createTextNode(', or use the '));
+      var a2 = document.createElement('a'); a2.href = '/vocal-remover'; a2.textContent = 'instant vocal remover';
+      envEl.appendChild(a2);
+      envEl.appendChild(document.createTextNode(', which is cruder but takes seconds.'));
+    }
   }
 
   // Read the duration from metadata rather than decoding, so the estimate can
@@ -200,6 +224,12 @@
     // away at the dropzone instead, with a link to a converter.
     var buf = await AudioSaw.decodeToAudioBuffer(file, null, { ffmpeg: false });
     if (buf.duration > MAX_SECONDS) throw tooLong(buf.duration);
+    previewRun = !!(previewBox && previewBox.checked && previewWrap && !previewWrap.hidden && buf.duration > PREVIEW_S + 5);
+    if (previewRun) {
+      var pn = Math.round(PREVIEW_S * buf.sampleRate), pch = [];
+      for (var pc = 0; pc < buf.numberOfChannels; pc++) pch.push(buf.getChannelData(pc).slice(0, pn));
+      buf = AudioSaw.makeBuffer(pch, buf.sampleRate);
+    }
     nativeBuf = buf;
     if (buf.sampleRate !== SR) {
       CV.setStatus(statusEl, 'info', 'Resampling to 44.1 kHz for the model…');
@@ -250,7 +280,7 @@
     if (opts.acapella) wanted.push({ key: 'acapella', ch: m.vocals });
     if (!wanted.length) wanted.push({ key: 'instrumental', ch: m.instrumental });
 
-    var base = (files[0] ? files[0].name : 'audio').replace(/\.[^.]+$/, '');
+    var base = (files[0] ? files[0].name : 'audio').replace(/\.[^.]+$/, '') + (previewRun ? '-first30s' : '');
     var outputs = [];
 
     for (var i = 0; i < wanted.length; i++) {
@@ -267,11 +297,11 @@
 
     if (outputs.length === 1) {
       CV.downloadBlob(outputs[0].blob, outputs[0].name);
-      CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + outputs[0].name);
+      CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + outputs[0].name + previewNote());
     } else {
       var zip = await AudioSaw.zipBlobs(outputs);
       CV.downloadBlob(zip, base + '-separated.zip');
-      CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + outputs.length + ' files zipped');
+      CV.setStatus(statusEl, 'success', 'Done in ' + took + ' — ' + outputs.length + ' files zipped' + previewNote());
     }
 
     resultList.innerHTML = '';
@@ -309,6 +339,12 @@
 
   /* ------------------------------------------------------------------- ui */
 
+  function previewNote() {
+    if (!previewRun) return '';
+    return '. That was the first 30 seconds: untick "just the first 30 seconds" and press Separate again for the whole track' +
+      (costPerSecond && trackSeconds ? ' (about ' + fmtDuration(trackSeconds * costPerSecond) + ')' : '') + '.';
+  }
+
   function readOpts() {
     return {
       instrumental: $('#wantInstrumental').checked,
@@ -317,6 +353,8 @@
       bitrate: $('#bitrate').value || 320
     };
   }
+
+  if (previewBox) previewBox.addEventListener('change', function () { previewTouched = true; });
 
   function onFiles(picked) {
     if (!picked || !picked.length) return;
