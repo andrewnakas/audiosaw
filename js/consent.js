@@ -12,8 +12,10 @@
  * link, which is also the mechanism the CCPA-style opt-out needs. That link
  * works everywhere, including where the banner never appeared.
  *
- * There are no ads on this site, so nothing here touches ad tags; the ad_* keys
- * stay in the consent signal because Google Signals reads them for analytics.
+ * Ads come from Journey by Mediavine (the AS:ads tag in each page's head,
+ * written by build-nav.js), which runs its own consent handling for ads. This
+ * file governs Google Analytics; the ad_* keys stay in the consent signal
+ * because Google Signals reads them for analytics.
  */
 (function (global) {
   'use strict';
@@ -51,7 +53,7 @@
     bar.setAttribute('aria-label', 'Cookie settings');
     bar.innerHTML =
       '<div class="fbc-consent-inner">' +
-        '<p>We use one analytics cookie to count visits. Nothing else, and no ads. ' +
+        '<p>We use an analytics cookie to count visits, and our ad partner uses cookies to choose the ads. ' +
         'Your files never leave your device &mdash; see our <a href="/privacy">Privacy Policy</a>.</p>' +
         '<div class="fbc-consent-actions">' +
           '<button type="button" class="btn btn-secondary" data-c="essential">Decline</button>' +

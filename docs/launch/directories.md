@@ -26,8 +26,8 @@ Reuse these everywhere so the entity reads consistently.
 > AudioSaw does audio conversion and editing entirely inside the browser tab.
 > There is no server to upload to — the site is static files, and the Web Audio
 > API plus a WebAssembly build of FFmpeg do the work on your own machine. That
-> means no signup, no queue, no file-size gate behind a paywall, no watermark
-> and no ads, and it keeps working with the network disconnected.
+> means no signup, no queue, no file-size gate behind a paywall and no
+> watermark, and it keeps working with the network disconnected.
 >
 > Beyond format conversion it includes neural stem separation (MDX-Net running
 > locally), ITU-R BS.1770-4 loudness normalisation validated against FFmpeg's

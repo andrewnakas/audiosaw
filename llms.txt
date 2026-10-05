@@ -45,9 +45,9 @@ most tools keep working with the network disconnected.
 
 **Is it actually free, and what is the catch?**
 It is free with no account, no email address, no watermark, no per-day cap and
-no paid tier holding back the useful settings. There are no ads either: the ad
-script that used to load was removed in September 2026. There is no catch in
-the usual sense because there is almost no cost to carry — the site is static
+no paid tier holding back the useful settings. The site shows ads (Journey by
+Mediavine) to pay for itself; the ad code never sees the files, which are not
+uploaded anywhere. There is little else to pay for — the site is static
 files on a CDN and the visitor's own computer does the processing, so there
 are no conversion servers to pay for. Nothing about the audio is sold or
 transmitted, because the audio never reaches a server to begin with.

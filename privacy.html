@@ -23,10 +23,13 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-05b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-05c">
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -79,26 +82,31 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li>The files you convert, cut, record, transcribe or synthesise, and the text you type into the speech tools. We don't have them. They never leave your browser tab.</li>
       <li>Your microphone or a tab you record. The recording tools read them only while you are recording, and the audio goes into the file you download, nowhere else.</li>
       <li>The names of the files you process, or any of their contents. The settings you choose are counted — that a conversion was 320 kbps, say — but never tied to a file or a person.</li>
-      <li>Advertising of any kind. There are no ads on this site and no ad network is loaded. There used to be an ad script here; it has been removed.</li>
       <li>Account info. There are no accounts to make.</li>
     </ul>
 
-    <h2><span class="num">05.</span>Third parties</h2>
+    <h2><span class="num">05.</span>Advertising</h2>
+    <p>This site shows ads, served by Journey by Mediavine, to pay for itself. Mediavine and its advertising partners may use cookies, pixels and similar technologies to collect information such as your IP address, browser and device type, the pages you view and how you interact with the ads, in order to choose, show and measure ads, which can include ads based on your interests. That collection is theirs and is covered by <a href="https://www.mediavine.com/privacy-policy/" rel="noopener" target="_blank">Mediavine's privacy policy</a>; its partners are listed at <a href="https://www.mediavine.com/ad-partners/" rel="noopener" target="_blank">mediavine.com/ad-partners</a>.</p>
+    <p>The ad code runs in the page like any other script, but it is never given your files: they are opened inside the tool and never uploaded, so there is nothing for it to receive. Ads are not loaded at all on the pages that run AI models with isolated memory (the stem splitter, audio to text, text to speech and dictation).</p>
+    <p>To opt out of interest-based advertising, use the <a href="https://optout.aboutads.info/" rel="noopener" target="_blank">Digital Advertising Alliance</a> or <a href="https://optout.networkadvertising.org/" rel="noopener" target="_blank">Network Advertising Initiative</a> opt-out pages, your browser's tracking and cookie settings, or the consent choices shown with the ads where your region requires them. You will still see ads, but they will not be chosen from your browsing.</p>
+
+    <h2><span class="num">06.</span>Third parties</h2>
     <ul>
       <li>Google Analytics 4 — aggregated, anonymised traffic counts. <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Their privacy policy</a>.</li>
+      <li>Journey by Mediavine and its advertising partners (see Advertising above).</li>
       <li>Cloudflare Pages (hosting and CDN).</li>
       <li>unpkg, or jsDelivr if unpkg is unreachable — one 30 MB WebAssembly file (the FFmpeg core) loads from this public CDN the first time you use a tool that needs it, and is then cached on your device.</li>
       <li>Hugging Face — the AI tools (transcription, text to speech, voice cloning, dubbing, translation, speaker labels, the stem splitter) download their open model files from huggingface.co the first time you use them.</li>
     </ul>
-    <p>Each of these sees your IP address at the moment of the download, as any web server would. None of them sees your audio or your text. Every other library is served from this site.</p>
+    <p>The CDNs and Hugging Face see your IP address at the moment of the download, as any web server would. None of the third parties sees your audio or your text. Every other library is served from this site.</p>
 
-    <h2><span class="num">06.</span>Files the voice tools make</h2>
+    <h2><span class="num">07.</span>Files the voice tools make</h2>
     <p>Speech made by the text-to-speech, voice-cloning and dubbing tools carries a short note in the file's own metadata saying it is synthetic (or a cloned voice). It is written into the file on your device and is not reported anywhere.</p>
 
-    <h2><span class="num">07.</span>Your options</h2>
-    <p>Change your analytics choice any time from "cookie settings" in the footer. Clear this site's cookies and stored data from your browser settings to remove everything listed above. Or block JavaScript — the tools won't function, but you can still read these pages.</p>
+    <h2><span class="num">08.</span>Your options</h2>
+    <p>Change your analytics choice any time from "cookie settings" in the footer; for ads, see the opt-outs under Advertising. Clear this site's cookies and stored data from your browser settings to remove everything listed above. Or block JavaScript — the tools won't function, but you can still read these pages.</p>
 
-    <h2><span class="num">08.</span>Questions</h2>
+    <h2><span class="num">09.</span>Questions</h2>
     <p>See <a href="/contact">contact</a>.</p>
   </section>
 </main>
@@ -223,7 +231,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/consent.js?v=2026-10-05b"></script>
-<script src="/js/pwa.js?v=2026-10-05b"></script>
+<script src="/js/consent.js?v=2026-10-05c"></script>
+<script src="/js/pwa.js?v=2026-10-05c"></script>
 </body>
 </html>

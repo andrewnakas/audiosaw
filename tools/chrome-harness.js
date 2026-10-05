@@ -80,7 +80,12 @@ async function withPage(opts, fn) {
     ['DevToolsActivePort', 'SingletonLock', 'SingletonSocket', 'SingletonCookie'].forEach((f) => { try { fs.unlinkSync(path.join(dir, f)); } catch (e) {} });
   }
   const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--user-data-dir=' + dir,
-    '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required'
+    '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required',
+    // The ad tag (Journey by Mediavine) is refused here: it throws on a host
+    // it is not configured for ("mcmNetworkCode is required"), which the
+    // checks that require a page without errors would read as the tool's.
+    // A refused host is a failed request, not an exception.
+    '--host-resolver-rules=MAP scripts.scriptwrapper.com 127.0.0.1:9'
   ].concat(opts.fakeMedia === false ? [] : ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'], opts.args || [], ['about:blank']), { stdio: 'ignore' });
   let ws;
   try {

@@ -23,7 +23,7 @@ Alternatives:
 
 > Convert, cut, join, normalise, transcribe and split audio into stems, all
 > inside your browser tab. Files never upload — there is no server to send them
-> to. No signup, no watermark, no queue, no ads. Works offline after the page
+> to. No signup, no watermark, no queue. Works offline after the page
 > loads. Open source.
 
 **Topics**: Audio, Productivity, Open Source, Design Tools, Music
@@ -60,8 +60,9 @@ Alternatives:
 > reopen later. Large files are limited by browser memory, roughly 500 MB, and
 > less on iPhone. Audio-to-MIDI is monophonic only.
 >
-> It is free with no account and no ads, and there is no upsell coming — a
-> static site with no conversion servers costs almost nothing to run.
+> It is free with no account, and there is no upsell coming — a static site
+> with no conversion servers costs almost nothing to run, and the ads on the
+> page cover it. They never see your files.
 >
 > I'd genuinely like to know which tool you reached for first, and what you
 > expected to find that wasn't there.

@@ -904,7 +904,11 @@ splits the site's Bing presence.
 3. **Bing, not Google, for search.** Descriptions that answer the query on
    pages at positions 5–9 with impressions and no clicks; IndexNow after
    every deploy.
-4. **Andrew's two:** the www→apex 301 (now costing Bing visibly), the
+4. **Done 5 Oct:** the www→apex 301 is live (Cloudflare Redirect Rule from
+   the "Redirect from WWW to root" template, query string kept; the dashboard
+   warns that www may not be proxied, which is wrong for this zone: www is
+   served by Cloudflare and the rule matches). Journey by Mediavine ads went
+   on the same day (CLAUDE.md, Analytics). **Andrew's one:** the
    launch kit (`docs/launch/`, still the only thing that can move Google's
    2 of 63). (`file_ext`, `target_format` and `pick_method` were registered
    on 5 Oct; data starts that day.)

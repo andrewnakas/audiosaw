@@ -18,6 +18,9 @@
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
 <meta property="og:title" content="MP4 to MP3 Converter — free, no upload, no signup, no daily limit">
 <meta property="og:description" content="Convert MP4 video to MP3 free in your browser. No upload, no signup, no daily limit. Drop the file, pick a bitrate, download. Works offline once loaded.">
 <meta property="og:type" content="website">
@@ -27,7 +30,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-10-05b">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-05c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +48,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this MP4 to MP3 converter free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No signup, no daily limit, no watermark, no ads."}},{"@type":"Question","name":"Does my video get uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Load the page, switch to airplane mode, then drop a file — it still works. That is the test, and it is the whole point of the site."}},{"@type":"Question","name":"Can I convert multiple files at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop several videos and you get them all back as a zip of MP3s."}},{"@type":"Question","name":"What is the maximum file size?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB on a typical laptop. It is memory that stops you rather than time, so phones give up sooner than laptops and iPhones soonest of all. Only the audio stream is decoded, so a long 1080p recording is usually fine."}},{"@type":"Question","name":"Why does the first conversion take a few seconds?","acceptedAnswer":{"@type":"Answer","text":"It downloads a 32 MB WebAssembly build of FFmpeg the first time you use it. The progress bar shows the byte count. After that it is stored on your device and later conversions start immediately, including on your next visit."}},{"@type":"Question","name":"Which bitrate should I choose?","acceptedAnswer":{"@type":"Answer","text":"128 for speech, 192 if you are not sure, 256 or 320 only when the video's own audio was high quality to begin with. A higher bitrate cannot add detail the MP4 never contained."}},{"@type":"Question","name":"Will 320 kbps make my video's audio sound better?","acceptedAnswer":{"@type":"Answer","text":"No. It makes a larger file with the same information in it. The audio inside an MP4 is usually AAC that has already been compressed once, and the MP3 encoder cannot recover what was discarded then."}},{"@type":"Question","name":"My video has two audio tracks. Which one do I get?","acceptedAnswer":{"@type":"Answer","text":"The first one. Browsers give no reliable way to label the others, so if you need a specific language or a separate microphone track, that needs a desktop tool like VLC or FFmpeg."}},{"@type":"Question","name":"Can I get the audio as WAV instead?","acceptedAnswer":{"@type":"Answer","text":"Yes, through the audio extractor. Choose WAV whenever the file is going into an editor, since editing an MP3 and re-exporting adds another generation of loss."}},{"@type":"Question","name":"Does it work with MOV, WebM and MKV?","acceptedAnswer":{"@type":"Answer","text":"Yes, in this same tool. The container differs but the audio inside is still AAC, Opus or PCM."}},{"@type":"Question","name":"Can it convert a DRM-protected video?","acceptedAnswer":{"@type":"Answer","text":"No. Purchased films and anything from a streaming service are encrypted, and we cannot decrypt them."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this MP4 to MP3 converter free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No signup, no daily limit and no watermark. Ads on the page pay for it; they never see your file."}},{"@type":"Question","name":"Does my video get uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The conversion runs in your browser tab. Load the page, switch to airplane mode, then drop a file — it still works. That is the test, and it is the whole point of the site."}},{"@type":"Question","name":"Can I convert multiple files at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop several videos and you get them all back as a zip of MP3s."}},{"@type":"Question","name":"What is the maximum file size?","acceptedAnswer":{"@type":"Answer","text":"Around 500 MB on a typical laptop. It is memory that stops you rather than time, so phones give up sooner than laptops and iPhones soonest of all. Only the audio stream is decoded, so a long 1080p recording is usually fine."}},{"@type":"Question","name":"Why does the first conversion take a few seconds?","acceptedAnswer":{"@type":"Answer","text":"It downloads a 32 MB WebAssembly build of FFmpeg the first time you use it. The progress bar shows the byte count. After that it is stored on your device and later conversions start immediately, including on your next visit."}},{"@type":"Question","name":"Which bitrate should I choose?","acceptedAnswer":{"@type":"Answer","text":"128 for speech, 192 if you are not sure, 256 or 320 only when the video's own audio was high quality to begin with. A higher bitrate cannot add detail the MP4 never contained."}},{"@type":"Question","name":"Will 320 kbps make my video's audio sound better?","acceptedAnswer":{"@type":"Answer","text":"No. It makes a larger file with the same information in it. The audio inside an MP4 is usually AAC that has already been compressed once, and the MP3 encoder cannot recover what was discarded then."}},{"@type":"Question","name":"My video has two audio tracks. Which one do I get?","acceptedAnswer":{"@type":"Answer","text":"The first one. Browsers give no reliable way to label the others, so if you need a specific language or a separate microphone track, that needs a desktop tool like VLC or FFmpeg."}},{"@type":"Question","name":"Can I get the audio as WAV instead?","acceptedAnswer":{"@type":"Answer","text":"Yes, through the audio extractor. Choose WAV whenever the file is going into an editor, since editing an MP3 and re-exporting adds another generation of loss."}},{"@type":"Question","name":"Does it work with MOV, WebM and MKV?","acceptedAnswer":{"@type":"Answer","text":"Yes, in this same tool. The container differs but the audio inside is still AAC, Opus or PCM."}},{"@type":"Question","name":"Can it convert a DRM-protected video?","acceptedAnswer":{"@type":"Answer","text":"No. Purchased films and anything from a streaming service are encrypted, and we cannot decrypt them."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -166,7 +169,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
-      <details><summary>Is this MP4 to MP3 converter free?</summary><p>Yes. No signup, no daily limit, no watermark, no ads.</p></details>
+      <details><summary>Is this MP4 to MP3 converter free?</summary><p>Yes. No signup, no daily limit and no watermark. Ads on the page pay for it; they never see your file.</p></details>
       <details><summary>Does my video get uploaded to a server?</summary><p>No. The conversion runs in your browser tab. Load the page, switch to airplane mode, then drop a file — it still works. That is the test, and it is the whole point of the site.</p></details>
       <details><summary>Can I convert multiple files at once?</summary><p>Yes. Drop several videos and you get them all back as a zip of MP3s.</p></details>
       <details><summary>What is the maximum file size?</summary><p>Around 500 MB on a typical laptop. It is memory that stops you rather than time, so phones give up sooner than laptops and iPhones soonest of all. Only the audio stream is decoded, so a long 1080p recording is usually fine.</p></details>
@@ -318,12 +321,12 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>window.AS_TOOL = { target: 'mp3', accept: ['.mp4','.mov','.webm','.mkv','.m4v','.avi'] };</script>
-<script src="/js/common.js?v=2026-10-05b"></script>
-<script src="/js/tool-graph.js?v=2026-10-05b"></script>
-<script src="/js/flow.js?v=2026-10-05b"></script>
-<script src="/js/audio-core.js?v=2026-10-05b"></script>
-<script src="/js/tool-converter.js?v=2026-10-05b"></script>
-<script src="/js/consent.js?v=2026-10-05b"></script>
-<script src="/js/pwa.js?v=2026-10-05b"></script>
+<script src="/js/common.js?v=2026-10-05c"></script>
+<script src="/js/tool-graph.js?v=2026-10-05c"></script>
+<script src="/js/flow.js?v=2026-10-05c"></script>
+<script src="/js/audio-core.js?v=2026-10-05c"></script>
+<script src="/js/tool-converter.js?v=2026-10-05c"></script>
+<script src="/js/consent.js?v=2026-10-05c"></script>
+<script src="/js/pwa.js?v=2026-10-05c"></script>
 </body>
 </html>

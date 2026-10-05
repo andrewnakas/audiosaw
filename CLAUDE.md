@@ -754,11 +754,17 @@ promoted. `tool`, `error_type`, `placement`, `rail` and `to_tool` are registered
 add a parameter, register it the same day you ship it or the first weeks of its
 data do not exist.
 
-**There are no ads.** AdSense used to load on 55 pages with zero ad units ever
-placed, so it was cost without revenue; the script, the meta, the slot divs, the
-CSS and the per-page toggles are all gone. `ads.txt` stays, because an AdSense
-account whose site drops it flags a misconfiguration. If ads ever return, they
-need real `<ins>` units, not just the loader.
+**Ads are Journey by Mediavine (since 5 Oct 2026).** The tag, exactly as
+Mediavine issued it, sits in an `<!-- AS:ads -->` block in every page's head,
+written by `build-nav.js` (`ADS_TAG`); Journey places its own units, so there
+are no slot divs. It is left off the four cross-origin-isolated pages
+(/stem-splitter, /audio-to-text, /text-to-speech, /dictation: COOP/COEP break
+third-party ad frames, and nothing may stall a model load) and off /offline
+(`ADS_EXCLUDE`). The pages, the privacy policy, llms.txt and the consent
+banner all say so; when the ad setup changes, change them together. Before
+this, AdSense had loaded on 55 pages with zero units for months (cost without
+revenue) and was removed on 5 Sep; the "no ads" claims that replaced it were
+rewritten on 5 Oct.
 
 Consent is region-aware: the inline bootstrap in every `<head>` reads the
 browser timezone and defaults to granted outside Europe, denied inside it, and

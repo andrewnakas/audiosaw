@@ -165,6 +165,7 @@ ${cards}
 <link rel="canonical" href="${ORIGIN}/tools">
 <link rel="icon" href="/favicon.ico">
 ${wrap('pwa', pwaHead())}
+${wrap('ads', ADS_TAG)}
 <meta property="og:title" content="All AudioSaw tools">
 <meta property="og:description" content="Every AudioSaw tool in one place. ${G.slugs().length} free audio tools that run in your browser — nothing is uploaded.">
 <meta property="og:type" content="website">
@@ -396,6 +397,9 @@ ${rails}
 // Installability, the tab/theme colour, and the icons Safari and Android look
 // for. Injected from here because it belongs on all 56 pages, including the
 // five that load no other JavaScript.
+const ADS_TAG = '<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>';
+const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech', 'dictation', 'offline']);
+
 function pwaHead() {
   return `<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#fbf6ed">
@@ -470,6 +474,19 @@ for (const file of files) {
       /(<link rel="icon" href="\/favicon\.ico">\n)/,
       '$1' + wrap('pwa', pwaHead()) + '\n'
     );
+  }
+
+  // ---- ads (Journey by Mediavine), the tag exactly as issued -------------
+  // Not on the cross-origin-isolated pages: their COOP/COEP headers (needed
+  // for the model threads) break third-party ad frames, and the tag must not
+  // be able to stall a model load. Not on /offline, the service worker's
+  // fallback, which is shown with no network.
+  if (ADS_EXCLUDE.has(slug)) {
+    html = html.replace(/\n?<!-- AS:ads -->[\s\S]*?<!-- \/AS:ads -->\n?/, '\n');
+  } else if (html.includes('<!-- AS:ads -->')) {
+    html = replaceBlock(html, 'ads', ADS_TAG);
+  } else {
+    html = html.replace(/(<!-- \/AS:pwa -->\n)/, '$1' + wrap('ads', ADS_TAG) + '\n');
   }
 
   // ---- service worker registration + install prompt, last script --------

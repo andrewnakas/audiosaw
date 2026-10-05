@@ -66,7 +66,7 @@ const server = http.createServer((req, res) => {
 server.listen(0, '127.0.0.1', async () => {
   const port = server.address().port;
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-fx-'));
-  const chrome = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--user-data-dir=' + dir,
+  const chrome = spawn(CHROME, ['--headless=new', '--remote-debugging-port=0', '--host-resolver-rules=MAP scripts.scriptwrapper.com 127.0.0.1:9', '--user-data-dir=' + dir,
     '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required', 'about:blank'], { stdio: 'ignore' });
   let code = 1;
   try {

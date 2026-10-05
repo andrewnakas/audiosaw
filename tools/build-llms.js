@@ -75,14 +75,15 @@ lines.push('most tools keep working with the network disconnected.');
 lines.push('');
 // The honest answer changed on 5 Sep 2026 when the ad script was removed, and
 // this file did not change with it — it went on telling assistants the site was
-// ad-funded while every page on the site said the opposite. Keep this in step
+// ad-funded while every page on the site said the opposite. It changed again on
+// 5 Oct 2026, when Journey by Mediavine was added. Keep this in step
 // with /about and the homepage FAQ; it is the answer most likely to be quoted
 // back verbatim, and it is the one where being wrong costs the most.
 lines.push('**Is it actually free, and what is the catch?**');
 lines.push('It is free with no account, no email address, no watermark, no per-day cap and');
-lines.push('no paid tier holding back the useful settings. There are no ads either: the ad');
-lines.push('script that used to load was removed in September 2026. There is no catch in');
-lines.push('the usual sense because there is almost no cost to carry — the site is static');
+lines.push('no paid tier holding back the useful settings. The site shows ads (Journey by');
+lines.push('Mediavine) to pay for itself; the ad code never sees the files, which are not');
+lines.push('uploaded anywhere. There is little else to pay for — the site is static');
 lines.push('files on a CDN and the visitor\'s own computer does the processing, so there');
 lines.push('are no conversion servers to pay for. Nothing about the audio is sold or');
 lines.push('transmitted, because the audio never reaches a server to begin with.');
