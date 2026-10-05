@@ -904,6 +904,7 @@ splits the site's Bing presence.
 3. **Bing, not Google, for search.** Descriptions that answer the query on
    pages at positions 5–9 with impressions and no clicks; IndexNow after
    every deploy.
-4. **Andrew's three:** the www→apex 301 (now costing Bing visibly), the
+4. **Andrew's two:** the www→apex 301 (now costing Bing visibly), the
    launch kit (`docs/launch/`, still the only thing that can move Google's
-   2 of 63), and registering `file_ext`, `target_format` and `pick_method`.
+   2 of 63). (`file_ext`, `target_format` and `pick_method` were registered
+   on 5 Oct; data starts that day.)

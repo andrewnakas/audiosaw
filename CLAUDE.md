@@ -749,7 +749,8 @@ registration is not retroactive. Every parameter this site sends was being
 discarded by GA4 until 21 Sep 2026 — collection was fine, nothing had ever been
 promoted. `tool`, `error_type`, `placement`, `rail` and `to_tool` are registered, and
 `from_tool` since 23 Sep 2026 (it tells tools apart on the project link's
-`chain_continue`); `file_ext`, `target_format` and `pick_method` are not yet. If you
+`chain_continue`), and `file_ext`, `target_format` and `pick_method` since 5 Oct
+2026 (no data before that). If you
 add a parameter, register it the same day you ship it or the first weeks of its
 data do not exist.
 
