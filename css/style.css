@@ -1491,3 +1491,43 @@ select:focus-visible {
 .roll-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
 .piano-roll { display: block; width: 100%; height: 300px; border: 1px solid var(--rule); border-radius: 8px; touch-action: none; outline: none; }
 .piano-roll:focus-visible { box-shadow: 0 0 0 2px var(--amber); }
+
+/* ---------------------------------------------------------------- ad slots */
+/* The ad sidebar (Journey by Mediavine's Sidebar Selector is #as-sidebar).
+   Journey wants it 300px+ wide, static and visible from 1100px; below that it
+   is not shown at all. The page widens to make room, so the tool column keeps
+   the width it had (text is capped at 68ch anyway). Not sticky: Journey skips
+   a sticky sidebar. */
+.as-sidebar { display: none; }
+.as-leaderboard:empty { display: none; }
+@media (min-width: 1100px) {
+  /* The header, breadcrumb and footer widen with the page, so left edges line up. */
+  body:has(main.has-side) .container { max-width: 1400px; }
+  main.container.has-side {
+    max-width: 1400px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: 40px;
+    align-items: start;
+  }
+  main.has-side > * { grid-column: 1; min-width: 0; }
+  main.has-side > .as-sidebar {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 40;
+    align-self: stretch;
+    width: 320px;
+    padding-top: 28px;
+  }
+  .as-sidebar h2 {
+    font-family: var(--sans);
+    font-size: .8rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin: 0 0 .5rem;
+  }
+  .as-sidebar ul { list-style: none; margin: 0 0 1.5rem; padding: 0; border-top: 1px solid var(--rule); }
+  .as-sidebar li { border-bottom: 1px solid var(--rule); }
+  .as-sidebar a { display: block; padding: .5rem 0; color: var(--ink); text-decoration: none; }
+  .as-sidebar a:hover { color: var(--amber); text-decoration: underline; }
+}

@@ -189,6 +189,7 @@ ${wrap('breadcrumb', `<nav class="breadcrumb container" aria-label="Breadcrumb">
   <span aria-current="page">All tools</span>
 </nav>`)}
 
+${wrap('leaderboard', LEADERBOARD)}
 <main class="container">
   <section class="page-intro">
     <h1>All <span class="ital">${G.slugs().length}</span> tools.</h1>
@@ -400,6 +401,32 @@ ${rails}
 const ADS_TAG = '<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>';
 const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech', 'dictation', 'offline']);
 
+// The ad sidebar: an <aside id="as-sidebar"> beside the tool on screens 1100px
+// and wider (Journey's own rule: 300px+, static, visible from 1100px), set as
+// the Sidebar Selector in the Journey dashboard. Only on tool pages whose UI
+// is a drop zone and controls; the waveform and timeline apps need the width.
+// Narrower screens never see it, so phones are untouched.
+const SIDEBAR_EXCLUDE = new Set(['audio-editor', 'audio-cutter', 'ringtone-maker', 'sample-slicer', 'audio-to-midi']);
+// The pages that get the most visits (GA4, week of 27 Sep), offered in the
+// sidebar so it carries something useful above the ad.
+const SIDEBAR_POPULAR = ['voice-recorder', 'audio-to-text', 'stem-splitter', 'audio-editor', 'text-to-speech',
+  'split-audio', 'mp3-to-mp4', 'mp3-tag-editor', 'pitch-shifter', 'noise-reduction', 'audio-eq'];
+
+function sidebar(slug) {
+  const links = SIDEBAR_POPULAR.filter((s) => s !== slug && G.TOOLS[s]).slice(0, 8)
+    .map((s) => `      <li><a href="/${s}">${G.TOOLS[s].title}</a></li>`).join('\n');
+  return `<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+${links}
+    </ul>
+  </aside>`;
+}
+
+// An empty, zero-height hook above <main> for a header leaderboard, which
+// Journey only places when its support team targets a selector for it.
+const LEADERBOARD = '<div id="as-leaderboard" class="as-leaderboard container"></div>';
+
 function pwaHead() {
   return `<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#fbf6ed">
@@ -488,6 +515,14 @@ for (const file of files) {
   } else {
     html = html.replace(/(<!-- \/AS:pwa -->\n)/, '$1' + wrap('ads', ADS_TAG) + '\n');
   }
+
+  // ---- ad sidebar and leaderboard hook ------------------------------------
+  const withSide = !ADS_EXCLUDE.has(slug) && !SIDEBAR_EXCLUDE.has(slug) && !NON_TOOL.has(slug) && !!G.TOOLS[slug];
+  html = html.replace(/\n?<!-- AS:sidebar -->[\s\S]*?<!-- \/AS:sidebar -->/, '');
+  html = html.replace(/<main class="container( has-side)?">/, withSide ? '<main class="container has-side">' : '<main class="container">');
+  if (withSide) html = html.replace(/(\n<\/main>)/, '\n' + wrap('sidebar', sidebar(slug)) + '$1');
+  html = html.replace(/<!-- AS:leaderboard -->[\s\S]*?<!-- \/AS:leaderboard -->\n/, '');
+  if (!ADS_EXCLUDE.has(slug)) html = html.replace(/(<main class="container)/, wrap('leaderboard', LEADERBOARD) + '\n$1');
 
   // ---- service worker registration + install prompt, last script --------
   if (!html.includes('/js/pwa.js')) {

@@ -760,7 +760,12 @@ written by `build-nav.js` (`ADS_TAG`); Journey places its own units, so there
 are no slot divs. It is left off the four cross-origin-isolated pages
 (/stem-splitter, /audio-to-text, /text-to-speech, /dictation: COOP/COEP break
 third-party ad frames, and nothing may stall a model load) and off /offline
-(`ADS_EXCLUDE`). `/ads.txt` is a 301 in `_redirects` to Journey's managed
+(`ADS_EXCLUDE`). Tool pages also get an `<aside id="as-sidebar">` ("Most
+used" links; `#as-sidebar` is Journey's Sidebar Selector), shown only from
+1100px, where the page widens to 1400px so the tool keeps its width; not on
+the waveform/timeline apps (`SIDEBAR_EXCLUDE`). Every ad page has an empty
+`#as-leaderboard` above `<main>` for a header leaderboard, which only Journey
+support can switch on. `/ads.txt` is a 301 in `_redirects` to Journey's managed
 file (adstxt.journeymv.com/sites/<site id>/ads.txt), not a file in the repo,
 so their partner list updates without a deploy. The pages, the privacy policy, llms.txt and the consent
 banner all say so; when the ad setup changes, change them together. Before
