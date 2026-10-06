@@ -52,11 +52,6 @@
 /
   Cache-Control: public, max-age=300, must-revalidate
 
-# Kept even though the site currently serves no ads: an AdSense account with a
-# site that used to have it flags a removed ads.txt as a misconfiguration.
-/ads.txt
-  Content-Type: text/plain
-  Cache-Control: public, max-age=86400
 /robots.txt
   Content-Type: text/plain
 /sitemap.xml

@@ -5,4 +5,7 @@
 # Share-target fallback. The service worker answers POST /share and carries the
 # file across; if it has been evicted, Pages would otherwise return a bare 405.
 /share  /?from=share  303
+# ads.txt is Journey by Mediavine's managed file, redirected rather than
+# copied so their partner list stays current without a deploy (their setup).
+/ads.txt  https://adstxt.journeymv.com/sites/8d9c72aa-0358-4c00-b603-0ec44530c303/ads.txt  301
 /*    /404.html    404
