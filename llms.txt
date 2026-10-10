@@ -448,6 +448,7 @@ are much slower without a GPU.
 
 ## Voice & speech
 
+- [Lyrics from a song](https://audiosaw.com/lyrics-from-song): The vocal is separated and transcribed in your browser: the words line by line, as synced LRC for karaoke and players, or SRT for a lyric video.
 - [Transcribe audio to text](https://audiosaw.com/audio-to-text): MP3, voice memo or video to text with Whisper in your browser: a transcript, SRT or VTT and speaker labels, free, nothing uploaded.
 - [Text to speech](https://audiosaw.com/text-to-speech): A free AI voice generator in your browser: type or open a PDF or Word file, 41 natural voices in 7 languages, MP3 download, no sign-up.
 - [Voice changer (live or files)](https://audiosaw.com/voice-changer): Change your voice live through the mic, or a voice in a recording or video: deeper, higher, male to female, chipmunk, robot or radio.

@@ -757,8 +757,8 @@ data do not exist.
 **Ads are Journey by Mediavine (since 5 Oct 2026).** The tag, exactly as
 Mediavine issued it, sits in an `<!-- AS:ads -->` block in every page's head,
 written by `build-nav.js` (`ADS_TAG`); Journey places its own units, so there
-are no slot divs. It is left off the four cross-origin-isolated pages
-(/stem-splitter, /audio-to-text, /text-to-speech, /dictation: COOP/COEP break
+are no slot divs. It is left off the five cross-origin-isolated pages
+(/stem-splitter, /audio-to-text, /text-to-speech, /dictation, /lyrics-from-song: COOP/COEP break
 third-party ad frames, and nothing may stall a model load), off /offline,
 and off the homepage since 9 Oct (`ADS_EXCLUDE`): the page an assistant's
 visitor most often lands on, whose job is to get them to a tool. Tool pages also get an `<aside id="as-sidebar">` ("Most
@@ -1202,6 +1202,66 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   and voices default to alternating man/woman. check-dubbing's two-person case
   (DUBBING_BROWSER=1): both found, voices alternate, the man's lines 122 Hz
   vs the woman's 197.
+
+## The October 9-10 tools
+
+Four pages picked by how often the job is asked of an assistant (playbook
+§15), each with its own check in check-all.
+
+- **/add-audio-to-video** (`js/audio-bed.js` = `ASBed`, UMD;
+  `js/add-audio-video-page.js`): a song or voice-over on a video. Replace,
+  mix, or duck: the music drops 6-24 dB under the original's speech band
+  (250 Hz-3.5 kHz, 10 ms frames, 10 dB over the file's floor, 150 ms hold,
+  60 ms down, 450 ms up). A short track loops with 1.5 s equal-power seams;
+  offset, skip, fade-out. Mixed at the video's own rate, limited to -1 dBTP,
+  `CV.remuxVideo` (picture stream-copied). check-add-audio-video: ducking
+  within 1 dB of the setting, 150/150 frames, 0.0 ms drift.
+- **/remove-filler-words** (`js/fillers.js` = `ASFillers`, UMD;
+  `js/fillers-page.js`). Not isolated (video needs ffmpeg), so Whisper is one
+  thread or the GPU. **The spike's finding:** timestamped Whisper base does
+  write most fillers as words (8 of 9 `say` ums/uhs), starts within ~0.1 s,
+  but word ENDS run early and it sometimes hears "umm" as "bum" or folds an
+  "uh" into the word before. So: filler-list words are ticked; short words
+  set apart by commas/pauses whose pitch holds within 3 semitones are
+  offered unticked ('maybe'); cut edges are found on the audio (onset after
+  skipping the previous word's tail, end at the first 60 ms of quiet, level
+  memoized per file), the pause across a cut held to 0.25 s, 10 ms
+  equal-power joins at the quietest sample. Pauses over 1 s go to 0.5 s only
+  where the gap is quiet. Video: trim+concat at the kept ranges (each piece
+  after the first starts 10 ms late to match the crossfade), x264 superfast.
+  check-fillers: 8 found, 6 ticked, 0 false, 0 cuts into a phrase, video in
+  sync. The `say` fixture keeps 50 ms of silence after each clip, so its
+  "truth" ends are 50 ms late; the cuts are right.
+- **/audio-to-sheet-music** (`js/sheet-music.js` = `ASSheet`, UMD;
+  `js/sheet-page.js`; OpenSheetMusicDisplay 2.2.0, BSD-3, `vendor/osmd/`,
+  loaded only to draw). **Tempo comes from the note onsets, not
+  bpm-detector.js**: the drum-oriented detector read melodies at 75/91 BPM
+  for 96/108. `ASSheet.tempo` scores beat periods 40-320 BPM by
+  |mean exp(2πi t/P)|, takes the slowest within 3% of the best, folds into
+  70-140 and refines to 0.01 BPM on the 16th grid (0.25 BPM out drifts a
+  16th over a long tune); its phase is the first beat. `rearticulate` splits
+  a held pitch where the level dips under 60% of the note's peak and
+  returns over 80% (pitch-track.js merges repeated notes). MusicXML: 16ths,
+  plain and dotted values that fit the bar, a value over a beat only on a
+  beat, ties otherwise; sharps or flats by key. check-sheet (own MusicXML
+  reader): every bar sums in 4/4, 3/4, 6/8; on six synthesized tunes
+  99.5% of pitches, 100% of lengths, tempo within 0.05 BPM, key 5/6; the
+  page draws and its download reads back 24/24.
+- **/lyrics-from-song** (`js/lyrics-page.js`; `ASSubs.toLRC` in
+  subtitles.js, round-tripped in check-srt). Cross-origin isolated (its own
+  `_headers` block, sw.js BYPASS, `ADS_EXCLUDE`). stem-worker.js separates
+  the vocal (the page ends that worker before Whisper loads), then
+  transcribe-worker.js with words; a line is kept only where the separated
+  vocal is within 30 dB of the song's loudest singing, which is what stops
+  Whisper writing lines in instrumental breaks. Separation defaults on only
+  with a GPU adapter. check-lyrics (both models from the mirror, WebGPU
+  flags) has not completed a run yet (stopped for memory on 10 Oct); it is
+  not in check-all, and the page quotes no accuracy figure until it has.
+- **Text-to-speech defaults to the 92 MB q8 model** (9 Oct): the 326 MB
+  fp32 GPU model is the "Faster for long texts" option, or chosen
+  automatically when it is already in Cache Storage. `assets/voices/*.mp3`
+  (41 voices, 1.15 MB, `tools/build-voice-samples.js`) make "hear this
+  voice" instant for a single voice.
 
 ## The stem splitter
 

@@ -401,7 +401,7 @@ ${rails}
 const ADS_TAG = '<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>';
 // The homepage is ad-free too (9 Oct 2026): it is the page a first visit from
 // an assistant most often lands on, and its job is to get people to a tool.
-const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech', 'dictation', 'offline', 'index']);
+const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech', 'dictation', 'lyrics-from-song', 'offline', 'index']);
 
 // The ad sidebar: an <aside id="as-sidebar"> beside the tool on screens 1100px
 // and wider (Journey's own rule: 300px+, static, visible from 1100px), set as

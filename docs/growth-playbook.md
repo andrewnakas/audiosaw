@@ -912,3 +912,46 @@ splits the site's Bing presence.
    launch kit (`docs/launch/`, still the only thing that can move Google's
    2 of 63). (`file_ext`, `target_format` and `pick_method` were registered
    on 5 Oct; data starts that day.)
+
+## §15 — "Did the ads cost us?" and the next four pages (9–10 Oct 2026)
+
+Andrew: "my numbers seemed to go down yesterday, is it the ads?" Read from GA4
+"Audio Saw" on 9 Oct.
+
+**It was GA4 processing, not visitors.** 8 Oct was still "mostly complete":
+402 sessions, 291 of them with no source yet ("(not set)" 191, "(data not
+available)" 100) and engaged sessions reading 100. Key events that day: 305,
+against 205 the Wednesday before. Complete days tell the trend: 5–7 Oct had
+1,259 users against 537 on 28–30 Sep (+134%), first visits +148%; 6 Oct
+598 sessions, 7 Oct 555, both ~69% engaged. **Read a day only once GA4 stops
+calling it partial (~48 h).**
+
+Journey started filling around 6–8 Oct, so there was at most one complete
+day with ads. What could be seen: a ~90 px bottom adhesion bar that sat on
+the tool on a 690 px laptop screen, Journey's TCF CMP beside our banner in
+Europe, and ~110 third-party requests per page. Completion fell from 78% to
+61%, but mostly from the mix moving to the AI pages.
+
+**Funnel by tool, Oct 2–7 (users started → succeeded / errored):**
+text-to-speech 237 → 102 / 11 · audio-to-text 259 → 59 / 56 · stem-splitter
+74 → 31 / 15 · voice-cloning 29 → 2 / 18 · video-dubbing 21 → 3 / 6 ·
+text-to-audiobook 24 → 3 / 5 · voice-recorder 118 → 115.
+
+**Shipped:**
+- Ads off the homepage (Andrew's call); the tool now starts at ~340 px on
+  a 690 px screen; one consent banner in Europe (check-consent).
+- Instruments: `convert_start` was firing twice per click on the five voice
+  pages (event counts halve from 9 Oct; users were always right); TTS counts
+  a result heard to the end (`target_format: play`); audio-to-text errors
+  carry their name and land in codec_load / codec_crash / too_long instead
+  of `other`; voice-cloning checks for a GPU adapter before anyone waits.
+- TTS starts on the 92 MB model, with instant pre-rendered voice samples.
+- Four pages for jobs people ask assistants for every day:
+  /add-audio-to-video, /remove-filler-words, /audio-to-sheet-music,
+  /lyrics-from-song. Each was built to a measured check first.
+
+**Re-read ~16 Oct:** completion by tool against the table above (TTS with
+`play` counted; audio-to-text's error mix now that `other` is split; the
+voice-cloning error count); homepage engagement time with ads off (was 52 s,
+down from 1m16s); chatgpt.com landings on the four new pages in their first
+week, against /audio-to-text's 141 and /voice-cloning's 1.

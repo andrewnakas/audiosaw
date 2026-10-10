@@ -119,6 +119,16 @@
   Cross-Origin-Resource-Policy: same-origin
   Cross-Origin-Embedder-Policy: credentialless
 
+# /lyrics-from-song chains the stem splitter's MDX-Net worker into the
+# audio-to-text Whisper worker. Both workers and their runtimes already carry
+# COEP above; the page needs isolation for their threads.
+/lyrics-from-song
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+/lyrics-from-song.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
+
 # /text-to-speech runs Kokoro on /vendor/ort (ORT 1.22, the stem splitter's
 # copy, which already carries COEP above), so only the page and its worker
 # need adding. The phonemizer is imported by the worker from the same origin.

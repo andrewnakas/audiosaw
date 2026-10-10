@@ -98,6 +98,29 @@
     return 'WEBVTT\n\n' + cues.join('\n');
   }
 
+  // LRC, the synced-lyrics format karaoke players, music apps and lyric-video
+  // makers read: one line per cue as [mm:ss.xx]text, centiseconds rounded,
+  // minutes past 99 kept as they are (the format has no hours). A blank
+  // timed line after a cue that ends well before the next one starts, so the
+  // last words do not hang on screen through an instrumental.
+  function toLRC(segs, opts) {
+    opts = opts || {};
+    function ts(t) {
+      var cs = Math.max(0, Math.round(t * 100)), m = Math.floor(cs / 6000), r = cs - m * 6000;
+      return '[' + pad(m, 2) + ':' + pad(Math.floor(r / 100), 2) + '.' + pad(r % 100, 2) + ']';
+    }
+    var cues = normalise(segs, opts.duration), out = [];
+    if (opts.title) out.push('[ti:' + cleanText(opts.title) + ']');
+    if (opts.artist) out.push('[ar:' + cleanText(opts.artist) + ']');
+    out.push('[re:AudioSaw lyrics from a song (audiosaw.com)]');
+    cues.forEach(function (c, i) {
+      out.push(ts(c.start) + c.text.replace(/\s*\n\s*/g, ' '));
+      var next = cues[i + 1];
+      if (!next || next.start - c.end > 2) out.push(ts(c.end));
+    });
+    return out.join('\n') + '\n';
+  }
+
   // Plain text with a paragraph break wherever the speaker paused for longer
   // than `gap` seconds — a wall of text is the main complaint about raw
   // Whisper output.
@@ -201,5 +224,5 @@
     return out;
   }
 
-  return { toSRT: toSRT, toVTT: toVTT, toText: toText, normalise: normalise, stamp: stamp, parse: parse, split: split, fromWords: fromWords };
+  return { toSRT: toSRT, toVTT: toVTT, toLRC: toLRC, toText: toText, normalise: normalise, stamp: stamp, parse: parse, split: split, fromWords: fromWords };
 });

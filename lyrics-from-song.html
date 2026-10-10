@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Lyrics from a Song — Synced LRC, SRT and Text, Free AI</title>
+<meta name="description" content="Get the lyrics of any song from the audio: the vocal is separated and transcribed by AI in your browser, with synced LRC, SRT and VTT for karaoke and lyric videos. Free, no upload.">
+<meta name="keywords" content="lyrics from song, get lyrics from audio, transcribe song lyrics, song to lyrics, lrc file maker, synced lyrics generator, lyrics extractor ai, mp3 to lyrics">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/lyrics-from-song">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<meta property="og:title" content="Lyrics from a song — the words, separated and transcribed, as synced LRC or captions">
+<meta property="og:description" content="The vocal is lifted off the mix and transcribed in your browser. LRC, SRT, VTT or text; nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/lyrics-from-song">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-10d">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Lyrics from a Song",
+  "alternateName": [
+    "Get lyrics from audio",
+    "Transcribe song lyrics",
+    "LRC file maker",
+    "Synced lyrics generator"
+  ],
+  "url": "https://audiosaw.com/lyrics-from-song",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "The vocal separated from the mix by MDX-Net, then transcribed by Whisper base with word timing, both in the browser; lines kept only where the vocal is sounding; editable lines; LRC synced lyrics, SRT and VTT captions, plain text",
+  "dateModified": "2026-10-10"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#lines{max-height:56vh;overflow:auto;margin:.5rem 0;border:1px solid var(--rule);border-radius:4px;background:var(--card);padding:.5rem}
+.lyr-line{display:flex;gap:.5rem;align-items:center;margin:.15rem 0}
+.lyr-time{font-family:var(--mono);font-size:.8rem;border:0;background:transparent;color:var(--amber);cursor:pointer;min-width:3.2rem;text-align:right}
+.lyr-line input{flex:1;font:inherit;padding:.25rem .4rem;border:1px solid transparent;border-radius:3px;background:transparent;color:inherit}
+.lyr-line input:focus{border-color:var(--rule);background:var(--paper,#fff)}
+#player{width:100%;margin:.5rem 0}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I get the lyrics of a song from the audio?","acceptedAnswer":{"@type":"Answer","text":"Drop the song above and press Get the lyrics. The vocal is separated from the music, transcribed by Whisper in your browser, and shown line by line with times. Correct anything misheard, then download LRC, SRT, VTT or text."}},{"@type":"Question","name":"What is an LRC file and how do I use it?","acceptedAnswer":{"@type":"Answer","text":"An LRC file is lyrics with a time on each line. Save it next to the song with the same name (song.mp3 and song.lrc) and players like foobar2000, MusicBee and Poweramp show the words in time; karaoke and lyric-video apps import it too."}},{"@type":"Question","name":"Is my song uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Both models are downloaded to your browser and the song is separated and transcribed there. The only downloads are the models, which are the same for everyone."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"It depends on how clear the singing is. Clean pop and acoustic vocals come out mostly right; rap, screaming, heavy effects and choirs need more correction. Every line is editable before you download."}},{"@type":"Question","name":"Can I make a lyric video with it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Download the SRT, then put it on your video with add subtitles to video, which can burn the words into the picture. For a song with no video, make one with MP3 to MP4 first."}},{"@type":"Question","name":"Why is it slow without a GPU?","acceptedAnswer":{"@type":"Answer","text":"Separating the vocal is a large model. On a GPU it runs at about the song's length, on the CPU about ten times longer. Untick \"Separate the vocal first\" for a clear vocal to skip it."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Lyrics from a song"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Lyrics from a song</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<main class="container">
+  <section class="page-intro">
+    <h1>Lyrics from a <span class="ital">song</span>: the words, synced.</h1>
+    <p>Drop a song. The page takes the vocal out of the mix, listens to it, and writes the words line by line with their times: plain text, an LRC file for karaoke and music players, or SRT and VTT captions for a lyric video. All in your browser; the song is never uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, WAV, M4A, FLAC, OGG and most other audio, or an MP4 or MOV. Up to 10 minutes.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/mp4,video/quicktime,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.webm,.mp4,.mov,.m4v">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="isolate" checked> Separate the vocal first</label>
+        <label>Language
+          <select id="language">
+            <option value="auto" selected>Detect automatically</option>
+            <option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option>
+            <option value="de">German</option><option value="it">Italian</option><option value="pt">Portuguese</option>
+            <option value="nl">Dutch</option><option value="ja">Japanese</option><option value="ko">Korean</option>
+            <option value="zh">Chinese</option><option value="hi">Hindi</option><option value="ru">Russian</option>
+          </select>
+        </label>
+      </div>
+      <p class="control-note" id="isoNote"></p>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Get the lyrics</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="result" hidden>
+      <audio id="player" controls preload="metadata"></audio>
+      <div id="lines" aria-label="The lyrics, one line per row"></div>
+      <div class="result-actions">
+        <button class="btn" id="dlLrc" type="button">Download LRC</button>
+        <button class="btn btn-secondary" id="dlSrt" type="button">SRT</button>
+        <button class="btn btn-secondary" id="dlVtt" type="button">VTT</button>
+        <button class="btn btn-secondary" id="dlTxt" type="button">Text</button>
+        <button class="btn btn-secondary" id="copyBtn" type="button">Copy the words</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>A song up to 10 minutes: MP3, WAV, M4A, FLAC, OGG, AIFF, or the sound of an MP4 or MOV</td></tr>
+        <tr><th>How</th><td>MDX-Net separates the vocal (the stem splitter's model, 64 MB), then Whisper base transcribes it with the time of each word (135 MB); both downloaded once and kept</td></tr>
+        <tr><th>Gives</th><td>LRC synced lyrics, SRT and VTT captions, plain text; every line editable before you save</td></tr>
+        <tr><th>Languages</th><td>Whisper's 99, detected automatically or chosen</td></tr>
+        <tr><th>Uploads your song</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>Why the vocal comes out first</h2>
+    <p>Speech recognisers are trained on people talking, not singing over drums, guitars and a bass. Given a full mix they miss words, and in the instrumental breaks they invent them. So the page first runs the same separation model as the <a href="/stem-splitter">stem splitter</a> to lift the vocal off the track, then gives Whisper only the voice. A line is kept only where the separated vocal is actually sounding, which is what stops the recogniser writing lines over an instrumental break.</p>
+    <p>Separation is the slow part. With a GPU (current Chrome or Edge on most laptops) it runs at about the song's own length; on the CPU it takes roughly ten times that, so without a GPU the box starts unticked. A clear vocal over a light backing, an acoustic song or a podcast jingle, often reads well enough without it.</p>
+
+    <h2>LRC, SRT or plain text</h2>
+    <p><strong>LRC</strong> is the synced-lyrics format: one line per lyric line with its start time, like <code>[01:12.40]And the night goes on</code>. Music players such as foobar2000, MusicBee, Poweramp and Musixmatch-style apps show it in time with the song when the .lrc file sits next to the audio file with the same name, and karaoke apps and lyric-video makers import it. A blank timed line is added where a long instrumental starts, so the last words do not hang on screen. <strong>SRT and VTT</strong> are caption files: put them on a lyric video with <a href="/add-subtitles-to-video">add subtitles to video</a>, or upload them to YouTube with the video. <strong>Text</strong> is just the words, a line per row, for a lyric sheet or a search.</p>
+
+    <h2>Correcting the words</h2>
+    <p>Every line is a text box. Click the time beside a line to play the song from there, fix what was misheard, and the downloads use your corrected text with the original timing. Expect to fix some: sung vowels are stretched, words are slurred on purpose, backing vocals overlap the lead, and a recogniser that has never heard the song guesses at made-up words and names. Lines are cut where the singer pauses or a sentence ends; join or split them in a text editor if you want them to match the verses exactly.</p>
+
+    <h2>What it can't do</h2>
+    <p>It does not look lyrics up: it only knows what it hears, so it cannot tell you the official words, and mumbled or heavily processed vocals (screaming, auto-tune used as an effect, a choir) come out partly wrong. Times are per line, not per syllable, so karaoke apps that colour each word as it is sung will show whole lines. Lyrics belong to their writers; use what you make here for your own listening, learning and practice, or for songs you have the rights to.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I get the lyrics of a song from the audio?</summary><p>Drop the song above and press Get the lyrics. The vocal is separated from the music, transcribed by Whisper in your browser, and shown line by line with times. Correct anything misheard, then download LRC, SRT, VTT or text.</p></details>
+      <details><summary>What is an LRC file and how do I use it?</summary><p>An LRC file is lyrics with a time on each line. Save it next to the song with the same name (song.mp3 and song.lrc) and players like foobar2000, MusicBee and Poweramp show the words in time; karaoke and lyric-video apps import it too.</p></details>
+      <details><summary>Is my song uploaded?</summary><p>No. Both models are downloaded to your browser and the song is separated and transcribed there. The only downloads are the models, which are the same for everyone.</p></details>
+      <details><summary>How accurate is it?</summary><p>It depends on how clear the singing is. Clean pop and acoustic vocals come out mostly right; rap, screaming, heavy effects and choirs need more correction. Every line is editable before you download.</p></details>
+      <details><summary>Can I make a lyric video with it?</summary><p>Yes. Download the SRT, then put it on your video with add subtitles to video, which can burn the words into the picture. For a song with no video, make one with MP3 to MP4 first.</p></details>
+      <details><summary>Why is it slow without a GPU?</summary><p>Separating the vocal is a large model. On a GPU it runs at about the song's length, on the CPU about ten times longer. Untick "Separate the vocal first" for a clear vocal to skip it.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/add-subtitles-to-video"><h3>Add subtitles to video</h3><p>Burn the lyrics into a video as captions.</p></a>
+      <a class="card" href="/mp3-to-mp4"><h3>MP3 to MP4 with a picture</h3><p>Make a video of the song first, then add the lyrics.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>The vocal and the instrumental as files.</p></a>
+      <a class="card" href="/vocal-remover"><h3>Vocal remover / karaoke</h3><p>A karaoke track to sing the lyrics over.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>For speech rather than singing.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-10d"></script>
+<script src="/js/tool-graph.js?v=2026-10-10d"></script>
+<script src="/js/flow.js?v=2026-10-10d"></script>
+<script src="/js/audio-core.js?v=2026-10-10d"></script>
+<script src="/js/consent.js?v=2026-10-10d"></script>
+<script src="/js/subtitles.js?v=2026-10-10d"></script>
+<script src="/js/lyrics-page.js?v=2026-10-10d"></script>
+<script src="/js/pwa.js?v=2026-10-10d"></script>
+</body>
+</html>

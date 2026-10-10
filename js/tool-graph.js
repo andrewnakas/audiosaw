@@ -681,6 +681,17 @@
         ['voice-recorder', 'Record the microphone instead of the computer']
       ]
     },
+    'lyrics-from-song': {
+      cat: 'voice', label: 'lyrics from song', title: 'Lyrics from a song',
+      blurb: 'The vocal is separated and transcribed in your browser: the words line by line, as synced LRC for karaoke and players, or SRT for a lyric video.',
+      next: [
+        ['add-subtitles-to-video', 'Burn the lyrics into a video as captions'],
+        ['mp3-to-mp4', 'Make a video of the song first, then add the lyrics'],
+        ['stem-splitter', 'The vocal and the instrumental as files'],
+        ['vocal-remover', 'A karaoke track to sing the lyrics over'],
+        ['audio-to-text', 'For speech rather than singing']
+      ]
+    },
     'audio-to-sheet-music': {
       cat: 'create', label: 'audio → sheet music', title: 'Audio to sheet music',
       blurb: 'Sing, whistle or play a melody and get it written out: notes, tempo and key, printable, with MusicXML for MuseScore.',
@@ -1139,7 +1150,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music'
+        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
       ]
     },
     {

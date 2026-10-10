@@ -122,5 +122,22 @@ ok(S.stamp(0, ',') === '00:00:00,000', 'zero stamp');
 ok(S.stamp(3599.9996, ',') === '01:00:00,000', `rounding carries: ${S.stamp(3599.9996, ',')}`);
 ok(S.stamp(-1, '.') === '00:00:00.000', 'negative clamps to zero');
 
+// LRC, read back by its own reader: [mm:ss.xx] tags in order, text intact,
+// times to the centisecond, a blank line closing a cue before a long gap.
+{
+  const lyr = [{ start: 12.344, end: 15.1, text: 'Hello darkness, my old friend' }, { start: 15.6, end: 18.0, text: 'I\'ve come\nto talk with you again' }, { start: 6001.5, end: 6003, text: 'Past a hundred minutes' }];
+  const lrc = S.toLRC(lyr, { title: 'Test' });
+  const lines = lrc.trim().split('\n').filter((l) => /^\[\d/.test(l)).map((l) => {
+    const m = /^\[(\d+):(\d{2})\.(\d{2})\](.*)$/.exec(l);
+    return m ? { t: +m[1] * 60 + +m[2] + +m[3] / 100, text: m[4] } : null;
+  });
+  ok(lines.every(Boolean) && lines.length === 5, 'LRC: every line is [mm:ss.xx]text (' + lines.length + ' lines)');
+  ok(Math.abs(lines[0].t - 12.34) < 0.006 && lines[0].text === 'Hello darkness, my old friend', 'LRC: time to the centisecond, text intact');
+  ok(lines[1].text === "I've come to talk with you again", 'LRC: a wrapped cue is one line');
+  ok(lines[2].text === '' && Math.abs(lines[2].t - 18) < 0.006, 'LRC: a blank line ends a cue before a long gap');
+  ok(Math.abs(lines[3].t - 6001.5) < 0.006 && /^\[100:01\.50\]/.test(lrc.split('\n').find((l) => /Past/.test(l))), 'LRC: minutes past 99 written in full');
+  ok(/^\[ti:Test\]/.test(lrc), 'LRC: title tag');
+}
+
 if (failed) { console.log(`check-srt: ${failed} failure(s)`); process.exit(1); }
 console.log('check-srt: SRT, VTT and text writers parse back cleanly');
