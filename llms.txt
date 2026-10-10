@@ -409,6 +409,7 @@ are much slower without a GPU.
 - [Trim silence off the ends](https://audiosaw.com/trim-silence-edges): Top and tail a recording, leaving the middle untouched.
 - [Auto-Cut Silence](https://audiosaw.com/auto-cut-silence): Shorten the pauses between phrases, keeping speech natural.
 - [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
+- [Add audio to video](https://audiosaw.com/add-audio-to-video): Put music or a voice-over on a video, or replace its sound. Music ducks under speech by itself, loops and fades to fit. The picture is untouched.
 - [Sample Slicer](https://audiosaw.com/sample-slicer): Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.
 
 ## Loudness & channels

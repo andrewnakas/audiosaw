@@ -145,8 +145,22 @@
   function showSpeed() { if (speedOut) speedOut.textContent = (+speedEl.value).toFixed(2).replace(/0$/, '') + '×'; }
   if (speedEl) { speedEl.addEventListener('input', showSpeed); showSpeed(); }
   if (fmtSel) CV.remember(fmtSel, 'as_tts_fmt');
+  // Until 9 Oct 2026 a GPU meant the 326 MB model by default, and a first
+  // visit waited for all of it before hearing a word. The 92 MB one starts
+  // speaking far sooner and plays as it goes, so it is the default now; the
+  // GPU model stays the choice of anyone who already has it cached. The
+  // storage key changed so an old remembered "auto" does not carry over.
   if (engineSel) {
-    CV.remember(engineSel, 'as_tts_engine');
+    CV.remember(engineSel, 'as_tts_engine2');
+    try {
+      caches.open('audiosaw-models-v2').then(function (c) { return c.keys(); }).then(function (keys) {
+        var hasBig = keys.some(function (r) { return /\/onnx\/model\.onnx$/.test(r.url); });
+        if (hasBig && engineSel.value !== 'auto' && !localStorage.getItem('as_pref:as_tts_engine2')) {
+          engineSel.value = 'auto';
+          describe();
+        }
+      }).catch(function () {});
+    } catch (e) {}
     engineSel.addEventListener('change', function () {
       // A different model means a different worker; the cached one is kept.
       if (worker && !pending) { worker.terminate(); worker = null; ready = null; }
@@ -191,8 +205,8 @@
       parts.push(ready.backend === 'webgpu' ? 'Running on your GPU (WebGPU).'
         : 'Running on the CPU' + (ready.threads > 1 ? ' across ' + ready.threads + ' threads' : ' on one thread') + ' — slower than a GPU, same voice.');
     } else if (gpuUsable === null) parts.push('Checking whether your browser can use the GPU…');
-    else if (gpuUsable && !wantsSmall()) parts.push('Your browser can use the GPU, the fast path. The first run downloads a 326 MB voice model, once; on a slow or metered connection, choose the smaller download.');
-    else if (gpuUsable) parts.push('The smaller download (92 MB) runs on the CPU: same voice, about three times slower than your GPU would be.');
+    else if (gpuUsable && !wantsSmall()) parts.push('Your browser can use the GPU. The first run downloads a 326 MB voice model, once, then long texts generate about three times faster.');
+    else if (gpuUsable) parts.push('Quick start: a 92 MB model, once, and it starts speaking as soon as the first sentence is ready. For long texts, the GPU model is about three times faster.');
     else parts.push('No usable GPU here, so this runs on the CPU: a 92 MB model, once, and roughly one and a half times as long as the speech to generate.');
     var words = (textEl.value.match(/\S+/g) || []).length;
     if (words > 20) {
@@ -517,11 +531,23 @@
   });
   if (dlBtn) dlBtn.addEventListener('click', download);
   if (fmtSel) fmtSel.addEventListener('change', function () { if (dlBtn && result) dlBtn.textContent = 'Download ' + fmtLabel(); });
+  // A single voice has a ready-made sample (tools/build-voice-samples.js), so
+  // hearing it needs no model download; a mix is synthesised as before.
+  var sampleAudio = null;
   if (sampleBtn) sampleBtn.addEventListener('click', function () {
-    audioCtx();
     var mix = currentMix();
-    speak('Hello! This is ' + mixName(mix).replace(/ \d+%/g, '') + '. Here is how I sound reading your text.', { mix: mix, sample: true });
+    if (mix.length === 1 && !pending) {
+      if (sampleAudio) sampleAudio.pause();
+      sampleAudio = new Audio('/assets/voices/' + mix[0].id + '.mp3');
+      sampleAudio.play().catch(function () { sampleAudio = null; synthSample(mix); });
+      return;
+    }
+    synthSample(mix);
   });
+  function synthSample(mix) {
+    audioCtx();
+    speak('Hello! This is ' + mixName(mix).replace(/ \d+%/g, '') + '. Here is how I sound reading your text.', { mix: mix, sample: true });
+  }
 
   // Ctrl/Cmd+Enter generates.
   textEl.addEventListener('keydown', function (e) {

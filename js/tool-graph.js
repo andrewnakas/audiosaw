@@ -884,6 +884,17 @@
         ['mp4-to-mp3', 'The other way: the audio out of a video']
       ]
     },
+    'add-audio-to-video': {
+      cat: 'edit', label: 'add audio to video', title: 'Add audio to video',
+      blurb: 'Put music or a voice-over on a video, or replace its sound. Music ducks under speech by itself, loops and fades to fit. The picture is untouched.',
+      next: [
+        ['add-subtitles-to-video', 'Captions on the finished video'],
+        ['voice-recorder', 'Record a voice-over to put on it'],
+        ['text-to-speech', 'A narrated voice-over from text'],
+        ['audio-cutter', 'Cut the song to the part you want first'],
+        ['vocal-remover', 'An instrumental of the song, so it does not fight the speech']
+      ]
+    },
     'add-subtitles-to-video': {
       cat: 'voice', label: 'add subtitles', title: 'Add subtitles to video',
       blurb: 'Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.',
@@ -1084,7 +1095,7 @@
       style: 'tile',
       tools: [
         'audio-editor', 'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
-        'silence-remover', 'trim-silence-edges', 'fade-in-fade-out'
+        'silence-remover', 'trim-silence-edges', 'fade-in-fade-out', 'add-audio-to-video'
       ]
     },
     {
