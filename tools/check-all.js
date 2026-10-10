@@ -54,6 +54,7 @@ const CHECKS = [
   ['check-record-computer.js'],
   ['check-fidelity.js'],
   ['check-errors.js'],
+  ['check-consent.js'],
   ['check-voice.js'],
   ['check-tts.js'],
   ['check-audiobook.js'],

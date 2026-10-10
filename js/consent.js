@@ -83,7 +83,47 @@
     }
     // Only interrupt where prior consent is the legal requirement, and only
     // until a choice exists.
-    if (state.eu && !stored()) build();
+    if (state.eu && !stored()) waitForCmp();
+  }
+
+  // Journey brings its own TCF consent dialog to European visitors. Showing
+  // ours on top of it put two banners at the bottom of the page, beside the
+  // ad bar. So where its CMP is running and says GDPR applies, its answer is
+  // the answer: analytics is granted with purpose 1 (store on the device) plus
+  // 8 or 9 (measurement), and is stored so the <head> default matches next
+  // time. Ours appears only when no CMP turns up (the ad-free pages, an ad
+  // blocker) or the CMP decides GDPR does not apply where the clock says Europe.
+  var CMP_WAIT_MS = 4000;
+
+  function waitForCmp() {
+    var t0 = Date.now();
+    (function poll() {
+      if (typeof global.__tcfapi === 'function') return listenTcf();
+      if (Date.now() - t0 > CMP_WAIT_MS) return build();
+      setTimeout(poll, 200);
+    })();
+  }
+
+  function listenTcf() {
+    var settled = false;
+    var timer = setTimeout(function () { if (!settled) { settled = true; build(); } }, CMP_WAIT_MS);
+    try {
+      global.__tcfapi('addEventListener', 2, function (tc, ok) {
+        if (!ok || !tc) return;
+        if (tc.gdprApplies === false) {
+          if (!settled) { settled = true; clearTimeout(timer); build(); }
+          return;
+        }
+        if (tc.eventStatus === 'cmpuishown') { settled = true; clearTimeout(timer); return; }
+        if (tc.eventStatus !== 'tcloaded' && tc.eventStatus !== 'useractioncomplete') return;
+        settled = true;
+        clearTimeout(timer);
+        var p = (tc.purpose && tc.purpose.consents) || {};
+        apply(p[1] && (p[8] || p[9]) ? 'all' : 'essential');
+      });
+    } catch (e) {
+      if (!settled) { settled = true; clearTimeout(timer); build(); }
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -43,7 +43,25 @@
     var ok = consent.checked;
     [recBtn, fileInput].forEach(function (el) { if (el) el.disabled = !ok; });
     dropzone.classList.toggle('disabled', !ok);
-    goBtn.disabled = !ok || !refAudio || !textEl.value.trim() || running;
+    goBtn.disabled = !ok || !refAudio || !textEl.value.trim() || running || gpuOk === false;
+  }
+
+  // Checked before anyone waits: a browser can expose navigator.gpu and still
+  // hand back no adapter (Linux Chrome, blocklisted GPUs, many phones). Those
+  // visitors used to be promised a 560 MB download and then get an error as
+  // soon as they picked a clip: 18 of 29 who tried in the first week.
+  var gpuOk = null;
+  async function probeGpu() {
+    var a = null;
+    try { a = navigator.gpu ? await navigator.gpu.requestAdapter() : null; } catch (e) { a = null; }
+    gpuOk = !!a;
+    if (envEl) {
+      if (gpuOk) envEl.textContent = 'The first run downloads the cloning model (about 560 MB) and keeps it.';
+      else envEl.innerHTML = 'Voice cloning needs WebGPU, and it is not supported in this browser on this device. ' +
+        'It works in current Chrome or Edge on most laptops and desktops. ' +
+        'Here you can still use <a href="/text-to-speech">text to speech</a>, with 41 ready-made voices.';
+    }
+    gate();
   }
   consent.addEventListener('change', gate);
   textEl.addEventListener('input', gate);
@@ -94,7 +112,7 @@
     if (refPlay) refPlay.hidden = false;
     stepTwo.hidden = false;
     if (CV.signal) CV.signal.input('Reference voice — ' + (refAudio.length / SR).toFixed(1) + ' s, ' + label);
-    ensureWorker();
+    if (gpuOk !== false) ensureWorker();
     gate();
   }
 
@@ -236,11 +254,8 @@
     downloadedOnce = true;
   });
 
-  if (envEl) {
-    if (!navigator.gpu) envEl.textContent = 'This browser has no WebGPU, which voice cloning needs. Use current Chrome or Edge on a desktop or laptop.';
-    else envEl.textContent = 'The first run downloads the cloning model (about 560 MB) and keeps it.';
-  }
   gate();
+  probeGpu();
 
   window.__clone = {
     setReference: function (x, rate) { consent.checked = true; return useReference(AudioSaw.makeBuffer([x], rate), 'test'); },

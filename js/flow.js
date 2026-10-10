@@ -145,7 +145,7 @@
       // A wasm module that crashed rather than refused: the ffmpeg core's
       // heap, or onnxruntime's.
       id: 'codec_crash',
-      test: /memory access out of bounds|Aborted\(|RuntimeError|unreachable/i,
+      test: /memory access out of bounds|Aborted\(|RuntimeError|unreachable|failed\. \d{5,}\s*$/i,
       message: 'The decoder crashed on this file. Reloading the page and trying once more often works; if not, the file is probably damaged.',
       action: { href: '/extract-audio', label: 'Try the heavier converter' }
     },
@@ -178,7 +178,7 @@
     },
     {
       id: 'codec_load',
-      test: /Failed to load|NetworkError|importScripts|Loading chunk|fetch|Load failed|download the model|network/i,
+      test: /Failed to load|NetworkError|importScripts|Loading chunk|fetch|Load failed|download the model|download kept failing|network/i,
       message: 'Part of the tool could not be downloaded. An ad blocker or a dropped connection is the usual cause; reload and try again.',
       action: null
     },
@@ -767,8 +767,10 @@
     var actionBtns = ['convertBtn', 'cutBtn', 'joinBtn'].map(function (id) {
       return document.getElementById(id);
     }).concat(Array.prototype.slice.call(document.querySelectorAll('[data-track="convert"]')));
-    actionBtns.forEach(function (btn) {
-      if (!btn) return;
+    // A #convertBtn that also carries data-track="convert" is in the list
+    // twice; until 9 Oct 2026 every click on the voice pages fired two events.
+    actionBtns.forEach(function (btn, i) {
+      if (!btn || actionBtns.indexOf(btn) !== i) return;
       btn.addEventListener('click', function () {
         convertStartedAt = Date.now();
         var bitrate = document.getElementById('bitrate');

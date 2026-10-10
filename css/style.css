@@ -1531,3 +1531,13 @@ select:focus-visible {
   .as-sidebar a { display: block; padding: .5rem 0; color: var(--ink); text-decoration: none; }
   .as-sidebar a:hover { color: var(--amber); text-decoration: underline; }
 }
+
+/* Short screens (a 13" laptop is ~690px tall inside the browser): the intro
+   used to push the tool to the fold, and Journey's bottom ad bar (~90px) then
+   sat on top of it. Tighter here so the tool starts in view. */
+@media (max-height: 820px) {
+  .page-intro { padding: 26px 0 14px; margin-bottom: 14px; }
+  .page-intro h1 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); margin-bottom: 10px; }
+  .page-intro p { font-size: 1rem; }
+  .tool-app { margin-top: 18px; padding-top: 26px; }
+}

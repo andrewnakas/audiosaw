@@ -270,10 +270,24 @@
     src.start(t);
     playAt = t + b.duration;
     playing.push(src);
-    src.onended = function () { playing = playing.filter(function (s) { return s !== src; }); };
+    src.onended = function () {
+      playing = playing.filter(function (s) { return s !== src; });
+      if (!playing.length) heard();
+    };
+  }
+
+  // Most people listen here and never download, so until 9 Oct 2026 a TTS
+  // run that did its job looked like a failure. Hearing a finished result to
+  // the end counts as a success (target_format 'play'), once per result, the
+  // way copying a transcript does on /audio-to-text.
+  function heard() {
+    if (pending || !result || result.stopped || result.counted) return;
+    result.counted = true;
+    CV.track('convert_success', { tool: 'text-to-speech', target_format: 'play' });
   }
 
   function stopPlayback() {
+    if (result) result.stopped = true;
     playing.forEach(function (s) { try { s.stop(); } catch (e) {} });
     playing = [];
     playAt = 0;

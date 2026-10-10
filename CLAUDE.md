@@ -759,8 +759,9 @@ Mediavine issued it, sits in an `<!-- AS:ads -->` block in every page's head,
 written by `build-nav.js` (`ADS_TAG`); Journey places its own units, so there
 are no slot divs. It is left off the four cross-origin-isolated pages
 (/stem-splitter, /audio-to-text, /text-to-speech, /dictation: COOP/COEP break
-third-party ad frames, and nothing may stall a model load) and off /offline
-(`ADS_EXCLUDE`). Tool pages also get an `<aside id="as-sidebar">` ("Most
+third-party ad frames, and nothing may stall a model load), off /offline,
+and off the homepage since 9 Oct (`ADS_EXCLUDE`): the page an assistant's
+visitor most often lands on, whose job is to get them to a tool. Tool pages also get an `<aside id="as-sidebar">` ("Most
 used" links; `#as-sidebar` is Journey's Sidebar Selector), shown only from
 1100px, where the page widens to 1400px so the tool keeps its width; not on
 the waveform/timeline apps (`SIDEBAR_EXCLUDE`). Every ad page has an empty
@@ -772,6 +773,13 @@ banner all say so; when the ad setup changes, change them together. Before
 this, AdSense had loaded on 55 pages with zero units for months (cost without
 revenue) and was removed on 5 Sep; the "no ads" claims that replaced it were
 rewritten on 5 Oct.
+
+Since 9 Oct 2026, where Journey's TCF CMP is on the page and says GDPR applies,
+`consent.js` shows no banner of its own and maps the CMP's answer onto GA
+(purpose 1 plus 8 or 9 = analytics granted); ours appears only when no CMP
+turns up within 4 s. `node tools/check-consent.js` holds that, and that the
+tool starts above Journey's ~90 px bottom bar on a 690 px-tall laptop screen
+(the short-screen intro rule at the end of style.css).
 
 Consent is region-aware: the inline bootstrap in every `<head>` reads the
 browser timezone and defaults to granted outside Europe, denied inside it, and
@@ -802,6 +810,12 @@ New outcomes become new *values* on those events, never a ninth event:
 | `chain_continue` | `placement: project`, `from_tool: audio-editor` | "Use project audio" taken on the tool page |
 | `next_step_click` | `placement: project_return` | "Send back" clicked on the tool page |
 | `chain_continue` | `placement: project`, `to_tool: audio-editor` | the editor actually applied a tool's result |
+
+**Two instrument changes on 9 Oct 2026.** A button with both `id="convertBtn"`
+and `data-track="convert"` fired `convert_start` twice per click (the five
+voice pages); it fires once now, so their event counts halve from that day
+(user counts were always right). And /text-to-speech counts a result heard
+to the end as `convert_success` with `target_format: play`, once per result.
 
 A `validation` error kind exists for UI hints like "Selection too short" and is
 deliberately **silent** — it fires no event and shows no recovery panel. Those

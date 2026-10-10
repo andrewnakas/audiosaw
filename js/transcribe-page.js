@@ -181,12 +181,15 @@
       transcribe();
       return;
     }
-    onError(m.message);
+    onError(m.message, m.name ? { name: m.name, message: m.message } : null);
   }
 
-  function onError(message) {
+  // The error itself goes to setStatus so the classifier sees its name
+  // (RangeError, NotSupportedError), not only the page's words.
+  function onError(message, err) {
     setTitle(null);
-    CV.setStatus(statusEl, 'error', 'Transcription failed. ' + message);
+    if (running) { running = false; resetBtn.textContent = 'Reset'; }
+    CV.setStatus(statusEl, 'error', 'Transcription failed. ' + message, err);
     goBtn.disabled = files.length === 0;
     resetBtn.disabled = false;
     CV.setProgress(progressBar, 100);
@@ -235,6 +238,8 @@
   }
 
   async function onDone(m) {
+    running = false;
+    resetBtn.textContent = 'Reset';
     segments = m.segments && m.segments.length ? m.segments : [{ text: m.text, start: 0, end: duration }];
     speakerCount = 0; names = {};
     if (diarAudio) {
@@ -267,7 +272,7 @@
     CV.setStatus(statusEl, 'info', 'Decoding…');
     var buf = await AudioSaw.decodeToAudioBuffer(file);
     if (buf.duration > MAX_SECONDS) {
-      throw new Error('That file is ' + fmtDuration(buf.duration) + ' long. Past two hours the tab runs out of memory — split it into parts first.');
+      throw new Error('That file is over 120 minutes long (' + fmtDuration(buf.duration) + '). Past two hours the tab runs out of memory — split it into parts first.');
     }
     duration = buf.duration;
     var n = buf.length, nch = buf.numberOfChannels;
@@ -327,7 +332,22 @@
     measureDuration(files[0]);
   }
 
+  // While a run is going, Reset reads "Cancel": it stops the worker (a model
+  // download or a long transcription has no other way out) and keeps the file.
+  var running = false;
+  function cancelRun() {
+    running = false;
+    if (worker) { try { worker.terminate(); } catch (e) {} worker = null; }
+    resetBtn.textContent = 'Reset';
+    goBtn.disabled = files.length === 0;
+    CV.setStatus(statusEl, 'info', 'Stopped. Press Transcribe to start again; a model that finished downloading is kept.');
+    progressWrap.style.display = 'none';
+    if (liveEl) { liveEl.hidden = true; liveEl.textContent = ''; }
+    setTitle(null);
+  }
+
   function reset() {
+    if (running) { cancelRun(); return; }
     files = [];
     segments = null;
     fileList.innerHTML = '';
@@ -351,7 +371,9 @@
   async function transcribe() {
     if (!files.length) return;
     goBtn.disabled = true;
-    resetBtn.disabled = true;
+    running = true;
+    resetBtn.disabled = false;
+    resetBtn.textContent = 'Cancel';
     progressWrap.style.display = '';
     CV.setProgress(progressBar, 0);
     resultEl.hidden = true;
@@ -370,7 +392,7 @@
         task: taskSel ? taskSel.value : 'transcribe'
       }, [audio.buffer]);
     } catch (e) {
-      onError(e.message || String(e));
+      onError(e.message || String(e), e);
     }
   }
 

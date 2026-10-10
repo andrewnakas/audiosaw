@@ -127,7 +127,7 @@ function load() {
 }
 async function doLoad() {
   var a = self.navigator.gpu && await self.navigator.gpu.requestAdapter().catch(function () { return null; });
-  if (!a) throw new Error('Voice cloning needs WebGPU (current Chrome or Edge on a desktop or laptop). This browser does not offer it.');
+  if (!a) throw new Error('Voice cloning needs WebGPU (current Chrome or Edge on a desktop or laptop). WebGPU is not supported in this browser.');
   post('status', { phase: 'model', pct: 0, detail: 'Fetching the cloning model…' });
   var cb = progress();
   var r = await Promise.all([

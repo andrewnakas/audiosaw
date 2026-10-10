@@ -318,6 +318,6 @@ self.onmessage = async function (e) {
     }
   } catch (err) {
     var message = (err && err.message) || String(err);
-    post('error', { message: message, stage: stage, network: /download kept failing/.test(message), safe: SAFE });
+    post('error', { message: message, name: err && err.name, stage: stage, network: /download kept failing/.test(message), safe: SAFE });
   }
 };
