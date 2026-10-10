@@ -681,10 +681,22 @@
         ['voice-recorder', 'Record the microphone instead of the computer']
       ]
     },
+    'audio-to-sheet-music': {
+      cat: 'create', label: 'audio → sheet music', title: 'Audio to sheet music',
+      blurb: 'Sing, whistle or play a melody and get it written out: notes, tempo and key, printable, with MusicXML for MuseScore.',
+      next: [
+        ['audio-to-midi', 'Edit the notes on a piano roll, then save MIDI'],
+        ['stem-splitter', 'Take the vocal out of a song first, then write it out'],
+        ['key-finder', 'The key and its relative, with the Camelot code'],
+        ['bpm-finder', 'The tempo of a full track'],
+        ['tuner', 'Tune up before you record the melody']
+      ]
+    },
     'audio-to-midi': {
       cat: 'create', label: 'audio → midi', title: 'Audio to MIDI',
       blurb: 'Turn a hummed melody or bassline into a MIDI file.',
       next: [
+        ['audio-to-sheet-music', 'The same melody written out as a score, with MusicXML'],
         ['bpm-finder', 'Check the tempo written into the file'],
         ['stem-splitter', 'Isolate one part of a mix before transcribing it'],
         ['auto-cut-silence', 'Remove breaths that register as stray notes'],
@@ -1127,7 +1139,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor'
+        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music'
       ]
     },
     {

@@ -146,5 +146,42 @@ ok(durRight / total >= 0.9, 'lengths right (within a 16th): ' + (100 * durRight 
 ok(tempoRight === SETS.length, 'tempo within 2 BPM: ' + tempoRight + '/' + SETS.length);
 ok(keyRight >= SETS.length - 1, 'key signature right: ' + keyRight + '/' + SETS.length);
 
-console.log(failed ? '\n' + failed + ' check(s) failed' : '\ncheck-sheet: all good');
-process.exit(failed ? 1 : 0);
+// ---- the page in headless Chrome: a WAV of a melody in, a drawn score and
+// a MusicXML download out (OpenSheetMusicDisplay from /vendor/osmd).
+async function browser() {
+  const { withPage, findChrome } = require('./chrome-harness');
+  if (!findChrome()) { console.log('  skip: no Chrome'); return; }
+  console.log('page');
+  const truth = melody(7, 'major', 5, 24);
+  const x = synth(truth, 112, 0.4);
+  // 16-bit WAV by hand.
+  const n = x.length, wav = Buffer.alloc(44 + n * 2);
+  wav.write('RIFF', 0); wav.writeUInt32LE(36 + n * 2, 4); wav.write('WAVEfmt ', 8); wav.writeUInt32LE(16, 16);
+  wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22); wav.writeUInt32LE(SR, 24); wav.writeUInt32LE(SR * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34);
+  wav.write('data', 36); wav.writeUInt32LE(n * 2, 40);
+  for (let i = 0; i < n; i++) wav.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(x[i] * 0.8 * 32767))), 44 + i * 2);
+  await withPage({ routes: { '/__tune.wav': () => wav } }, async (page) => {
+    await page.goto('/audio-to-sheet-music', 1500);
+    const r = await page.eval(`(async () => {
+      const b = await (await fetch('/__tune.wav')).blob();
+      window.__sheet.use(new File([b], 'tune.wav', { type: 'audio/wav' }));
+      await window.__sheet.analyse();
+      let out = null; const orig = CV.downloadBlob; CV.downloadBlob = (bl, nm) => { out = { bl, nm }; };
+      document.querySelector('#xmlBtn').click();
+      CV.downloadBlob = orig;
+      return { svgs: window.__sheet.rendered(), heads: document.querySelectorAll('#score .vf-stavenote, #score .vf-notehead').length,
+        status: document.querySelector('#status').textContent, name: out && out.nm, xml: out ? await out.bl.text() : '' };
+    })()`, 300000);
+    ok(r.svgs > 0 && r.heads > 0, 'the score is drawn (' + r.svgs + ' SVG, ' + r.heads + ' note elements) — ' + r.status.slice(0, 80));
+    const back = r.xml ? notesOf(read(r.xml)) : [];
+    const shift = back.length ? back[0].at - truth[0].at : 0;
+    const right = truth.filter((t) => back.some((b) => b.at - shift === t.at && b.midi === t.midi)).length;
+    ok(/\.musicxml$/.test(r.name || '') && right >= truth.length * 0.95, 'the MusicXML download has ' + right + '/' + truth.length + ' notes right (' + r.name + ')');
+    if (page.logs.length) console.log('    console: ' + page.logs.slice(0, 4).join(' | '));
+  });
+}
+
+browser().then(() => {
+  console.log(failed ? '\n' + failed + ' check(s) failed' : '\ncheck-sheet: all good');
+  process.exit(failed ? 1 : 0);
+}).catch((e) => { console.error(e); process.exit(1); });

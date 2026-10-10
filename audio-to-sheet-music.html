@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio to Sheet Music — Melody to Notes, MusicXML and PDF, Free</title>
+<meta name="description" content="Turn a sung, hummed or played melody into sheet music in your browser: notes, tempo and key, printable, with MusicXML for MuseScore and MIDI. Free, no upload.">
+<meta name="keywords" content="audio to sheet music, convert audio to sheet music, mp3 to sheet music, hum to sheet music, singing to notes, melody to sheet music, audio to musicxml, transcribe melody to notes">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-to-sheet-music">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Audio to sheet music — a melody written out as a score you can print or open in MuseScore">
+<meta property="og:description" content="Sing, whistle or play one line; get notation, MusicXML, MIDI and a PDF. In your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-to-sheet-music">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-10c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio to Sheet Music",
+  "alternateName": [
+    "Convert audio to sheet music",
+    "MP3 to sheet music",
+    "Hum to sheet music",
+    "Melody to notes"
+  ],
+  "url": "https://audiosaw.com/audio-to-sheet-music",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "One melodic line from a recording to standard notation: YIN pitch tracking, repeated notes split on the re-attack, tempo and first beat from the note onsets, key signature from the key finder; 4/4, 3/4, 2/4 and 6/8; transposition for B-flat, E-flat and F instruments; MusicXML, MIDI and a printable page; playback of the score",
+  "dateModified": "2026-10-10"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#score{background:#fff;border:1px solid var(--rule);border-radius:4px;min-height:200px;margin:.75rem 0;overflow-x:auto;color:#000}
+.controls input[type=text]{min-width:12rem}
+.controls input[type=number]{width:5.5rem}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+@media print {
+  body *{visibility:hidden}
+  #score,#score *{visibility:visible}
+  #score{position:absolute;left:0;top:0;width:100%;border:0;margin:0}
+}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I turn a recording into sheet music for free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a recording of a melody above and press Write it out. You get a score on screen, a MusicXML file, a MIDI file and a printable page, with no account, no watermark and nothing uploaded."}},{"@type":"Question","name":"Can I hum or sing a tune and get the notes?","acceptedAnswer":{"@type":"Answer","text":"Yes. Record yourself on your phone, close to the mic in a quiet room, and drop the file here. Sing in time; the tempo is read from your notes."}},{"@type":"Question","name":"Does it work on a song with a band, or on piano?","acceptedAnswer":{"@type":"Answer","text":"Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out."}},{"@type":"Question","name":"How do I open the result in MuseScore?","acceptedAnswer":{"@type":"Answer","text":"Download MusicXML and open the .musicxml file in MuseScore (File, Open). Sibelius, Finale and Dorico open the same file. The MIDI download works too, but MusicXML keeps the key, time signature and note spelling."}},{"@type":"Question","name":"Can it write a part for trumpet, clarinet or saxophone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the instrument under \"Written for\" and the score is transposed for it: B♭ trumpet and clarinet, B♭ tenor sax, E♭ alto sax, F horn, or an octave up for guitar."}},{"@type":"Question","name":"The rhythm looks twice as fast as I played it. Why?","acceptedAnswer":{"@type":"Answer","text":"The tempo is a guess from the notes, and double or half speed fit the same notes. Type the tempo you meant into the Tempo box and the score redraws at once."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Audio to sheet music"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio to sheet music</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>Audio to <span class="ital">sheet music</span>: a melody, written out.</h1>
+    <p>Sing, whistle or play a tune, or drop a recording of one instrument. The page finds the notes, the tempo and the key, and writes them as a score you can print, play back, or open in MuseScore. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a recording of a melody</p>
+      <p>One voice or one instrument: singing, humming, whistling, a flute, violin, sax, a lead guitar or a bass line. MP3, WAV, M4A and most other audio, up to 10 minutes.</p>
+      <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma,.amr,.webm,.mp4,.mov">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>What is playing
+          <select id="range">
+            <option value="65-1600" selected>Anything — full range</option>
+            <option value="40-400">Bass, cello or a low voice</option>
+            <option value="130-1100">Voice, sax, guitar or violin</option>
+            <option value="200-2000">High voice, flute or whistle</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Write it out</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="result" hidden>
+      <div class="controls">
+        <label>Title <input type="text" id="title" maxlength="80"></label>
+        <label>Tempo (BPM) <input type="number" id="bpm" min="30" max="240" step="1"></label>
+        <label>Time
+          <select id="sig">
+            <option value="4/4" selected>4/4</option>
+            <option value="3/4">3/4</option>
+            <option value="2/4">2/4</option>
+            <option value="6/8">6/8</option>
+          </select>
+        </label>
+        <label>Written for
+          <select id="transpose">
+            <option value="0" selected>Concert pitch (piano, flute, violin, voice)</option>
+            <option value="2">B♭ trumpet or clarinet</option>
+            <option value="14">B♭ tenor saxophone</option>
+            <option value="9">E♭ alto saxophone</option>
+            <option value="7">F horn</option>
+            <option value="12">An octave up (guitar is written so)</option>
+            <option value="-12">An octave down</option>
+          </select>
+        </label>
+        <label>Clef
+          <select id="clef">
+            <option value="auto" selected>Automatic</option>
+            <option value="treble">Treble</option>
+            <option value="bass">Bass</option>
+          </select>
+        </label>
+      </div>
+      <p class="control-note">Key: <span id="keyOut"></span></p>
+      <div id="score" aria-label="The score"></div>
+      <div class="result-actions">
+        <button class="btn btn-secondary" id="playBtn" type="button">▶ Play the score</button>
+        <button class="btn" id="xmlBtn" type="button">Download MusicXML</button>
+        <button class="btn btn-secondary" id="midiBtn" type="button">Download MIDI</button>
+        <button class="btn btn-secondary" id="printBtn" type="button">Print or save as PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>A recording of one melodic line: a voice, a whistle or one instrument. Up to 10 minutes</td></tr>
+        <tr><th>Finds</th><td>The notes (pitch and length), the tempo and first beat, and the key signature</td></tr>
+        <tr><th>Writes</th><td>Standard notation on screen; MusicXML for MuseScore, Sibelius, Finale and Dorico; MIDI; a printable page (PDF)</td></tr>
+        <tr><th>You can change</th><td>Tempo, time signature (4/4, 3/4, 2/4, 6/8), transposition for B♭, E♭ and F instruments, clef, title</td></tr>
+        <tr><th>Measured</th><td>On synthesized tunes at 84 to 132 BPM: 99.5% of pitches and every note length within a sixteenth; tempo within 0.05 BPM; the key signature right in 5 of 6</td></tr>
+        <tr><th>Uploads your audio</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How a recording becomes a score</h2>
+    <p>The page follows the pitch of the recording a hundred times a second with the YIN method, the same tracker behind the site's tuner, which reads within a cent from a low B to a high E. Where the pitch holds steady for long enough it marks a note, and where a held pitch is played again (two quarter notes on the same G, say) it splits the note at the dip and re-attack in the loudness, because a pitch tracker alone hears one long note there.</p>
+    <p>The tempo comes from the notes themselves. Every possible beat length is tried, and the one that lines the note starts up best wins; that also gives where beat one falls. Each note is then placed on a grid of sixteenths, written with the plain and dotted values a reader expects, and tied across bar lines and beats where it has to be, so every bar adds up. The key signature comes from the site's key finder, which weighs every note against the 24 major and minor keys, and decides whether accidentals are written as sharps or flats.</p>
+
+    <h2>Getting a clean result</h2>
+    <p>Record one line, as dry as you can: a phone close to the singer or instrument, in a quiet room, without a backing track. Play or sing in time; the tempo is found from your notes, so a steady pulse is what makes the rhythms come out as you meant them. If the result is written at double or half speed (eighth notes where you meant quarters), type the tempo you had in mind and the whole score redraws. Choose the time signature the same way; the page cannot hear where a bar starts, so it begins bar one on the first beat.</p>
+    <p>For a song with a band, isolate the voice first with the <a href="/stem-splitter">stem splitter</a> and bring the vocal stem here. For a melody you would rather edit note by note, use <a href="/audio-to-midi">audio to MIDI</a>, which has a piano roll, then open the MIDI in MuseScore.</p>
+
+    <h2>For your instrument</h2>
+    <p>"Written for" transposes the part so it reads correctly on a transposing instrument: a B♭ trumpet or clarinet part sits a tone above concert pitch, an alto sax part a major sixth above, a horn part a fifth above, and the key signature moves with it. Guitar music is written an octave above where it sounds, and the octave option does that. The clef follows the range of the melody unless you choose one.</p>
+
+    <h2>What it can't do</h2>
+    <p>This writes out one line. Chords, piano with both hands, and a full mix have no single note to follow, so they come out as a scatter of the loudest notes or nothing at all; for the chords of a song, use the <a href="/chord-finder">chord finder</a>. Ornaments, slides and vibrato are written as the nearest plain note. Triplets and swing are put on the straight sixteenth grid, so a swung tune reads as dotted rhythms. The figures above were measured on synthesized melodies, where the notes are known exactly; a real singer will need more corrections, and the MusicXML is there so you can make them in a notation program rather than starting from a blank page.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Can I turn a recording into sheet music for free?</summary><p>Yes. Drop a recording of a melody above and press Write it out. You get a score on screen, a MusicXML file, a MIDI file and a printable page, with no account, no watermark and nothing uploaded.</p></details>
+      <details><summary>Can I hum or sing a tune and get the notes?</summary><p>Yes. Record yourself on your phone, close to the mic in a quiet room, and drop the file here. Sing in time; the tempo is read from your notes.</p></details>
+      <details><summary>Does it work on a song with a band, or on piano?</summary><p>Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out.</p></details>
+      <details><summary>How do I open the result in MuseScore?</summary><p>Download MusicXML and open the .musicxml file in MuseScore (File, Open). Sibelius, Finale and Dorico open the same file. The MIDI download works too, but MusicXML keeps the key, time signature and note spelling.</p></details>
+      <details><summary>Can it write a part for trumpet, clarinet or saxophone?</summary><p>Yes. Choose the instrument under "Written for" and the score is transposed for it: B♭ trumpet and clarinet, B♭ tenor sax, E♭ alto sax, F horn, or an octave up for guitar.</p></details>
+      <details><summary>The rhythm looks twice as fast as I played it. Why?</summary><p>The tempo is a guess from the notes, and double or half speed fit the same notes. Type the tempo you meant into the Tempo box and the score redraws at once.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Edit the notes on a piano roll, then save MIDI.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Take the vocal out of a song first, then write it out.</p></a>
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>The key and its relative, with the Camelot code.</p></a>
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>The tempo of a full track.</p></a>
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Tune up before you record the melody.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-10c"></script>
+<script src="/js/tool-graph.js?v=2026-10-10c"></script>
+<script src="/js/flow.js?v=2026-10-10c"></script>
+<script src="/js/audio-core.js?v=2026-10-10c"></script>
+<script src="/js/consent.js?v=2026-10-10c"></script>
+<script src="/js/silence-gaps.js?v=2026-10-10c"></script>
+<script src="/js/pitch-track.js?v=2026-10-10c"></script>
+<script src="/js/spectral.js?v=2026-10-10c"></script>
+<script src="/js/key-detect.js?v=2026-10-10c"></script>
+<script src="/js/midi-write.js?v=2026-10-10c"></script>
+<script src="/js/sheet-music.js?v=2026-10-10c"></script>
+<script src="/js/sheet-page.js?v=2026-10-10c"></script>
+<script src="/js/pwa.js?v=2026-10-10c"></script>
+</body>
+</html>
