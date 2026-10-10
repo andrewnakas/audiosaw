@@ -454,6 +454,7 @@ are much slower without a GPU.
 - [Speech to text (voice typing)](https://audiosaw.com/dictation): Talk and it types, with punctuation, in 99 languages: Whisper in your browser, so your voice is never uploaded.
 - [AI video dubbing and translation](https://audiosaw.com/video-dubbing): Translate a video's speech into English, Spanish, French, Italian, Portuguese or Hindi and have an AI voice read it over the original, timed to it, nothing uploaded.
 - [Enhance speech](https://audiosaw.com/enhance-speech): One click to a cleaner voice: AI noise removal, clarity EQ, gentle compression and podcast loudness. Works on video. A free alternative to Adobe Podcast Enhance.
+- [Remove filler words](https://audiosaw.com/remove-filler-words): AI finds every um, uh and long pause in a podcast, lecture or video; review them in the transcript and cut them with clean joins.
 - [Add subtitles to video](https://audiosaw.com/add-subtitles-to-video): Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.
 - [Voice cloning](https://audiosaw.com/voice-cloning): Clone a voice from five seconds of a recording or audio file and make it say anything, free, on your own GPU, with consent.
 

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remove Filler Words (Um, Uh) from Audio and Video — Free, AI</title>
+<meta name="description" content="Find every um, uh and long pause in a podcast, lecture or voice-over with AI, review them in the transcript, and cut them out cleanly. Audio or video. Free, no upload.">
+<meta name="keywords" content="remove filler words, remove um and uh from audio, filler word remover, remove ums from podcast, cut ums and uhs, remove um from video, podcast editing ai, remove pauses from audio">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/remove-filler-words">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Remove filler words — every um, uh and long pause, found by AI and cut cleanly">
+<meta property="og:description" content="Review each filler in the transcript, then cut them with crossfades. Audio or video, in your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/remove-filler-words">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-10b">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Remove Filler Words",
+  "alternateName": [
+    "Filler word remover",
+    "Remove um and uh from audio",
+    "Remove ums from a podcast",
+    "Cut filler words from video"
+  ],
+  "url": "https://audiosaw.com/remove-filler-words",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Finds um, uh, ah, er, erm and hmm with Whisper word timing in the browser, plus held filler sounds by their flat pitch; every find is a toggle in the transcript, with a listen-around preview; long pauses shortened to half a second; cuts placed on the audio and joined with 10 ms crossfades; audio out as WAV, FLAC, MP3 or M4A; video cut at the same places",
+  "dateModified": "2026-10-10"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#transcript{line-height:2;font-size:1.02rem;max-height:52vh;overflow:auto;padding:1rem;border:1px solid var(--rule);border-radius:4px;background:var(--card)}
+.fw{font:inherit;border:0;padding:0 .15em;border-radius:3px;cursor:pointer;background:transparent;color:inherit}
+.fw-filler,.fw-maybe{background:rgba(196,72,32,.10);border-bottom:2px dashed var(--amber)}
+.fw.on{background:rgba(196,72,32,.22);text-decoration:line-through;color:var(--amber)}
+.fw-pause{font-size:.8rem;color:var(--muted);border:1px dashed var(--rule)}
+.fw-pause.on{text-decoration:line-through}
+#summary{font-weight:600;margin:.5rem 0}
+#player{width:100%;margin:.5rem 0}
+.legend{font-size:.85rem;color:var(--muted)}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I remove ums and uhs from audio for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the recording above and press Find the fillers. Each um and uh is struck through in the transcript; click any you want to keep, then press Cut them and download. Nothing is uploaded and there is no watermark or account."}},{"@type":"Question","name":"Does it work on video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop an MP4, MOV, MKV or WebM. The sound is cut and the picture is cut at the same places, so lips stay in sync, and you get an MP4 back. The video is re-encoded to do that."}},{"@type":"Question","name":"Will it cut real words by mistake?","acceptedAnswer":{"@type":"Answer","text":"It only ticks words on the filler list. Possible fillers it finds by sound are shown but left unticked, and long pauses are only shortened where the gap is quiet. Check the struck-through words before cutting; shift-click any of them to hear it."}},{"@type":"Question","name":"Can it remove \"like\" and \"you know\"?","acceptedAnswer":{"@type":"Answer","text":"No. Those are real words and whether one is filler depends on the sentence, so they are left alone. Find them in the transcript and cut them in the audio editor."}},{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The speech model is downloaded to your browser and the recording is transcribed and cut there. The only download is the model, which is the same for everyone."}},{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"The first run downloads a 135 MB model. After that, transcription takes roughly the length of the recording on a typical laptop, and less with a fast GPU; the cutting itself takes seconds."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Voice & speech","item":"https://audiosaw.com/tools#voice"},{"@type":"ListItem","position":3,"name":"Remove filler words"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#voice">Voice &amp; speech</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Remove filler words</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>Remove <span class="ital">filler words</span>: every um, uh and long pause.</h1>
+    <p>Drop a podcast, a lecture, a voice-over or a video. AI finds the ums, uhs and dead air, shows each one in the transcript, and cuts the ones you leave ticked, with clean joins. It all runs in your browser; nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a recording or a video</p>
+      <p>MP3, WAV, M4A, FLAC and most other audio, or an MP4, MOV, MKV or WebM video. One file, up to two hours.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma,.amr,.mp4,.mov,.mkv,.m4v,.webm">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Language
+          <select id="language">
+            <option value="en" selected>English</option><option value="auto">Detect automatically</option>
+            <option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option>
+            <option value="it">Italian</option><option value="pt">Portuguese</option><option value="nl">Dutch</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Find the fillers</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="review" hidden>
+      <p id="summary"></p>
+      <p class="legend">Struck through = will be cut. Click a word to keep or cut it; shift-click to hear it in context. ⏸ marks a long pause.</p>
+      <audio id="player" controls preload="metadata"></audio>
+      <div id="transcript" aria-label="Transcript with fillers marked"></div>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="pauses" checked> Shorten pauses over 1 s to half a second</label>
+        <label class="check"><input type="checkbox" id="maybes"> Also cut the possible fillers</label>
+        <label>Save as
+          <select id="format">
+            <option value="wav" selected>WAV — match the source</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="mp3-v0">MP3 V0 (LAME)</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="cutBtn" type="button" disabled>Cut them and download</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Finds</th><td>um, uh, ah, er, erm and hmm as Whisper writes them; held "mmm" and "uhhh" sounds it hears as a word, by their flat pitch (offered, not ticked); pauses over a second</td></tr>
+        <tr><th>You decide</th><td>Every find is a toggle in the transcript, with a listen-around preview</td></tr>
+        <tr><th>Cuts</th><td>Placed on the audio, not on the word times; joined with a 10 ms crossfade at a quiet sample; the pause left behind is at most a quarter of a second</td></tr>
+        <tr><th>Takes</th><td>Any audio the site reads, or an MP4, MOV, MKV or WebM video, up to two hours</td></tr>
+        <tr><th>Gives</th><td>WAV or FLAC at the source's own rate and depth, MP3 V0, M4A; a video as MP4 with the picture cut at the same places</td></tr>
+        <tr><th>Model</th><td>Whisper base with word timing, 135 MB the first time, then kept by the browser</td></tr>
+        <tr><th>Uploads your audio</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How it finds an "um"</h2>
+    <p>The recording is transcribed in your browser by Whisper, the open speech model, in a version that also gives the time of every word. Whisper is trained to write tidy text and often leaves fillers out of a plain transcript, but with word timing on it writes most of them: in our test set, eight of nine ums and uhs came back as words, each starting within about a tenth of a second of where it really did. Every word on the filler list (um, uh, ah, er, erm, hmm and their stretched spellings) is marked and ticked.</p>
+    <p>Whisper sometimes hears a long "mmm" as a real word ("bum" was one in the tests). So a second pass looks at the short words that stand apart, between commas or pauses, and measures their pitch: a filler is one held note, while a real word moves. Those are marked as possible fillers and left unticked, because "so," and "well," at the start of a sentence can sound much the same, and cutting a real word is a worse mistake than leaving an um in. One case in nine was missed entirely: an "uh" Whisper folded into the word before it. Listen through the result before you publish it.</p>
+
+    <h2>Why the cuts sound clean</h2>
+    <p>Word times are only used to find a filler. The cut itself is placed on the audio: the page measures the recording's own background level, starts the cut where the filler's sound begins and ends it where the sound has died away, which matters because Whisper's word ends run early and an "um" trails off in a quiet hum. Each edge moves to the quietest sample within 5 ms, and the two sides are joined with a 10 ms equal-power crossfade, so there is no click. The silence either side of the filler is trimmed so that the pause left behind is at most a quarter of a second: taking out an "um" should not leave a hole where it was.</p>
+    <p>Long pauses are handled separately. A gap of more than a second between words is shortened to half a second, but only where the gap is really quiet, so a word Whisper missed is never cut out with it. Untick "Shorten pauses" to keep your timing exactly.</p>
+
+    <h2>Podcasts, lectures and videos</h2>
+    <p>For a podcast or an interview, export each speaker's track or the final mix and run it here before mastering. WAV and FLAC come out at the file's own sample rate and bit depth, so nothing is lost before you level it with the <a href="/loudness-normalizer">loudness normalizer</a>. For a video, the picture is cut at the same places as the sound so lips stay in sync. That means the video is re-encoded (H.264 at high quality), unlike the site's other video tools, which copy the picture untouched. A jump cut where a filler was is normal in talking-head videos; in a screen recording it is usually invisible.</p>
+
+    <h2>What it can't do</h2>
+    <p>It removes sounds, not habits: "like", "you know" and "so" are real words to the model, and the page will not cut them, because whether one is filler depends on the sentence. Use the transcript to find them and the <a href="/audio-editor">audio editor</a> to cut them by hand. When two people talk over each other, one person's filler may sit under the other's word, and those cuts are best left unticked. Transcription runs on your computer, so a long file takes a while: roughly the length of the recording on a laptop without a fast GPU. Other languages work, but the filler list is English-led; Spanish "eh" is found, other languages' fillers may not be.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I remove ums and uhs from audio for free?</summary><p>Drop the recording above and press Find the fillers. Each um and uh is struck through in the transcript; click any you want to keep, then press Cut them and download. Nothing is uploaded and there is no watermark or account.</p></details>
+      <details><summary>Does it work on video?</summary><p>Yes. Drop an MP4, MOV, MKV or WebM. The sound is cut and the picture is cut at the same places, so lips stay in sync, and you get an MP4 back. The video is re-encoded to do that.</p></details>
+      <details><summary>Will it cut real words by mistake?</summary><p>It only ticks words on the filler list. Possible fillers it finds by sound are shown but left unticked, and long pauses are only shortened where the gap is quiet. Check the struck-through words before cutting; shift-click any of them to hear it.</p></details>
+      <details><summary>Can it remove "like" and "you know"?</summary><p>No. Those are real words and whether one is filler depends on the sentence, so they are left alone. Find them in the transcript and cut them in the audio editor.</p></details>
+      <details><summary>Is my recording uploaded?</summary><p>No. The speech model is downloaded to your browser and the recording is transcribed and cut there. The only download is the model, which is the same for everyone.</p></details>
+      <details><summary>How long does it take?</summary><p>The first run downloads a 135 MB model. After that, transcription takes roughly the length of the recording on a typical laptop, and less with a fast GPU; the cutting itself takes seconds.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Level the cleaned episode to -16 LUFS for podcasts.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Take the background noise out as well.</p></a>
+      <a class="card" href="/enhance-speech"><h3>Enhance speech</h3><p>Make the voice clearer and more even.</p></a>
+      <a class="card" href="/audio-to-text"><h3>Transcribe audio to text</h3><p>The full transcript, with speaker labels.</p></a>
+      <a class="card" href="/add-subtitles-to-video"><h3>Add subtitles to video</h3><p>Captions for the cut video.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-10b"></script>
+<script src="/js/tool-graph.js?v=2026-10-10b"></script>
+<script src="/js/flow.js?v=2026-10-10b"></script>
+<script src="/js/audio-core.js?v=2026-10-10b"></script>
+<script src="/js/consent.js?v=2026-10-10b"></script>
+<script src="/js/tool-shell.js?v=2026-10-10b"></script>
+<script src="/js/pitch-track.js?v=2026-10-10b"></script>
+<script src="/js/fillers.js?v=2026-10-10b"></script>
+<script src="/js/fillers-page.js?v=2026-10-10b"></script>
+<script src="/js/pwa.js?v=2026-10-10b"></script>
+</body>
+</html>

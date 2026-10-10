@@ -895,6 +895,17 @@
         ['vocal-remover', 'An instrumental of the song, so it does not fight the speech']
       ]
     },
+    'remove-filler-words': {
+      cat: 'voice', label: 'remove ums', title: 'Remove filler words',
+      blurb: 'AI finds every um, uh and long pause in a podcast, lecture or video; review them in the transcript and cut them with clean joins.',
+      next: [
+        ['loudness-normalizer', 'Level the cleaned episode to -16 LUFS for podcasts'],
+        ['noise-reduction', 'Take the background noise out as well'],
+        ['enhance-speech', 'Make the voice clearer and more even'],
+        ['audio-to-text', 'The full transcript, with speaker labels'],
+        ['add-subtitles-to-video', 'Captions for the cut video']
+      ]
+    },
     'add-subtitles-to-video': {
       cat: 'voice', label: 'add subtitles', title: 'Add subtitles to video',
       blurb: 'Auto captions in 99 languages with Whisper in your browser: edit them, then burn them in for TikTok and Instagram or add an SRT track. No watermark.',
@@ -1125,7 +1136,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'voice-cloning', 'audio-to-text', 'enhance-speech', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'enhance-speech', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook', 'remove-filler-words'
       ]
     },
     {
