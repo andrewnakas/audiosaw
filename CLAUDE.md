@@ -766,9 +766,11 @@ used" links; `#as-sidebar` is Journey's Sidebar Selector), shown only from
 1100px, where the page widens to 1400px so the tool keeps its width; not on
 the waveform/timeline apps (`SIDEBAR_EXCLUDE`). Every ad page has an empty
 `#as-leaderboard` above `<main>` for a header leaderboard, which only Journey
-support can switch on. `/ads.txt` is a 301 in `_redirects` to Journey's managed
-file (adstxt.journeymv.com/sites/<site id>/ads.txt), not a file in the repo,
-so their partner list updates without a deploy. The pages, the privacy policy, llms.txt and the consent
+support can switch on. `/ads.txt` is `functions/ads.txt.js`, which fetches Journey's managed file
+(adstxt.journeymv.com/sites/<site id>/ads.txt) and serves it with a 200 from
+our domain, cached an hour, so their partner list updates without a deploy. It
+was a 301 to that URL until 11 Oct, when Mediavine's dashboard called the file
+missing: an ads.txt crawler may not follow a redirect to another domain. The pages, the privacy policy, llms.txt and the consent
 banner all say so; when the ad setup changes, change them together. Before
 this, AdSense had loaded on 55 pages with zero units for months (cost without
 revenue) and was removed on 5 Sep; the "no ads" claims that replaced it were
