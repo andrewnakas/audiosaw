@@ -23,7 +23,7 @@
 (function (global) {
   'use strict';
 
-  var M = global.ASEditModel, D = global.ASEditDsp;
+  var M = global.ASEditModel, D = global.ASEditDsp, W = global.ASEditWam;
   var Ctx = global.AudioContext || global.webkitAudioContext;
   var Octx = global.OfflineAudioContext || global.webkitOfflineAudioContext;
 
@@ -50,6 +50,17 @@
     return ctx;
   }
 
+  // Web plugins load the same way: a chain built before its plugin was ready
+  // passes the sound through, and is rebuilt when the plugin arrives.
+  if (W) W.onReady(function (id) {
+    if (!playing) return;
+    if (playing.project.tracks.some(function (t) { return t.instWam && t.instWam.id === id; })) { replay(); return; }
+    var O = playing.G.owners;
+    for (var k in O) for (var i = 0; i < O[k].list.length; i++) {
+      if (O[k].list[i].id === id) { replay(); return; }
+    }
+  });
+
   // The rate everything plays and records at. Recording captures at this rate
   // (the browser converts the microphone to it), so a 96 kHz interface only
   // records at 96 kHz with the engine at 96 kHz. Changing it closes the
@@ -61,6 +72,7 @@
     engineRate = rate;
     if (!ctx) return true;
     if (playing) stop();
+    if (W) W.dropAll(ctx);
     try { ctx.close(); } catch (e) {}
     ctx = null; master = meterL = meterR = null;
     workletReady = null;
@@ -189,7 +201,7 @@
     var list = [];
     (fx || []).forEach(function (slot) {
       if (slot.on === false || !D.PLUGINS[slot.type]) return;
-      var inst = D.create(c, { id: slot.id, type: slot.type, on: true, params: slotParams(owner, slot, t) }, env);
+      var inst = D.create(c, { id: slot.id, type: slot.type, on: true, params: slotParams(owner, slot, t), wam: slot.wam }, env);
       if (inst) { inst.slotJson = JSON.stringify(slot.params); list.push(inst); }
     });
     return list;
@@ -262,6 +274,7 @@
   // note. Notes are cut at `to`, and ring on for their release after it.
   function instOf(track, src) { return track.inst || (src.drums ? 'drums' : 'keys'); }
   function scheduleMidi(G, project, track, clip, src, from, to, when, into) {
+    if (track.inst === 'wam') { scheduleWamMidi(G, project, track, clip, from, to, when, into); return; }
     var S = global.ASEditSynth, c = G.ctx, T = G.tracks[track.id];
     if (!S || !T) return;
     var cs = Math.max(clip.start, from), ce = Math.min(M.clipEnd(clip), to);
@@ -290,12 +303,52 @@
     (G.midi = G.midi || []).push(rec);
   }
 
+  // A MIDI clip on a track whose instrument is a web plugin (track.instWam):
+  // the notes go to the plugin as MIDI events. One instance per track plays
+  // every clip on it, straight into the track (in at -3 dB, as a mono clip
+  // would be); clip gain and fades do not apply to it. Live, the events are
+  // sent a second ahead from feedMidi; an export sends them through
+  // ASWam.offlineSteps instead (see render()).
+  function scheduleWamMidi(G, project, track, clip, from, to, when, into) {
+    var c = G.ctx, T = G.tracks[track.id], w = track.instWam;
+    var I = W && w ? W.get(c, w) : null;
+    if (!I || !T) return;
+    G.wamOut = G.wamOut || {};
+    if (!G.wamOut[track.id]) {
+      var g = c.createGain();
+      g.gain.value = Math.SQRT1_2;
+      I.node.connect(g); g.connect(T.in);
+      G.wamOut[track.id] = { g: g, inst: I };
+    }
+    var cs = Math.max(clip.start, from), ce = Math.min(M.clipEnd(clip), to);
+    if (ce - cs <= 0.0005) return;
+    var ev = [];
+    M.clipNotes(project, clip).forEach(function (n) {
+      var a = Math.max(n.start, from), b = Math.min(n.start + n.duration, to, ce);
+      if (b - a < 0.001 || a >= to || a < cs - 1e-9) return;
+      var vel = Math.max(1, Math.min(127, Math.round(n.velocity == null ? 96 : n.velocity)));
+      ev.push({ t: when + (a - from), bytes: [0x90, n.midi, vel] });
+      ev.push({ t: when + (b - from), bytes: [0x80, n.midi, 0] });
+    });
+    // Offs before ons at the same moment, so a repeated note is struck again.
+    ev.sort(function (x, y) { return x.t - y.t || (x.bytes[0] - y.bytes[0]); });
+    var rec = { wam: I, events: ev, i: 0, dead: false };
+    var handle = { rec: rec, stop: function () { rec.dead = true; }, disconnect: function () {} };
+    into.push(handle);
+    if (into !== G.nodes) G.nodes.push(handle);
+    (G.midi = G.midi || []).push(rec);
+  }
+
   // Build every pending note that starts before context time `until`.
   function feedMidi(G, until) {
     if (!G || !G.midi || !G.midi.length) return;
     var S = global.ASEditSynth;
     G.midi = G.midi.filter(function (rec) {
-      if (rec.dead) return false;
+      if (rec.dead || rec.offline) return false;
+      if (rec.wam) {
+        while (rec.i < rec.events.length && rec.events[rec.i].t < until) { var e = rec.events[rec.i++]; rec.wam.midi(e.bytes, e.t); }
+        return rec.i < rec.events.length;
+      }
       var started = [];
       while (rec.i < rec.list.length && rec.list[rec.i].at < until) {
         var n = rec.list[rec.i++];
@@ -317,7 +370,7 @@
     panCurves();
     var audible = M.audibleTracks(project);
     var G = { ctx: c, nodes: [], owners: {}, tracks: {}, buses: {}, lanes: [], project: project, from: from, when: when, bufs: opts.bufs || null };
-    var env = { bpm: project.bpm, key: function (id) { return G.tracks[id] ? G.tracks[id].in : null; } };
+    var env = { bpm: project.bpm, key: function (id) { return G.tracks[id] ? G.tracks[id].in : null; }, wam: W || null };
     G.env = env;
     var mix = c.createGain();
     G.mix = mix;
@@ -636,6 +689,13 @@
     if (!playing) return;
     var G = playing.G;
     G.nodes.forEach(function (n) { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+    // Web instruments outlive the graph: silence them and unhook them.
+    Object.keys(G.wamOut || {}).forEach(function (k) {
+      var o = G.wamOut[k];
+      o.inst.midi([0xB0, 123, 0]);
+      try { o.inst.node.disconnect(o.g); } catch (e) {}
+      try { o.g.disconnect(); } catch (e) {}
+    });
     Object.keys(G.owners).forEach(function (k) { G.owners[k].list.forEach(function (i) { i.dispose(); }); });
     try { G.masterVol.disconnect(); } catch (e) {}
     Object.keys(G.tracks).forEach(function (k) { try { G.tracks[k].out.disconnect(); } catch (e) {} });
@@ -721,6 +781,10 @@
   // change needs a full restart instead: a send to a bus that was idle, or a
   // look-ahead plugin appearing or going.
   function syncFx(project) {
+    // Web plugin instances outlive playback (their windows use them while
+    // stopped), so their state follows undo and their removal is noticed
+    // whether or not anything is playing.
+    if (W && ctx) W.syncAll(ctx, project);
     if (!playing) return true;
     var G = playing.G;
     playing.project = project;
@@ -759,6 +823,32 @@
     }
     return true;
   }
+
+  /* --------------------------------------------------------- web plugins */
+
+  // The live instance behind a web plugin slot, for its window. Creates the
+  // context if there is none, so call it from a gesture.
+  function wamInstance(slot) {
+    if (!W) return Promise.reject(new Error('Web plugins are not available here.'));
+    ensureCtx();
+    W.get(ctx, slot);
+    return W.whenReady(ctx, slot.id).then(function (inst) {
+      if (!inst) throw W.error(ctx, slot.id) || new Error('The plugin did not load.');
+      return inst;
+    });
+  }
+  // 'ready', 'loading', an Error, or null (never asked for in this context).
+  function wamStatus(id) {
+    if (!W || !ctx) return null;
+    var err = W.error(ctx, id);
+    if (err) return err;
+    return W.isReady(ctx, id) ? 'ready' : W.has(ctx, id) ? 'loading' : null;
+  }
+  // The window read this state from the plugin: the next sync must not send
+  // it back.
+  function wamNoteState(id, state) { if (W && ctx) W.noteState(ctx, id, state); }
+  // Undo, redo, a restored project: the live instances follow the slots.
+  function syncWam(project) { if (W && ctx) W.syncAll(ctx, project); }
 
   // Levels, gain reduction and spectrum for one plugin while it plays. The
   // analysers are only attached to the plugin being looked at.
@@ -830,18 +920,36 @@
   // Notes not yet saved, through an instrument, straight to the speakers:
   // the note editor's Play. Returns the context time they start at.
   var preview = [];
-  function previewNotes(notes, inst) {
+  // slot: for inst 'wam', the track's web instrument. If it has not loaded
+  // yet, the notes play on the keys instead of not at all.
+  function previewNotes(notes, inst, slot) {
     ensureCtx();
     stopPreview();
     var S = global.ASEditSynth, t = ctx.currentTime + 0.05, g = ctx.createGain();
     g.gain.value = Math.SQRT1_2;
     g.connect(master);
-    notes.forEach(function (n) { S.note(ctx, g, inst, n.midi, t + n.start, n.duration, n.velocity, preview); });
+    var I = inst === 'wam' && W && slot ? W.get(ctx, slot) : null;
+    if (I) {
+      I.node.connect(g);
+      notes.forEach(function (n) {
+        var v = Math.max(1, Math.min(127, Math.round(n.velocity == null ? 96 : n.velocity)));
+        I.midi([0x90, n.midi, v], t + n.start);
+        I.midi([0x80, n.midi, 0], t + n.start + n.duration);
+      });
+      preview.wam = I;
+    } else {
+      notes.forEach(function (n) { S.note(ctx, g, inst === 'wam' ? 'keys' : inst, n.midi, t + n.start, n.duration, n.velocity, preview); });
+    }
     preview.gain = g;
     return t;
   }
   function stopPreview() {
     preview.forEach(function (n) { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+    if (preview.wam) {
+      preview.wam.midi([0xB0, 123, 0]);
+      if (preview.wam.node.clearEvents) try { preview.wam.node.clearEvents(); } catch (e) {}
+      try { preview.wam.node.disconnect(preview.gain); } catch (e) {}
+    }
     if (preview.gain) try { preview.gain.disconnect(); } catch (e) {}
     preview = [];
   }
@@ -902,31 +1010,58 @@
     var extra = opts.tails ? tailOf(project, opts.noMaster) : 0;
     // Room for the look-ahead too, which is trimmed off the front afterwards.
     var pad = 0.05;
-    var len = Math.max(1, Math.ceil((t1 - t0 + extra + pad) * sr));
+    // Web plugins get a quarter-second pre-roll, trimmed off with the
+    // look-ahead: a plugin smooths its parameters from its start-up values,
+    // and live it has long since settled when the first clip sounds
+    // (check-wam measured Big Muff off by 0.6 of peak in its first 100 ms
+    // without one, identical after). Their reported latency needs room too.
+    var wams = W ? W.slotsOf(project).filter(function (x) { return x.on !== false; }) : [];
+    var pre = wams.length ? 0.25 : 0;
+    pad += wams.reduce(function (a, x) { return a + (x.wam.latency > 0 ? x.wam.latency / sr : 0); }, 0);
+    var len = Math.max(1, Math.ceil((t1 - t0 + extra + pad + pre) * sr));
     var off = new Octx(ch, len, sr);
     var bufs = null;
     return convertSources(project, sr).then(function (m) { bufs = m; return D.ensureWorklet(off); }).then(function () {
+      return wams.length ? W.prepare(off, project) : null;
+    }).then(function () {
       var bus = off.createGain();
       bus.connect(off.destination);
-      var G = build(off, bus, project, t0, t1, 0, { noMaster: opts.noMaster, bufs: bufs });
+      var G = build(off, bus, project, t0, t1, pre, { noMaster: opts.noMaster, bufs: bufs });
       // Work to do partway through, at render-quantum boundaries: one
       // suspend per time, since a second one at the same time throws.
       var at = {}, span = t1 - t0 + extra;
       function every(stepT, fn) {
         for (var x = stepT; x < span; x += stepT) {
-          var q = Math.round(x * sr / 128) * 128 / sr;
+          var q = Math.round((x + pre) * sr / 128) * 128 / sr;
           if (q <= 0 || q >= len / sr) continue;
           (at[q] = at[q] || []).push(fn);
         }
       }
       // Step plugin automation; build MIDI notes two seconds ahead.
-      if (G.fxLanes.length) every(0.025, function (tq) { applyFxLanes(G, t0 + tq); });
-      if (G.midi && G.midi.length) { feedMidi(G, 2); every(1, function (tq) { feedMidi(G, tq + 2); }); }
+      if (G.fxLanes.length) every(0.025, function (tq) { applyFxLanes(G, t0 + tq - pre); });
+      // Web instruments: their events through ASWam.offlineSteps, which
+      // waits at each step for the plugin to take them.
+      (G.midi || []).forEach(function (rec) {
+        if (!rec.wam) return;
+        rec.offline = true;
+        var steps = global.ASWam.offlineSteps(rec.wam, rec.events, sr);
+        Object.keys(steps).forEach(function (k) {
+          var q = Math.round(+k * sr / 128) * 128 / sr;
+          if (q >= len / sr) return;
+          (at[q] = at[q] || []).push(steps[k]);
+        });
+      });
+      if (G.midi && G.midi.length) { feedMidi(G, pre + 2); every(1, function (tq) { feedMidi(G, tq + 2); }); }
       Object.keys(at).forEach(function (k) {
         var tq = +k;
-        off.suspend(tq).then(function () { at[k].forEach(function (fn) { fn(tq); }); off.resume(); });
+        off.suspend(tq).then(function () {
+          return Promise.all(at[k].map(function (fn) { return fn(tq); }));
+        }).then(function () { off.resume(); });
       });
-      return off.startRendering().then(function (out) { return finish(out, G.latency, t1 - t0, !!opts.tails); });
+      return off.startRendering().then(function (out) {
+        if (W) W.dropAll(off);
+        return finish(out, G.latency + pre, t1 - t0, !!opts.tails);
+      }, function (e) { if (W) W.dropAll(off); throw e; });
     }).then(function (out) {
       var peak = 0;
       for (var c = 0; c < out.numberOfChannels; c++) {
@@ -1155,6 +1290,7 @@
     play: play, stop: stop, isPlaying: isPlaying, position: position, playEnd: playEnd, playInfo: playInfo,
     setLoop: setLoop, isLooping: isLooping, passes: passes,
     updateTracks: updateTracks, syncFx: syncFx, relane: relane, hold: hold, probe: probe, trackPeak: trackPeak, meter: meter, audition: audition,
+    wamInstance: wamInstance, wamStatus: wamStatus, wamNoteState: wamNoteState, syncWam: syncWam,
     render: render, tailOf: tailOf, setClick: setClick, clickState: clickState,
     startRecording: startRecording, stopRecording: stopRecording, isRecording: isRecording,
     timelineAt: timelineAt, now: now, sampleRate: sampleRate, createBuffer: createBuffer

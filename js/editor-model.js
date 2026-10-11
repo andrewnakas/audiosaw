@@ -182,6 +182,13 @@
     ['name', 'volDb', 'pan', 'mute', 'solo', 'inst'].forEach(function (k) {
       if (patch[k] !== undefined) t[k] = patch[k];
     });
+    // A web instrument (WAM2) for the MIDI clips: inst 'wam' and the plugin
+    // in instWam, shaped like an effect slot so the plugin pool, the window
+    // and the export treat both alike. Choosing any other instrument drops it.
+    if (patch.instWam) {
+      var w = cleanWam(patch.instWam);
+      if (w) { t.inst = 'wam'; t.instWam = { id: uid('f'), type: 'wam', on: true, params: {}, wam: w }; }
+    } else if (patch.inst !== undefined && patch.inst !== 'wam') delete t.instWam;
     t.volDb = clamp(+t.volDb || 0, -60, 12);
     t.pan = clamp(+t.pan || 0, -1, 1);
   }
@@ -957,11 +964,26 @@
     return out;
   }
 
-  function addFx(p, key, type, params, index, m) {
+  // A web plugin's identity and settings: { url, name, vendor, state,
+  // latency }. state is whatever the plugin saves, already JSON-safe (see
+  // wam-host.js), so it is copied, never interpreted.
+  function cleanWam(w) {
+    if (!w || typeof w.url !== 'string') return null;
+    var out = { url: w.url, name: String(w.name || ''), vendor: String(w.vendor || ''),
+      state: w.state == null ? null : JSON.parse(JSON.stringify(w.state)) };
+    if (w.latency > 0 && isFinite(w.latency)) out.latency = Math.round(w.latency);
+    if (w.tail >= 0 && isFinite(w.tail)) out.tail = +w.tail;
+    if (w.id) out.id = String(w.id);
+    return out;
+  }
+
+  // wam: a web plugin slot's { url, name, ... } (type 'wam').
+  function addFx(p, key, type, params, index, m, wam) {
     var ch = chainOf(p, key);
     if (!ch) return null;
     var slot = { id: uid('f'), type: String(type), on: true, params: cleanParams(params) };
     if (m) slot.m = cleanParams(m);
+    if (wam) { var w = cleanWam(wam); if (w) slot.wam = w; }
     if (index == null || index > ch.length) ch.push(slot);
     else ch.splice(Math.max(0, index), 0, slot);
     return slot.id;
@@ -1005,6 +1027,29 @@
     }
     if (patch.m === null) delete s.m;
     else if (patch.m) { s.m = s.m || {}; var mm = cleanParams(patch.m); Object.keys(mm).forEach(function (k) { s.m[k] = mm[k]; }); }
+    if (patch.wam && s.wam) {
+      var w = cleanWam(Object.assign({}, s.wam, patch.wam));
+      if (w) s.wam = w;
+    }
+  }
+
+  // A web plugin's own settings, as read from the plugin. One edit, so undo
+  // puts the plugin back as it was.
+  // key 'inst:<trackId>' is that track's web instrument.
+  function setFxState(p, key, fxId, state) {
+    var slot = null;
+    if (String(key).indexOf('inst:') === 0) {
+      var ti = trackIndex(p, key.slice(5)), t = ti >= 0 ? p.tracks[ti] : null;
+      if (t && t.instWam && t.instWam.id === fxId) slot = t.instWam;
+    } else {
+      var ch = chainOf(p, key), i = ch ? fxIndex(ch, fxId) : -1;
+      if (i >= 0) slot = ch[i];
+    }
+    if (!slot || !slot.wam) return false;
+    var js = JSON.stringify(state == null ? null : state);
+    if (js === JSON.stringify(slot.wam.state == null ? null : slot.wam.state)) return false;
+    slot.wam.state = JSON.parse(js);
+    return true;
   }
 
   // Replace a whole chain (a patch). Every slot gets a fresh id, and the old
@@ -1016,6 +1061,7 @@
     o.fx = (list || []).map(function (s) {
       var slot = { id: uid('f'), type: String(s.type), on: s.on !== false, params: cleanParams(s.params) };
       if (s.m) slot.m = cleanParams(s.m);
+      if (s.wam) { var w = cleanWam(s.wam); if (w) slot.wam = w; }
       return slot;
     });
     return o.fx.map(function (s) { return s.id; });
@@ -1365,7 +1411,7 @@
     snapPoints: snapPoints, snap: snap,
     fadeShape: fadeShape, clipGainAt: clipGainAt, audibleTracks: audibleTracks,
     normalize: normalize, owner: owner, chainOf: chainOf, findFx: findFx,
-    addFx: addFx, removeFx: removeFx, moveFx: moveFx, setFx: setFx, setChain: setChain,
+    addFx: addFx, removeFx: removeFx, moveFx: moveFx, setFx: setFx, setFxState: setFxState, setChain: setChain, cleanWam: cleanWam,
     setSend: setSend, addBus: addBus, removeBus: removeBus, setBus: setBus, setMaster: setMaster, setBpm: setBpm,
     setSig: setSig, setGridOffset: setGridOffset, setRuler: setRuler, setKey: setKey, beatSec: beatSec, barSec: barSec,
     gridLines: gridLines, nearestGrid: nearestGrid, fmtBars: fmtBars, clickTimes: clickTimes,

@@ -489,3 +489,19 @@ html.ed-locked, html.ed-locked body { overflow: hidden; }
 .ed-takes { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
 .ed-take { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ed-take strong { flex: 1 1 120px; font: 600 0.9rem var(--sans); }
+
+/* Web plugins (WAM2): browser entries and the floating plugin window. */
+.mx-wam { display: grid; grid-template-columns: 48px 1fr; column-gap: 10px; align-items: start; }
+.mx-wam img { grid-row: span 2; width: 48px; height: 36px; object-fit: cover; border-radius: 5px; background: var(--rule); }
+.mx-wam strong, .mx-wam small { grid-column: 2; }
+.mx-wam:not(:has(img)) { grid-template-columns: 1fr; }
+.mx-wam:not(:has(img)) strong, .mx-wam:not(:has(img)) small { grid-column: 1; }
+.mx-badge { font: 600 0.62rem/1 var(--sans); font-style: normal; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border: 1px solid var(--rule); border-radius: 4px; padding: 2px 4px; margin-left: 6px; vertical-align: 2px; }
+.mx-cat-h small { font-weight: 400; color: var(--muted); margin-left: 4px; }
+.ed-plugwin { position: fixed; z-index: 60; max-width: calc(100vw - 16px); max-height: calc(100vh - 24px); display: flex; flex-direction: column; background: var(--paper); border: 1.5px solid var(--rule); border-radius: 10px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28); overflow: hidden; }
+.ed-plugwin-h { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-bottom: 1px solid var(--rule); cursor: move; user-select: none; touch-action: none; }
+.ed-plugwin-h strong { font: 600 0.9rem/1.2 var(--sans); color: var(--ink); }
+.ed-plugwin-h small { font: 0.76rem/1.2 var(--sans); color: var(--muted); flex: 1; }
+.ed-plugwin-b { overflow: auto; min-width: 240px; min-height: 80px; }
+.ed-plugwin-b:has(> .ed-plugwin-msg) { background: #1b1b1b; }
+.ed-plugwin-msg { margin: 0; padding: 18px; font: 0.85rem/1.4 var(--sans); color: #ddd; }

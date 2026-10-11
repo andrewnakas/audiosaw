@@ -641,6 +641,52 @@ function fixture() {
   ok(M.validate(bad).some((e) => /bad note/.test(e)), 'validate catches a broken note');
 }
 
+// Web plugin (WAM2) slots: the plugin's own settings are an opaque blob that
+// must survive every path a slot is copied by, undo exactly, and come through
+// the JSON encoding with its binary parts intact.
+{
+  const W = require('../js/wam-host.js');
+  const st = { gain: 0.5, curve: new Float32Array([0.25, -1.5, 3]), raw: new Uint8Array([0, 255, 7]).buffer, name: 'x' };
+  const enc = W.encodeState(st);
+  const back = W.decodeState(JSON.parse(JSON.stringify(enc)));
+  ok(back.curve instanceof Float32Array && back.curve[1] === -1.5 && back.curve.length === 3, 'a typed array in plugin state comes back as itself');
+  ok(new Uint8Array(back.raw)[1] === 255 && back.gain === 0.5 && back.name === 'x', 'an ArrayBuffer and plain values in plugin state come back');
+  // The browser has no Buffer: the hand-written base64 must agree with Node's.
+  const savedBuffer = global.Buffer;
+  let manual;
+  try { global.Buffer = undefined; manual = JSON.stringify(W.encodeState(new Uint8Array([1, 2, 3, 4, 5, 250, 251]))); } finally { global.Buffer = savedBuffer; }
+  ok(manual === JSON.stringify(W.encodeState(new Uint8Array([1, 2, 3, 4, 5, 250, 251]))), 'the browser base64 matches Node\'s');
+  ok(D.PLUGINS.wam && D.ORDER.indexOf('wam') === -1, 'the web plugin type exists and stays out of the built-in list');
+
+  const { p, t1 } = fixture();
+  const h = new M.History();
+  const w0 = { id: 'com.example.fuzz', url: 'https://www.webaudiomodules.com/community/plugins/x/index.js', name: 'Fuzz', vendor: 'V', state: enc, latency: 64 };
+  const before = M.serialize(p);
+  h.push(before);
+  const f = M.addFx(p, t1, 'wam', D.fresh('wam').params, null, null, w0);
+  const slot = p.tracks[0].fx.filter((x) => x.id === f)[0];
+  ok(slot && slot.wam && slot.wam.url === w0.url && slot.wam.latency === 64, 'addFx keeps the plugin and its latency');
+  ok(D.sig(slot) === 'wam(' + w0.url + ')', 'the chain signature names the plugin, so swapping it rebuilds the chain');
+  near(D.latencyOf(slot, 48000), 64 / 48000, 1e-12, 'the declared latency is the measured one');
+  ok(D.tailOf(slot, 120) === 3, 'a web plugin gets a three-second tail by default');
+  ok(JSON.stringify(D.resolve(slot)) === JSON.stringify({ mix: 100, out: 0 }), 'a web plugin has Mix and Output, at full wet');
+  ok(M.setFxState(p, t1, f, { gain: 0.9 }) === true && slot.wam.state.gain === 0.9, 'setFxState stores new settings');
+  ok(M.setFxState(p, t1, f, { gain: 0.9 }) === false, 'setFxState reports no change for the same settings');
+  M.setFx(p, t1, f, { params: { mix: 50 } });
+  ok(slot.wam.state.gain === 0.9 && slot.params.mix === 50, 'a Mix change leaves the plugin settings alone');
+  const dup = M.addFx(p, t1, 'wam', slot.params, null, null, slot.wam);
+  const d2 = p.tracks[0].fx.filter((x) => x.id === dup)[0];
+  d2.wam.state.gain = 0.1;
+  ok(slot.wam.state.gain === 0.9, 'a duplicate gets its own copy of the settings');
+  M.setChain(p, 'master', [{ type: 'wam', params: { mix: 100 }, wam: slot.wam }]);
+  ok(p.master.fx[0].wam && p.master.fx[0].wam.state.gain === 0.9, 'a patch carries web plugins with their settings');
+  const copied = M.parse(M.serialize(p));
+  ok(copied.tracks[0].fx.filter((x) => x.id === f)[0].wam.state.gain === 0.9, 'the settings survive the project file');
+  valid(p, 'with web plugin slots');
+  ok(h.undo(M.serialize(p)) === before, 'web plugin edits undo byte for byte');
+  ok(M.cleanWam({ url: 5 }) === null && M.cleanWam(null) === null, 'a slot without a plugin address is refused');
+}
+
 if (failures) {
   console.error('check-editor: ' + failures + ' failure(s).');
   process.exit(1);

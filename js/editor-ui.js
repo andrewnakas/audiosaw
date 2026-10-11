@@ -128,6 +128,7 @@
 
   function changed(opts) {
     pruneSelection();
+    E.syncWam(S.project);
     if (E.isPlaying() && !(opts && opts.noRestart)) restartPlayback();
     scheduleSave();
     refresh();
@@ -1049,7 +1050,7 @@
     var f = M.findClip(S.project, clipId), c = f.clip, nk = M.takesAt(S.project, f.track.id, c.start, M.clipEnd(c)).length;
     openSheet(c.name, menuHtml([
       { v: 'notes', label: 'Edit notes…', hint: M.clipNotes(S.project, c).length + ' notes' },
-      { v: 'inst', label: 'Instrument…', hint: MIDI.instLabel(MIDI.instOf(f.track, S.project.sources[c.sourceId])) },
+      { v: 'inst', label: 'Instrument…', hint: MIDI.instLabel(MIDI.instOf(f.track, S.project.sources[c.sourceId]), f.track) },
       { v: 'mid', label: 'Download .mid' },
       { v: 'bounce', label: 'Bounce to audio', hint: 'for effects and tools' },
       '-',
@@ -1264,7 +1265,7 @@
         { v: 'up', label: 'Move up' },
         { v: 'down', label: 'Move down' },
         { v: 'selall', label: 'Select all clips on this track' },
-        { v: 'inst', label: 'Instrument for MIDI…', hint: MIDI.instLabel(t.inst || 'keys') },
+        { v: 'inst', label: 'Instrument for MIDI…', hint: MIDI.instLabel(t.inst || 'keys', t) },
         { v: 'midi', label: 'New MIDI clip here', hint: 'at the playhead' },
         { v: 'speech', label: 'Add speech here…', hint: 'AI voice' },
         '-',

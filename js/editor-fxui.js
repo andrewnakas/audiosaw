@@ -30,8 +30,10 @@
   var root = null;
   var P = {
     open: false, owner: null, view: 'strip', fxId: null, q: '', cat: '',
-    full: false, rec: false, ab: {}, recBuf: null, lastSig: ''
+    full: false, rec: false, ab: {}, recBuf: null, lastSig: '',
+    wamList: null, wamErr: null
   };
+  var W = global.ASWam;
   try { P.full = localStorage.getItem('as_ed_fxfull') === '1'; } catch (e) {}
 
   function esc(s) { return A.esc(s); }
@@ -43,6 +45,7 @@
   function ownerName(key) {
     var p = proj();
     if (key === 'master') return 'Master';
+    if (String(key).indexOf('inst:') === 0) { var ti = M.trackIndex(p, key.slice(5)); return ti >= 0 ? p.tracks[ti].name + ' (instrument)' : ''; }
     var o = M.owner(p, key);
     return o ? o.name : '';
   }
@@ -52,7 +55,16 @@
     return M.trackIndex(p, key) >= 0 ? 'track' : 'bus';
   }
   function ownerExists(key) { return !!M.owner(proj(), key); }
+  function slotName(slot) {
+    if (slot.type === 'wam') return (slot.wam && slot.wam.name) || 'Web plugin';
+    return (D.PLUGINS[slot.type] || { name: slot.type }).name;
+  }
   function slotOf(key, id) {
+    // 'inst:<trackId>': that track's web instrument, which has a window too.
+    if (String(key).indexOf('inst:') === 0) {
+      var t = proj().tracks[M.trackIndex(proj(), key.slice(5))];
+      return t && t.instWam && t.instWam.id === id ? t.instWam : null;
+    }
     var ch = M.chainOf(proj(), key) || [];
     for (var i = 0; i < ch.length; i++) if (ch[i].id === id) return ch[i];
     return null;
@@ -139,6 +151,7 @@
   // Called from editor-ui's refresh(): the project may have changed under us
   // (undo, a patch, a deleted track).
   function refresh() {
+    pruneWindows();
     if (!P.open) return;
     if (!ownerExists(P.owner)) { P.owner = 'master'; P.view = 'strip'; }
     if (P.view === 'edit' && !slotOf(P.owner, P.fxId)) P.view = 'strip';
@@ -187,6 +200,7 @@
   function slotSummary(slot) {
     var d = D.PLUGINS[slot.type];
     if (!d) return 'Unknown effect';
+    if (slot.type === 'wam') return 'Web plugin' + (slot.wam && slot.wam.vendor ? ' · ' + slot.wam.vendor : '');
     if (slot.m && d.macros.length) return d.macros.map(function (mc) { return mc.label + ' ' + mc.fmt(slot.m[mc.k] != null ? slot.m[mc.k] : mc.def); }).join(' · ');
     var q = D.resolve(slot), pr = d.presets.filter(function (x) { return Object.keys(x.p).every(function (k) { return q[k] === x.p[k]; }); })[0];
     return pr ? pr.name : 'Custom settings';
@@ -204,7 +218,7 @@
     }
     html += '<ol class="mx-slots">';
     o.fx.forEach(function (slot, i) {
-      var d = D.PLUGINS[slot.type] || { name: slot.type };
+      var d = { name: slotName(slot) };
       var auto = Object.keys(o.auto || {}).some(function (pth) { return pth.indexOf('fx:' + slot.id + ':') === 0; });
       html += '<li class="mx-slot' + (slot.on === false ? ' off' : '') + '" data-fx="' + slot.id + '">' +
         '<button type="button" class="mx-pow" data-a="power" aria-pressed="' + (slot.on !== false) + '" title="' + (slot.on === false ? 'Turn on' : 'Bypass') + '" aria-label="' + (slot.on === false ? 'Turn on ' : 'Bypass ') + esc(d.name) + '">⏻</button>' +
@@ -262,7 +276,8 @@
     var html = header('Add an effect to ' + ownerName(P.owner), true) + '<div class="mx-body">';
     html += '<input type="search" class="mx-search" data-a="search" placeholder="Search: reverb, de-ess, lo-fi…" value="' + esc(P.q) + '" aria-label="Search effects">';
     html += '<div class="mx-cats"><button type="button" class="mx-cat' + (!P.cat ? ' on' : '') + '" data-a="cat" data-cat="">All</button>' +
-      D.CATS.map(function (c) { return '<button type="button" class="mx-cat' + (P.cat === c[0] ? ' on' : '') + '" data-a="cat" data-cat="' + c[0] + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>';
+      D.CATS.map(function (c) { return '<button type="button" class="mx-cat' + (P.cat === c[0] ? ' on' : '') + '" data-a="cat" data-cat="' + c[0] + '">' + esc(c[1]) + '</button>'; }).join('') +
+      (W ? '<button type="button" class="mx-cat' + (P.cat === 'web' ? ' on' : '') + '" data-a="cat" data-cat="web">Web plugins</button>' : '') + '</div>';
     D.CATS.forEach(function (c) {
       if (P.cat && P.cat !== c[0]) return;
       var list = D.ORDER.filter(function (k) {
@@ -279,13 +294,44 @@
       });
       html += '</div>';
     });
+    if (W && (!P.cat || P.cat === 'web')) html += wamBrowserHtml(q);
     return html + '</div>';
+  }
+
+  // The community's WAM2 plugins, from their index (wam-host.js). Loaded on
+  // first view; check-wam's notes say which were measured to export exactly
+  // as they play.
+  function wamBrowserHtml(q) {
+    if (!P.wamList && !P.wamErr) {
+      W.catalog().then(function (list) { P.wamList = list; }, function (e) { P.wamErr = e; })
+        .then(function () { if (P.open && P.view === 'browse') { P.keepScroll = true; render(); } });
+    }
+    var html = '<h4 class="mx-cat-h">Web plugins <small>from the Web Audio Modules community</small></h4>';
+    if (P.wamErr) return html + '<p class="mx-empty">The plugin list did not load. Check the connection and open this again.</p>';
+    if (!P.wamList) return html + '<p class="mx-empty">Loading the plugin list…</p>';
+    var list = P.wamList.filter(function (w) {
+      if (w.kind !== 'effect') return false;
+      return !q || (w.name + ' ' + w.vendor + ' ' + w.sub + ' ' + w.description + ' ' + w.keywords.join(' ')).toLowerCase().indexOf(q) !== -1;
+    });
+    if (!list.length) return html + '<p class="mx-empty">No web plugin matches.</p>';
+    html += '<div class="mx-plugs">';
+    list.forEach(function (w) {
+      var st = w.status, badge = st && st.live === 'same' ? '<i class="mx-badge" title="Measured: exports exactly as it plays">exact</i>' : '';
+      html += '<button type="button" class="mx-plug mx-wam" data-a="pickwam" data-id="' + esc(w.id) + '">' +
+        (w.thumb ? '<img src="' + esc(w.thumb) + '" alt="" loading="lazy" width="48" height="36">' : '') +
+        '<strong>' + esc(w.name) + badge + '</strong><small>' + esc(w.sub + ' · ' + w.vendor) + (w.description ? ' — ' + esc(w.description) : '') + '</small></button>';
+    });
+    html += '</div><p class="mx-hint">These are made by other people and load from webaudiomodules.com when you add one. ' +
+      'They run in this page like the rest of the editor, and their settings save with your project.</p>';
+    return html;
   }
 
   /* -------------------------------------------------------- editor view */
 
   function editorHtml() {
-    var slot = slotOf(P.owner, P.fxId), d = D.PLUGINS[slot.type], q = D.resolve(slot);
+    var slot0 = slotOf(P.owner, P.fxId);
+    if (slot0.type === 'wam') return wamEditorHtml(slot0);
+    var slot = slot0, d = D.PLUGINS[slot.type], q = D.resolve(slot);
     var o = M.owner(proj(), P.owner);
     var html = header(d.name, true) + '<div class="mx-body">';
     html += '<p class="mx-where">on ' + esc(ownerName(P.owner)) + ' · <span>' + esc(d.desc) + '</span></p>';
@@ -346,6 +392,26 @@
     return html + '</div>';
   }
 
+  function wamEditorHtml(slot) {
+    var d = D.PLUGINS.wam, q = D.resolve(slot), o = M.owner(proj(), P.owner), w = slot.wam || {};
+    var st = E.wamStatus(slot.id);
+    var html = header(w.name || 'Web plugin', true) + '<div class="mx-body">';
+    html += '<p class="mx-where">on ' + esc(ownerName(P.owner)) + ' · <span>' + esc(w.vendor ? 'Web plugin by ' + w.vendor : 'Web plugin') + '</span></p>';
+    html += '<div class="mx-bar">' +
+      '<button type="button" class="mx-pow big" data-a="power" aria-pressed="' + (slot.on !== false) + '">' + (slot.on === false ? 'Off' : 'On') + '</button>' +
+      '<button type="button" class="ed-btn ed-btn-primary" data-a="wamwin">' + (wins[slot.id] ? 'Show its window' : 'Open its window') + '</button>' +
+      '<button type="button" class="ed-icon mx-more" data-a="more" aria-label="More">⋯</button>' +
+      '</div>';
+    html += '<div class="mx-viz mx-viz-meters"><div class="mx-io"><span title="Input level"><b>in</b><u><i data-meter="in"></i></u></span><span title="Output level"><b>out</b><u><i data-meter="out"></i></u></span></div></div>';
+    var msg = st instanceof Error ? 'Could not load it: ' + (st.message || 'unknown error') + '. The sound passes through unchanged.'
+      : st === 'loading' ? 'Loading the plugin…' : '';
+    html += '<p class="mx-note" data-note' + (msg ? '' : ' hidden') + '>' + esc(msg) + '</p>';
+    html += '<section class="mx-sec">' + ['mix', 'out'].map(function (k) { return paramRow(slot, d.byKey[k], q, o); }).join('') + '</section>';
+    html += '<p class="mx-hint">Its own controls are in its window. Changes there are saved with the project and undo like any other edit.' +
+      (w.latency ? ' It delays the sound by ' + w.latency + ' samples, and the other tracks are delayed to match.' : '') + '</p>';
+    return html + '</div>';
+  }
+
   function paramRow(slot, pd, q, o) {
     var path = 'fx:' + slot.id + ':' + pd.k, lane = o && o.auto && o.auto[path];
     var canAuto = !pd.opts && ownerKind(P.owner) === 'track';
@@ -396,6 +462,18 @@
         A.toast(D.PLUGINS[type].name + ' added');
         return;
       }
+      case 'pickwam': {
+        var wid = b.getAttribute('data-id'), w = (P.wamList || []).filter(function (x) { return x.id === wid; })[0], wf = D.fresh('wam'), nid;
+        if (!w) return;
+        commit(function (p) {
+          nid = M.addFx(p, key, 'wam', wf.params, null, null,
+            { id: w.id, url: w.url, name: w.name, vendor: w.vendor, latency: w.status && w.status.delay || 0 });
+        });
+        P.view = 'edit'; P.fxId = nid; render();
+        openWindow(key, nid);
+        return;
+      }
+      case 'wamwin': openWindow(key, fxId); return;
       case 'edit': P.view = 'edit'; P.fxId = fxId; render(); return;
       case 'power': {
         var s = slotOf(key, fxId);
@@ -408,7 +486,7 @@
         P.keepScroll = true; render(); return;
       }
       case 'remove': {
-        var nm = D.PLUGINS[slotOf(key, fxId).type].name;
+        var nm = slotName(slotOf(key, fxId));
         commit(function (p) { M.removeFx(p, key, fxId); });
         P.keepScroll = true; render(); A.toast(nm + ' removed — undo brings it back'); return;
       }
@@ -689,6 +767,20 @@
 
   function moreSheet() {
     var slot = slotOf(P.owner, P.fxId), d = D.PLUGINS[slot.type];
+    if (slot.type === 'wam') {
+      A.openSheet(slotName(slot), A.menuHtml([
+        { v: 'copy', label: 'Duplicate this plugin, with its settings' },
+        '-', { v: 'remove', label: 'Remove from ' + ownerName(P.owner), danger: true }]), function (v) {
+        A.closeSheet();
+        if (v === 'copy') {
+          var id, i = M.chainOf(proj(), P.owner).indexOf(slot);
+          commit(function (p) { id = M.addFx(p, P.owner, 'wam', slot.params, i + 1, null, slot.wam); });
+          P.fxId = id; render();
+        }
+        if (v === 'remove') { commit(function (p) { M.removeFx(p, P.owner, P.fxId); }); P.view = 'strip'; render(); }
+      });
+      return;
+    }
     var mine = userPresets(slot.type);
     A.openSheet(d.name, A.menuHtml([
       { v: 'save', label: 'Save these settings as a preset' },
@@ -760,7 +852,7 @@
       if (v === 'save') {
         askName('Patch name', ownerName(key) + ' chain', function (name) {
           var all = userPatches().filter(function (x) { return x.name !== name; });
-          all.push({ name: name, for: kind, chain: M.chainOf(proj(), key).map(function (s) { return { type: s.type, on: s.on !== false, params: s.params, m: s.m || null }; }) });
+          all.push({ name: name, for: kind, chain: M.chainOf(proj(), key).map(function (s) { return { type: s.type, on: s.on !== false, params: s.params, m: s.m || null, wam: s.wam || undefined }; }) });
           save('as_ed_patches', all);
           A.toast('Saved patch “' + name + '”');
         });
@@ -1027,8 +1119,116 @@
     }
   }
 
+  /* ----------------------------------------------- web plugin windows */
+
+  // A web plugin draws its own controls. They go in a floating window that
+  // can be dragged aside, like a plugin window in a desktop DAW, and stays
+  // open while the mixer panel moves on. The plugin keeps its settings to
+  // itself, so they are read back after each gesture in the window (and
+  // every two seconds while it is open, for knobs dragged outside it) and
+  // committed to the slot when they changed: autosave, undo and the export
+  // all work from the slot.
+  var wins = {};
+  function openWindow(key, fxId) {
+    var slot = slotOf(key, fxId);
+    if (!slot || !slot.wam) return;
+    if (wins[fxId]) { wins[fxId].el.hidden = false; front(wins[fxId]); return; }
+    var n = Object.keys(wins).length;
+    var el = document.createElement('div');
+    el.className = 'ed-plugwin';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-label', slotName(slot) + ' (plugin window)');
+    el.style.left = (24 + n * 28) + 'px';
+    el.style.top = (72 + n * 28) + 'px';
+    el.innerHTML = '<div class="ed-plugwin-h"><strong>' + esc(slotName(slot)) + '</strong><small>' + esc(ownerName(key)) + '</small>' +
+      '<button type="button" class="ed-icon" data-w="close" aria-label="Close the plugin window">✕</button></div>' +
+      '<div class="ed-plugwin-b"><p class="ed-plugwin-msg">Loading ' + esc(slotName(slot)) + '…</p></div>';
+    document.body.appendChild(el);
+    var w = { key: key, id: fxId, el: el, gui: null, inst: null, timer: 0, poll: 0, busy: false };
+    wins[fxId] = w;
+    front(w);
+    el.querySelector('[data-w="close"]').addEventListener('click', function () { closeWindow(fxId); });
+    dragBy(el.querySelector('.ed-plugwin-h'), el);
+    var body = el.querySelector('.ed-plugwin-b');
+    ['pointerup', 'keyup', 'change', 'wheel'].forEach(function (ev) {
+      body.addEventListener(ev, function () { soon(w); }, true);
+    });
+    // Keys typed into the plugin are the plugin's, not the editor's shortcuts.
+    el.addEventListener('keydown', function (e) { if (e.key !== 'Escape') e.stopPropagation(); });
+    el.addEventListener('pointerdown', function () { front(w); });
+    E.wamInstance(slot).then(function (inst) {
+      if (wins[fxId] !== w) return null;
+      w.inst = inst;
+      return inst.gui();
+    }).then(function (gui) {
+      if (wins[fxId] !== w || !w.inst) { if (gui && w.inst) w.inst.closeGui(gui); return; }
+      body.innerHTML = '';
+      if (gui) { w.gui = gui; body.appendChild(gui); }
+      else body.innerHTML = '<p class="ed-plugwin-msg">This plugin has no window of its own.</p>';
+      w.poll = setInterval(function () { capture(w); }, 2000);
+      if (P.open && P.view === 'edit') { P.keepScroll = true; render(); }
+    }).catch(function (e) {
+      if (wins[fxId] !== w) return;
+      body.innerHTML = '<p class="ed-plugwin-msg">' + esc(slotName(slot)) + ' did not load: ' + esc((e && e.message) || 'unknown error') + '</p>';
+      if (P.open && P.view === 'edit') { P.keepScroll = true; render(); }
+    });
+    if (P.open && P.view === 'edit') { P.keepScroll = true; render(); }
+  }
+  var zTop = 60;
+  function front(w) { w.el.style.zIndex = ++zTop; }
+  function soon(w) { clearTimeout(w.timer); w.timer = setTimeout(function () { capture(w); }, 400); }
+  function capture(w) {
+    if (!w.inst || w.busy) return Promise.resolve();
+    w.busy = true;
+    return w.inst.getState().then(function (st) {
+      w.busy = false;
+      var slot = slotOf(w.key, w.id);
+      if (wins[w.id] !== w || !slot) return;
+      E.wamNoteState(w.id, st);
+      // Most polls find nothing new; only a real change becomes an edit.
+      if (JSON.stringify(st == null ? null : st) === JSON.stringify(slot.wam.state == null ? null : slot.wam.state)) return;
+      if (A.isLive()) return;
+      A.edit(function (p) { M.setFxState(p, w.key, w.id, st); }, { noRestart: true });
+    }, function () { w.busy = false; });
+  }
+  function closeWindow(fxId) {
+    var w = wins[fxId];
+    if (!w) return;
+    clearInterval(w.poll); clearTimeout(w.timer);
+    var done = function () {
+      delete wins[fxId];
+      if (w.inst && w.gui) w.inst.closeGui(w.gui);
+      if (w.el.parentNode) w.el.parentNode.removeChild(w.el);
+      if (P.open && P.view === 'edit' && P.fxId === fxId) { P.keepScroll = true; render(); }
+    };
+    // The last change before closing is kept.
+    if (slotOf(w.key, w.id)) capture(w).then(done, done); else done();
+  }
+  // Windows whose plugin went away (removed, undone, another project).
+  function pruneWindows() {
+    Object.keys(wins).forEach(function (id) {
+      var w = wins[id], s = slotOf(w.key, id);
+      if (!s || !s.wam) closeWindow(id);
+    });
+  }
+  function dragBy(handle, el) {
+    handle.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('button')) return;
+      var r = el.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
+      handle.setPointerCapture(e.pointerId);
+      function mv(ev) {
+        el.style.left = clamp(ev.clientX - dx, 8 - r.width + 80, window.innerWidth - 80) + 'px';
+        el.style.top = clamp(ev.clientY - dy, 0, window.innerHeight - 40) + 'px';
+      }
+      function up() { handle.removeEventListener('pointermove', mv); handle.removeEventListener('pointerup', up); }
+      handle.addEventListener('pointermove', mv);
+      handle.addEventListener('pointerup', up);
+    });
+  }
+
   global.ASEditFxUI = {
     init: init, open: open, close: close, isOpen: isOpen, refresh: refresh,
-    lanePaths: lanePaths, laneInfo: laneInfo, finishRecord: finishRecord
+    lanePaths: lanePaths, laneInfo: laneInfo, finishRecord: finishRecord,
+    openPluginWindow: openWindow, closePluginWindow: closeWindow
   };
 })(window);

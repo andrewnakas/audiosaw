@@ -25,7 +25,11 @@
  * Node and, with those files and the ffmpeg core cached, makes an M4B and
  * reads its chapters back with ffprobe. check-dictation.js holds the
  * phrase splitter behind /dictation (DICTATION_BROWSER=1 adds the page with
- * a spoken sentence through Whisper). All of them skip their browser parts on a machine
+ * a spoken sentence through Whisper). check-wam.js measures the community
+ * web plugins (WAM2) from a local mirror, ~/.cache/audiosaw/wam
+ * (WAM_DOWNLOAD=1 records it once); here it only runs the editor and
+ * /audio-plugins end to end (WAM_WRITE=1 node tools/check-wam.js re-measures
+ * every plugin and rewrites js/wam-status.js). All of them skip their browser parts on a machine
  * without Chrome.
  */
 const { execFileSync } = require('child_process');
@@ -47,6 +51,7 @@ const CHECKS = [
   ['check-beat.js'],
   ['check-pitch.js'],
   ['check-fx.js'],
+  ['check-wam.js', '--pages'],
   ['check-project-link.js'],
   ['check-grid.js'],
   ['check-midi.js'],

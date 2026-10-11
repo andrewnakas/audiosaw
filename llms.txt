@@ -462,6 +462,7 @@ are much slower without a GPU.
 
 ## Effects & remixes
 
+- [Audio Effects Plugins](https://audiosaw.com/audio-plugins): Run a file through free web audio plugins: fuzz, amp sims, reverbs, delays, phasers, pitch.
 - [Slowed + Reverb Maker](https://audiosaw.com/slowed-reverb): Slow a song, drop the pitch with it, and put it in a room.
 - [8D Audio Maker](https://audiosaw.com/8d-audio): Move a track slowly around your head — on headphones, it circles.
 - [Nightcore Maker](https://audiosaw.com/nightcore): Speed a song up and lift its pitch — nightcore and sped-up edits.

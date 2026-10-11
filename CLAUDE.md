@@ -1263,6 +1263,78 @@ Four pages picked by how often the job is asked of an assistant (playbook
   (41 voices, 1.15 MB, `tools/build-voice-samples.js`) make "hear this
   voice" instant for a single voice.
 
+## Web plugins (WAM2): the editor's mixer and /audio-plugins
+
+The Web Audio Modules community plugins (the index at
+webaudiomodules.com/community/plugins.json; Wimmics and Sequencer Party)
+are inserts in the editor (tracks, buses, master), instruments on MIDI
+tracks, and a chain of up to four on `/audio-plugins` (project `'same'`,
+video in and out). Brought over from ~/Documents/wasmvst (10 Oct 2026); its
+native VST3/AU bridge was not, because it needs SharedArrayBuffer and so a
+cross-origin isolated page, which the editor and any ffmpeg page are not.
+
+- **Host.** `vendor/wam/0.0.12/` is the SDK's host half (initializeWamHost
+  and four files), unmodified. The files import each other without `?v=`,
+  so an upgrade goes in a new version folder. `js/wam-host.js` (`ASWam`):
+  the catalogue (filtered: no video, MIDI, modulators, live input, audio
+  player; cached a day in localStorage), one host group per
+  BaseAudioContext, `load(ctx, url, state, meta)`, the state encoding, and
+  `offlineSteps` for MIDI in an export.
+- **A plugin is first-party script.** It runs on audiosaw.com with our DOM,
+  storage and GA. URLs come only from the community index; `?plugin=` on
+  /audio-plugins takes a catalogue identifier, never an address. Do not add
+  a load-from-URL or a link parameter that names a script.
+- **State.** `getState()` can hold typed arrays; projects and undo are JSON,
+  so `encodeState`/`decodeState` tag them as base64 (check-editor tests
+  both the Node and the browser base64).
+  - **createInstance's initial state is not waited for.** An offline render
+    started straight after rendered the defaults (Big Muff). `load()` calls
+    `setState` and waits for its answer.
+- **Latency is measured, not asked.** `getCompensationDelay()` answered 128
+  for nearly every plugin; an impulse came out on the same sample. check-wam
+  measures the first output of an impulse and writes it as `delay`, except
+  in reverbs and delays, where it is pre-delay (KBVerb 915 samples). Only
+  Csound Pitch Shifter has one: 2,846 samples.
+- **Pre-roll.** Parameter smoothing settles from start-up values; Big Muff
+  was off by 0.6 of peak in its first 100 ms without a pre-roll, identical
+  after. Every offline render with a web plugin (editor export,
+  /audio-plugins, check-wam) starts the audio 0.25 s in and trims it.
+- **MIDI offline.** Events go by message and an offline render outruns them:
+  sent up front, every instrument was silent. `offlineSteps` suspends a
+  block before each event, sends it, and resumes after a round trip on the
+  port. A composite node (not an AudioWorkletNode) whose processor only
+  echoes the event to the main thread gets it a block early and a second
+  suspend at its time. Synth-101 still is not repeatable (its note handler
+  takes `time: 0` and drives AudioParams from the main thread), so it is
+  hidden. DRM-16 and Soundfont Player load sample sets and were silent.
+- **Editor.** A slot is `{ type: 'wam', params: { mix, out }, wam: { id,
+  url, name, vendor, state, latency } }`; `PLUGINS.wam` is not in `ORDER`.
+  `js/editor-wam.js` (`ASEditWam`) keeps one instance per slot per context
+  across stop/play (builders are synchronous: until it loads, the slot
+  passes sound through with a note, and the engine replays when it
+  arrives). `E.syncWam` (called from `changed()`) pushes undo/redo into the
+  live instance. The plugin window (editor-fxui.js) reads `getState()` after
+  each gesture and every 2 s while open, and commits only a real change
+  (`M.setFxState`; key `inst:<trackId>` for an instrument). `render()` calls
+  `W.prepare` and fails, by name, if a plugin will not load: exporting it
+  dry would be silently wrong. A web instrument is `track.inst = 'wam'` +
+  `track.instWam`; it bypasses clip gain and fades.
+- **Measured** (`tools/check-wam.js`, against a mirror of every plugin file
+  in ~/.cache/audiosaw/wam that `tools/wam-mirror.js` records with
+  WAM_DOWNLOAD=1 and replays through CDP Fetch). Per plugin: loads offline,
+  two renders identical, a moved parameter restores exactly through JSON,
+  live (a worklet tap from the source's exact start frame) vs offline. 10 Oct:
+  31 effects and 1 instrument listed; 26 effects exact live = export;
+  Blipper, Grey Hole, Microverb, OWLShimmer and Temper differ in the detail;
+  DistoMachine (not repeatable), Pedalboard WAC2022 (does not load),
+  Synth-101, DRM-16 and Soundfont hidden. `WAM_WRITE=1` rewrites
+  `js/wam-status.js` (bump `?v=`). check-all runs it with `--pages`: the
+  editor export equals Big Muff rendered directly (0 difference), live state
+  follows undo, a missing plugin stops the export, Spectrum: Modal plays a
+  note at 0.201 s for 0.200, and /audio-plugins writes the exact length and
+  rate, equal to a direct render. The live comparison is sensitive to a
+  loaded machine; re-measure idle.
+
 ## The stem splitter
 
 The model runs at 44.1 kHz, but the stems go back to the file's own rate and

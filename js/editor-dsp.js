@@ -686,12 +686,27 @@
     build: function (ctx) { var g = ctx.createGain(); return { input: g, output: g, set: function () {} }; }
   };
 
+  // A web plugin (WAM2) from the community index, hosted by wam-host.js. Its
+  // own settings live in the plugin (its window) and travel as slot.wam.state;
+  // here it only gets the Mix and Output every plugin has. Not in ORDER: the
+  // browser lists web plugins in a section of their own, and the catalogue
+  // checks would otherwise need the network.
+  PLUGINS.wam = {
+    name: 'Web plugin', cat: 'web', mix: 'linear', mixDef: 100,
+    desc: 'A plugin from the Web Audio Modules community, with its own window.',
+    params: [],
+    structural: [],
+    macros: [],
+    presets: [],
+    build: buildWam
+  };
+
   var ORDER = ['eq', 'filter', 'exciter', 'comp', 'limiter', 'gate', 'deess', 'multiband', 'transient', 'ducker',
     'drive', 'crush', 'tape', 'chorus', 'flanger', 'phaser', 'tremolo', 'autopan', 'ring',
     'delay', 'tapedelay', 'reverb', 'pitch', 'utility', 'analyzer'];
 
   // Every plugin gets an output level, and those with a Mix get the Mix.
-  ORDER.forEach(function (k) {
+  ORDER.concat(['wam']).forEach(function (k) {
     var d = PLUGINS[k];
     d.key = k;
     if (d.mix) d.params.push(P('mix', 'Mix', 0, 100, d.mixDef, '%', { group: 'Output', hint: 'Dry sound to fully effected' }));
@@ -854,13 +869,16 @@
   function sig(slot) {
     var d = PLUGINS[slot.type];
     if (!d || slot.on === false) return '';
+    if (slot.type === 'wam') return 'wam(' + (slot.wam && slot.wam.url) + ')';
     var p = resolve(slot);
     return slot.type + '(' + d.structural.map(function (k) { return p[k]; }).join(',') + ')';
   }
 
   function latencyOf(slot, sr) {
     var d = PLUGINS[slot.type];
-    if (!d || slot.on === false || !d.latency) return 0;
+    if (!d || slot.on === false) return 0;
+    if (slot.type === 'wam') return slot.wam && slot.wam.latency > 0 ? slot.wam.latency / sr : 0;
+    if (!d.latency) return 0;
     return d.latency(sr) / sr;
   }
 
@@ -877,6 +895,8 @@
       }
       case 'chorus': case 'flanger': case 'phaser': case 'pitch': return 0.15;
       case 'gate': case 'ducker': return p.release / 1000;
+      // A web plugin declares no tail; long enough for a reverb or delay.
+      case 'wam': return slot.wam && slot.wam.tail >= 0 ? slot.wam.tail : 3;
       default: return 0.02;
     }
   }
@@ -1881,6 +1901,39 @@
     return { input: n, output: n, set: function (q, now) { wset(n, 'ratio', ratio(q), ctx, now); wset(n, 'grain', q.grain, ctx, now); } };
   }
 
+  /* ------------------------------------------------------ web plugins */
+
+  // The instance comes from the pool in editor-wam.js (env.wam), which loads
+  // it asynchronously and keeps it between rebuilds; until it is ready the
+  // sound passes through with a note. The chain only connects to and from
+  // the plugin's node, so disposing the chain leaves the instance alive.
+  function buildWam(ctx, p, env, slot) {
+    var w = slot && slot.wam, pool = env && env.wam;
+    var inst = w && pool ? pool.get(ctx, slot) : null;
+    if (!inst) {
+      var err = w && pool && pool.error(ctx, slot.id);
+      var g = gain(ctx);
+      return {
+        input: g, output: g, set: function () {}, latency: 0,
+        note: !w ? 'This slot has no plugin.' : !pool ? 'Web plugins are not available here.'
+          : err ? 'Could not load ' + (w.name || 'the plugin') + (err.message ? ': ' + err.message : '') + '. The sound passes through unchanged.'
+          : 'Loading ' + (w.name || 'the plugin') + '…'
+      };
+    }
+    var input = stereo(gain(ctx)), output = gain(ctx), node = inst.node;
+    input.connect(node);
+    node.connect(output);
+    return {
+      input: input, output: output, wam: inst,
+      latency: inst.latency > 0 ? inst.latency / ctx.sampleRate : 0,
+      set: function () {},
+      dispose: function () {
+        try { input.disconnect(); } catch (e) {}
+        try { node.disconnect(output); } catch (e) {}
+      }
+    };
+  }
+
   /* ------------------------------------------------- the slot wrapper */
 
   // Wraps a plugin with its output level and, where it has one, its Mix.
@@ -1890,7 +1943,7 @@
     if (!d) return null;
     var p = resolve(slot);
     var inN = stereo(gain(ctx)), outN = gain(ctx, dbToGain(p.out));
-    var core = d.build(ctx, p, env || {});
+    var core = d.build(ctx, p, env || {}, slot);
     var dry = null, wet = null;
     if (d.mix) {
       dry = gain(ctx); wet = gain(ctx);
@@ -1901,7 +1954,7 @@
     }
     var inst = {
       id: slot.id, type: slot.type, sig: sig(slot), in: inN, out: outN, core: core, params: p,
-      latency: d.latency ? d.latency(ctx.sampleRate) / ctx.sampleRate : 0,
+      latency: core.latency != null ? core.latency : d.latency ? d.latency(ctx.sampleRate) / ctx.sampleRate : 0,
       set: function (q, now) {
         q = resolve({ type: slot.type, params: q });
         inst.params = q;
@@ -1919,6 +1972,7 @@
         try { if (core.dispose) core.dispose(); } catch (e) {}
         [inN, outN, dry, wet].forEach(function (x) { if (x) try { x.disconnect(); } catch (e) {} });
       },
+      wam: core.wam || null,
       note: core.note || (core.missing ? 'This browser cannot run this effect, so it is passing the sound through unchanged.' : null)
     };
     inst.set(p, true);

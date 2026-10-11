@@ -297,7 +297,8 @@
         ['voice-recorder', 'Record a quick take on its own, without the timeline'],
         ['audio-compressor', 'Shrink the export if it is too big to send'],
         ['text-to-speech', 'Generate a narrated line to drop on a track'],
-        ['audio-to-text', 'Transcribe the edit, with speaker labels']
+        ['audio-to-text', 'Transcribe the edit, with speaker labels'],
+        ['audio-plugins', 'Run one file through a web plugin without opening a project']
       ]
     },
     'audio-cutter': {
@@ -605,6 +606,20 @@
     },
 
     // ---- Effects & remixes ----------------------------------------------
+    'audio-plugins': {
+      cat: 'fx', label: 'web plugins', title: 'Audio Effects Plugins',
+      blurb: 'Run a file through free web audio plugins: fuzz, amp sims, reverbs, delays, phasers, pitch.',
+      project: 'same',
+      next: [
+        ['audio-editor', 'Use the same plugins on tracks, with automation and a mix'],
+        ['audio-eq', 'A plain EQ when a plugin is more than the job needs'],
+        ['loudness-normalizer', 'Bring the result to a streaming loudness'],
+        ['slowed-reverb', 'The slowed-and-reverbed sound in one step'],
+        ['pitch-shifter', 'Change the key with a pitch shifter tuned for music'],
+        ['stem-splitter', 'Put a plugin on the vocal or the instrumental alone'],
+        ['add-audio-to-video', 'Lay the processed sound under a video']
+      ]
+    },
     'slowed-reverb': {
       cat: 'fx', label: 'slowed + reverb', title: 'Slowed + Reverb Maker',
       blurb: 'Slow a song, drop the pitch with it, and put it in a room.',
@@ -1169,7 +1184,7 @@
       style: 'tile',
       tools: [
         'slowed-reverb', 'nightcore', '8d-audio', 'audio-speed',
-        'pitch-shifter', 'audio-reverser'
+        'pitch-shifter', 'audio-reverser', 'audio-plugins'
       ]
     },
     {

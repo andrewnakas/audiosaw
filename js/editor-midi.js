@@ -34,7 +34,8 @@
   }
   function anyMidi(ids) { return ids.some(isMidiClip); }
 
-  function instLabel(id) {
+  function instLabel(id, track) {
+    if (id === 'wam') return track && track.instWam ? track.instWam.wam.name : 'Web instrument';
     var d = SY.INSTRUMENTS.filter(function (x) { return x.id === id; })[0];
     return d ? d.label : SY.INSTRUMENTS[0].label;
   }
@@ -139,7 +140,7 @@
       if (!ns.length) return;
       if (E.isPlaying()) E.stop();
       E.unlock();
-      var t0 = E.previewNotes(ns, instOf(f.track, src));
+      var t0 = f.track.inst === 'wam' && f.track.instWam ? E.previewNotes(ns, 'wam', f.track.instWam) : E.previewNotes(ns, instOf(f.track, src));
       playBtn = btn; btn.textContent = 'Stop';
       (function tick() {
         if (sheet.hidden) { stopPlay(); return; }
@@ -161,16 +162,45 @@
 
   /* ----------------------------------------------------------- instrument */
 
+  // The built-in voices, plus web instruments (WAM2) from the community
+  // index that check-wam measured sounding, and repeatably, in an export.
+  // Those open in a plugin window, like a web effect.
+  // The mixer panel (editor-fxui.js, loaded after this file) owns plugin windows.
+  function pluginWindow(key, id) { return global.ASEditFxUI && global.ASEditFxUI.openPluginWindow(key, id); }
   function instrumentSheet(trackId) {
     var S = X.S, t = S.project.tracks[M.trackIndex(S.project, trackId)];
     if (!t) return;
     var cur = t.inst || null;
-    X.openSheet('Instrument for ' + t.name, X.menuHtml(SY.INSTRUMENTS.map(function (d) {
-      return { v: d.id, label: d.label + (cur === d.id ? '  ✓' : ''), hint: d.hint };
-    })) + '<p class="ed-sheet-note">It plays the MIDI clips on this track. These are simple synth voices, not recorded instruments; for a real piano or guitar sound, bounce to audio and use your own, or export the .mid to a DAW.</p>', function (v) {
-      X.closeSheet();
-      X.edit(function (p) { M.setTrack(p, trackId, { inst: v }); });
-      X.toast(instLabel(v));
+    var W = global.ASWam;
+    var webP = W ? W.catalog().then(function (list) {
+      return list.filter(function (w) { return w.kind === 'instrument' && w.status && w.status.ok; });
+    }, function () { return []; }) : Promise.resolve([]);
+    webP.then(function (web) {
+      var items = SY.INSTRUMENTS.map(function (d) {
+        return { v: d.id, label: d.label + (cur === d.id ? '  ✓' : ''), hint: d.hint };
+      });
+      if (cur === 'wam' && t.instWam) items = [{ v: 'wamwin', label: 'Open ' + t.instWam.wam.name + '’s window', hint: 'the web instrument on this track' }, '-'].concat(items);
+      if (web.length) items = items.concat(['-'], web.map(function (w) {
+        var on = cur === 'wam' && t.instWam && t.instWam.wam.url === w.url;
+        return { v: 'wam:' + w.id, label: w.name + (on ? '  ✓' : ''), hint: 'web instrument · ' + w.vendor };
+      }));
+      X.openSheet('Instrument for ' + t.name, X.menuHtml(items) +
+        '<p class="ed-sheet-note">It plays the MIDI clips on this track. The built-in voices are simple synths, not recorded instruments; for a real piano or guitar sound, bounce to audio and use your own, or export the .mid to a DAW.' +
+        (web.length ? ' Web instruments come from the Web Audio Modules community and load from webaudiomodules.com.' : '') + '</p>', function (v) {
+        X.closeSheet();
+        if (v === 'wamwin') { pluginWindow('inst:' + trackId, t.instWam.id); return; }
+        if (v.indexOf('wam:') === 0) {
+          var w = web.filter(function (x) { return x.id === v.slice(4); })[0];
+          if (!w) return;
+          X.edit(function (p) { M.setTrack(p, trackId, { instWam: { id: w.id, url: w.url, name: w.name, vendor: w.vendor } }); });
+          var nt = X.S.project.tracks[M.trackIndex(X.S.project, trackId)];
+          if (nt && nt.instWam) pluginWindow('inst:' + trackId, nt.instWam.id);
+          X.toast(w.name);
+          return;
+        }
+        X.edit(function (p) { M.setTrack(p, trackId, { inst: v }); });
+        X.toast(instLabel(v));
+      });
     });
   }
 
@@ -212,7 +242,7 @@
         global.ASEditView.buildPeaks(sid, res.buffer);
         M.replaceClipAudio(p, clipId, sid, res.buffer.duration, false);
       });
-      X.status('success', 'Bounced “' + c.name + '” to audio with the ' + instLabel(t.inst) + '. Effects, tools and detection work on it now; undo brings the notes back.');
+      X.status('success', 'Bounced “' + c.name + '” to audio with the ' + instLabel(t.inst, t) + '. Effects, tools and detection work on it now; undo brings the notes back.');
     }).catch(function (e) {
       X.status('error', 'Bounce failed: ' + ((e && e.message) || e), e);
     }).then(function () { X.setBusy(false); });

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Effects Plugins Online — Free Web VST-Style Fuzz, Amp, Reverb, Delay</title>
+<meta name="description" content="Run an audio file or video through free web audio plugins in your browser: fuzz and overdrive pedals, amp sims, reverbs, delays, phasers and pitch shifters, each with its own panel. Preview live, then download. No upload, no install.">
+<meta name="keywords" content="audio effects online, vst plugins online, web audio plugins, guitar amp sim online, add reverb to audio online, fuzz pedal online, apply effects to mp3, wam plugins">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-plugins">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Audio Effects Plugins — free web plugins for any file">
+<meta property="og:description" content="Fuzz, amp sims, reverbs, delays and more from the Web Audio Modules community, on any audio file or video. Preview live, download the result. Nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-plugins">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-10-10e">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Effects Plugins",
+  "url": "https://audiosaw.com/audio-plugins",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-10-10"
+}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I use my VST or AU plugins here?","acceptedAnswer":{"@type":"Answer","text":"No. VST3 and Audio Units plugins are programs for your operating system and cannot run in a browser tab. This page runs WAM2 plugins, the web's equivalent, from the Web Audio Modules community collection."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The file is decoded, processed and encoded in your browser. The plugins' code is downloaded from webaudiomodules.com when you pick one, but your audio never leaves your computer."}},{"@type":"Question","name":"Will the download sound exactly like the preview?","acceptedAnswer":{"@type":"Answer","text":"For the 26 plugins marked exact, yes: we measured the download sample for sample identical to the live preview. The other five give the same effect, with their internal modulation starting at a different point."}},{"@type":"Question","name":"Can I use more than one plugin?","acceptedAnswer":{"@type":"Answer","text":"Up to four, in a chain. They run in the order shown, and the arrows on each one move it earlier or later."}},{"@type":"Question","name":"Does it work on a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. With \"keep the picture\" ticked, the video's sound goes through the chain and you get the video back with the picture copied untouched and the sound the same length as before."}},{"@type":"Question","name":"Why is a plugin from the community site missing?","acceptedAnswer":{"@type":"Answer","text":"Every plugin is tested before it is listed. Ones that would not load offline, gave a different result each time, or are not audio effects (video generators, MIDI tools, hardware editors) are left out."}},{"@type":"Question","name":"Can I use these in a multitrack project?","acceptedAnswer":{"@type":"Answer","text":"Yes. The audio editor's mixer has the same plugins as inserts on any track, bus or the master, with their settings saved in the project and undoable, and it can send a clip here and back."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "How to apply a web audio plugin to an audio file", "totalTime": "PT2M", "tool": [{"@type": "HowToTool", "name": "A web browser (Chrome, Edge, Firefox or Safari)"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop your file", "text": "Drag an MP3, WAV, M4A, FLAC or a video onto the drop area."}, {"@type": "HowToStep", "position": 2, "name": "Pick a plugin", "text": "Choose an effect from the list. Its own panel opens on the page; add up to four in a chain."}, {"@type": "HowToStep", "position": 3, "name": "Set it by ear", "text": "Press Preview to hear the file looping through the chain while you turn the plugin's knobs."}, {"@type": "HowToStep", "position": 4, "name": "Apply and download", "text": "The whole file is rendered through the chain with the settings you chose, then saved as MP3, WAV or FLAC, or as a video with the new sound."}]}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Effects & remixes","item":"https://audiosaw.com/tools#fx"},{"@type":"ListItem","position":3,"name":"Audio Effects Plugins"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#fx">Effects &amp; remixes</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio Effects Plugins</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>Effects plugins for <span class="ital">any</span> file.</h1>
+    <p>Fuzz and overdrive pedals, amp simulators, reverbs, delays, phasers, flangers and pitch shifters from the Web Audio Modules community, each with its own panel, run on your audio file or video in the browser. Preview it live while you turn the knobs, then download the whole file processed. Nothing is uploaded and nothing is installed.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop an audio file or video</p>
+      <p>MP3, WAV, M4A, FLAC, OGG, or an MP4, MOV or WebM video.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div class="wam-app">
+      <div class="wam-pick">
+        <label class="wam-search-l">Plugins <input type="search" id="wamSearch" placeholder="Search: fuzz, reverb, amp, delay…" aria-label="Search the plugins"></label>
+        <div class="wam-list" id="wamList" aria-live="polite"></div>
+      </div>
+      <div class="wam-chain-wrap">
+        <div class="wam-tabs" id="wamTabs" aria-label="Your chain, in order"></div>
+        <div class="wam-guis" id="wamGuis" hidden></div>
+        <p class="wam-note" id="wamNote" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Output format
+          <select id="outFmt">
+            <option value="mp3" selected>MP3</option>
+            <option value="wav">WAV — match the source (16 or 24-bit)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192">192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320" selected>320 kbps — maximum</option>
+            <option value="lame320">320 kbps — LAME encoder</option>
+            <option value="v0">V0 VBR — LAME, highest quality</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="tail"> let reverbs and delays ring out past the end (audio files only; the file gets longer)</label>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the new sound</label>
+      <div class="actions">
+        <button class="btn btn-secondary" id="previewBtn" type="button">▶ Preview through the chain</button>
+        <button class="btn" id="convertBtn" disabled>Apply the plugins</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Plugins</th><td>31 effects from the Web Audio Modules (WAM2) community: distortion and fuzz, amp simulators, reverbs, delays, modulation, EQ and filters, pitch</td></tr>
+        <tr><th>Chain</th><td>Up to four plugins in a row, each with its own panel</td></tr>
+        <tr><th>Preview</th><td>Live, looping your file through the chain while you adjust it</td></tr>
+        <tr><th>Sample rate</th><td>The file's own, up to 192 kHz; nothing is resampled</td></tr>
+        <tr><th>Output</th><td>MP3 up to 320 kbps or V0, WAV 16/24/32-bit float, FLAC 16/24-bit, or the video with the new sound</td></tr>
+        <tr><th>Clipping</th><td>True-peak limited to −1 dBTP only if the result would pass full scale</td></tr>
+        <tr><th>Uploads your file</th><td>No — the plugins run in your browser tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What these plugins are</h2>
+<p>Web Audio Modules 2 (WAM2) is an open standard for audio plugins that run in a web page, the way VST3 and Audio Units plugins run inside Ableton Live, Logic or Reaper. A WAM is a small program with its own processing and its own panel, written in JavaScript or compiled to WebAssembly, often from Faust, Csound or C++ DSP code. The ones listed here are the community collection published at webaudiomodules.com: most come from the Wimmics team at Université Côte d'Azur (Big Muff, TS9 Overdrive, Vox Amp 30, Grey Hole, KBVerb, PingPongDelay, StonePhaser, ThruZeroFlanger, Csound Pitch Shifter and more), and a set of simpler utilities from Sequencer Party (Simple EQ, Simple Delay, Microverb).</p>
+<p>They are not VST plugins. A VST3 or AU file on your computer cannot run in a browser tab, and this page cannot load one. What you get instead is the same idea, a box with knobs that changes the sound, with nothing to install and nothing to pay for.</p>
+    <h2>How it works</h2>
+<p>When you pick a plugin, its code loads from webaudiomodules.com and its panel opens on this page. The preview plays your file in a loop through the chain, live, so you can turn a drive knob or a reverb's decay and hear it immediately. When you press Apply, the page reads each plugin's settings, builds the same chain again in an offline renderer at your file's own sample rate, and pushes the whole file through it as fast as the computer allows, which is usually much faster than playing it.</p>
+<p>That second pass is the part we measured. A plugin has to give back exactly the settings you made and process them the same way offline as it does live, and not every one does. We test every plugin in the list in a headless browser: it must load offline, render the same file identically twice, and restore a saved setting exactly. The ones that failed are left out. Of the 31 that remain, 26 came out sample for sample identical to the live preview in our test, and carry an <em>exact</em> mark. The other five (Blipper, Grey Hole, Microverb, OWLShimmer and Temper) give the same effect but differ from the preview in the detail, by more than our threshold: their internal modulation or state starts afresh each time a copy of the plugin is made, so a sweep or a shimmer lands at a different point.</p>
+<p>Some plugins delay the sound internally. The Csound Pitch Shifter, for example, comes out 2,846 samples late. We measured each one with an impulse and trim that delay off the front, so a processed video stays in sync and an editor clip sent back lines up with the original.</p>
+    <h2>When you'd want this</h2>
+<ul>
+  <li><strong>Re-amping a DI guitar or bass.</strong> Record the instrument clean, then try Vox Amp 30, OSCTube, TS9 Overdrive or Big Muff on it afterwards, which you cannot do if the amp was printed on the recording.</li>
+  <li><strong>Putting a vocal or a voice-over in a space.</strong> Grey Hole and KBVerb are large, modulated reverbs; OwlDirty and OWLShimmer are lo-fi and shimmering. Turn the mix down for a room rather than a cathedral.</li>
+  <li><strong>Sound design for a video.</strong> Drop the MP4 in, run its sound through a delay or a frequency shifter, and get the video back with the picture copied untouched.</li>
+  <li><strong>Trying a plugin before committing to it in a session.</strong> The same plugins are in the <a href="/audio-editor">audio editor</a>'s mixer, on tracks, with automation and a send to a reverb bus.</li>
+</ul>
+    <h2>Using it well</h2>
+<p><strong>Order matters.</strong> Distortion before a reverb sounds like an amp in a room; a reverb before distortion turns the reverb tail into fuzz. The chain runs left to right, and the arrows on each plugin move it.</p>
+<p><strong>Watch the level.</strong> Fuzz and amp plugins add a lot of gain. If the result would clip, it is pulled under −1 dBTP with a true-peak limiter rather than distorted a second time, but a plugin's own output knob set sensibly sounds better than any limiter.</p>
+<p><strong>Ring-out is off by default.</strong> The file comes back exactly as long as it went in, which is what video and editor clips need. For a song that should end on a decaying reverb, tick "let reverbs and delays ring out" and up to twelve extra seconds are kept, cut where the sound falls below −90 dBFS.</p>
+    <h2>What you lose</h2>
+<p>Control over the code. These plugins are written and hosted by other people and run in this page like the rest of the site. They see the audio you play through them, nothing is sent anywhere by us, and we list only the community's own collection: the page never loads a plugin from an address in a link.</p>
+<p>Native plugins. Your Waves, FabFilter or Neural DSP plugins cannot run here. Export from the browser and process in your DAW for those.</p>
+<p>A generation of quality on lossy output, as with any re-encode. Choose WAV or FLAC if the file is going back into a session.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Can I use my VST or AU plugins here?</summary><p>No. VST3 and Audio Units plugins are programs for your operating system and cannot run in a browser tab. This page runs WAM2 plugins, the web's equivalent, from the Web Audio Modules community collection.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. The file is decoded, processed and encoded in your browser. The plugins' code is downloaded from webaudiomodules.com when you pick one, but your audio never leaves your computer.</p></details>
+      <details><summary>Will the download sound exactly like the preview?</summary><p>For the 26 plugins marked exact, yes: we measured the download sample for sample identical to the live preview. The other five give the same effect, with their internal modulation starting at a different point.</p></details>
+      <details><summary>Can I use more than one plugin?</summary><p>Up to four, in a chain. They run in the order shown, and the arrows on each one move it earlier or later.</p></details>
+      <details><summary>Does it work on a video?</summary><p>Yes. With "keep the picture" ticked, the video's sound goes through the chain and you get the video back with the picture copied untouched and the sound the same length as before.</p></details>
+      <details><summary>Why is a plugin from the community site missing?</summary><p>Every plugin is tested before it is listed. Ones that would not load offline, gave a different result each time, or are not audio effects (video generators, MIDI tools, hardware editors) are left out.</p></details>
+      <details><summary>Can I use these in a multitrack project?</summary><p>Yes. The audio editor's mixer has the same plugins as inserts on any track, bus or the master, with their settings saved in the project and undoable, and it can send a clip here and back.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Use the same plugins on tracks, with automation and a mix.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>A plain EQ when a plugin is more than the job needs.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring the result to a streaming loudness.</p></a>
+      <a class="card" href="/slowed-reverb"><h3>Slowed + Reverb Maker</h3><p>The slowed-and-reverbed sound in one step.</p></a>
+      <a class="card" href="/pitch-shifter"><h3>Pitch &amp; key changer</h3><p>Change the key with a pitch shifter tuned for music.</p></a>
+      <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Put a plugin on the vocal or the instrumental alone.</p></a>
+      <a class="card" href="/add-audio-to-video"><h3>Add audio to video</h3><p>Lay the processed sound under a video.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-10-10e"></script>
+<script src="/js/tool-graph.js?v=2026-10-10e"></script>
+<script src="/js/flow.js?v=2026-10-10e"></script>
+<script src="/js/project-link.js?v=2026-10-10e"></script>
+<script src="/js/audio-core.js?v=2026-10-10e"></script>
+<script src="/js/loudness.js?v=2026-10-10e"></script>
+<script src="/js/tool-shell.js?v=2026-10-10e"></script>
+<script src="/js/consent.js?v=2026-10-10e"></script>
+<script src="/js/wam-status.js?v=2026-10-10e"></script>
+<script src="/js/wam-host.js?v=2026-10-10e"></script>
+<script src="/js/audio-plugins-page.js?v=2026-10-10e"></script>
+<script src="/js/pwa.js?v=2026-10-10e"></script>
+</body>
+</html>

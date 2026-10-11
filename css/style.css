@@ -1541,3 +1541,33 @@ select:focus-visible {
   .page-intro p { font-size: 1rem; }
   .tool-app { margin-top: 18px; padding-top: 26px; }
 }
+
+/* /audio-plugins: the plugin list beside the chain and its panels. */
+.wam-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin: 16px 0; }
+@media (min-width: 900px) { .wam-app { grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); } }
+.wam-search-l { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 0.9rem; }
+.wam-search-l input { font: inherit; font-weight: 400; padding: 8px 10px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); }
+.wam-list { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; margin-top: 8px; padding-right: 2px; }
+.wam-item { display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: start; text-align: left; border: 1.5px solid var(--rule); border-radius: 10px; background: var(--paper); padding: 8px; cursor: pointer; color: var(--ink); font: inherit; }
+.wam-item:hover:not(:disabled) { border-color: var(--amber); background: var(--amber-soft); }
+.wam-item:disabled { opacity: 0.45; cursor: default; }
+.wam-item img, .wam-noimg { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--rule); display: block; }
+.wam-item strong { font-size: 0.92rem; }
+.wam-item small { display: block; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
+.wam-item .wam-desc { margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.wam-exact { font-style: normal; font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border: 1px solid var(--rule); border-radius: 4px; padding: 1px 4px; vertical-align: 2px; }
+.wam-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.wam-tab { display: inline-flex; border: 1.5px solid var(--rule); border-radius: 8px; overflow: hidden; background: var(--paper); }
+.wam-tab.on { border-color: var(--amber); }
+.wam-tab.bad { border-style: dashed; }
+.wam-tab button { font: inherit; font-size: 0.85rem; border: 0; background: none; color: var(--ink); padding: 6px 8px; cursor: pointer; }
+.wam-tab button + button { border-left: 1px solid var(--rule); padding: 6px 7px; color: var(--muted); }
+.wam-tab button:disabled { opacity: 0.35; cursor: default; }
+.wam-tab b { font-weight: 700; color: var(--amber); margin-right: 2px; }
+.wam-arrow { color: var(--muted); }
+.wam-guis { margin-top: 10px; border-radius: 10px; overflow: auto; width: fit-content; max-width: 100%; }
+.wam-gui { min-height: 120px; min-width: 240px; }
+.wam-gui:has(> .wam-msg) { background: #1b1b1b; border-radius: 10px; }
+.wam-msg { margin: 0; padding: 14px; font-size: 0.88rem; color: var(--muted); }
+.wam-guis .wam-msg { color: #ddd; }
+.wam-note { min-height: 1.2em; margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); }
