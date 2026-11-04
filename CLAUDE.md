@@ -1284,6 +1284,21 @@ Four pages picked by how often the job is asked of an assistant (playbook
   with a GPU adapter. check-lyrics (both models from the mirror, WebGPU
   flags) has not completed a run yet (stopped for memory on 10 Oct); it is
   not in check-all, and the page quotes no accuracy figure until it has.
+- **/censor-audio** (`js/censor.js` = `ASCensor`, UMD; `js/censor-page.js`;
+  4 Nov 2026): bleeps or mutes swear words found by the timestamped Whisper
+  base, and any word the user clicks. The spike: Whisper writes profanity
+  out in full (12 of 12 on two `say` voices), never starred. The list
+  matches stems for the strong words and whole words for the rest, so
+  "hell" misses "hello", "ass" misses "class"; Scunthorpe, Fukushima and
+  "retardant" are not caught; mild words are offered off; words with an
+  everyday meaning (bloody, screw, Jesus) are not listed at all. Whisper's
+  word edges were off by -0.06..+0.23 s at the start and up to 0.27 s at
+  the end, so each edge moves to the nearest quiet frame in a window; the
+  constants were swept against check-censor's fixture for the least spill
+  that leaves every word >= 20 dB down. The length never changes, so a
+  video is `CV.remuxVideo` (picture copied). check-censor: 8/8 found, 0
+  false, worst leak -28.2 dB, worst spill 289 ms into the next word, output
+  identical outside the bleeps, video picture md5-identical.
 - **Text-to-speech defaults to the 92 MB q8 model** (9 Oct): the 326 MB
   fp32 GPU model is the "Faster for long texts" option, or chosen
   automatically when it is already in Cache Storage. `assets/voices/*.mp3`

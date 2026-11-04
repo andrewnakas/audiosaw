@@ -1002,8 +1002,11 @@ pages' numbers as people.
 **Shipped 4 Nov:** /mic-test and /tone-generator, two everyday jobs that
 need no model download (the lever that worked: a page for a job people ask
 an assistant for). Each has a check that measures its claims.
+Then, with Andrew's go-ahead for the model download, /censor-audio (bleep
+swear words in audio or video), on the filler tool's Whisper pipeline:
+8 of 8 found, nothing else marked, video picture byte-identical.
 
-**Re-read ~11 Nov:** chatgpt.com landings on /mic-test and /tone-generator;
+**Re-read ~11 Nov:** chatgpt.com landings on /mic-test, /tone-generator and /censor-audio;
 whether the AI-page landings keep falling or level off; the error-type x
 tool split. Bing Webmaster Tools was signed out in Chrome on 4 Nov; it needs
 Andrew to sign in before it can be read.

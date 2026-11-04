@@ -959,6 +959,18 @@
         ['vocal-remover', 'An instrumental of the song, so it does not fight the speech']
       ]
     },
+    'censor-audio': {
+      cat: 'voice', label: 'bleep swear words', title: 'Bleep out swear words',
+      blurb: 'AI finds the swearing in audio or video and bleeps or mutes it, in sync.',
+      next: [
+        ['remove-filler-words', 'Cut the ums and uhs too, not just the swearing'],
+        ['add-subtitles-to-video', 'Caption the clean version'],
+        ['audio-to-text', 'A transcript of what is left'],
+        ['loudness-normalizer', 'Level it for YouTube or a podcast feed'],
+        ['stem-splitter', 'A song? Separate the vocal first for cleaner results'],
+        ['audio-cutter', 'Cut out a whole section instead of one word']
+      ]
+    },
     'remove-filler-words': {
       cat: 'voice', label: 'remove ums', title: 'Remove filler words',
       blurb: 'AI finds every um, uh and long pause in a podcast, lecture or video; review them in the transcript and cut them with clean joins.',
@@ -1200,7 +1212,7 @@
       note: 'Speech to text and text to speech, with the models running in your tab.',
       style: 'tile',
       tools: [
-        'text-to-speech', 'voice-cloning', 'audio-to-text', 'enhance-speech', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook', 'remove-filler-words'
+        'text-to-speech', 'voice-cloning', 'audio-to-text', 'enhance-speech', 'add-subtitles-to-video', 'dictation', 'video-dubbing', 'voice-changer', 'text-to-audiobook', 'remove-filler-words', 'censor-audio'
       ]
     },
     {

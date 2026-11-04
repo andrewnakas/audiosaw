@@ -64,6 +64,7 @@ const CHECKS = [
   ['check-consent.js'],
   ['check-add-audio-video.js'],
   ['check-fillers.js'],
+  ['check-censor.js'],
   ['check-sheet.js'],
   ['check-voice.js'],
   ['check-tts.js'],
