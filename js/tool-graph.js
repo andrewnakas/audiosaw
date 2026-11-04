@@ -680,7 +680,8 @@
         ['voice-changer', 'Make the recording deeper, higher or a robot'],
         ['dictation', 'Want the words, not the audio? Dictate'],
         ['audio-to-text', 'Transcribe what you just recorded'],
-        ['enhance-speech', 'Make the take sound finished: noise, tone and loudness in one click']
+        ['enhance-speech', 'Make the take sound finished: noise, tone and loudness in one click'],
+        ['mic-test', 'Silent or quiet takes? Check the microphone first']
       ]
     },
     'record-computer-audio': {
@@ -773,6 +774,31 @@
         ['bpm-finder', 'Find the tempo of the song you are practising'],
         ['audio-speed', 'Slow a recording down to practise along with it'],
         ['audio-editor', 'Record yourself to a click and a count-in']
+      ]
+    },
+    'tone-generator': {
+      cat: 'create', label: 'tone generator', title: 'Online Tone Generator',
+      blurb: 'Any frequency, sweep or noise, left, right or both, and download it.',
+      next: [
+        ['tuner', 'Tune an instrument against a meter instead of by ear'],
+        ['mic-test', 'Check the microphone side of your setup'],
+        ['audio-eq', 'Notch out a hum once you know its frequency'],
+        ['audio-editor', 'Lay tones and noise into a longer test track'],
+        ['ringtone-maker', 'Turn a tone into a ringtone or alert sound'],
+        ['metronome', 'A steady click rather than a steady tone']
+      ]
+    },
+    'mic-test': {
+      cat: 'create', label: 'mic test', title: 'Microphone Test',
+      blurb: 'See if your mic works, how loud and noisy it is, and hear yourself back.',
+      next: [
+        ['voice-recorder', 'The mic checks out: record properly, in WAV, MP3 or FLAC'],
+        ['noise-reduction', 'The test clip was noisy: clean up a recording afterwards'],
+        ['enhance-speech', 'Make a finished take sound like a studio: noise, tone and level'],
+        ['record-computer-audio', 'Record what a tab is playing instead of the microphone'],
+        ['dictation', 'Type by talking, now that the mic works'],
+        ['tuner', 'Tune an instrument through the same microphone'],
+        ['tone-generator', 'Test the speakers too: left, right, bass and sweeps']
       ]
     },
     'tuner': {
@@ -1165,7 +1191,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
+        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'mic-test', 'tone-generator', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
       ]
     },
     {

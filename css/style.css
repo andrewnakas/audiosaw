@@ -1460,6 +1460,50 @@ select:focus-visible {
 .tuner .controls label, .metro .controls label { max-width: 100%; min-width: 0; }
 .tuner .controls select, .metro .controls select { max-width: 100%; min-width: 0; width: 100%; }
 
+/* /tone-generator */
+#tgPlay.is-on { background: var(--ink); }
+.tone-gen .controls label { max-width: 100%; min-width: 0; }
+.tone-gen .controls select, .tone-gen .controls input[type=number] { max-width: 100%; min-width: 0; }
+.tg-freq { text-align: center; margin: 4px 0 10px; }
+.tg-freq > label { display: block; font: 600 0.75rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+.tg-freq-row { display: grid; grid-template-columns: auto auto minmax(0, 11em) auto auto; justify-content: center; align-items: center; gap: 6px; }
+.tg-freq-row .btn { padding-left: 8px; padding-right: 8px; }
+#tgFreq { width: 100%; min-width: 0; font: 600 1.6rem var(--mono); text-align: center; padding: 4px 6px; }
+@media (max-width: 480px) { #tgFreq { font-size: 1.3rem; } }
+#tgSlider { width: 100%; margin: 12px 0 2px; accent-color: var(--amber); }
+#tgVol { accent-color: var(--amber); width: 100%; }
+.tg-note { font: 600 0.95rem var(--mono); color: var(--amber); min-height: 1.3em; margin: 4px 0 0; }
+.tg-warn { font-size: 0.85rem; color: var(--muted); margin: 6px 0 12px; }
+.tg-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.tg-chip { font: 0.8rem var(--mono); padding: 5px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); color: var(--ink); cursor: pointer; }
+.tg-chip:hover { border-color: var(--amber); }
+.tg-more { margin: 8px 0 14px; }
+.tg-more summary { cursor: pointer; font-weight: 600; }
+.tg-dl { margin-top: 10px; }
+
+/* /mic-test */
+.mic-test [hidden] { display: none !important; }
+#micStart.is-on, #micRec.is-on { background: var(--ink); }
+.mic-test .controls label { max-width: 100%; min-width: 0; }
+.mic-test .controls select { max-width: 100%; min-width: 0; width: 100%; }
+.mic-verdict { margin: 14px 0 10px; padding: 10px 12px; border-left: 4px solid var(--rule); background: var(--card); border-radius: 6px; min-height: 1.4em; }
+.mic-verdict.ok { border-left-color: var(--success); }
+.mic-verdict.warn { border-left-color: var(--amber); }
+.mic-verdict.bad { border-left-color: var(--error, #c0392b); }
+.mic-meter { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.mic-ch { font: 600 0.75rem var(--mono); color: var(--muted); width: 3.2em; text-transform: uppercase; }
+.mic-bar { position: relative; flex: 1; height: 18px; border: 1px solid var(--rule); border-radius: 4px; background: var(--card); overflow: hidden; }
+.mic-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, var(--success) 0%, var(--success) 75%, var(--amber) 90%, var(--error, #c0392b) 100%); background-size: 100vw 100%; transition: width 60ms linear; }
+.mic-hold { position: absolute; top: 0; bottom: 0; width: 2px; left: 0; background: var(--ink); }
+.mic-hold.clip { background: var(--error, #c0392b); width: 4px; }
+.mic-scale { display: flex; justify-content: space-between; margin-left: calc(3.2em + 10px); font: 0.7rem/1 var(--mono); color: var(--muted); }
+.mic-scope { display: block; width: 100%; height: 90px; margin: 14px 0; border: 1px solid var(--rule); border-radius: 8px; background: var(--card); }
+.mic-nums, .mic-info { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0 14px; font-size: 0.92rem; }
+.mic-nums dt, .mic-info dt { color: var(--muted); }
+.mic-nums dd, .mic-info dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+.mic-info-h { margin: 18px 0 4px; font-size: 1rem; }
+#micPlayer { width: 100%; margin: 8px 0; }
+
 /* /chord-finder */
 .chord-player { width: 100%; margin: 14px 0 12px; }
 .chord-sheet { max-height: 420px; overflow-y: auto; border: 1px solid var(--rule); border-radius: 8px; padding: 8px; background: var(--card); margin-bottom: 16px; }

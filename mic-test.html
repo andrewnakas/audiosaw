@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microphone Test — check your mic online: level, noise, playback</title>
+<meta name="description" content="Free online mic test: see if your microphone works, its level in dBFS, background noise and clipping, then record 5 seconds and play it back. Explains muted, blocked and silent mics. Nothing uploaded.">
+<meta name="keywords" content="mic test, microphone test, test my mic, mic check, online mic test, microphone not working, check microphone level">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/mic-test">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Microphone Test — check your mic online: level, noise, playback">
+<meta property="og:description" content="Free online mic test: see if your microphone works, its level in dBFS, background noise and clipping, then record 5 seconds and play it back. Explains muted, blocked and silent mics. Nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/mic-test">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-04">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Microphone Test",
+  "url": "https://audiosaw.com/mic-test",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-10-11"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I know if my microphone is working?","acceptedAnswer":{"@type":"Answer","text":"Press Start and talk. If the bar moves and the page says your microphone is working, the browser is receiving sound. Record five seconds and play it back to hear exactly what it picks up."}},{"@type":"Question","name":"Why does it say \"digital silence\"?","acceptedAnswer":{"@type":"Answer","text":"Every sample is exactly zero, so something is muting the microphone before it reaches the browser: a mute switch, the operating system's microphone privacy setting, or a muted input in the sound settings. A quiet room never reads as pure zero."}},{"@type":"Question","name":"What level should my microphone be at?","acceptedAnswer":{"@type":"Answer","text":"The loudest words at your normal distance should reach about −20 to −6 dBFS, and never hit 0 dBFS, which clips. Background noise below −55 dBFS is good for calls and recordings."}},{"@type":"Question","name":"Is my voice recorded or uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The sound is analysed in the page and discarded. The optional five-second test clip stays in your browser and is only saved if you click Download."}},{"@type":"Question","name":"Why does my microphone sound different in Zoom or Discord?","acceptedAnswer":{"@type":"Answer","text":"Call apps turn on echo cancellation, noise suppression and automatic gain. Tick Call processing on this page to hear the same treatment the browser applies."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes, in current Chrome, Safari, Firefox and Edge. Allow the microphone when asked. Phones usually report a single built-in microphone in mono."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Microphone Test"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Microphone Test</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>Microphone <span class="ital">test</span></h1>
+    <p>Check that your microphone works, how loud it is, and how it sounds, before a call, a recording or a stream. Press Start, say a few words, and the page tells you what is wrong if anything is: muted, blocked, too quiet, clipping or noisy. Then record five seconds and hear yourself back. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app mic-test">
+    <div class="actions"><button class="btn" id="micStart" type="button" data-track="convert">Start the test</button></div>
+    <div class="status hidden" id="status"></div>
+    <div id="micLive" hidden>
+      <div class="controls">
+        <label hidden>Microphone <select id="micDevice"></select></label>
+        <label class="check"><input type="checkbox" id="micProc"> Call processing (echo cancellation, noise suppression, auto gain)</label>
+        <label class="check"><input type="checkbox" id="micMonitor"> Hear yourself live (use headphones)</label>
+      </div>
+      <p class="mic-verdict" id="micVerdict" aria-live="polite"></p>
+      <div class="mic-meters" id="micMeters"></div>
+      <div class="mic-scale" aria-hidden="true"><span>−60</span><span>−40</span><span>−20</span><span>0 dBFS</span></div>
+      <canvas class="mic-scope" id="micScope" aria-label="Live waveform from the microphone"></canvas>
+      <dl class="mic-nums">
+        <dt>Loudest, last 4 s</dt><dd id="micPeak">–</dd>
+        <dt>Speech level</dt><dd id="micRms">–</dd>
+        <dt>Background noise</dt><dd id="micFloor">–</dd>
+        <dt>Clipping</dt><dd id="micClips">–</dd>
+      </dl>
+      <div class="actions"><button class="btn btn-secondary" id="micRec" type="button" disabled>Record 5 seconds and play it back</button></div>
+      <audio id="micPlayer" controls hidden></audio>
+      <div class="actions"><button class="btn btn-secondary" id="micSave" type="button" hidden>Download the test clip (WAV)</button></div>
+      <h3 class="mic-info-h">What your browser is getting</h3>
+      <dl class="mic-info" id="micInfo" hidden></dl>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>How to read the result</h2>
+    <p>The bar shows the level of the sound the browser receives, from −60 dBFS on the left to 0 dBFS, the loudest a digital signal can be, on the right. The thin marker holds the latest peak for a second and a half and turns red when it touches full scale. For ordinary speech at the distance you will really sit, the loudest words should land somewhere between −20 and −6 dBFS. Lower than that still works, but the person on the other end hears more hiss when their app turns you up. Higher, and a laugh or a cough will clip.</p>
+    <p><strong>Clipping</strong> means the signal hit full scale and the tops of the waveform were cut off. It sounds harsh and distorted, and no software can repair it afterwards. If the page reports it, turn the input gain down, either on the microphone or interface (the gain knob on a Focusrite Scarlett, a Blue Yeti or a Shure MV7) or in the system's sound settings, until the loudest moment stays under −3 dBFS.</p>
+    <p><strong>Background noise</strong> is measured in the quiet moments between your words: it is the level of the quietest tenth of the last five seconds. A quiet bedroom with a decent USB microphone reads around −60 dBFS or lower. A laptop's built-in microphone next to its own fan often sits at −45 dBFS or above, which listeners hear as a constant hiss under your voice. That is the easiest number to improve: close the window, turn off the fan, and move the microphone closer to you, not the gain up.</p>
+
+    <h3>When the meter does not move at all</h3>
+    <p>If the page says it is receiving <em>digital silence</em>, every sample it gets is exactly zero. A quiet room never does that; there is always some noise. It means something switched the microphone off before the sound reached the browser. The usual causes, in the order worth checking:</p>
+    <ul>
+      <li>A mute button or switch on the microphone, the headset cable or the USB interface. Many gaming headsets (HyperX, SteelSeries, Razer) mute when the boom is flipped up.</li>
+      <li>On a Mac: System Settings › Privacy &amp; Security › Microphone, where your browser has to be switched on. macOS asks once, and if that prompt was dismissed, every site gets silence. On Windows: Settings › Privacy &amp; security › Microphone, where both "Microphone access" and "Let desktop apps access your microphone" have to be on.</li>
+      <li>The input is muted or set to 0 in the system's sound settings, or a different device is selected. If the list above the meter shows more than one microphone, try each one; laptops with a webcam and a headset plugged in often have three.</li>
+    </ul>
+    <p>If the browser refuses the microphone outright, the page says so and how to allow it. If it says the microphone is <em>in use</em>, another program is holding it exclusively. Zoom, Microsoft Teams, Discord, OBS and some audio interface control panels do this on Windows. Close them and press Start again.</p>
+
+    <h3>Call processing on and off</h3>
+    <p>Browsers apply three treatments to a microphone by default, built for video calls: echo cancellation, noise suppression and automatic gain control. This page starts with all three <em>off</em>, so you hear what the microphone itself picks up. Tick <em>Call processing</em> to hear what Google Meet, Zoom in a browser or Discord's web app will send. Noise suppression removes a steady fan but also thins out the voice. Automatic gain makes a quiet microphone sound louder, and it pumps the background up in the pauses. If the two sound very different, the problem is the room or the microphone placement, not the microphone.</p>
+    <p>The panel at the bottom lists what the browser actually delivered: the device, the sample rate, the number of channels and whether each treatment is on. Browsers sometimes ignore a request. Chrome opens most built-in microphones in mono at 48 kHz whatever was asked, and Safari often reports less. A USB microphone that reports 44,100 Hz is fine; recording software chooses its own rate anyway.</p>
+
+    <h3>One side of a stereo input is silent</h3>
+    <p>If two bars appear and only the left one moves, the microphone is plugged into input 1 of a two-input interface, or it is a single-capsule USB microphone that presents itself as stereo. That is normal. Video-call apps use it as mono and hear you fine. A recording made on this site in stereo would have your voice in one ear, so record in mono (the <a href="/voice-recorder">voice recorder</a> does by default) or fold the file with <a href="/stereo-to-mono">stereo to mono</a>.</p>
+
+    <h3>Hearing yourself</h3>
+    <p><em>Record 5 seconds</em> captures the raw samples the meter is reading and plays them straight back. It is the most honest test there is: you hear the room, the distance and the tone exactly as the microphone delivers them. You can save the clip as a WAV file if a support desk or a colleague asks for one. <em>Hear yourself live</em> sends the microphone to your speakers as you talk. Use headphones for that, or the speakers feed back into the microphone and howl. Expect a slight delay; browsers add a few tens of milliseconds.</p>
+    <p>To record properly once the microphone checks out, use the <a href="/voice-recorder">voice recorder</a>. It saves WAV, MP3 or FLAC, and its studio mode keeps the full quality with processing off. If the test clip sounds noisy, <a href="/noise-reduction">noise reduction</a> or <a href="/enhance-speech">speech enhancement</a> will clean up a finished recording. Neither can fix clipping, so get the level right here first.</p>
+
+    <h3>Privacy</h3>
+    <p>The sound goes into this tab, is measured and drawn, and is thrown away. The five-second test clip stays in the page's memory until you leave or record another, and it only leaves your device if you download it. The browser shows its microphone indicator for as long as the test runs, and Stop switches the microphone off completely.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I know if my microphone is working?</summary><p>Press Start and talk. If the bar moves and the page says your microphone is working, the browser is receiving sound. Record five seconds and play it back to hear exactly what it picks up.</p></details>
+      <details><summary>Why does it say "digital silence"?</summary><p>Every sample is exactly zero, so something is muting the microphone before it reaches the browser: a mute switch, the operating system's microphone privacy setting, or a muted input in the sound settings. A quiet room never reads as pure zero.</p></details>
+      <details><summary>What level should my microphone be at?</summary><p>The loudest words at your normal distance should reach about −20 to −6 dBFS, and never hit 0 dBFS, which clips. Background noise below −55 dBFS is good for calls and recordings.</p></details>
+      <details><summary>Is my voice recorded or uploaded?</summary><p>No. The sound is analysed in the page and discarded. The optional five-second test clip stays in your browser and is only saved if you click Download.</p></details>
+      <details><summary>Why does my microphone sound different in Zoom or Discord?</summary><p>Call apps turn on echo cancellation, noise suppression and automatic gain. Tick Call processing on this page to hear the same treatment the browser applies.</p></details>
+      <details><summary>Does it work on a phone?</summary><p>Yes, in current Chrome, Safari, Firefox and Edge. Allow the microphone when asked. Phones usually report a single built-in microphone in mono.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>The mic checks out: record properly, in WAV, MP3 or FLAC.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>The test clip was noisy: clean up a recording afterwards.</p></a>
+      <a class="card" href="/enhance-speech"><h3>Enhance speech</h3><p>Make a finished take sound like a studio: noise, tone and level.</p></a>
+      <a class="card" href="/record-computer-audio"><h3>Record computer audio</h3><p>Record what a tab is playing instead of the microphone.</p></a>
+      <a class="card" href="/dictation"><h3>Speech to text (voice typing)</h3><p>Type by talking, now that the mic works.</p></a>
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Tune an instrument through the same microphone.</p></a>
+      <a class="card" href="/tone-generator"><h3>Online Tone Generator</h3><p>Test the speakers too: left, right, bass and sweeps.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-04"></script>
+<script src="/js/tool-graph.js?v=2026-11-04"></script>
+<script src="/js/flow.js?v=2026-11-04"></script>
+<script src="/js/audio-core.js?v=2026-11-04"></script>
+<script src="/js/mic-test-page.js?v=2026-11-04"></script>
+<script src="/js/consent.js?v=2026-11-04"></script>
+<script src="/js/pwa.js?v=2026-11-04"></script>
+</body>
+</html>

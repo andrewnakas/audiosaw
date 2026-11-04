@@ -745,6 +745,15 @@
     var grid = gridOf(chans, bits);
     var useDither = dither !== false && !grid;
     lastQuant = { bits: bits, exact: !!grid, dithered: useDither };
+    // A channel that is digital silence throughout stays digital silence:
+    // a left-only test tone's right side must be zeros, not dither noise
+    // (check-tone measured -90 dBFS of it in a 16-bit file).
+    var silent = [];
+    for (var sc = 0; sc < nch; sc++) {
+      var z = true, dd = chans[sc];
+      if (useDither) for (var si = 0; si < dd.length; si++) if (dd[si] !== 0) { z = false; break; }
+      silent.push(useDither && z);
+    }
     var pos = grid === 'asym' ? max : scale;
     var seed = 0x9E3779B9 | 0;
     function rnd() {    // xorshift32, uniform in [0, 1)
@@ -760,7 +769,7 @@
         for (var c = 0; c < nch; c++, o++) {
           var x = chans[c][i];
           var v = x > 0 ? x * pos : x * scale;
-          if (useDither) v += rnd() - rnd();
+          if (useDither && !silent[c]) v += rnd() - rnd();
           v = Math.round(v);
           out[o] = v > max ? max : (v < min ? min : v);
         }

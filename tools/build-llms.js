@@ -44,6 +44,7 @@ lines.push('- Also transcribes: OpenAI Whisper speech-to-text in the browser, wi
 lines.push('- Also speaks: Kokoro neural text-to-speech in the browser, 41 voices in 7 languages, voice blending, MP3/WAV download; and zero-shot voice cloning (Chatterbox Turbo) on WebGPU, with consent.');
 lines.push('- Also dubs and changes voices: AI video dubbing and translation into English, Spanish, French, Italian, Portuguese or Hindi; a voice changer for recorded audio (deeper, female, robot); EPUB/TXT to M4B or MP3 audiobooks; live dictation; speaker labels on transcripts. All in the browser, free, nothing uploaded.');
 lines.push('- Also edits: a multitrack audio editor with a mixer, live effects, MIDI tracks and autosave.');
+lines.push('- Also tests: a microphone test (does it work, level in dBFS, background noise, clipping, record and play back, and why a mic is silent or blocked) and a tone generator (1 Hz-24 kHz sine/square/saw/triangle, sweeps, white/pink/brown noise, left or right only, WAV/MP3 download).');
 lines.push('- Privacy: files are processed in the browser tab and never transmitted.');
 lines.push('- Input formats: mp3, wav, m4a, aac, flac, ogg, opus, aiff, m4b, and audio from mp4, mov, webm, mkv, avi, m4v.');
 lines.push('- Output formats: mp3, wav (16-bit, 24-bit, 32-bit float), m4a (AAC), flac (16/24-bit), aiff, ogg.');

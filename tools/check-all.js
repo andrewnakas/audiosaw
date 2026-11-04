@@ -50,6 +50,8 @@ const CHECKS = [
   ['check-slicer.js'],
   ['check-beat.js'],
   ['check-pitch.js'],
+  ['check-mic-test.js'],
+  ['check-tone.js'],
   ['check-fx.js'],
   ['check-wam.js', '--pages'],
   ['check-project-link.js'],

@@ -955,3 +955,55 @@ text-to-audiobook 24 → 3 / 5 · voice-recorder 118 → 115.
 voice-cloning error count); homepage engagement time with ads off (was 52 s,
 down from 1m16s); chatgpt.com landings on the four new pages in their first
 week, against /audio-to-text's 141 and /voice-cloning's 1.
+
+## §16 — The October slide, read from the consoles (4 Nov 2026)
+
+Andrew: the site "was doing well, then hit a downturn, but seems to be going
+back up". Read from GA4 "Audio Saw" (in Chrome, Google account index 1:
+`?authuser=1`, account a355639960) and Search Console on 4 Nov.
+
+**Two different things happened, and only one was a loss.**
+
+- **8–15 Oct was attribution, not visitors.** AI Assistant fell from ~350 to
+  ~110 sessions a day while Direct rose from ~80 to ~250. The sum held at
+  350–370 every day, and on 16 Oct it flipped back (AI 211, Direct 112).
+  ChatGPT links arrived without their referrer for a week.
+- **From ~22 Oct ChatGPT referrals really fell**: ~220 a day to ~90 by
+  31 Oct–2 Nov, 103 on 3 Nov. Week of 26 Oct vs 3 Oct: chatgpt.com 907 vs
+  2,077 sessions (-56%), all sessions 1,794 vs 3,487. Bing held (174 vs 166).
+  Google -39%, but those clicks are mostly people typing "audiosaw" after an
+  assistant named it, so it follows the same curve.
+- **Not our side**: every AI and search user agent gets a 200 (curl, 4 Nov),
+  llms.txt and the sitemap are served, and the loss is concentrated on a few
+  pages ChatGPT stopped recommending: /audio-to-text 382 -> 43 landings a
+  week, /stem-splitter 173 -> 30, /voice-recorder 337 -> 95,
+  /text-to-speech 480 -> 168, /voice-changer 101 -> 29, /autotune 51 -> 9.
+- **What still worked**: /audio-to-sheet-music (shipped 10 Oct) went from 0
+  to 122 landings a week; /audio-editor held (184 -> 190); Google indexing
+  rose from 2 to 6 pages (83 still "Discovered – not indexed").
+
+**Funnel, 6 Oct–3 Nov, convert_start -> convert_success events:**
+/voice-cloning 421 -> 18, /video-dubbing 309 -> 20, /text-to-audiobook
+353 -> 56, /audio-to-text 669 -> 177, /stem-splitter 315 -> 118,
+/split-audio 313 -> 146, against /voice-recorder 1,178 -> 1,096,
+/pitch-shifter 395 -> 345, /record-computer-audio 387 -> 384.
+convert_error by type: other 287, wrong_type 243, memory 200,
+unsupported_api 161, codec_load 104; by tool, voice-cloning 302 (76 users).
+**The error-type x tool split is still unread**: on 4 Nov GA4 refused to
+create an exploration ("Internal error"), and comparisons on the event
+detail page rendered empty. Do it first next time; it decides what to fix
+on the voice pages.
+
+**Suspicious traffic, not acted on**: /mp3-320kbps 245 views, 12 s
+engagement, 6 starts; /key-finder 186 views, 13 s. Singapore was 88 of the
+week's users and Ashburn 22: probably automated. Check before reading those
+pages' numbers as people.
+
+**Shipped 4 Nov:** /mic-test and /tone-generator, two everyday jobs that
+need no model download (the lever that worked: a page for a job people ask
+an assistant for). Each has a check that measures its claims.
+
+**Re-read ~11 Nov:** chatgpt.com landings on /mic-test and /tone-generator;
+whether the AI-page landings keep falling or level off; the error-type x
+tool split. Bing Webmaster Tools was signed out in Chrome on 4 Nov; it needs
+Andrew to sign in before it can be read.

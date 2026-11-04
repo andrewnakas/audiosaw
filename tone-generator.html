@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Tone Generator — any frequency, sweep, white/pink noise, download</title>
+<meta name="description" content="Free online tone generator: sine, square, sawtooth or triangle at 1 Hz to 24 kHz, frequency sweeps, white, pink and brown noise, left/right only. Download WAV or MP3.">
+<meta name="keywords" content="tone generator, online tone generator, frequency generator, 440 hz tone, test tone, sine wave generator, white noise generator, pink noise, frequency sweep">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/tone-generator">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Online Tone Generator — any frequency, sweep, white/pink noise, download">
+<meta property="og:description" content="Free online tone generator: sine, square, sawtooth or triangle at 1 Hz to 24 kHz, frequency sweeps, white, pink and brown noise, left/right only. Download WAV or MP3.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/tone-generator">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-04">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Online Tone Generator",
+  "url": "https://audiosaw.com/tone-generator",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "dateModified": "2026-10-11"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I play a specific frequency?","acceptedAnswer":{"@type":"Answer","text":"Type it in the Frequency box, or drag the slider, and press Play. It goes from 1 Hz to 24,000 Hz, and the change glides while it plays."}},{"@type":"Question","name":"Can I play a tone in only the left or right speaker?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set Speakers to Left only or Right only. It is the quickest way to check that your speakers or headphones are not swapped or missing a side."}},{"@type":"Question","name":"Can I download the tone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set the length and format and press Download. You get a WAV (16-bit, 24-bit or 32-bit float) or a 320 kbps MP3 at 48 kHz, made in your browser."}},{"@type":"Question","name":"What is the difference between white, pink and brown noise?","acceptedAnswer":{"@type":"Answer","text":"White noise has equal energy per hertz and sounds hissy. Pink falls 3 dB per octave and sounds balanced, and is used for speaker calibration. Brown falls 6 dB per octave and sounds deep, and is popular for sleep."}},{"@type":"Question","name":"Why can't I hear 17 kHz or 20 kHz?","acceptedAnswer":{"@type":"Answer","text":"Most adults stop hearing somewhere between 14 and 17 kHz, and many laptop and phone speakers cannot play that high at all. Try good headphones before drawing conclusions."}},{"@type":"Question","name":"Is the frequency exact?","acceptedAnswer":{"@type":"Answer","text":"Yes. Downloads are calculated sample by sample; the release check measures a 1 kHz tone at exactly 1 kHz, with the energy 3 Hz away more than 100 dB down."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"Online Tone Generator"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Online Tone Generator</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>Online <span class="ital">tone generator</span></h1>
+    <p>Play a pure tone at any frequency from 1 Hz to 24 kHz, a square, sawtooth or triangle wave, a frequency sweep, or white, pink or brown noise. Send it to the left, right or both speakers, and download it as a WAV or MP3 file. Everything is generated in your browser.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app tone-gen">
+    <div class="tg-freq">
+      <label for="tgFreq">Frequency (Hz)</label>
+      <div class="tg-freq-row">
+        <button class="btn btn-small btn-secondary" type="button" data-step="-12" title="Down an octave">−8va</button>
+        <button class="btn btn-small btn-secondary" type="button" data-step="-1" title="Down a semitone">−1</button>
+        <input type="number" id="tgFreq" value="440" min="1" max="24000" step="any" inputmode="decimal">
+        <button class="btn btn-small btn-secondary" type="button" data-step="1" title="Up a semitone">+1</button>
+        <button class="btn btn-small btn-secondary" type="button" data-step="12" title="Up an octave">+8va</button>
+      </div>
+      <input type="range" id="tgSlider" min="0" max="1000" value="600" aria-label="Frequency, logarithmic">
+      <p class="tg-note" id="tgNote" aria-live="polite"></p>
+    </div>
+    <div class="actions"><button class="btn" id="tgPlay" type="button">Play</button></div>
+    <p class="tg-warn">Start quiet. High and very low tones can be louder than they sound, and full scale through headphones can hurt.</p>
+    <div class="controls">
+      <label>Wave
+        <select id="tgWave">
+          <option value="sine" selected>Sine (pure tone)</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+          <option value="white">White noise</option>
+          <option value="pink">Pink noise</option>
+          <option value="brown">Brown noise</option>
+        </select>
+      </label>
+      <label>Speakers
+        <select id="tgChan">
+          <option value="both" selected>Both</option>
+          <option value="left">Left only</option>
+          <option value="right">Right only</option>
+        </select>
+      </label>
+      <label>Level <output id="tgVolOut" class="nocase">−20 dBFS</output> <input type="range" id="tgVol" min="-60" max="0" step="1" value="-20"></label>
+    </div>
+    <div class="tg-presets" id="tgPresets" aria-label="Presets">
+      <button type="button" class="tg-chip" data-hz="440" data-wave="sine">440 Hz (A4)</button>
+      <button type="button" class="tg-chip" data-hz="1000" data-wave="sine">1 kHz</button>
+      <button type="button" class="tg-chip" data-hz="50" data-wave="sine">50 Hz</button>
+      <button type="button" class="tg-chip" data-hz="60" data-wave="sine">60 Hz</button>
+      <button type="button" class="tg-chip" data-hz="100" data-wave="sine">100 Hz</button>
+      <button type="button" class="tg-chip" data-hz="10000" data-wave="sine">10 kHz</button>
+      <button type="button" class="tg-chip" data-hz="15000" data-wave="sine">15 kHz</button>
+      <button type="button" class="tg-chip" data-hz="17400" data-wave="sine">17.4 kHz</button>
+    </div>
+    <details class="tg-more">
+      <summary>Sweep and binaural</summary>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="tgSweep"> Sweep from the frequency above to</label>
+        <label>End (Hz) <input type="number" id="tgFreq2" value="20000" min="1" max="24000" step="any" inputmode="decimal"></label>
+        <label>Over (seconds) <input type="number" id="tgSweepSec" value="10" min="1" max="600" step="1" inputmode="numeric"></label>
+        <label class="check"><input type="checkbox" id="tgSweepLin"> Linear (default: equal time per octave)</label>
+        <label>Right ear + (Hz, binaural) <input type="number" id="tgBeat" value="0" min="0" max="100" step="0.1" inputmode="decimal"></label>
+      </div>
+    </details>
+    <div class="controls tg-dl">
+      <label>Length (seconds) <input type="number" id="tgSecs" value="10" min="0.1" max="600" step="any" inputmode="decimal"></label>
+      <label>Format
+        <select id="tgFormat">
+          <option value="wav16" selected>WAV 16-bit</option>
+          <option value="wav24">WAV 24-bit</option>
+          <option value="wav32f">WAV 32-bit float</option>
+          <option value="mp3-320">MP3 320 kbps</option>
+        </select>
+      </label>
+    </div>
+    <div class="actions"><button class="btn btn-secondary" id="convertBtn" type="button">Download the tone</button></div>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+  <section class="content-section">
+    <h2>What people use a tone generator for</h2>
+    <p><strong>Checking speakers and headphones.</strong> A 100 Hz or 1 kHz sine in the left channel, then the right, tells you in two seconds whether a cable, a Bluetooth pairing or a balance setting has swapped or dropped a side. A slow sweep from 20 Hz to 200 Hz finds a rattle in a car door or a buzzing panel in a cabinet, and shows where a subwoofer really stops: most laptop speakers produce almost nothing under about 150 Hz, and small Bluetooth speakers roll off around 70 to 100 Hz whatever their box says.</p>
+    <p><strong>Finding a hum.</strong> Mains electricity runs at 50 Hz in Europe, Africa, most of Asia and Australia, and 60 Hz in North America and parts of South America and Japan. A ground loop in a recording or a PA hums at that frequency and its harmonics. Play the matching preset quietly beside the recording and the pitch match makes the source obvious; the <a href="/audio-eq">equalizer</a> can then notch it out.</p>
+    <p><strong>A tuning reference.</strong> 440 Hz is the A above middle C, the pitch orchestras and most instruments tune to. The semitone and octave buttons step from there on the equal-tempered scale, and the note name under the number shows where you are, so you can hold a drone for singing practice or check an instrument by ear. To tune against a meter instead, use the <a href="/tuner">tuner</a>.</p>
+    <p><strong>Testing your hearing range.</strong> The 15 kHz and 17.4 kHz presets are the classic "can you hear it" tones; the second is the so-called mosquito tone that most people over 25 no longer hear. Treat it as a curiosity, not a hearing test. Laptop and phone speakers often stop well below 17 kHz, many Bluetooth codecs cut the top octave, and level matters as much as frequency. If you cannot hear a tone, try headphones before concluding anything, and see an audiologist for a real measurement.</p>
+
+    <h3>Sine, square, sawtooth, triangle</h3>
+    <p>A sine wave is a single frequency and nothing else: the pure "beep" used for measurements. A square wave adds every odd harmonic, a third as loud at three times the frequency, a fifth at five times and so on, which gives the hollow, reedy sound of old video games. A sawtooth has every harmonic, odd and even, and is the bright, buzzy starting point of most analogue synth sounds. A triangle has only odd harmonics like the square but they fall away much faster, so it sounds close to a soft sine with a little edge.</p>
+    <p>All three are generated band-limited: each is built from its harmonics up to the Nyquist limit and no further. A square wave drawn as a hard on-off edge contains harmonics far above what a 48 kHz file can hold, and they fold back down as tones that do not belong to the note. Measured here, a 5.1 kHz square drawn the naive way puts its ninth harmonic at 2.1 kHz, only 19 dB down; the one this page writes has nothing there, more than 100 dB down. For tests on filters or amplifiers, that difference is the whole point.</p>
+
+    <h3>White, pink and brown noise</h3>
+    <p>White noise has equal energy per hertz, so it sounds hissy: most of its energy is in the treble, where there are the most hertz. Pink noise falls 3 dB per octave, which puts equal energy in every octave and sounds balanced, more like rain. It is the standard signal for setting up PA systems and calibrating speakers with a real-time analyser such as REW or Smaart. Brown noise falls 6 dB per octave and rumbles like a waterfall or the inside of a plane; it is the one most people pick for sleep or masking a noisy office. The slopes are checked on every release from octave-band measurements of the generated noise.</p>
+
+    <h3>Sweeps and binaural beats</h3>
+    <p>Open <em>Sweep and binaural</em> to glide from the frequency above to an end frequency over a set time. The default spends equal time on each octave, which is how measurement software sweeps and how the ear hears pitch. A linear sweep spends most of its time in the treble. A sweep downloads as a single file the length of the sweep.</p>
+    <p>The binaural field raises the right ear's frequency by a few hertz, so with headphones you hear a slow beat at the difference: 200 Hz left and 210 Hz right beats ten times a second. It only works on headphones. Claims that particular beat rates focus or relax you come from small studies with mixed results, so try it if you like the sound, but it is not a treatment.</p>
+
+    <h3>Downloading</h3>
+    <p>Downloads are rendered at 48 kHz from the same maths as the preview, with 5 ms fades so the file starts and ends without a click. Choose 24-bit WAV or 32-bit float for measurement work; 16-bit gets a whisper of dither at the 16-bit noise floor, which is correct for listening and harmless for most tests. A stereo file is written only when the left and right differ, otherwise mono. To make a longer test track, add the tones together in the <a href="/audio-editor">audio editor</a>, or cut a ringtone from one with the <a href="/ringtone-maker">ringtone maker</a>.</p>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I play a specific frequency?</summary><p>Type it in the Frequency box, or drag the slider, and press Play. It goes from 1 Hz to 24,000 Hz, and the change glides while it plays.</p></details>
+      <details><summary>Can I play a tone in only the left or right speaker?</summary><p>Yes. Set Speakers to Left only or Right only. It is the quickest way to check that your speakers or headphones are not swapped or missing a side.</p></details>
+      <details><summary>Can I download the tone?</summary><p>Yes. Set the length and format and press Download. You get a WAV (16-bit, 24-bit or 32-bit float) or a 320 kbps MP3 at 48 kHz, made in your browser.</p></details>
+      <details><summary>What is the difference between white, pink and brown noise?</summary><p>White noise has equal energy per hertz and sounds hissy. Pink falls 3 dB per octave and sounds balanced, and is used for speaker calibration. Brown falls 6 dB per octave and sounds deep, and is popular for sleep.</p></details>
+      <details><summary>Why can't I hear 17 kHz or 20 kHz?</summary><p>Most adults stop hearing somewhere between 14 and 17 kHz, and many laptop and phone speakers cannot play that high at all. Try good headphones before drawing conclusions.</p></details>
+      <details><summary>Is the frequency exact?</summary><p>Yes. Downloads are calculated sample by sample; the release check measures a 1 kHz tone at exactly 1 kHz, with the energy 3 Hz away more than 100 dB down.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+  <!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Tune an instrument against a meter instead of by ear.</p></a>
+      <a class="card" href="/mic-test"><h3>Microphone Test</h3><p>Check the microphone side of your setup.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Notch out a hum once you know its frequency.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Lay tones and noise into a longer test track.</p></a>
+      <a class="card" href="/ringtone-maker"><h3>Ringtone Maker</h3><p>Turn a tone into a ringtone or alert sound.</p></a>
+      <a class="card" href="/metronome"><h3>Online Metronome</h3><p>A steady click rather than a steady tone.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-04"></script>
+<script src="/js/tool-graph.js?v=2026-11-04"></script>
+<script src="/js/flow.js?v=2026-11-04"></script>
+<script src="/js/audio-core.js?v=2026-11-04"></script>
+<script src="/js/tone-gen.js?v=2026-11-04"></script>
+<script src="/js/tone-page.js?v=2026-11-04"></script>
+<script src="/js/consent.js?v=2026-11-04"></script>
+<script src="/js/pwa.js?v=2026-11-04"></script>
+</body>
+</html>

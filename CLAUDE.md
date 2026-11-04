@@ -154,7 +154,9 @@ numbers; tighten the check before quoting a new one.
     editor do the folding. `extFor`/`rename` give the extension.
 - **Dither and the two grids.** 16- and 24-bit get TPDF dither (-90 dBFS tone:
   harmonics -135 dBFS dithered, -105 truncated). A signal already on the target
-  grid is written bit-exact with no dither, and there are two grids. Chrome
+  grid is written bit-exact with no dither, and there are two grids. A channel that is
+  digital zero throughout stays zero (no dither): a left-only test tone's right
+  side was -90 dBFS of noise in 16-bit until 4 Nov 2026. Chrome
   decodes 16-bit WAV as positive/32767, negative/32768; 24-bit and other
   browsers divide by 2^(n-1) both ways. `gridOf` detects either and writes back
   on the same one. The asymmetric one needs a tolerance, because float32
@@ -376,6 +378,29 @@ numbers; tighten the check before quoting a new one.
     not `error`: they are user-side misses and must not count as
     `convert_error` (the `empty` kind's "no audio" regex would also
     misdescribe them as a file problem).
+- `js/mic-test-page.js` + `js/tone-gen.js` (`ASTone`, UMD) + `js/tone-page.js`:
+  `/mic-test` and `/tone-generator` (4 Nov 2026), two everyday jobs with no
+  model download, added when ChatGPT referrals to the AI pages fell (see the
+  playbook, §16).
+  - **Mic test.** Meters each channel, a 4 s peak, the noise floor (10th
+    percentile of frame levels) and clipping, and lists what
+    `track.getSettings()` says was delivered. "Digital silence" is every
+    sample exactly 0, which a quiet room never gives: a mute upstream of the
+    page. The 5 s test clip is raw samples from a ScriptProcessor, not
+    MediaRecorder. Hearing it to the end is `convert_success` with
+    `target_format: play`, once. `tools/check-mic-test.js` swaps
+    getUserMedia for known signals (tone, zeros, over full scale, -50 dBFS,
+    stereo with a dead side, refused) and asserts each verdict.
+  - **Tone generator.** Live steady tones are an OscillatorNode; sweeps,
+    noise and every download are `ASTone.render`. Square, sawtooth and
+    triangle come from band-limited wavetables, one per third of an octave
+    (harmonics below Nyquist at the band's top). `tools/check-tone.js`
+    measures it: 1 kHz exact, a naive 5.1 kHz square's 9th harmonic folds to
+    2.1 kHz at -19 dB, this one's is more than 100 dB down (measured -173),
+    log sweeps pass the geometric middle at half time, pink is flat per
+    octave band, brown -3; and in Chrome, live output at the asked level and
+    each download format at 1 kHz / -20.00 dBFS with a silent other side.
+    Three seconds of play is the success, once.
 - `js/mp3-to-mp4-page.js`: `/mp3-to-mp4`, audio plus a picture into an MP4
   (your image whole on a blurred copy or cropped, or a generated cover with
   the title and the track's waveform; 16:9, 1:1, 9:16). **The still is not
