@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seamless Loop Maker — Loop Any Audio Without a Click, Free</title>
+<meta name="description" content="Make a seamless audio loop from any song, sample or ambience: the end is found where the sound matches the start, or snapped to whole bars at the detected tempo, and crossfaded so it repeats with no click. Free, no upload.">
+<meta name="keywords" content="seamless loop maker, loop audio seamlessly, make audio loop, loop a song, perfect loop audio, create loop from song, audio loop without click, game music loop, loop sample maker">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/seamless-loop-maker">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Seamless loop maker: any audio, looped without a click">
+<meta property="og:description" content="Finds the loop point where the sound matches, or snaps to whole bars, and crossfades the join. Preview it on repeat, then download.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/seamless-loop-maker">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Seamless Loop Maker",
+  "alternateName": [
+    "Audio loop maker",
+    "Loop a song",
+    "Perfect loop tool"
+  ],
+  "url": "https://audiosaw.com/seamless-loop-maker",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Waveform with draggable start and end; tempo and first downbeat found automatically; \"find the seamless point\" by cross-correlation of the sound before the start and before the end; or exact whole bars at the tempo; equal-power crossfade of 0 to 50 ms; preview on repeat; download the loop once or repeated 2 to 16 times as WAV, FLAC, MP3, M4A or OGG",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#lpWave{display:block;width:100%;height:150px;background:var(--card);border:1px solid var(--rule);border-radius:4px;cursor:ew-resize;touch-action:pan-y;margin:.5rem 0}
+#lpLen{font-family:var(--mono);font-size:.9rem}
+#lpNote{color:var(--muted);min-height:1.3em;margin:.3rem 0}
+.controls input[type=number]{width:7rem}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I loop audio without a click?","acceptedAnswer":{"@type":"Answer","text":"Drop the file, select roughly the part to loop and press Find the seamless point. The end is moved to where the sound matches the start and crossfaded, so the loop repeats with no click or hiccup."}},{"@type":"Question","name":"Can I make a loop that stays in time with a song?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tick \"keep whole bars\": the loop is then exactly that many bars at the tempo, to the sample, so it lines up with a project at that tempo in any DAW."}},{"@type":"Question","name":"How do I make a 1-hour loop of a song?","acceptedAnswer":{"@type":"Answer","text":"Make the loop here, then choose \"Repeated 16 times\" for a long file. For an hour, loop the result again in an editor, or use a long ambient section as the loop."}},{"@type":"Question","name":"Does it work on ambient sound like rain?","acceptedAnswer":{"@type":"Answer","text":"Yes. Leave whole bars off; the page finds where the texture matches and a 50 ms crossfade hides the join."}},{"@type":"Question","name":"What format should I download?","acceptedAnswer":{"@type":"Answer","text":"WAV or FLAC for games, samplers and editing, because MP3 adds a little silence at the start that breaks a loop. Use MP3 or M4A only for the repeated long version."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Cut, trim & arrange","item":"https://audiosaw.com/tools#edit"},{"@type":"ListItem","position":3,"name":"Seamless loop maker"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#edit">Cut, trim &amp; arrange</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Seamless loop maker</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Make a <span class="ital">seamless</span> loop from any audio.</h1>
+    <p>Drop a song, a sample, a drum break or an ambience. Choose roughly where the loop should start and end, and the page finds the end point where the sound matches the start, or snaps it to whole bars at the tempo it detects. A short crossfade then makes the join one continuous sound. Play it on repeat to hear the seam, or rather not hear it, and download the loop once or repeated. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the audio to loop</p>
+      <p>MP3, WAV, FLAC, M4A, OGG, AIFF, or the sound of a video.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+    <div id="lpWork" hidden>
+      <canvas id="lpWave" aria-label="Waveform: drag near a handle to move the loop's start or end"></canvas>
+      <p><span id="lpLen"></span></p>
+      <p id="lpNote" aria-live="polite"></p>
+      <div class="controls">
+        <label>Start (s) <input type="number" id="lpStart" step="0.001" min="0"></label>
+        <label>End (s) <input type="number" id="lpEnd" step="0.001" min="0"></label>
+        <label>Tempo (BPM) <input type="number" id="lpBpm" step="0.01" min="0" max="300" value="0"></label>
+        <label>Beats per bar
+          <select id="lpBeats"><option value="4" selected>4</option><option value="3">3</option><option value="6">6</option><option value="2">2</option></select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="lpBars"> keep whole bars at the tempo (for music that has to stay in time)</label>
+      <div class="actions">
+        <button class="btn btn-secondary" id="lpFind" type="button">Find the seamless point</button>
+        <button class="btn btn-secondary" id="lpPlay" type="button">Play the loop</button>
+      </div>
+      <div class="controls">
+        <label>Crossfade at the join
+          <select id="lpFade"><option value="0">none</option><option value="5">5 ms</option><option value="10" selected>10 ms</option><option value="20">20 ms</option><option value="50">50 ms (ambience)</option></select>
+        </label>
+        <label>Length of the file
+          <select id="lpTimes"><option value="1" selected>The loop once</option><option value="2">Repeated 2 times</option><option value="4">Repeated 4 times</option><option value="8">Repeated 8 times</option><option value="16">Repeated 16 times</option></select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="wav" selected>WAV — match the source</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="mp3">MP3</option>
+            <option value="ogg">OGG Vorbis</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate"><option value="192">192 kbps</option><option value="320" selected>320 kbps</option></select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" type="button" disabled>Download the loop</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>Any audio file, or the sound of a video</td></tr>
+        <tr><th>Finds</th><td>The tempo and the first downbeat; the end point where the sound matches the start, within a quarter of a second of where you put it</td></tr>
+        <tr><th>Or keeps</th><td>Whole bars at the tempo, to the sample, for loops that must stay in time</td></tr>
+        <tr><th>Joins</th><td>With an equal-power crossfade, 0 to 50 ms, into the sound that came before the start</td></tr>
+        <tr><th>Out</th><td>The loop once, or repeated up to 16 times; WAV or FLAC at the source's rate and depth, MP3, OGG, M4A</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to make a seamless loop</h2>
+    <p>Drop the file. If it has a beat, the page measures the tempo and places a four-bar selection starting on what it takes to be the downbeat. That is a guess, so drag the start to the real beat one if it is wrong. Otherwise the first eight seconds are selected. Drag the handles on the waveform, or type the times, to choose roughly what to loop. Press Play the loop to hear it on repeat, exactly as the downloaded file will play. Then press Find the seamless point and listen again.</p>
+    <p>For music that has to stay in time with something else, such as a backing for a track in Ableton Live, FL Studio, GarageBand or Logic, tick "keep whole bars" first. The loop is then exactly that many bars at the tempo, to the sample, and the crossfade makes the join. Check the tempo first: the measured one is usually right on produced music, but type the real value if you know it. For anything without a fixed beat, such as rain, wind, a crowd, a drone or a pad, leave it off and let the page find the point where the sound matches.</p>
+
+    <h2>Why loops click, and how this one doesn't</h2>
+    <p>A loop jumps from its last sample straight back to its first. If the waveform is at a different height at those two points, the jump is a click; if the music is in a different place, a note cut off or a beat early, it is a hiccup you hear every time round. Cutting at zero crossings, the usual advice, helps with the click but not the hiccup, and a crossfade on its own smooths the click but can leave a doubled note.</p>
+    <p>This page does both properly. To find the end, it takes the 50 ms of sound just before your start and slides it along the 250 ms either side of your end, measuring how closely the two match with normalised cross-correlation. The best match is where the music before the end is the same as the music before the start, so when the loop jumps back, the sound carries on as if nothing happened. The end is then moved to the nearest zero crossing going the same way as the start's. The crossfade blends the loop's last few milliseconds into the sound that came just before the start, which is exactly what the first sample of the loop expects to follow. Both sides of the join are then the same sound, and the seam disappears.</p>
+    <p>The check behind this page builds a pattern that repeats every 1.2345 seconds and places the end 80 ms too late. The page finds the true length to within 0.042 ms. On repeat, the step across its seam is 0.0064, a tenth of the largest step anywhere in the sound itself, while a plain cut at the rough point steps 0.085, a click. With a tempo, it keeps whole bars to the sample, at 120 BPM in 4/4 and 93 BPM in 3/4.</p>
+
+    <h2>Loops for games, videos and samplers</h2>
+    <p>Game engines such as Unity, Unreal and Godot, and middleware like FMOD and Wwise, loop a whole audio file, so the file itself has to be seamless; this page makes exactly that. For a video or a livestream background, download it repeated eight or sixteen times to get a long file that never clicks. For a sampler such as an SP-404 or an MPC, loop a drum break in whole bars and use <a href="/wav-for-sp404">the sampler prep page</a> for the format it wants. If the loop needs to change speed to fit another track, <a href="/audio-speed">the speed tool</a> stretches it, and <a href="/bpm-finder">the BPM finder</a> measures a file's tempo on its own. Audacity can do this by hand, with zero-crossing snapping and a crossfade; this page finds the point for you.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I loop audio without a click?</summary><p>Drop the file, select roughly the part to loop and press Find the seamless point. The end is moved to where the sound matches the start and crossfaded, so the loop repeats with no click or hiccup.</p></details>
+      <details><summary>Can I make a loop that stays in time with a song?</summary><p>Yes. Tick "keep whole bars": the loop is then exactly that many bars at the tempo, to the sample, so it lines up with a project at that tempo in any DAW.</p></details>
+      <details><summary>How do I make a 1-hour loop of a song?</summary><p>Make the loop here, then choose "Repeated 16 times" for a long file. For an hour, loop the result again in an editor, or use a long ambient section as the loop.</p></details>
+      <details><summary>Does it work on ambient sound like rain?</summary><p>Yes. Leave whole bars off; the page finds where the texture matches and a 50 ms crossfade hides the join.</p></details>
+      <details><summary>What format should I download?</summary><p>WAV or FLAC for games, samplers and editing, because MP3 adds a little silence at the start that breaks a loop. Use MP3 or M4A only for the repeated long version.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. Everything runs in your browser tab.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Measure the tempo of the loop or the song it came from.</p></a>
+      <a class="card" href="/audio-speed"><h3>Change audio speed</h3><p>Stretch the loop to another tempo.</p></a>
+      <a class="card" href="/wav-for-sp404"><h3>WAV for SP-404 / MPC</h3><p>Prepare the loop for a sampler.</p></a>
+      <a class="card" href="/sample-slicer"><h3>Sample Slicer</h3><p>Slice the loop at each hit.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Cut a section out by hand instead.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05c"></script>
+<script src="/js/tool-graph.js?v=2026-11-05c"></script>
+<script src="/js/flow.js?v=2026-11-05c"></script>
+<script src="/js/audio-core.js?v=2026-11-05c"></script>
+<script src="/js/consent.js?v=2026-11-05c"></script>
+<script src="/js/tool-shell.js?v=2026-11-05c"></script>
+<script src="/js/spectral.js?v=2026-11-05c"></script>
+<script src="/js/bpm-detector.js?v=2026-11-05c"></script>
+<script src="/js/loop-find.js?v=2026-11-05c"></script>
+<script src="/js/loop-page.js?v=2026-11-05c"></script>
+<script src="/js/pwa.js?v=2026-11-05c"></script>
+</body>
+</html>

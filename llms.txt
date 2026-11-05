@@ -412,6 +412,7 @@ are much slower without a GPU.
 - [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
 - [Add audio to video](https://audiosaw.com/add-audio-to-video): Put music or a voice-over on a video, or replace its sound. Music ducks under speech by itself, loops and fades to fit. The picture is untouched.
 - [Fix audio out of sync](https://audiosaw.com/fix-audio-sync): Sound late or early against the picture? Shift it by the millisecond, fix drift, or line up a separate mic recording by its waveform. The picture is untouched.
+- [Seamless loop maker](https://audiosaw.com/seamless-loop-maker): Loop any song, sample or ambience without a click: the end found where the sound matches the start, or exact bars at the tempo, crossfaded.
 - [Sample Slicer](https://audiosaw.com/sample-slicer): Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.
 
 ## Loudness & channels
@@ -433,6 +434,7 @@ are much slower without a GPU.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
 - [Autotune / Pitch Correction](https://audiosaw.com/autotune): Snap a vocal to a key — subtle tuning or the hard-tuned effect.
 - [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.
+- [De-esser](https://audiosaw.com/de-esser): Turns down harsh "s" and "sh" sounds in a vocal, podcast or video, above the voice's own sibilance, and leaves everything else untouched.
 - [Click and crackle remover](https://audiosaw.com/click-remover): Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.
 - [Hum remover](https://audiosaw.com/hum-remover): Removes 50/60 Hz mains hum and buzz with its harmonics, following the exact frequency through the file, and leaves the voice alone.
 
@@ -451,6 +453,8 @@ are much slower without a GPU.
 - [Online Tuner](https://audiosaw.com/tuner): Tune a guitar, bass, ukulele or violin through your microphone.
 - [Split an audio file](https://audiosaw.com/split-audio): Cut one long recording into equal parts, fixed chunks, or at the silent gaps.
 - [MP3 tag editor](https://audiosaw.com/mp3-tag-editor): Edit title, artist, album and cover art without re-encoding the audio.
+- [Tap BPM](https://audiosaw.com/tap-bpm): Tap along to any song to find its tempo, fitted through every tap to a tenth of a BPM, with off-beat taps ignored.
+- [Vocal range test](https://audiosaw.com/vocal-range-test): Sing your lowest and highest notes and see them on a keyboard, matched to bass, baritone, tenor, alto, mezzo or soprano.
 
 ## Voice & speech
 
@@ -476,6 +480,7 @@ are much slower without a GPU.
 
 ## Check a file
 
+- [Spectrogram viewer](https://audiosaw.com/spectrogram): See every frequency of any audio file over time, zoom into any moment, read the exact frequency and level, and save it as a PNG.
 - [Fake lossless detector](https://audiosaw.com/fake-lossless-detector): Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3's cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.
 - [Audio file info](https://audiosaw.com/audio-file-info): Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.
 

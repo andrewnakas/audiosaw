@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-05b">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05c">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -183,7 +183,7 @@ gtag('config', 'G-5X9ERMVYXE');
       <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
       <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
       <a href="/slowed-reverb" title="Slowed + Reverb Maker">slowed + reverb</a>
-      <a href="/tools" class="task-picker-all">all 91 tools &rarr;</a>
+      <a href="/tools" class="task-picker-all">all 96 tools &rarr;</a>
     </div>
   </section>
 <!-- /AS:jobs -->
@@ -216,7 +216,7 @@ gtag('config', 'G-5X9ERMVYXE');
 <!-- AS:home -->
   <section class="rails">
     <h2><span class="num">02.</span>Pick a tool</h2>
-    <p class="rails-intro">All 91, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+    <p class="rails-intro">All 96, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
 
     <div class="rail rail-is-chips" data-rail="convert">
       <div class="rail-head">
@@ -284,7 +284,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="compress">
       <div class="rail-head">
         <div>
-          <h3 id="rail-compress">Compress &amp; clean up <span class="rail-count">11</span></h3>
+          <h3 id="rail-compress">Compress &amp; clean up <span class="rail-count">12</span></h3>
           <p>Too big to send, too quiet to hear, or too noisy to use.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -300,6 +300,7 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/noise-reduction"><span class="rail-tile-title">Remove background noise</span><span class="rail-tile-blurb">Strip hiss, hum and fans with spectral gating, or traffic, typing and barking behind a voice with an AI denoiser. Works on video too.</span></a></li>
         <li><a href="/hum-remover"><span class="rail-tile-title">Hum remover</span><span class="rail-tile-blurb">Removes 50/60 Hz mains hum and buzz with its harmonics, following the exact frequency through the file, and leaves the voice alone.</span></a></li>
         <li><a href="/click-remover"><span class="rail-tile-title">Click and crackle remover</span><span class="rail-tile-blurb">Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.</span></a></li>
+        <li><a href="/de-esser"><span class="rail-tile-title">De-esser</span><span class="rail-tile-blurb">Turns down harsh &quot;s&quot; and &quot;sh&quot; sounds in a vocal, podcast or video, above the voice's own sibilance, and leaves everything else untouched.</span></a></li>
         <li><a href="/audio-eq"><span class="rail-tile-title">EQ &amp; bass booster</span><span class="rail-tile-blurb">Adjust bass, mids and treble, or boost the low end, baked into the file.</span></a></li>
         <li><a href="/stereo-to-mono"><span class="rail-tile-title">Stereo to mono</span><span class="rail-tile-blurb">Fix one-sided recordings and halve the size of voice files.</span></a></li>
         <li><a href="/mono-to-stereo"><span class="rail-tile-title">Mono to stereo</span><span class="rail-tile-blurb">Honest dual-mono for software that insists on two channels.</span></a></li>
@@ -310,7 +311,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="music">
       <div class="rail-head">
         <div>
-          <h3 id="rail-music">Make music <span class="rail-count">19</span></h3>
+          <h3 id="rail-music">Make music <span class="rail-count">22</span></h3>
           <p>Pull a mix apart, fix the pitch, find the tempo, record a take.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -325,11 +326,14 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/autotune"><span class="rail-tile-title">Autotune / Pitch Correction</span><span class="rail-tile-blurb">Snap a vocal to a key — subtle tuning or the hard-tuned effect.</span></a></li>
         <li><a href="/audio-to-midi"><span class="rail-tile-title">Audio to MIDI</span><span class="rail-tile-blurb">Turn a hummed melody or bassline into a MIDI file.</span></a></li>
         <li><a href="/bpm-finder"><span class="rail-tile-title">BPM Finder</span><span class="rail-tile-blurb">Detect the tempo of a track, with half and double time shown.</span></a></li>
+        <li><a href="/tap-bpm"><span class="rail-tile-title">Tap BPM</span><span class="rail-tile-blurb">Tap along to any song to find its tempo, fitted through every tap to a tenth of a BPM, with off-beat taps ignored.</span></a></li>
         <li><a href="/key-finder"><span class="rail-tile-title">Key Finder</span><span class="rail-tile-blurb">Find the key of a song, with its Camelot code, tuning and BPM.</span></a></li>
         <li><a href="/chord-finder"><span class="rail-tile-title">Chord Finder</span><span class="rail-tile-blurb">Get the chords of a song from audio, bar by bar, and follow along.</span></a></li>
         <li><a href="/sample-slicer"><span class="rail-tile-title">Sample Slicer</span><span class="rail-tile-blurb">Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.</span></a></li>
+        <li><a href="/seamless-loop-maker"><span class="rail-tile-title">Seamless loop maker</span><span class="rail-tile-blurb">Loop any song, sample or ambience without a click: the end found where the sound matches the start, or exact bars at the tempo, crossfaded.</span></a></li>
         <li><a href="/tuner"><span class="rail-tile-title">Online Tuner</span><span class="rail-tile-blurb">Tune a guitar, bass, ukulele or violin through your microphone.</span></a></li>
         <li><a href="/metronome"><span class="rail-tile-title">Online Metronome</span><span class="rail-tile-blurb">A steady click with subdivisions, tap tempo and a speed trainer.</span></a></li>
+        <li><a href="/vocal-range-test"><span class="rail-tile-title">Vocal range test</span><span class="rail-tile-blurb">Sing your lowest and highest notes and see them on a keyboard, matched to bass, baritone, tenor, alto, mezzo or soprano.</span></a></li>
         <li><a href="/voice-recorder"><span class="rail-tile-title">Voice recorder</span><span class="rail-tile-blurb">Record from your microphone in the browser — the audio never leaves your device.</span></a></li>
         <li><a href="/mic-test"><span class="rail-tile-title">Microphone Test</span><span class="rail-tile-blurb">See if your mic works, how loud and noisy it is, and hear yourself back.</span></a></li>
         <li><a href="/tone-generator"><span class="rail-tile-title">Online Tone Generator</span><span class="rail-tile-blurb">Any frequency, sweep or noise, left, right or both, and download it.</span></a></li>
@@ -392,7 +396,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="inspect">
       <div class="rail-head">
         <div>
-          <h3 id="rail-inspect">Check a file <span class="rail-count">2</span></h3>
+          <h3 id="rail-inspect">Check a file <span class="rail-count">3</span></h3>
           <p>What is really inside: the format, the loudness, and whether it is the quality it claims.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -403,6 +407,7 @@ gtag('config', 'G-5X9ERMVYXE');
       <ul class="rail-row" aria-labelledby="rail-inspect">
         <li><a href="/audio-file-info"><span class="rail-tile-title">Audio file info</span><span class="rail-tile-blurb">Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.</span></a></li>
         <li><a href="/fake-lossless-detector"><span class="rail-tile-title">Fake lossless detector</span><span class="rail-tile-blurb">Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3's cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.</span></a></li>
+        <li><a href="/spectrogram"><span class="rail-tile-title">Spectrogram viewer</span><span class="rail-tile-blurb">See every frequency of any audio file over time, zoom into any moment, read the exact frequency and level, and save it as a PNG.</span></a></li>
       </ul>
     </div>
 
@@ -549,6 +554,7 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/silence-remover">cut silence</a>
         <a href="/add-audio-to-video">add audio to video</a>
         <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
         <a href="/sample-slicer">sample slicer</a>
       </div>
       <div class="footer-col">
@@ -570,6 +576,7 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/audio-eq">eq / bass boost</a>
         <a href="/autotune">autotune</a>
         <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
         <a href="/click-remover">click remover</a>
         <a href="/hum-remover">hum remover</a>
       </div>
@@ -588,6 +595,8 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/tuner">tuner</a>
         <a href="/split-audio">split</a>
         <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
       </div>
       <div class="footer-col">
         <h4>Voice &amp; speech</h4>
@@ -613,6 +622,7 @@ gtag('config', 'G-5X9ERMVYXE');
       </div>
       <div class="footer-col">
         <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
         <a href="/fake-lossless-detector">fake flac check</a>
         <a href="/audio-file-info">file info</a>
       </div>
@@ -633,12 +643,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-11-05b"></script>
-<script src="/js/tool-graph.js?v=2026-11-05b"></script>
-<script src="/js/flow.js?v=2026-11-05b"></script>
-<script src="/js/audio-core.js?v=2026-11-05b"></script>
-<script src="/js/universal-converter.js?v=2026-11-05b"></script>
-<script src="/js/consent.js?v=2026-11-05b"></script>
-<script src="/js/pwa.js?v=2026-11-05b"></script>
+<script src="/js/common.js?v=2026-11-05c"></script>
+<script src="/js/tool-graph.js?v=2026-11-05c"></script>
+<script src="/js/flow.js?v=2026-11-05c"></script>
+<script src="/js/audio-core.js?v=2026-11-05c"></script>
+<script src="/js/universal-converter.js?v=2026-11-05c"></script>
+<script src="/js/consent.js?v=2026-11-05c"></script>
+<script src="/js/pwa.js?v=2026-11-05c"></script>
 </body>
 </html>

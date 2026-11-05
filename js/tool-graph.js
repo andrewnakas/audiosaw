@@ -737,6 +737,7 @@
       cat: 'create', label: 'bpm finder', title: 'BPM Finder',
       blurb: 'Detect the tempo of a track, with half and double time shown.',
       next: [
+        ['tap-bpm', 'No file, just the song playing? Tap along instead'],
         ['audio-speed', 'Stretch a sample to match another tempo'],
         ['audio-cutter', 'Trim a loop to a whole number of bars'],
         ['pitch-shifter', 'Change the key without moving the tempo'],
@@ -810,7 +811,8 @@
         ['metronome', 'Practise in time once you are in tune'],
         ['key-finder', 'Find the key and tuning of a song to play along with'],
         ['pitch-shifter', 'Move a song into a key that suits your instrument'],
-        ['voice-recorder', 'Record what you play']
+        ['voice-recorder', 'Record what you play'],
+        ['vocal-range-test', 'Singing? Find your range and voice type']
       ]
     },
     'split-audio': {
@@ -936,6 +938,7 @@
         ['audio-to-text', 'Transcribe it: a cleaned voice transcribes better'],
         ['noise-reduction', 'Just the noise removal, with more control'],
         ['loudness-normalizer', 'Just the loudness, for music or a mix'],
+        ['de-esser', 'Esses still hiss? Turn down just those'],
         ['audio-editor', 'Edit the cleaned take on a timeline']
       ]
     },
@@ -973,13 +976,56 @@
         ['extract-audio', 'Just the sound of the video, as a file']
       ]
     },
+    'seamless-loop-maker': {
+      cat: 'edit', label: 'loop maker', title: 'Seamless loop maker',
+      blurb: 'Loop any song, sample or ambience without a click: the end found where the sound matches the start, or exact bars at the tempo, crossfaded.',
+      next: [
+        ['bpm-finder', 'Measure the tempo of the loop or the song it came from'],
+        ['audio-speed', 'Stretch the loop to another tempo'],
+        ['wav-for-sp404', 'Prepare the loop for a sampler'],
+        ['sample-slicer', 'Slice the loop at each hit'],
+        ['audio-cutter', 'Cut a section out by hand instead']
+      ]
+    },
+    'tap-bpm': {
+      cat: 'create', label: 'tap bpm', title: 'Tap BPM',
+      blurb: 'Tap along to any song to find its tempo, fitted through every tap to a tenth of a BPM, with off-beat taps ignored.',
+      next: [
+        ['metronome', 'Practise at the tempo you tapped'],
+        ['bpm-finder', 'Have the file? Measure its tempo directly'],
+        ['audio-speed', 'Change a song\'s tempo to match another'],
+        ['key-finder', 'Find its key as well']
+      ]
+    },
+    'vocal-range-test': {
+      cat: 'create', label: 'vocal range test', title: 'Vocal range test',
+      blurb: 'Sing your lowest and highest notes and see them on a keyboard, matched to bass, baritone, tenor, alto, mezzo or soprano.',
+      next: [
+        ['pitch-shifter', 'A song sits too high or low? Move it into your range'],
+        ['key-finder', 'Find the key a song is in, to know how far to move it'],
+        ['tuner', 'Practise holding a note dead on pitch'],
+        ['voice-recorder', 'Record yourself singing to hear it back'],
+        ['autotune', 'Pull a recorded take onto the notes']
+      ]
+    },
+    'spectrogram': {
+      cat: 'inspect', label: 'spectrogram', title: 'Spectrogram viewer',
+      blurb: 'See every frequency of any audio file over time, zoom into any moment, read the exact frequency and level, and save it as a PNG.',
+      next: [
+        ['fake-lossless-detector', 'A hard ceiling in the picture? Check whether it was an MP3'],
+        ['hum-remover', 'A ladder of lines at 50 or 60 Hz is hum: remove it'],
+        ['click-remover', 'Bright vertical lines are clicks: repair them'],
+        ['audio-file-info', 'The numbers behind the picture: rate, depth, LUFS']
+      ]
+    },
     'fake-lossless-detector': {
       cat: 'inspect', label: 'fake flac check', title: 'Fake lossless detector',
       blurb: 'Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3\'s cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.',
       next: [
         ['audio-file-info', 'Everything else about the file: rate, depth, LUFS, peaks'],
         ['flac-to-mp3', 'It was an MP3 all along? Save the space and make it one'],
-        ['flac-to-wav', 'Genuine? Make a WAV for a player that will not take FLAC']
+        ['flac-to-wav', 'Genuine? Make a WAV for a player that will not take FLAC'],
+        ['spectrogram', 'See the whole spectrum over time, zoomable']
       ]
     },
     'audio-file-info': {
@@ -990,6 +1036,17 @@
         ['loudness-normalizer', 'Set the LUFS and true peak a platform asks for'],
         ['change-sample-rate', 'Change the sample rate'],
         ['wav-44100-16bit', 'Make the 44.1 kHz 16-bit WAV a distributor wants']
+      ]
+    },
+    'de-esser': {
+      cat: 'repair', label: 'de-esser', title: 'De-esser',
+      blurb: 'Turns down harsh "s" and "sh" sounds in a vocal, podcast or video, above the voice\'s own sibilance, and leaves everything else untouched.',
+      project: 'same',
+      next: [
+        ['enhance-speech', 'Level and polish the whole voice in one go'],
+        ['loudness-normalizer', 'Bring it to -16 or -14 LUFS'],
+        ['audio-eq', 'Shape the rest of the tone'],
+        ['noise-reduction', 'Background noise as well? Remove it']
       ]
     },
     'click-remover': {
@@ -1013,7 +1070,8 @@
         ['click-remover', 'A vinyl rip? Take the clicks and crackle out as well'],
         ['enhance-speech', 'Level and polish the cleaned voice in one go'],
         ['audio-eq', 'Shape the tone once the hum is gone'],
-        ['loudness-normalizer', 'Bring the cleaned file to -16 or -14 LUFS']
+        ['loudness-normalizer', 'Bring the cleaned file to -16 or -14 LUFS'],
+        ['spectrogram', 'See the hum lines before and after']
       ]
     },
     'censor-audio': {
@@ -1249,7 +1307,7 @@
       style: 'tile',
       tools: [
         'audio-compressor', 'normalize-audio', 'loudness-normalizer',
-        'amplify-audio', 'noise-reduction', 'hum-remover', 'click-remover', 'audio-eq', 'stereo-to-mono',
+        'amplify-audio', 'noise-reduction', 'hum-remover', 'click-remover', 'de-esser', 'audio-eq', 'stereo-to-mono',
         'mono-to-stereo', 'change-sample-rate'
       ]
     },
@@ -1260,7 +1318,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'key-finder', 'chord-finder', 'sample-slicer', 'tuner', 'metronome', 'voice-recorder', 'mic-test', 'tone-generator', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
+        'bpm-finder', 'tap-bpm', 'key-finder', 'chord-finder', 'sample-slicer', 'seamless-loop-maker', 'tuner', 'metronome', 'vocal-range-test', 'voice-recorder', 'mic-test', 'tone-generator', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
       ]
     },
     {
@@ -1288,7 +1346,7 @@
       note: 'What is really inside: the format, the loudness, and whether it is the quality it claims.',
       style: 'tile',
       tools: [
-        'audio-file-info', 'fake-lossless-detector'
+        'audio-file-info', 'fake-lossless-detector', 'spectrogram'
       ]
     },
     {

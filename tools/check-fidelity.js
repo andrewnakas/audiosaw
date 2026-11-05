@@ -155,6 +155,8 @@ const SWEEP = [
   { page: '/auto-cut-silence', sel: 'outFormat' }, { page: '/loudness-normalizer', sel: 'outFormat' },
   { page: '/autotune', sel: 'outFormat' }, { page: '/normalize-audio' }, { page: '/silence-remover' },
   { page: '/audio-reverser' }, { page: '/split-audio' },
+  { page: '/hum-remover', set: 'document.getElementById("mains").value = "60";' }, { page: '/click-remover' }, { page: '/de-esser' },
+  { page: '/seamless-loop-maker' },
   { page: '/audio-speed', set: 'document.getElementById("speed").value = "1.25"; document.getElementById("mode").value = "pitch-shift";' },
   { page: '/audio-speed', label: '/audio-speed (keep pitch)', ffmpeg: true, set: 'document.getElementById("speed").value = "1.25"; document.getElementById("mode").value = "pitch-preserve";' },
   { page: '/pitch-shifter', ffmpeg: true, set: 'document.getElementById("semitones").value = "2";' },

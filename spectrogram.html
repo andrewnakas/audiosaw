@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spectrogram Viewer Online — See Any Audio File, Save as PNG, Free</title>
+<meta name="description" content="See the spectrogram of any audio file: frequency over time in colour, log or linear, zoom into any moment, read the exact time, frequency and level under the cursor, and save it as a PNG. Free, in your browser, no upload.">
+<meta name="keywords" content="spectrogram, spectrogram online, audio spectrogram viewer, spectrogram generator, view spectrogram of audio, frequency analyzer audio file, spectral analysis online, spectrogram png">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/spectrogram">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Spectrogram viewer: see any audio file, zoom in, save a PNG">
+<meta property="og:description" content="Frequency over time in colour, re-analysed as you zoom, with a cursor readout and a PNG export. Runs in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/spectrogram">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05c">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Spectrogram Viewer",
+  "alternateName": [
+    "Online spectrogram",
+    "Audio spectrogram generator",
+    "Spectral analyzer"
+  ],
+  "url": "https://audiosaw.com/spectrogram",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Spectrogram of any audio or video file at its own sample rate; log or linear frequency; FFT size 1024 to 8192; 60 to 120 dB of range; mix, left or right channel; drag to zoom, re-analysed at full detail; time, frequency and level under the cursor; play with a moving line; save a 1600 x 900 PNG with axes and colour scale",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#sgView{position:relative;margin:1rem 0}
+#sgCanvas,#sgOver{display:block;width:100%;height:min(60vh,460px);border-radius:4px}
+#sgOver{position:absolute;left:0;top:0;cursor:crosshair;touch-action:pan-y}
+#sgReadout{font-family:var(--mono);font-size:.85rem;color:var(--muted);min-height:1.3em;margin:.35rem 0}
+.sg-bar{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.5rem 0}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I see the spectrogram of an audio file?","acceptedAnswer":{"@type":"Answer","text":"Drop the file above. The spectrogram is drawn straight away; drag across it to zoom in, move over it to read the time, frequency and level, and press Save PNG to keep the picture."}},{"@type":"Question","name":"Log or linear: which scale should I use?","acceptedAnswer":{"@type":"Answer","text":"Log for music and voices, because it matches how we hear pitch. Linear for checking the top of the spectrum, such as where an MP3 cut its high end, or a fixed whine."}},{"@type":"Question","name":"What FFT size should I choose?","acceptedAnswer":{"@type":"Answer","text":"4096 suits most music. Choose 8192 to separate low notes or hum lines, and 1024 to see exactly when drum hits and consonants happen."}},{"@type":"Question","name":"Can I see frequencies above 20 kHz?","acceptedAnswer":{"@type":"Answer","text":"Yes, if the file has them. A 96 kHz recording shows up to 48 kHz, which reveals bat calls, ultrasonic noise and whether a hi-res file was really upsampled from CD quality."}},{"@type":"Question","name":"Can I save the spectrogram as an image?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save PNG renders the current view at 1600 x 900 with frequency and time axes, a colour scale and the file name."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The file is decoded and analysed in your browser tab, so it works offline once the page has loaded."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Check a file","item":"https://audiosaw.com/tools#inspect"},{"@type":"ListItem","position":3,"name":"Spectrogram viewer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#inspect">Check a file</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Spectrogram viewer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>See the <span class="ital">spectrogram</span> of any audio file.</h1>
+    <p>Drop a recording, a song or the sound of a video to see every frequency over time in colour. Drag across it to zoom into any moment, which re-analyses that stretch at full detail rather than stretching the picture. The cursor reads out the exact time, frequency and level, and you can save the view as a PNG. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop an audio or video file</p>
+      <p>MP3, WAV, FLAC, M4A, OGG, AIFF, voice memos, or an MP4 or MOV.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.flac,.wav,.aif,.aiff,.m4a,.mp3,.ogg,.opus,.caf,.wma,.amr,.mkv">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+    <div id="sgView" hidden>
+      <div class="controls">
+        <label>Frequency scale
+          <select id="sgScale">
+            <option value="log" selected>Log (as you hear it)</option>
+            <option value="linear">Linear</option>
+          </select>
+        </label>
+        <label>Top
+          <select id="sgTop">
+            <option value="nyq" selected>Up to the top (all of it)</option>
+            <option value="20000">20 kHz</option>
+            <option value="16000">16 kHz</option>
+            <option value="8000">8 kHz (speech)</option>
+            <option value="4000">4 kHz</option>
+          </select>
+        </label>
+        <label>Detail (FFT)
+          <select id="sgFft">
+            <option value="1024">1024: sharp in time</option>
+            <option value="2048">2048</option>
+            <option value="4096" selected>4096: balanced</option>
+            <option value="8192">8192: sharp in pitch</option>
+          </select>
+        </label>
+        <label>Range
+          <select id="sgFloor">
+            <option value="-60">60 dB</option>
+            <option value="-80">80 dB</option>
+            <option value="-100" selected>100 dB</option>
+            <option value="-120">120 dB (hi-res, noise floors)</option>
+          </select>
+        </label>
+        <label>Channel
+          <select id="sgChannel">
+            <option value="mix" selected>Both, mixed</option>
+            <option value="L">Left</option>
+            <option value="R">Right</option>
+          </select>
+        </label>
+      </div>
+      <div class="sg-bar">
+        <button class="btn btn-small" id="sgPlay" type="button">Play</button>
+        <button class="btn btn-secondary btn-small" id="sgIn" type="button">Zoom in</button>
+        <button class="btn btn-secondary btn-small" id="sgOut" type="button">Zoom out</button>
+        <button class="btn btn-secondary btn-small" id="sgFit" type="button">Whole file</button>
+        <button class="btn btn-secondary btn-small" id="sgPng" type="button">Save PNG</button>
+      </div>
+      <div style="position:relative">
+        <canvas id="sgCanvas"></canvas>
+        <canvas id="sgOver" aria-label="Spectrogram: drag to zoom, click to set where Play starts"></canvas>
+      </div>
+      <p id="sgReadout">Move over the picture to read the time, frequency and level. Drag across to zoom; double-click for the whole file.</p>
+    </div>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>Any audio file, or the sound of a video, at its own sample rate (up to 192 kHz)</td></tr>
+        <tr><th>Shows</th><td>Frequency over time in a perceptually even colour scale, log or linear</td></tr>
+        <tr><th>Zoom</th><td>Drag across any stretch; it is analysed again at full detail, one FFT per pixel</td></tr>
+        <tr><th>Reads out</th><td>The time, frequency and level under the cursor</td></tr>
+        <tr><th>Saves</th><td>A 1600 x 900 PNG with axes, the colour scale and the file name</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to read a spectrogram</h2>
+    <p>Time runs left to right and frequency runs bottom to top; the colour is how loud each frequency is at that moment, from black (silent) through purple and orange to pale yellow (loud). A sung or played note is a stack of horizontal lines, its fundamental at the bottom and the harmonics above at two, three and four times its frequency, which is why a voice looks like a set of parallel curves. Drums are vertical smears: a kick at the bottom, a snare across the middle, hi-hats as thin streaks at the top. Speech alternates between those voiced stacks and the noisy blurs of "s", "sh" and "f".</p>
+    <p>The log scale gives each octave the same height, the way you hear pitch, so a melody is easy to follow. The linear scale gives each hertz the same height, which spreads out the top of the spectrum: that is the scale for checking where a file's high end stops, or for spotting a steady whine at a fixed frequency.</p>
+
+    <h2>What people use it for</h2>
+    <p><strong>Checking a file's quality.</strong> An MP3 or AAC leaves a hard ceiling where its encoder cut the top off, around 16 kHz at 128 kbps, and a "lossless" file made from one keeps that ceiling. Set Top to all of it and look for a flat edge. <a href="/fake-lossless-detector">The fake lossless detector</a> measures it and names the likely bitrate.</p>
+    <p><strong>Finding noise.</strong> Mains hum is a ladder of thin lines at 50 or 60 Hz and its multiples, for which there is <a href="/hum-remover">the hum remover</a>. A vinyl click is a single bright vertical line, which <a href="/click-remover">the click remover</a> repairs. A fan or air conditioning is a soft band that never changes, and a dropout is a vertical gap.</p>
+    <p><strong>Birds, bats and the rest of nature.</strong> Birdsong is easier to tell apart by its shape than by ear, which is why apps like Merlin and BirdNET draw a spectrogram as they listen. A recording at 96 or 192 kHz shows bat calls and other ultrasound far above anything audible; set the range to 120 dB to see faint ones.</p>
+    <p><strong>Hidden images.</strong> Artists have drawn pictures into the spectrum: Aphex Twin hid a face in a track from the Windowlicker single, and Mick Gordon hid pentagrams in the Doom (2016) soundtrack. They only appear in a spectrogram.</p>
+
+    <h2>Detail: sharp in time or sharp in pitch</h2>
+    <p>A spectrogram cannot be sharp in both at once. Each column comes from a short window of the sound: a long window tells frequencies apart finely but blurs when they happen, and a short one does the opposite. At 48 kHz, 4096 points, the default, is an 85 ms window with 11.7 Hz between frequency bins, a good balance for music. 8192 separates the low notes of a bass line or the lines of a hum. 1024, a 21 ms window, pins down drum hits and consonants. This page also analyses only what is on screen, one window per pixel column. Zooming in shows real detail rather than an enlarged picture, and when zoomed far out, each column takes the loudest of up to eight windows across its stretch, so a click between two columns is not lost.</p>
+    <p>The check behind this page requires a 1 kHz tone to land on the 1 kHz row on both scales, two tones to show as two separate peaks with nothing between them, a sweep from 100 Hz to 10 kHz to stay on its row (within one frequency bin) as it rises, a 2 ms click in a minute-long file to light its column when zoomed all the way out, and the saved PNG to be the full 1600 x 900. Spek, Sonic Visualiser and Audacity's spectrogram view are good desktop alternatives; iZotope RX and Adobe Audition let you edit inside the spectrogram, which this page does not.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I see the spectrogram of an audio file?</summary><p>Drop the file above. The spectrogram is drawn straight away; drag across it to zoom in, move over it to read the time, frequency and level, and press Save PNG to keep the picture.</p></details>
+      <details><summary>Log or linear: which scale should I use?</summary><p>Log for music and voices, because it matches how we hear pitch. Linear for checking the top of the spectrum, such as where an MP3 cut its high end, or a fixed whine.</p></details>
+      <details><summary>What FFT size should I choose?</summary><p>4096 suits most music. Choose 8192 to separate low notes or hum lines, and 1024 to see exactly when drum hits and consonants happen.</p></details>
+      <details><summary>Can I see frequencies above 20 kHz?</summary><p>Yes, if the file has them. A 96 kHz recording shows up to 48 kHz, which reveals bat calls, ultrasonic noise and whether a hi-res file was really upsampled from CD quality.</p></details>
+      <details><summary>Can I save the spectrogram as an image?</summary><p>Yes. Save PNG renders the current view at 1600 x 900 with frequency and time axes, a colour scale and the file name.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. The file is decoded and analysed in your browser tab, so it works offline once the page has loaded.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/fake-lossless-detector"><h3>Fake lossless detector</h3><p>A hard ceiling in the picture? Check whether it was an MP3.</p></a>
+      <a class="card" href="/hum-remover"><h3>Hum remover</h3><p>A ladder of lines at 50 or 60 Hz is hum: remove it.</p></a>
+      <a class="card" href="/click-remover"><h3>Click and crackle remover</h3><p>Bright vertical lines are clicks: repair them.</p></a>
+      <a class="card" href="/audio-file-info"><h3>Audio file info</h3><p>The numbers behind the picture: rate, depth, LUFS.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05c"></script>
+<script src="/js/tool-graph.js?v=2026-11-05c"></script>
+<script src="/js/flow.js?v=2026-11-05c"></script>
+<script src="/js/audio-core.js?v=2026-11-05c"></script>
+<script src="/js/consent.js?v=2026-11-05c"></script>
+<script src="/js/spectral.js?v=2026-11-05c"></script>
+<script src="/js/spectrogram.js?v=2026-11-05c"></script>
+<script src="/js/spectrogram-page.js?v=2026-11-05c"></script>
+<script src="/js/pwa.js?v=2026-11-05c"></script>
+</body>
+</html>
