@@ -103,7 +103,7 @@
       out.push(['True peak', dB(r.truePeak, 'dBTP')]);
       out.push(['Sample peak', dB(20 * Math.log10(Math.max(1e-12, r.stats.peak)), 'dBFS')]);
       out.push(['Clipping', r.stats.clips ? r.stats.clips + ' run' + (r.stats.clips === 1 ? '' : 's') + ' at full scale (' + r.stats.clippedSamples + ' samples)' : 'none']);
-      out.push(['DC offset', r.stats.dc.map(function (d) { return (d * 100).toFixed(3) + '%'; }).join(' / ')]);
+      out.push(['DC offset', r.stats.dc.map(function (d) { return (Math.abs(d) < 5e-6 ? 0 : d * 100).toFixed(3) + '%'; }).join(' / ')]);
       out.push(['Silence', r.edges.lead.toFixed(2) + ' s at the start, ' + r.edges.tail.toFixed(2) + ' s at the end']);
     }
     out.push(['Top end', r.cut.sharp ? 'cuts off at ' + (r.cut.hz / 1000).toFixed(1) + ' kHz (' + r.verdicts[r.verdicts.length - 1].grade.replace('-', ' ') + ')' : r.cut.full ? 'content to ' + kHz(r.rate / 2) + ', no cutoff' : 'fades out by ' + (r.cut.hz / 1000).toFixed(1) + ' kHz']);

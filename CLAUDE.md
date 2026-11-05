@@ -1305,6 +1305,93 @@ Four pages picked by how often the job is asked of an assistant (playbook
   (41 voices, 1.15 MB, `tools/build-voice-samples.js`) make "hear this
   voice" instant for a single voice.
 
+## The November 5 tools
+
+Ten long-tail pages (playbook §17), each a UMD core with its own check in
+check-all. Hum, click, de-esser and loop pages are also in check-fidelity's
+96k/24 sweep.
+
+- **/fix-audio-sync** (`js/av-sync.js` = `ASSync`; `js/sync-page.js`).
+  `shift()` moves the sound by a lateness at the start and another at the
+  end (drift = a read at speed 1 + d/D through resample.js, rate given to a
+  thousandth of a hertz: `varispeed` rounds to whole hertz, up to 37 ms an
+  hour off). Output is exactly the video's length; cuts into sound fade
+  5 ms. `align()` is GCC-PHAT, coarse at ~8 kHz then 2 s at full rate,
+  at the start and (over 2 min) the end, so drift is measured. **Fixture
+  trap:** a looped `say` text is periodic and gives several equal peaks;
+  the check uses four voices back to back. Measured: 2.5 s lead, 50 ppm,
+  188 s: 0.09 / 0.16 ms; unrelated recordings confidence 1.17 (page needs
+  1.5). Preview: muted `<video>` + a BufferSource restarted on every
+  setting change. check-av-sync.
+- **/hum-remover** (`js/dehum.js` = `ASDehum`). detect: Goertzel over a
+  2 kHz copy of the first minute, 47-53 / 57-63 Hz, refined to ~0.005 Hz;
+  hum = 2+ harmonics 10 dB over their neighbours (clean speech: 0).
+  `track()` re-measures every second (4 s windows, +-0.15 Hz) because the
+  grid wanders. `remove()` is one RBJ notch per harmonic, (0.6 + 0.03k) Hz
+  wide, forward-backward, coefficients per 1024-sample block. **Pad with the
+  hum, not a mirror:** a mirrored edge breaks the sine's slope and a 1 Hz
+  notch rings for a second (cost 15 dB); `padded()` fits each harmonic at
+  the ends and synthesises 3 s. Measured: 42.4 / 44.2 dB down, speech
+  -0.13 dB. check-dehum.
+- **/click-remover** (`js/declick.js` = `ASDeclick`). AR(32) prediction
+  error forward and backward (a click's end is a backward-error onset),
+  against the error's local median (+-10 ms in 1 ms pieces) so hi-hats raise
+  their own bar; spans over 2.5 ms are refused, and so are runs after which
+  the error stays high (drums, consonants). Repair: LSAR with order 128
+  (32: 14.7 dB median, 64: 19.3, 128: 22.7 on chords). **The fixture is
+  physics:** a smooth 1.5 ms exponential bump is not a click and no rule
+  finds its end; real ones are impulses through RIAA's 75 us pole plus a
+  6-16 kHz ring. Also, an adaptive "grow until the seam is clean" repair
+  cannot work: LSAR uses the samples after the gap, so the seam is always
+  smooth. The page works in 20 s pieces with 0.5 s overlap. Measured:
+  75/77 over -14 dBFS, 134/150 all (misses on drum hits), 55/55 speech,
+  16.1 dB median, clean drums 0 spans. check-declick.
+- **/fake-lossless-detector and /audio-file-info** (`js/audio-inspect.js` =
+  `ASInspect`; `js/inspect-page.js`, `data-inspect` picks the page).
+  Long-term spectrum (400 frames, ~86 Hz bands); a cliff is a band 25 dB
+  over everything 300 Hz above it. A slope over ~900 Hz before the cliff is a
+  resampler's: walk up it to the knee (LAME's own slope is 4-5 bands, so
+  encoders keep the midpoint). Signatures measured with ffmpeg 9's LAME and
+  AAC: 96k 15.5, 128k 16.9, 160k 17.5, 192k 18.9, V2 19.0, 256k 19.6,
+  320k 20.3 ("can't tell", never fake), AAC 128 17.3; **V0 and AAC 256 keep
+  the whole band and are not caught**. `bitsUsed` tries both of Chrome's
+  16-bit grids. `mp3Info` reads Xing/Info/VBRI and the encoder (ffmpeg
+  writes "Lavc", not "LAME"). Info page: LUFS on a 48 kHz copy, true peak
+  on the file. check-inspect (ffprobe and ebur128 agree).
+- **/vocal-range-test** (`js/vocal-range.js` = `ASRange`). A note counts
+  after 300 ms, the hold's average within 50 cents, each reading within 75
+  (vibrato). Types: bass E2-E4 ... soprano C4-C6, best overlap then nearest
+  centre; contralto and countertenor named together. convert_success
+  `target_format: 'range'` once a fifth is found. The context is made in
+  the click (see /dictation). check-vocal-range drives a scheduled sawtooth
+  as the microphone.
+- **/spectrogram** (`js/spectrogram.js` = `ASSpectro`). One FFT per pixel
+  column over the view only; zoomed out, a column is the loudest of up to 8
+  FFTs across it (a 2 ms click in a minute still shows). Rows take the
+  loudest bin they span. A 0.5 sine reads -6.65 dB off-bin (Hann
+  scalloping). Drawn in 64-column batches. PNG export is the page's
+  convert_success. check-spectrogram.
+- **/tap-bpm** (`js/tap-tempo.js` = `ASTap`). Least-squares slope through
+  tap times; taps off by over 30% ignored, counted from the last kept tap
+  (counting from an ignored one reset the count: the first draft's bug);
+  pause over max(2 s, 2.5 beats) restarts. Event `timeStamp`, not handler
+  time. Measured over 1,000 runs with +-15 ms: 92.4% within 0.5 BPM after 8
+  (average gap 87.9%, not the 2:1 a first comment claimed), 100% after 16.
+  check-tap.
+- **/seamless-loop-maker** (`js/loop-find.js` = `ASLoop`). The end is
+  where the 50 ms before it best matches the 50 ms before the start (NCC by
+  FFT, +-250 ms), then a same-slope zero crossing; with a tempo, exact bars
+  and no search. `make()` crossfades the tail into what precedes the start.
+  The page decodes on drop, so it re-fills the "Your file" readout that
+  `clearStatus` empties (the sweep asserts it). check-loop.
+- **/de-esser** (`js/deess.js` = `ASDeess`). High band = x - zero-phase
+  4th-order Butterworth LP; output x - (1 - g) * high, so g = 1 is
+  bit-identical. Sibilant: high-band share over 45% in 5 ms frames, within
+  40 dB of the loud frames; 6 ms raised-cosine gain smoothing. Crossover =
+  sibilance peak / 1.6, 3.5-8 kHz. Measure reduction above the chosen
+  crossover, not a fixed 5 kHz. 6 dB: 5.6-5.8 down, vowels 0.000;
+  12 dB: 10.7-11.3. check-deess.
+
 ## Web plugins (WAM2): the editor's mixer and /audio-plugins
 
 The Web Audio Modules community plugins (the index at

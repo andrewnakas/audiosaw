@@ -1010,3 +1010,44 @@ swear words in audio or video), on the filler tool's Whisper pipeline:
 whether the AI-page landings keep falling or level off; the error-type x
 tool split. Bing Webmaster Tools was signed out in Chrome on 4 Nov; it needs
 Andrew to sign in before it can be read.
+
+## §17 — Ten long-tail tools (5 Nov 2026)
+
+Andrew's ask (4 Nov): ten underserved audio jobs people ask for by name,
+where a free browser tool with a measured claim can be the answer an
+assistant or Bing cites. Built from the 4 Nov draft list, all ten, each with
+a measuring check in check-all. Not validated against Bing keyword data
+first: Andrew asked for all ten, and WMT was still signed out. Read the
+landings instead (below).
+
+| Page | The claim its check holds |
+|---|---|
+| /fix-audio-sync | a separate mic 2.5 s ahead and 50 ppm slow lined up within 0.09 ms (start) and 0.16 ms (end); a 120 ms late video fixed to 0.00 ms, picture byte-identical |
+| /hum-remover | hum at -30 dBFS, 8 harmonics, wandering 0.03 Hz: 42 dB down under speech; speech level 0.13 dB |
+| /click-remover | 75 of 77 clicks over -14 dBFS found on music, 55 of 55 on speech; repaired clicks 16 dB quieter (median); clean drums untouched |
+| /fake-lossless-detector | LAME 96-256 and AAC 128 named by bitrate after a FLAC transcode; 320 "can't tell"; padded 24-bit and upsampled 96k caught |
+| /audio-file-info | LUFS equal to ebur128 (-26.5), true peak within 0.1 dB, 3 of 3 clipped runs, VBR/LAME read |
+| /vocal-range-test | held notes only (300 ms); live fake mic A2-G4 read as baritone |
+| /spectrogram | tones and a chirp on their rows; a 2 ms click visible zoomed out; 1600x900 PNG |
+| /tap-bpm | within 0.5 BPM after 8 jittered taps in 92.4% of runs (average gap 87.9%), after 16 always |
+| /seamless-loop-maker | loop length 0.042 ms from true; seam step a tenth of the input's largest; exact bars |
+| /de-esser | 6 dB setting: esses 5.6-5.8 dB down, vowels 0.000 dB, untouched samples bit-identical |
+
+New "Check a file" category and homepage rail (file info, fake lossless,
+spectrogram). Reverse links from bpm-finder, tuner, noise-reduction,
+enhance-speech, add-audio-to-video and the hum/click pages.
+
+**Honest limits written on the pages:** LAME V0 and AAC 256 kept the whole
+band and are not caught by the fake-lossless detector; the de-esser's
+crossover follows the voice but cannot fix a lisp; the click remover leaves
+clicks that land exactly on a drum hit; the sync fixer cannot fix variable
+frame rate wander.
+
+**Found on the way, not fixed:** check-diarize's two-person case reads 93.9%
+against its 94% bar, identically on the commit before this work: an
+environment change (macOS `say` voices or ffmpeg 9), not code. Re-measure
+and either fix or move the bar with a reason.
+
+**Re-read ~12 Nov:** landings per new page from chatgpt.com, bing.com and
+google; convert_start -> convert_success on the five processors; whether any
+of the ten draws the "Discovered – not indexed" fate in Search Console.
