@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-05a">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -183,7 +183,7 @@ gtag('config', 'G-5X9ERMVYXE');
       <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
       <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
       <a href="/slowed-reverb" title="Slowed + Reverb Maker">slowed + reverb</a>
-      <a href="/tools" class="task-picker-all">all 89 tools &rarr;</a>
+      <a href="/tools" class="task-picker-all">all 91 tools &rarr;</a>
     </div>
   </section>
 <!-- /AS:jobs -->
@@ -216,7 +216,7 @@ gtag('config', 'G-5X9ERMVYXE');
 <!-- AS:home -->
   <section class="rails">
     <h2><span class="num">02.</span>Pick a tool</h2>
-    <p class="rails-intro">All 89, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+    <p class="rails-intro">All 91, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
 
     <div class="rail rail-is-chips" data-rail="convert">
       <div class="rail-head">
@@ -386,6 +386,23 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/pitch-shifter"><span class="rail-tile-title">Pitch &amp; key changer</span><span class="rail-tile-blurb">Shift the key up or down by semitones without changing the tempo.</span></a></li>
         <li><a href="/audio-reverser"><span class="rail-tile-title">Audio Reverser</span><span class="rail-tile-blurb">Play a file backwards — for effects, or to hear what is buried.</span></a></li>
         <li><a href="/audio-plugins"><span class="rail-tile-title">Audio Effects Plugins</span><span class="rail-tile-blurb">Run a file through free web audio plugins: fuzz, amp sims, reverbs, delays, phasers, pitch.</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rail" data-rail="inspect">
+      <div class="rail-head">
+        <div>
+          <h3 id="rail-inspect">Check a file <span class="rail-count">2</span></h3>
+          <p>What is really inside: the format, the loudness, and whether it is the quality it claims.</p>
+        </div>
+        <div class="rail-arrows" aria-hidden="true">
+          <button type="button" class="rail-arrow" data-dir="-1" tabindex="-1">&lsaquo;</button>
+          <button type="button" class="rail-arrow" data-dir="1" tabindex="-1">&rsaquo;</button>
+        </div>
+      </div>
+      <ul class="rail-row" aria-labelledby="rail-inspect">
+        <li><a href="/audio-file-info"><span class="rail-tile-title">Audio file info</span><span class="rail-tile-blurb">Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.</span></a></li>
+        <li><a href="/fake-lossless-detector"><span class="rail-tile-title">Fake lossless detector</span><span class="rail-tile-blurb">Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3's cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.</span></a></li>
       </ul>
     </div>
 
@@ -595,6 +612,11 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/nightcore">nightcore</a>
       </div>
       <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
         <h4>For a specific app or device</h4>
         <a href="/audio-for-whisper">for Whisper</a>
         <a href="/audio-to-text-prep">for transcription</a>
@@ -611,12 +633,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-11-05a"></script>
-<script src="/js/tool-graph.js?v=2026-11-05a"></script>
-<script src="/js/flow.js?v=2026-11-05a"></script>
-<script src="/js/audio-core.js?v=2026-11-05a"></script>
-<script src="/js/universal-converter.js?v=2026-11-05a"></script>
-<script src="/js/consent.js?v=2026-11-05a"></script>
-<script src="/js/pwa.js?v=2026-11-05a"></script>
+<script src="/js/common.js?v=2026-11-05b"></script>
+<script src="/js/tool-graph.js?v=2026-11-05b"></script>
+<script src="/js/flow.js?v=2026-11-05b"></script>
+<script src="/js/audio-core.js?v=2026-11-05b"></script>
+<script src="/js/universal-converter.js?v=2026-11-05b"></script>
+<script src="/js/consent.js?v=2026-11-05b"></script>
+<script src="/js/pwa.js?v=2026-11-05b"></script>
 </body>
 </html>

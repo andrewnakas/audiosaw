@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio File Info — Bitrate, Sample Rate, Bit Depth, LUFS, Free Online</title>
+<meta name="description" content="See what an audio file really is: format, sample rate, bit depth and the bits actually used, bitrate (CBR or VBR, encoder), duration, LUFS loudness, true peak, clipping and DC offset. Free, in your browser, no upload.">
+<meta name="keywords" content="audio file info, check bitrate of mp3, audio file analyzer online, check sample rate of audio file, bit depth checker, mediainfo online, check lufs of song, audio metadata viewer, wav file info">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/audio-file-info">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Audio file info: bitrate, sample rate, bit depth, LUFS and more">
+<meta property="og:description" content="The header and what the samples really hold, side by side, for any audio file. Read in your browser, never uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/audio-file-info">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05b">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio File Info",
+  "alternateName": [
+    "Audio file analyzer",
+    "Bitrate checker",
+    "Sample rate checker",
+    "Bit depth checker",
+    "MediaInfo online"
+  ],
+  "url": "https://audiosaw.com/audio-file-info",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Format, codec, sample rate, channels, bit depth and the bits actually in use, duration, bitrate (CBR or VBR, encoder, channel mode for MP3), integrated loudness in LUFS, true peak, sample peak, clipping, DC offset, silence at each end, top-end cutoff and the spectrum; several files at once; copy as text or download a CSV",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.inspect-card{margin:1.25rem 0 0;padding-top:1rem;border-top:1px solid var(--rule)}
+.inspect-card h3{margin:0;word-break:break-all}
+.inspect-format{color:var(--muted);margin:.2rem 0 .4rem}
+canvas.spectrum{display:block;width:100%;height:180px;margin:.6rem 0}
+#infoActions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I check the bitrate of an MP3?","acceptedAnswer":{"@type":"Answer","text":"Drop it above. The page reads the MP3's own frames: a constant-bitrate file shows its bitrate and \"CBR\", a variable one shows \"VBR\" with its average, and LAME-encoded files show the encoder."}},{"@type":"Question","name":"How do I find the sample rate and bit depth of a WAV file?","acceptedAnswer":{"@type":"Answer","text":"Drop the WAV above. Both are read from the file's header, and the page also reports how many bits the samples really use, which catches 16-bit audio saved as 24-bit."}},{"@type":"Question","name":"How do I check the LUFS of a song?","acceptedAnswer":{"@type":"Answer","text":"Drop it above and read the Loudness line: the integrated loudness, measured by the BS.1770 standard that streaming services use. The check behind this page holds it within 0.1 LU of ffmpeg's EBU R128 meter."}},{"@type":"Question","name":"What does true peak mean?","acceptedAnswer":{"@type":"Answer","text":"The highest point of the waveform between the samples, which can be higher than any sample. It is what clips when the file is later encoded to MP3 or AAC; most distributors ask for -1 dBTP or lower."}},{"@type":"Question","name":"Can I check many files at once?","acceptedAnswer":{"@type":"Answer","text":"Yes, up to 20. Each gets its own card, and \"Download CSV\" saves one row per file to open in Excel, Numbers or Google Sheets."}},{"@type":"Question","name":"Are my files uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The files are read and measured in your browser tab and never leave your computer."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Check a file","item":"https://audiosaw.com/tools#inspect"},{"@type":"ListItem","position":3,"name":"Audio file info"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#inspect">Check a file</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Audio file info</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Audio <span class="ital">file info</span>: what is really in the file.</h1>
+    <p>Drop any audio file to see its format, sample rate, bit depth, bitrate and length, next to what the samples actually hold: the loudness in LUFS, the true peak, any clipping, the bits really in use and where the top end stops. Several files at once, copied as text or saved as a spreadsheet. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div data-inspect="info">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop audio files</p>
+      <p>MP3, WAV, FLAC, M4A, AIFF, OGG, Opus, voice memos, or the sound of a video. Up to 20 at once.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.flac,.wav,.aif,.aiff,.m4a,.mp3,.ogg,.opus,.caf,.wma,.amr,.mkv" multiple>
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+    <div class="actions">
+      <button class="btn" id="convertBtn" data-track="convert" disabled>Read again</button>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div id="infoActions" hidden>
+      <button class="btn btn-secondary" id="copyBtn" type="button">Copy as text</button>
+      <button class="btn btn-secondary" id="csvBtn" type="button">Download CSV</button>
+    </div>
+    <div id="results" aria-live="polite"></div>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>From the header</th><td>Format and codec, sample rate, channels, bit depth, duration; for MP3, CBR or VBR, the bitrate, the encoder and the channel mode</td></tr>
+        <tr><th>From the samples</th><td>Integrated loudness (LUFS), true peak, sample peak, clipping, DC offset, silence at each end, the bits really in use, where the top end stops</td></tr>
+        <tr><th>Measured against</th><td>ffprobe for the format and length, ffmpeg's EBU R128 meter for loudness (within 0.1 LU) and true peak</td></tr>
+        <tr><th>Out</th><td>Copy as text, or a CSV with a row per file</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>What each line means</h2>
+    <p><strong>Sample rate</strong> is how many times a second the sound was measured: 44.1 kHz for CD and most music, 48 kHz for video and most podcasts, 96 kHz and up for hi-res. It is read from the file and the file is decoded at that rate, not at your sound card's, so a 44.1 kHz file is never reported as 48. <strong>Bit depth</strong> is how finely each measurement is stored: 16 bits for CD, 24 for studio work, 32-bit float for files that will be processed further. Lossy formats such as MP3 and AAC have no fixed depth. Next to the depth the page reports how many bits the samples really use, which catches a 16-bit recording dressed up as 24-bit.</p>
+    <p><strong>Bitrate</strong> is how much data a second of sound takes. For an MP3 the page reads the first frame and the Xing or Info frame that encoders add, so it can say whether the file is constant bitrate (CBR) or variable (VBR), which encoder wrote it (LAME stamps its version), and whether it is stereo or joint stereo. For VBR and for every other format it reports the average, the file's size over its length.</p>
+    <p><strong>Loudness</strong> is the integrated loudness in LUFS, the measure Spotify, Apple Music, YouTube and podcast platforms use to turn tracks up or down: Spotify and YouTube play at about -14 LUFS, Apple Podcasts asks for -16. It is the ITU-R BS.1770 measure, computed at 48 kHz where the standard defines its filters, and the check behind this page holds it within 0.1 LU of ffmpeg's EBU R128 meter. <strong>True peak</strong> is the highest point of the waveform between the samples, in dBTP, which is what clips when the file is later converted; distributors usually ask for -1 dBTP or lower. <strong>Sample peak</strong> is the highest sample itself.</p>
+    <p><strong>Clipping</strong> counts runs of three or more samples stuck at full scale, the flat-topped waveform of a recording that was too loud; a single full-scale sample is not counted. <strong>DC offset</strong> is how far the waveform's average sits from zero, which a faulty interface or a cheap phone microphone can leave; above a few tenths of a percent it costs headroom and can click at edits. <strong>Silence</strong> is how long the file stays under -60 dBFS at the start and end, which matters for gapless albums and for podcast hosts that add their own intros. <strong>Top end</strong> says where the spectrum stops; a sharp cutoff under 20 kHz means the file was a lossy one at some point, and <a href="/fake-lossless-detector">the fake lossless detector</a> explains what it means for that file.</p>
+
+    <h2>Why check a file before you send it</h2>
+    <p>Distributors such as DistroKid and CD Baby, mastering engineers and podcast hosts all publish specifications, and a file that misses them gets bounced or, worse, quietly converted. Before you upload: is it the sample rate they asked for, is it 16 or 24-bit, is the true peak under -1 dBTP, is it clipping anywhere, and is it the loudness you expect? MediaInfo and ffprobe answer the header questions on a computer you can install software on; Audacity's Contrast and Loudness tools answer some of the rest one file at a time. This page puts all of it on one screen, for twenty files at once, on any device with a browser.</p>
+    <p>If a number is wrong, the fix is usually one click away: <a href="/loudness-normalizer">the loudness normalizer</a> sets LUFS and true peak, <a href="/change-sample-rate">the sample rate converter</a> changes the rate, and <a href="/wav-44100-16bit">44.1 kHz 16-bit WAV</a> makes the CD-standard file most distributors still ask for.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I check the bitrate of an MP3?</summary><p>Drop it above. The page reads the MP3's own frames: a constant-bitrate file shows its bitrate and "CBR", a variable one shows "VBR" with its average, and LAME-encoded files show the encoder.</p></details>
+      <details><summary>How do I find the sample rate and bit depth of a WAV file?</summary><p>Drop the WAV above. Both are read from the file's header, and the page also reports how many bits the samples really use, which catches 16-bit audio saved as 24-bit.</p></details>
+      <details><summary>How do I check the LUFS of a song?</summary><p>Drop it above and read the Loudness line: the integrated loudness, measured by the BS.1770 standard that streaming services use. The check behind this page holds it within 0.1 LU of ffmpeg's EBU R128 meter.</p></details>
+      <details><summary>What does true peak mean?</summary><p>The highest point of the waveform between the samples, which can be higher than any sample. It is what clips when the file is later encoded to MP3 or AAC; most distributors ask for -1 dBTP or lower.</p></details>
+      <details><summary>Can I check many files at once?</summary><p>Yes, up to 20. Each gets its own card, and "Download CSV" saves one row per file to open in Excel, Numbers or Google Sheets.</p></details>
+      <details><summary>Are my files uploaded?</summary><p>No. The files are read and measured in your browser tab and never leave your computer.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/fake-lossless-detector"><h3>Fake lossless detector</h3><p>Is the lossless file really lossless? Check its cutoff.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Set the LUFS and true peak a platform asks for.</p></a>
+      <a class="card" href="/change-sample-rate"><h3>Change the sample rate</h3><p>Change the sample rate.</p></a>
+      <a class="card" href="/wav-44100-16bit"><h3>WAV at 44.1 kHz, 16-bit</h3><p>Make the 44.1 kHz 16-bit WAV a distributor wants.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05b"></script>
+<script src="/js/tool-graph.js?v=2026-11-05b"></script>
+<script src="/js/flow.js?v=2026-11-05b"></script>
+<script src="/js/audio-core.js?v=2026-11-05b"></script>
+<script src="/js/consent.js?v=2026-11-05b"></script>
+<script src="/js/spectral.js?v=2026-11-05b"></script>
+<script src="/js/loudness.js?v=2026-11-05b"></script>
+<script src="/js/audio-inspect.js?v=2026-11-05b"></script>
+<script src="/js/inspect-page.js?v=2026-11-05b"></script>
+<script src="/js/pwa.js?v=2026-11-05b"></script>
+</body>
+</html>

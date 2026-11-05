@@ -474,6 +474,11 @@ are much slower without a GPU.
 - [8D Audio Maker](https://audiosaw.com/8d-audio): Move a track slowly around your head — on headphones, it circles.
 - [Nightcore Maker](https://audiosaw.com/nightcore): Speed a song up and lift its pitch — nightcore and sped-up edits.
 
+## Check a file
+
+- [Fake lossless detector](https://audiosaw.com/fake-lossless-detector): Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3's cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.
+- [Audio file info](https://audiosaw.com/audio-file-info): Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.
+
 ## For a specific app or device
 
 - [Audio for Whisper](https://audiosaw.com/audio-for-whisper): 16 kHz mono WAV — exactly what Whisper wants, in one click.

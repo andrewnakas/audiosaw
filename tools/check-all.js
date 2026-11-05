@@ -68,6 +68,7 @@ const CHECKS = [
   ['check-av-sync.js'],
   ['check-dehum.js'],
   ['check-declick.js'],
+  ['check-inspect.js'],
   ['check-sheet.js'],
   ['check-voice.js'],
   ['check-tts.js'],

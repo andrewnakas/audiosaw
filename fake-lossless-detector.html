@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake FLAC Detector — Is My FLAC or WAV Really Lossless? Free Check</title>
+<meta name="description" content="Check whether a FLAC, WAV or 320 kbps MP3 is genuine or was made from a lower-quality MP3. Reads the spectrum for an encoder's cutoff, padded bit depth and upsampling. Free, no upload.">
+<meta name="keywords" content="fake flac detector, fake lossless, is my flac real, check if flac is lossless, fake 320kbps mp3, flac spectrum analysis, transcode detector, lossless checker, upscaled audio detector">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/fake-lossless-detector">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Is it really lossless? A fake FLAC, WAV and 320 kbps detector">
+<meta property="og:description" content="Finds the cutoff a lossy encoder leaves, padded 24-bit and upsampled hi-res. Files are read in your browser, never uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/fake-lossless-detector">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05b">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Fake Lossless Detector",
+  "alternateName": [
+    "Fake FLAC detector",
+    "Lossless checker",
+    "Fake 320 kbps MP3 detector",
+    "Transcode detector"
+  ],
+  "url": "https://audiosaw.com/fake-lossless-detector",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Average spectrum of the whole file with the cutoff marked; names the likely source bitrate from cutoffs measured with LAME and AAC; flags 24-bit files holding 16-bit audio and hi-res files upsampled from 44.1 or 48 kHz; FLAC, WAV, AIFF, ALAC, MP3, M4A; several files at once; nothing uploaded",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.verdict{border-left:4px solid var(--rule);background:var(--card);padding:.6rem .9rem;margin:.6rem 0;border-radius:4px}
+.verdict p{margin:.3rem 0 0}
+.verdict-genuine{border-left-color:var(--success)}
+.verdict-unclear{border-left-color:var(--warn)}
+.verdict-lossy-source,.verdict-upsampled,.verdict-padded{border-left-color:var(--error)}
+.inspect-card{margin:1.25rem 0 0;padding-top:1rem;border-top:1px solid var(--rule)}
+.inspect-card h3{margin:0;word-break:break-all}
+.inspect-format{color:var(--muted);margin:.2rem 0 .4rem}
+canvas.spectrum{display:block;width:100%;height:220px;margin:.6rem 0}
+#infoActions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How can I tell if a FLAC file is fake?","acceptedAnswer":{"@type":"Answer","text":"Drop it above. A FLAC made from an MP3 has a sharp cutoff where the MP3 encoder low-passed it, usually 16 to 19 kHz, with nothing above. The page finds that edge, draws the spectrum and names the likely source bitrate."}},{"@type":"Question","name":"Is my 320 kbps MP3 really 320?","acceptedAnswer":{"@type":"Answer","text":"If it was made from a 128 kbps file, it keeps that file's cutoff around 17 kHz, and the page will flag it as upscaled. A real 320 kbps LAME file cuts at about 20.3 kHz, which the page reports as \"can't tell\", because some genuine masters stop there too."}},{"@type":"Question","name":"Can it prove a file is genuine lossless?","acceptedAnswer":{"@type":"Answer","text":"No tool can prove it from the audio alone. A clean result rules out the low-bitrate MP3s and AACs that most fakes are made from; a V0 MP3 or 256 kbps AAC can keep the whole band and pass."}},{"@type":"Question","name":"What is a fake 24-bit file?","acceptedAnswer":{"@type":"Answer","text":"A 16-bit recording saved as 24-bit, so the bottom 8 bits of every sample are zero. The page reads every sample and reports how many bits are actually in use."}},{"@type":"Question","name":"Why does a real CD rip show a cutoff near 22 kHz?","acceptedAnswer":{"@type":"Answer","text":"A 44.1 kHz file can only hold frequencies up to 22.05 kHz, and the converter's anti-alias filter sits just under that. That is normal and the page treats it as genuine."}},{"@type":"Question","name":"Are my files uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Each file is decoded and analysed in your browser tab, so even a large FLAC collection never leaves your computer."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Check a file","item":"https://audiosaw.com/tools#inspect"},{"@type":"ListItem","position":3,"name":"Fake lossless detector"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#inspect">Check a file</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Fake lossless detector</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Is your <span class="ital">FLAC</span> really lossless?</h1>
+    <p>Drop a FLAC, WAV, AIFF or a "320 kbps" MP3 and see what is really inside. A file made from an MP3 keeps the MP3's missing top end however it is saved; a "24-bit" file made from a 16-bit one has 8 empty bits in every sample; a "96 kHz" file made from a CD has nothing above 22 kHz. All three show up here, with the spectrum to see for yourself. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div data-inspect="lossless">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the files to check</p>
+      <p>FLAC, WAV, AIFF, ALAC, MP3 or M4A. Up to 20 at once; each is read where it is.</p>
+      <input type="file" id="fileInput" accept="audio/*,.flac,.wav,.aif,.aiff,.m4a,.mp3,.ogg,.opus,.wv,.caf" multiple>
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+    <div class="actions">
+      <button class="btn" id="convertBtn" data-track="convert" disabled>Check again</button>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div id="results" aria-live="polite"></div>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Finds</th><td>Lossless files made from lossy ones (a FLAC from an MP3), MP3s re-encoded at a higher bitrate, 24-bit files holding 16-bit audio, hi-res files upsampled from 44.1 or 48 kHz</td></tr>
+        <tr><th>Shows</th><td>The average spectrum of the whole file, with the cutoff marked</td></tr>
+        <tr><th>Names</th><td>The likely source bitrate, from cutoffs we measured with LAME and AAC</td></tr>
+        <tr><th>Won't call fake</th><td>An edge near 20 kHz, which a 320 kbps MP3 and some studio filters share</td></tr>
+        <tr><th>Takes</th><td>FLAC, WAV, AIFF, ALAC, MP3, M4A, several at once</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How a fake FLAC gives itself away</h2>
+    <p>An MP3 or AAC encoder saves space by throwing away what it judges you will not miss, and the first thing to go is the very top of the spectrum. Before encoding, it low-passes the sound with a steep filter, so the file has nothing at all above a fixed frequency: 16 to 17 kHz at 128 kbps, around 19 kHz at 192. Converting that MP3 to FLAC or WAV makes a bigger file, but the missing top end stays missing, and the edge where the music stops is a cliff, 30 dB or more within a few hundred hertz, with only silence above.</p>
+    <p>A genuine recording does not do that. Cymbals, breath, room noise and the recording chain's own hiss carry on up to the top of the band and fade into the noise floor gradually, or stop at the converter's anti-alias filter just under 22 kHz on a 44.1 kHz file. That difference is what this page measures. It averages the spectrum over the whole file, so a quiet intro does not fool it, then looks for the highest cliff and how far it falls.</p>
+
+    <h2>The cutoffs we measured</h2>
+    <p>To name a likely source, we encoded a full-band test recording at 44.1 kHz with LAME (the MP3 encoder almost everything uses) and with ffmpeg's AAC encoder, decoded each back, saved it as FLAC, and measured where the content stopped:</p>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>MP3 96 kbps</th><td>15.5 kHz</td></tr>
+        <tr><th>MP3 128 kbps</th><td>16.9 kHz</td></tr>
+        <tr><th>AAC 128 kbps</th><td>17.3 kHz</td></tr>
+        <tr><th>MP3 160 kbps</th><td>17.5 kHz</td></tr>
+        <tr><th>MP3 192 kbps</th><td>18.9 kHz</td></tr>
+        <tr><th>MP3 V2 (VBR)</th><td>19.0 kHz</td></tr>
+        <tr><th>MP3 256 kbps</th><td>19.6 kHz</td></tr>
+        <tr><th>MP3 320 kbps</th><td>20.3 kHz</td></tr>
+        <tr><th>MP3 V0, AAC 256 kbps</th><td>no cutoff: they kept the whole band</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Older encoders, Fraunhofer's and early iTunes among them, cut lower for the same bitrate, so the name the page gives is the likeliest source, not the only one. The check behind this page re-runs those encodes and requires each to be recognised and named, the 320 kbps file to be called "can't tell" rather than fake, and the original to pass.</p>
+
+    <h2>What it can't tell you</h2>
+    <p>Spectrum analysis catches the low-bitrate files that most fakes are made from, but not everything. A V0 MP3 or a 256 kbps AAC can keep the whole band, and they did on our test file, so a clean result does not prove a file was never lossy. An edge near 20 kHz is ambiguous: a 320 kbps MP3 leaves one, and so do some studio and mastering filters and some converters, so the page says "can't tell" rather than guess. A sharp cutoff can also come from a recording made at a lower sample rate, such as 32 kHz broadcast audio, or from an old master that was low-passed on purpose. Treat a flag as strong evidence, and a pass as "no sign of the usual fakes".</p>
+
+    <h2>Fake 24-bit and fake hi-res</h2>
+    <p>Some hi-res downloads have turned out to be a 16-bit master with eight zero bits added, or a 44.1 kHz master resampled to 96 kHz. Both are easy to measure. For bit depth, the page reads every sample and finds the lowest bit any of them uses: a padded 24-bit file uses 16. For sample rate, a genuine 96 kHz recording has content or at least noise above 22 kHz, and an upsampled one stops dead at the old Nyquist frequency. Spek draws the same spectrogram picture for you to judge by eye; Fakin' The Funk and Lossless Audio Checker automate the call on Windows and macOS. This page does it in the browser, file by file, with the reasoning written out.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How can I tell if a FLAC file is fake?</summary><p>Drop it above. A FLAC made from an MP3 has a sharp cutoff where the MP3 encoder low-passed it, usually 16 to 19 kHz, with nothing above. The page finds that edge, draws the spectrum and names the likely source bitrate.</p></details>
+      <details><summary>Is my 320 kbps MP3 really 320?</summary><p>If it was made from a 128 kbps file, it keeps that file's cutoff around 17 kHz, and the page will flag it as upscaled. A real 320 kbps LAME file cuts at about 20.3 kHz, which the page reports as "can't tell", because some genuine masters stop there too.</p></details>
+      <details><summary>Can it prove a file is genuine lossless?</summary><p>No tool can prove it from the audio alone. A clean result rules out the low-bitrate MP3s and AACs that most fakes are made from; a V0 MP3 or 256 kbps AAC can keep the whole band and pass.</p></details>
+      <details><summary>What is a fake 24-bit file?</summary><p>A 16-bit recording saved as 24-bit, so the bottom 8 bits of every sample are zero. The page reads every sample and reports how many bits are actually in use.</p></details>
+      <details><summary>Why does a real CD rip show a cutoff near 22 kHz?</summary><p>A 44.1 kHz file can only hold frequencies up to 22.05 kHz, and the converter's anti-alias filter sits just under that. That is normal and the page treats it as genuine.</p></details>
+      <details><summary>Are my files uploaded?</summary><p>No. Each file is decoded and analysed in your browser tab, so even a large FLAC collection never leaves your computer.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-file-info"><h3>Audio file info</h3><p>Everything else about the file: rate, depth, LUFS, peaks.</p></a>
+      <a class="card" href="/flac-to-mp3"><h3>FLAC to MP3</h3><p>It was an MP3 all along? Save the space and make it one.</p></a>
+      <a class="card" href="/flac-to-wav"><h3>FLAC to WAV</h3><p>Genuine? Make a WAV for a player that will not take FLAC.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05b"></script>
+<script src="/js/tool-graph.js?v=2026-11-05b"></script>
+<script src="/js/flow.js?v=2026-11-05b"></script>
+<script src="/js/audio-core.js?v=2026-11-05b"></script>
+<script src="/js/consent.js?v=2026-11-05b"></script>
+<script src="/js/spectral.js?v=2026-11-05b"></script>
+<script src="/js/loudness.js?v=2026-11-05b"></script>
+<script src="/js/audio-inspect.js?v=2026-11-05b"></script>
+<script src="/js/inspect-page.js?v=2026-11-05b"></script>
+<script src="/js/pwa.js?v=2026-11-05b"></script>
+</body>
+</html>

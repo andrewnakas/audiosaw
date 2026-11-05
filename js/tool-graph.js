@@ -32,6 +32,7 @@
     { id: 'create',   title: 'Record & tag' },
     { id: 'voice',    title: 'Voice & speech' },
     { id: 'fx',       title: 'Effects & remixes' },
+    { id: 'inspect',  title: 'Check a file' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
 
@@ -972,6 +973,25 @@
         ['extract-audio', 'Just the sound of the video, as a file']
       ]
     },
+    'fake-lossless-detector': {
+      cat: 'inspect', label: 'fake flac check', title: 'Fake lossless detector',
+      blurb: 'Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3\'s cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.',
+      next: [
+        ['audio-file-info', 'Everything else about the file: rate, depth, LUFS, peaks'],
+        ['flac-to-mp3', 'It was an MP3 all along? Save the space and make it one'],
+        ['flac-to-wav', 'Genuine? Make a WAV for a player that will not take FLAC']
+      ]
+    },
+    'audio-file-info': {
+      cat: 'inspect', label: 'file info', title: 'Audio file info',
+      blurb: 'Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.',
+      next: [
+        ['fake-lossless-detector', 'Is the lossless file really lossless? Check its cutoff'],
+        ['loudness-normalizer', 'Set the LUFS and true peak a platform asks for'],
+        ['change-sample-rate', 'Change the sample rate'],
+        ['wav-44100-16bit', 'Make the 44.1 kHz 16-bit WAV a distributor wants']
+      ]
+    },
     'click-remover': {
       cat: 'repair', label: 'click remover', title: 'Click and crackle remover',
       blurb: 'Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.',
@@ -1260,6 +1280,15 @@
       tools: [
         'slowed-reverb', 'nightcore', '8d-audio', 'audio-speed',
         'pitch-shifter', 'audio-reverser', 'audio-plugins'
+      ]
+    },
+    {
+      id: 'inspect',
+      title: 'Check a file',
+      note: 'What is really inside: the format, the loudness, and whether it is the quality it claims.',
+      style: 'tile',
+      tools: [
+        'audio-file-info', 'fake-lossless-detector'
       ]
     },
     {
