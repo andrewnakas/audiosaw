@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fix Audio Out of Sync with Video — Free, No Re-encode</title>
+<meta name="description" content="Audio out of sync with video? Move the sound earlier or later by the millisecond, fix drift, or line up a separate mic recording automatically. The picture is never re-encoded. Free, no upload.">
+<meta name="keywords" content="fix audio out of sync, audio out of sync with video, sync audio and video, audio delay fix, lip sync fix, audio lag video, sync external audio to video, audio drift fix">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/fix-audio-sync">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Fix audio out of sync with video, to the millisecond">
+<meta property="og:description" content="Shift the sound, fix drift, or line up a separate recording by its waveform. The picture is copied untouched.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/fix-audio-sync">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05a">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Fix Audio Sync",
+  "alternateName": [
+    "Audio out of sync with video fixer",
+    "Sync audio and video",
+    "Audio delay fix",
+    "Sync external audio to video"
+  ],
+  "url": "https://audiosaw.com/fix-audio-sync",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Move a video's sound earlier or later by the millisecond with a live preview; fix drift with a different amount at the end; line up a separate recording (lavalier, Zoom, phone) with the camera's sound automatically by its waveform, drift included; the picture stream-copied, never re-encoded; MP4, MOV, MKV and WebM",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#preview{display:block;max-width:100%;max-height:42vh;margin:.75rem auto;border-radius:6px;background:#000}
+.controls input[type=number]{width:6rem}
+.nudge{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:.5rem 0}
+.nudge button{min-width:3.6rem}
+#found{font-weight:600;margin:.5rem 0}
+[data-for][hidden],[data-drift][hidden]{display:none!important}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I fix audio that is out of sync with the video?","acceptedAnswer":{"@type":"Answer","text":"Drop the video above, say whether the sound is late or early, and adjust the milliseconds while the preview plays until lips and words line up. Then save. The picture is copied untouched and the file stays the same length."}},{"@type":"Question","name":"How do I know if the audio is late or early?","acceptedAnswer":{"@type":"Answer","text":"Watch something that makes a sharp sound: a clap, a door, a \"p\" sound. If you hear it after you see it, the sound is late. If you hear it before, it is early."}},{"@type":"Question","name":"The sync is fine at the start but wrong by the end. Can it fix that?","acceptedAnswer":{"@type":"Answer","text":"Yes, that is drift. Tick \"It drifts\", enter how far out it is at the start and at the end, and the sound is stretched smoothly over the whole video so it lines up everywhere in between."}},{"@type":"Question","name":"Can it sync audio from a separate recorder to my camera video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose \"Line it up with a separate recording\" and drop both. The two waveforms are matched automatically, at the start and the end, and the recorder's sound replaces the camera's. The camera must have recorded its own sound as a guide."}},{"@type":"Question","name":"Does it reduce the video quality?","acceptedAnswer":{"@type":"Answer","text":"No. The video stream is copied without being decoded or encoded, so every frame is exactly as it was. Only the sound is rewritten."}},{"@type":"Question","name":"Why is my screen recording out of sync?","acceptedAnswer":{"@type":"Answer","text":"Usually Bluetooth headphones or a capture chain that adds delay. It is normally a fixed amount, often 100 to 300 ms, so a single setting here fixes the whole recording."}},{"@type":"Question","name":"Is my video uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Everything runs in your browser tab. The video codec is downloaded once (about 30 MB) the first time you save, then kept by the browser."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Cut, trim & arrange","item":"https://audiosaw.com/tools#edit"},{"@type":"ListItem","position":3,"name":"Fix audio out of sync"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#edit">Cut, trim &amp; arrange</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Fix audio out of sync</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Fix <span class="ital">audio</span> out of sync with video.</h1>
+    <p>Move the sound earlier or later by the millisecond and watch the result as you go, correct sound that drifts further out as the video goes on, or drop a separate microphone recording and have it lined up by its waveform. Only the sound changes; every frame is copied as it is. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the video</p>
+      <p>MP4, MOV, MKV or WebM. Got a separate recording of the same take? Drop it with the video.</p>
+      <input type="file" id="fileInput" accept="video/*,.mp4,.m4v,.mov,.mkv,.webm,audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma" multiple>
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+
+    <div id="controls" style="display:none">
+      <video id="preview" controls playsinline hidden></video>
+      <div class="controls">
+        <label>How
+          <select id="mode">
+            <option value="shift" selected>Move the sound by hand</option>
+            <option value="rec">Line it up with a separate recording</option>
+          </select>
+        </label>
+      </div>
+      <div data-for="shift">
+        <div class="controls">
+          <label>The sound is
+            <select id="dir">
+              <option value="late" selected>late (heard after it is seen)</option>
+              <option value="early">early (heard before it is seen)</option>
+            </select>
+          </label>
+          <label>Milliseconds <input type="number" id="ms" min="0" max="10000" step="1" value="0"></label>
+        </div>
+        <div class="nudge" aria-label="Nudge the sound">
+          <span>Nudge:</span>
+          <button class="btn btn-secondary" type="button" data-nudge="-50">−50</button>
+          <button class="btn btn-secondary" type="button" data-nudge="-10">−10</button>
+          <button class="btn btn-secondary" type="button" data-nudge="10">+10</button>
+          <button class="btn btn-secondary" type="button" data-nudge="50">+50</button>
+          <span>ms later</span>
+        </div>
+        <div class="controls">
+          <label class="check"><input type="checkbox" id="drift"> It drifts: the amount is different by the end</label>
+          <label data-drift hidden>At the end it is
+            <select id="endDir">
+              <option value="late" selected>late</option>
+              <option value="early">early</option>
+            </select>
+          </label>
+          <label data-drift hidden>Milliseconds at the end <input type="number" id="endMs" min="0" max="10000" step="1" value="0"></label>
+          <label class="check"><input type="checkbox" id="listen"> Play the original sound, to compare</label>
+        </div>
+        <p class="hint">Press play: the preview uses the setting as you change it. Watch a clap, a door, or lips closing on a "p" or "b".</p>
+      </div>
+      <div data-for="rec" hidden>
+        <div class="result-actions">
+          <button class="btn btn-secondary" id="recBtn" type="button">Choose the separate recording</button>
+          <input type="file" id="recInput" hidden>
+          <button class="btn btn-secondary" id="findBtn" type="button">Find where it lines up</button>
+        </div>
+        <p id="found" aria-live="polite"></p>
+        <p class="hint">The camera's own sound is the guide, so it has to have been recording too, even badly. The separate recording replaces it.</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Save the fixed video</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>A video (MP4, MOV, MKV, WebM) and, optionally, a separate recording of the same take (WAV, MP3, M4A, FLAC and the rest)</td></tr>
+        <tr><th>By hand</th><td>Earlier or later by the millisecond, up to 10 s, with a live preview and ±10/±50 ms nudges</td></tr>
+        <tr><th>Drift</th><td>A different amount at the end, corrected smoothly along the whole video</td></tr>
+        <tr><th>Separate recording</th><td>Lined up with the camera's sound by its waveform, at the start and the end, so a recorder's slow or fast clock is corrected too; measured within 1 ms</td></tr>
+        <tr><th>Picture</th><td>Copied packet for packet, never re-encoded; MOV and MKV keep their container</td></tr>
+        <tr><th>Sound out</th><td>AAC 192 kbps at the sound's own sample rate, exactly as long as the video</td></tr>
+        <tr><th>Uploads your files</th><td>No. No watermark, no account</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to fix audio that is out of sync</h2>
+    <p>Drop the video and press play. Find a moment where you can see the sound being made: a clap, a slammed door, a drum hit, or a speaker's lips closing on a "p", "b" or "m". If you hear it after you see it, the sound is late; if you hear it first, it is early. Choose which, type a first guess such as 100 ms, and play the same moment again. The preview uses the new setting straight away, so you can nudge it 10 or 50 ms at a time until the lips and the words land together. Tick "Play the original sound" to flip back and compare. When it looks right, press Save the fixed video.</p>
+    <p>Most people notice sound that comes before the picture much sooner than sound that comes after it, because that never happens in life: light arrives first, and sound from across a room is a few milliseconds behind. The broadcast guideline (ITU-R BT.1359) puts the point where viewers start to notice at about 45 ms early and 125 ms late. So when two settings both look acceptable, pick the one where the sound is slightly late rather than slightly early.</p>
+
+    <h2>Why video and audio drift apart</h2>
+    <p>A fixed offset, the same at the start and the end, usually comes from the recording chain. Screen recordings made while listening on Bluetooth headphones are a common case: Bluetooth earbuds typically add 100 to 300 ms, and some capture setups record that delay. OBS mixes with its own buffers, which is why it has a "Sync Offset" setting for each source, and capture cards, USB microphones and webcams each add their own delay. Fixing one of those is a single number.</p>
+    <p>Drift, where a video starts in sync and slides further out as it goes, is a clock problem. When sound is recorded on a separate device, such as a Zoom H1n, a Tascam, a RØDE Wireless GO or a second phone, its sample clock never runs at exactly the camera's speed. 50 parts per million is typical, which is 9 ms after three minutes and 180 ms after an hour, enough to ruin a long interview. Tick "It drifts", set how far out it is at the start and at the end, and the sound is stretched by that tiny ratio over the whole video, so every point in between lands too. A change that small cannot be heard as a change of pitch.</p>
+
+    <h2>Lining up a separate recording automatically</h2>
+    <p>If you recorded the sound on a separate device and the camera recorded its own guide track, choose "Line it up with a separate recording" and drop the recording as well. The page compares the two waveforms the way PluralEyes, DaVinci Resolve's "Auto Sync Audio" and Final Cut Pro's "Synchronize Clips" do. It uses a method called GCC-PHAT, which weighs every frequency equally rather than letting the loudest bass dominate, so a dull camera microphone across the room still matches a bright lavalier on the speaker's collar. It measures near the start and again near the end of anything over two minutes, so drift is found and corrected without you measuring anything. The check behind this page builds a camera track (muffled, with a room reflection and hiss) and a clean recording of the same three minutes of speech that started 2.5 s earlier and runs 50 ppm slow. It requires both ends to come out within 1 ms, and measures 0.09 ms at the start and 0.16 ms at the end. It also requires two unrelated recordings to be refused rather than matched.</p>
+
+    <h2>Why the picture is not re-encoded</h2>
+    <p>Editors re-encode the whole video when you change its sound, which takes minutes for a long clip and costs a little quality every time. Here the video stream is copied into the new file packet for packet. The check confirms the copied picture is byte-identical and has the same number of frames. The new sound is cut or padded to exactly the video's length, and where the move cuts into sound it fades over 5 ms, so the edit makes no click. It is written as AAC at 192 kbps, which every phone, editor and upload site plays.</p>
+
+    <h2>What it can't fix</h2>
+    <p>Phone videos are often recorded at a variable frame rate. When a player or editor handles that badly, the sync wanders back and forth instead of sliding steadily, and no single offset or straight-line drift fixes it. Converting the video to a constant frame rate in HandBrake first is the usual cure. A video where only part of the sound is out, such as a dropped stretch partway through a stream recording, needs cutting at that point in an editor: try <a href="/audio-editor">the audio editor</a> for the sound itself. And VLC's J and K keys, which move the sound 50 ms during playback, are a good way to measure the offset, but they change nothing in the file. This page writes the fix into the file.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I fix audio that is out of sync with the video?</summary><p>Drop the video above, say whether the sound is late or early, and adjust the milliseconds while the preview plays until lips and words line up. Then save. The picture is copied untouched and the file stays the same length.</p></details>
+      <details><summary>How do I know if the audio is late or early?</summary><p>Watch something that makes a sharp sound: a clap, a door, a "p" sound. If you hear it after you see it, the sound is late. If you hear it before, it is early.</p></details>
+      <details><summary>The sync is fine at the start but wrong by the end. Can it fix that?</summary><p>Yes, that is drift. Tick "It drifts", enter how far out it is at the start and at the end, and the sound is stretched smoothly over the whole video so it lines up everywhere in between.</p></details>
+      <details><summary>Can it sync audio from a separate recorder to my camera video?</summary><p>Yes. Choose "Line it up with a separate recording" and drop both. The two waveforms are matched automatically, at the start and the end, and the recorder's sound replaces the camera's. The camera must have recorded its own sound as a guide.</p></details>
+      <details><summary>Does it reduce the video quality?</summary><p>No. The video stream is copied without being decoded or encoded, so every frame is exactly as it was. Only the sound is rewritten.</p></details>
+      <details><summary>Why is my screen recording out of sync?</summary><p>Usually Bluetooth headphones or a capture chain that adds delay. It is normally a fixed amount, often 100 to 300 ms, so a single setting here fixes the whole recording.</p></details>
+      <details><summary>Is my video uploaded?</summary><p>No. Everything runs in your browser tab. The video codec is downloaded once (about 30 MB) the first time you save, then kept by the browser.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/add-audio-to-video"><h3>Add audio to video</h3><p>Put music or a voice-over on the fixed video.</p></a>
+      <a class="card" href="/add-subtitles-to-video"><h3>Add subtitles to video</h3><p>Captions, timed to the corrected sound.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Clean up the camera sound while you are at it.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Level the sound for YouTube or a podcast feed.</p></a>
+      <a class="card" href="/extract-audio"><h3>Extract audio from video</h3><p>Just the sound of the video, as a file.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05a"></script>
+<script src="/js/tool-graph.js?v=2026-11-05a"></script>
+<script src="/js/flow.js?v=2026-11-05a"></script>
+<script src="/js/audio-core.js?v=2026-11-05a"></script>
+<script src="/js/consent.js?v=2026-11-05a"></script>
+<script src="/js/tool-shell.js?v=2026-11-05a"></script>
+<script src="/js/spectral.js?v=2026-11-05a"></script>
+<script src="/js/av-sync.js?v=2026-11-05a"></script>
+<script src="/js/sync-page.js?v=2026-11-05a"></script>
+<script src="/js/pwa.js?v=2026-11-05a"></script>
+</body>
+</html>

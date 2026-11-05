@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-04b">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05a">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -183,7 +183,7 @@ gtag('config', 'G-5X9ERMVYXE');
       <a href="/mp4-to-mp3" title="MP4 to MP3">video → mp3</a>
       <a href="/audio-cutter" title="Audio Cutter">cut a clip</a>
       <a href="/slowed-reverb" title="Slowed + Reverb Maker">slowed + reverb</a>
-      <a href="/tools" class="task-picker-all">all 86 tools &rarr;</a>
+      <a href="/tools" class="task-picker-all">all 89 tools &rarr;</a>
     </div>
   </section>
 <!-- /AS:jobs -->
@@ -216,7 +216,7 @@ gtag('config', 'G-5X9ERMVYXE');
 <!-- AS:home -->
   <section class="rails">
     <h2><span class="num">02.</span>Pick a tool</h2>
-    <p class="rails-intro">All 86, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
+    <p class="rails-intro">All 89, grouped by what you are actually trying to do. Each row scrolls sideways &mdash; or see <a href="/tools">the full list</a>.</p>
 
     <div class="rail rail-is-chips" data-rail="convert">
       <div class="rail-head">
@@ -259,7 +259,7 @@ gtag('config', 'G-5X9ERMVYXE');
     <div class="rail" data-rail="trim">
       <div class="rail-head">
         <div>
-          <h3 id="rail-trim">Cut, trim &amp; arrange <span class="rail-count">9</span></h3>
+          <h3 id="rail-trim">Cut, trim &amp; arrange <span class="rail-count">10</span></h3>
           <p>Change how long it is or what order it is in, not what format it is.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -277,13 +277,14 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/trim-silence-edges"><span class="rail-tile-title">Trim silence off the ends</span><span class="rail-tile-blurb">Top and tail a recording, leaving the middle untouched.</span></a></li>
         <li><a href="/fade-in-fade-out"><span class="rail-tile-title">Fade in / fade out</span><span class="rail-tile-blurb">Clean fades on both ends without opening an editor.</span></a></li>
         <li><a href="/add-audio-to-video"><span class="rail-tile-title">Add audio to video</span><span class="rail-tile-blurb">Put music or a voice-over on a video, or replace its sound. Music ducks under speech by itself, loops and fades to fit. The picture is untouched.</span></a></li>
+        <li><a href="/fix-audio-sync"><span class="rail-tile-title">Fix audio out of sync</span><span class="rail-tile-blurb">Sound late or early against the picture? Shift it by the millisecond, fix drift, or line up a separate mic recording by its waveform. The picture is untouched.</span></a></li>
       </ul>
     </div>
 
     <div class="rail" data-rail="compress">
       <div class="rail-head">
         <div>
-          <h3 id="rail-compress">Compress &amp; clean up <span class="rail-count">9</span></h3>
+          <h3 id="rail-compress">Compress &amp; clean up <span class="rail-count">11</span></h3>
           <p>Too big to send, too quiet to hear, or too noisy to use.</p>
         </div>
         <div class="rail-arrows" aria-hidden="true">
@@ -297,6 +298,8 @@ gtag('config', 'G-5X9ERMVYXE');
         <li><a href="/loudness-normalizer"><span class="rail-tile-title">LUFS Loudness Normalizer</span><span class="rail-tile-blurb">Match the loudness target Spotify, Apple or broadcast expects. Works on video too.</span></a></li>
         <li><a href="/amplify-audio"><span class="rail-tile-title">Amplify quiet audio</span><span class="rail-tile-blurb">Make a too-quiet recording usable without driving it into distortion. Works on video too.</span></a></li>
         <li><a href="/noise-reduction"><span class="rail-tile-title">Remove background noise</span><span class="rail-tile-blurb">Strip hiss, hum and fans with spectral gating, or traffic, typing and barking behind a voice with an AI denoiser. Works on video too.</span></a></li>
+        <li><a href="/hum-remover"><span class="rail-tile-title">Hum remover</span><span class="rail-tile-blurb">Removes 50/60 Hz mains hum and buzz with its harmonics, following the exact frequency through the file, and leaves the voice alone.</span></a></li>
+        <li><a href="/click-remover"><span class="rail-tile-title">Click and crackle remover</span><span class="rail-tile-blurb">Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.</span></a></li>
         <li><a href="/audio-eq"><span class="rail-tile-title">EQ &amp; bass booster</span><span class="rail-tile-blurb">Adjust bass, mids and treble, or boost the low end, baked into the file.</span></a></li>
         <li><a href="/stereo-to-mono"><span class="rail-tile-title">Stereo to mono</span><span class="rail-tile-blurb">Fix one-sided recordings and halve the size of voice files.</span></a></li>
         <li><a href="/mono-to-stereo"><span class="rail-tile-title">Mono to stereo</span><span class="rail-tile-blurb">Honest dual-mono for software that insists on two channels.</span></a></li>
@@ -528,6 +531,7 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/auto-cut-silence">auto-cut silence</a>
         <a href="/silence-remover">cut silence</a>
         <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
         <a href="/sample-slicer">sample slicer</a>
       </div>
       <div class="footer-col">
@@ -549,6 +553,8 @@ gtag('config', 'G-5X9ERMVYXE');
         <a href="/audio-eq">eq / bass boost</a>
         <a href="/autotune">autotune</a>
         <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
       </div>
       <div class="footer-col">
         <h4>Record &amp; tag</h4>
@@ -605,12 +611,12 @@ gtag('config', 'G-5X9ERMVYXE');
   </div>
 </footer>
 <!-- /AS:footer -->
-<script src="/js/common.js?v=2026-11-04b"></script>
-<script src="/js/tool-graph.js?v=2026-11-04b"></script>
-<script src="/js/flow.js?v=2026-11-04b"></script>
-<script src="/js/audio-core.js?v=2026-11-04b"></script>
-<script src="/js/universal-converter.js?v=2026-11-04b"></script>
-<script src="/js/consent.js?v=2026-11-04b"></script>
-<script src="/js/pwa.js?v=2026-11-04b"></script>
+<script src="/js/common.js?v=2026-11-05a"></script>
+<script src="/js/tool-graph.js?v=2026-11-05a"></script>
+<script src="/js/flow.js?v=2026-11-05a"></script>
+<script src="/js/audio-core.js?v=2026-11-05a"></script>
+<script src="/js/universal-converter.js?v=2026-11-05a"></script>
+<script src="/js/consent.js?v=2026-11-05a"></script>
+<script src="/js/pwa.js?v=2026-11-05a"></script>
 </body>
 </html>

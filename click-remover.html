@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Click Remover — Remove Clicks, Pops and Crackle from Vinyl Rips, Free</title>
+<meta name="description" content="Remove clicks, pops and crackle from vinyl and tape transfers. Each click is found by prediction, rebuilt from the music around it, and everything else is left bit for bit. Free, in your browser, no upload.">
+<meta name="keywords" content="click remover, remove clicks from audio, vinyl crackle removal, declick, remove pops from vinyl recording, crackle remover, decrackle, remove clicks from vinyl rip, audio click removal online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/click-remover">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Click and crackle remover for vinyl and tape rips">
+<meta property="og:description" content="Finds each click, rebuilds the few milliseconds under it from the music either side, and leaves every other sample untouched.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/click-remover">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05a">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Click Remover",
+  "alternateName": [
+    "Vinyl crackle remover",
+    "Declicker",
+    "Remove pops from audio",
+    "Decrackle"
+  ],
+  "url": "https://audiosaw.com/click-remover",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Finds clicks, pops and crackle by linear prediction against the music's own local level; rebuilds each one by least-squares AR interpolation from the samples either side; leaves every sample outside a repair bit-identical; gentle, normal and strong sensitivity; WAV and FLAC at the source's own rate and depth; video in, video out",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.spec-wrap#report{margin-top:1rem}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I remove clicks and pops from a vinyl recording for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the rip above and press Remove the clicks. Each click is found and rebuilt from the music either side; nothing is uploaded, and the file comes back the same length and format."}},{"@type":"Question","name":"Will it change the parts of the recording without clicks?","acceptedAnswer":{"@type":"Answer","text":"No. Only the few milliseconds of each repaired click change. Every other sample is bit-identical to your file, which the check behind this page confirms sample by sample."}},{"@type":"Question","name":"Can it remove crackle as well as clicks?","acceptedAnswer":{"@type":"Answer","text":"Yes. Crackle is many small clicks close together. Choose Strong for a worn or dusty record or a 78, then listen to the cymbals: Strong is more likely to nibble at very sharp drum hits."}},{"@type":"Question","name":"Does it work on cassette and reel-to-reel transfers?","acceptedAnswer":{"@type":"Answer","text":"Yes, for the clicks and dropouts that sound like ticks. Tape hiss is a different problem: the noise reduction tool takes that."}},{"@type":"Question","name":"Will it remove a scratch that makes the record skip?","acceptedAnswer":{"@type":"Answer","text":"No. A skip loses music, and a deep scratch gives a thump longer than any click. Cut or patch those by hand in the audio editor."}},{"@type":"Question","name":"What format should I rip my vinyl in?","acceptedAnswer":{"@type":"Answer","text":"24-bit WAV at 44.1 or 96 kHz. Keep the output as WAV or FLAC with \"match the source\" and the repaired file stays 24-bit at the same rate."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The detection and the repair run in this browser tab, so it works offline once the page has loaded."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"Click and crackle remover"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Click and crackle remover</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Remove <span class="ital">clicks</span> and crackle from vinyl and tape rips.</h1>
+    <p>Drop a record or tape transfer and the clicks, pops and crackle come out. Each one is found where the sound stops being predictable, and the millisecond or so under it is rebuilt from the music on either side. Everything that is not a click stays exactly as it was, sample for sample. It runs in your browser; nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the vinyl or tape rip</p>
+      <p>WAV, FLAC, AIFF, MP3 or M4A, a whole side at once, or a video. Several files at once is fine.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Sensitivity
+          <select id="sensitivity">
+            <option value="gentle">Gentle: only the obvious clicks</option>
+            <option value="normal" selected>Normal: clicks and pops</option>
+            <option value="strong">Strong: fine crackle too</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="wav" selected>WAV — match the source (16 or 24-bit)</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="mp3">MP3</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="192">192 kbps</option>
+            <option value="320" selected>320 kbps — maximum</option>
+            <option value="v0">V0 (LAME VBR)</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the clicks removed</label>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Remove the clicks</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="spec-wrap" id="report" hidden>
+      <table class="spec-table"><tbody>
+        <tr><th>Clicks</th><td id="rCount">—</td></tr>
+        <tr><th>Sound touched</th><td id="rTouched">—</td></tr>
+      </tbody></table>
+    </div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Removes</th><td>Clicks, pops and crackle from vinyl, shellac and tape transfers, and digital ticks</td></tr>
+        <tr><th>Finds</th><td>97% of the clicks louder than -14 dBFS on music, every one of them on speech, in the check that ships with this page</td></tr>
+        <tr><th>Repairs</th><td>Each click rebuilt from the sound either side; a repaired click is 16 dB quieter (median, against the clean original)</td></tr>
+        <tr><th>Leaves alone</th><td>Every sample outside a repair, bit for bit; clean drums were not touched once</td></tr>
+        <tr><th>Out</th><td>WAV or FLAC at the source's own rate and depth (24-bit rips stay 24-bit), float WAV, MP3 or M4A</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to remove clicks from a vinyl rip</h2>
+    <p>Record the side as you normally would, from a USB turntable such as an Audio-Technica AT-LP120XUSB, or a deck through a phono preamp into an audio interface, ideally as a 24-bit WAV. Drop the file here, leave the sensitivity on Normal and press Remove the clicks. The report says how many clicks were repaired and how much of the recording that touched, which is usually a few hundredths of one percent, so everything you are keeping is exactly as you recorded it. The output is the same length and the same format as the rip, so you can split it into tracks afterwards with <a href="/split-audio">the splitter</a>.</p>
+    <p>Clean the record before you rip it if you can. A wet clean, even with a brush and a fluid, removes the dust that makes most of the crackle, and no software repairs a click as well as not having it. Scratches that the stylus jumps, and pops large enough to be heard as a thump, are beyond any click remover; for those, cut the bad moment out in <a href="/audio-editor">the editor</a>, or copy the same bar from a later repeat over it.</p>
+
+    <h2>How it finds a click</h2>
+    <p>Music is predictable a fraction of a millisecond ahead: from the last 32 samples you can predict the next one very closely, because instruments and voices are made of sustained vibrations. A click is a speck of dust or a scratch striking the stylus, and it is not predictable at all. So the page fits a predictor to each tenth of a second of the recording and watches the prediction error. A click is where the error jumps far above its own level in the surrounding 20 milliseconds. Its end is found the same way, predicting backwards from the samples after it. Measuring against the local level is what keeps a hi-hat, a snare or a sibilant from being taken for a click: they raise the error around themselves, so the bar rises with them.</p>
+    <p>Two more rules keep real sound safe. A click is short, so anything flagged for more than 2.5 milliseconds is left alone. And a click stops: if the prediction error stays high after the flagged moment, it was the start of a drum hit or a consonant, not a defect, and it is not touched. In the check behind this page, 30 seconds of clean drums (kicks, snares and hi-hats) had no sample touched, and clean speech none.</p>
+
+    <h2>How it repairs one</h2>
+    <p>The flagged samples are thrown away and rebuilt by least-squares autoregressive interpolation, the method Simon Godsill and Peter Rayner set out for restoring old recordings: the missing samples are chosen to be as predictable as possible from the music on both sides. The model for each repair is fitted on the 40 ms around the click with the click itself left out, so a loud pop does not bend the model that fills it. It uses 128 coefficients, enough to carry a chord: in the check, 32 coefficients left a repaired click 14.7 dB quieter and 128 left it 22.7 dB quieter. The page makes a second pass over the repaired sound, so crackle packed closely together is found against a cleaner background.</p>
+    <p>The check plays chords with bass and drums, and spoken word, each over a transfer's noise floor at -60 dBFS, with clicks built the way a record player makes them: one to four impulses through RIAA de-emphasis, plus the cartridge's resonance ringing at 6 to 16 kHz. At the Normal setting it finds 75 of the 77 clicks louder than -14 dBFS in the music and all 55 in the speech. The few it misses land exactly on a drum hit, where the rule that a click must stop holds it back. The median repaired click is 16 dB quieter than it was.</p>
+
+    <h2>Which setting to use</h2>
+    <p>Normal suits most rips. Gentle repairs only clicks that stand far out, for a clean pressing with a few ticks, or for music with lots of sharp percussion. Strong also takes fine crackle, the frying sound of a worn or dusty record and of 78s, at a higher chance of nibbling at very sharp transients; listen to the cymbals afterwards. Audacity's Click Removal works on a similar idea with a threshold and a maximum spike width. Dedicated tools such as iZotope RX De-click and De-crackle, Brian Davies' ClickRepair and Adobe Audition's Automatic Click Remover are the paid way to go further.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I remove clicks and pops from a vinyl recording for free?</summary><p>Drop the rip above and press Remove the clicks. Each click is found and rebuilt from the music either side; nothing is uploaded, and the file comes back the same length and format.</p></details>
+      <details><summary>Will it change the parts of the recording without clicks?</summary><p>No. Only the few milliseconds of each repaired click change. Every other sample is bit-identical to your file, which the check behind this page confirms sample by sample.</p></details>
+      <details><summary>Can it remove crackle as well as clicks?</summary><p>Yes. Crackle is many small clicks close together. Choose Strong for a worn or dusty record or a 78, then listen to the cymbals: Strong is more likely to nibble at very sharp drum hits.</p></details>
+      <details><summary>Does it work on cassette and reel-to-reel transfers?</summary><p>Yes, for the clicks and dropouts that sound like ticks. Tape hiss is a different problem: the noise reduction tool takes that.</p></details>
+      <details><summary>Will it remove a scratch that makes the record skip?</summary><p>No. A skip loses music, and a deep scratch gives a thump longer than any click. Cut or patch those by hand in the audio editor.</p></details>
+      <details><summary>What format should I rip my vinyl in?</summary><p>24-bit WAV at 44.1 or 96 kHz. Keep the output as WAV or FLAC with "match the source" and the repaired file stays 24-bit at the same rate.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. The detection and the repair run in this browser tab, so it works offline once the page has loaded.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/split-audio"><h3>Split an audio file</h3><p>Split the cleaned side into tracks.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Tag the tracks with artist, album and cover.</p></a>
+      <a class="card" href="/hum-remover"><h3>Hum remover</h3><p>A turntable ground loop? Take the hum out too.</p></a>
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Tape hiss or surface noise left? Reduce it.</p></a>
+      <a class="card" href="/wav-to-flac"><h3>WAV to FLAC</h3><p>Archive the rip losslessly in half the space.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05a"></script>
+<script src="/js/tool-graph.js?v=2026-11-05a"></script>
+<script src="/js/flow.js?v=2026-11-05a"></script>
+<script src="/js/audio-core.js?v=2026-11-05a"></script>
+<script src="/js/consent.js?v=2026-11-05a"></script>
+<script src="/js/project-link.js?v=2026-11-05a"></script>
+<script src="/js/tool-shell.js?v=2026-11-05a"></script>
+<script src="/js/declick.js?v=2026-11-05a"></script>
+<script src="/js/declick-page.js?v=2026-11-05a"></script>
+<script src="/js/pwa.js?v=2026-11-05a"></script>
+</body>
+</html>

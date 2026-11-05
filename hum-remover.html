@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hum Remover — Remove 50/60 Hz Hum and Buzz from Audio, Free</title>
+<meta name="description" content="Remove mains hum and buzz from a recording or video: the 50 or 60 Hz hum is found, measured to a hundredth of a hertz and notched out with its harmonics, leaving the voice alone. Free, no upload.">
+<meta name="keywords" content="hum remover, remove hum from audio, remove 60hz hum, remove 50hz hum, remove buzz from audio, ground loop hum removal, dehum, electrical hum removal, remove hum from video">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/hum-remover">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Hum remover: 50/60 Hz hum and buzz out, the voice left alone">
+<meta property="og:description" content="Finds the mains hum, follows its frequency through the file and removes it and its harmonics. Audio or video, in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/hum-remover">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-05a">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Hum Remover",
+  "alternateName": [
+    "Remove 60 Hz hum",
+    "Remove 50 Hz hum",
+    "Ground loop hum remover",
+    "Buzz remover",
+    "Dehum"
+  ],
+  "url": "https://audiosaw.com/hum-remover",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Finds 50 or 60 Hz mains hum by itself and measures its frequency to a hundredth of a hertz; follows the mains as it wanders through the file; one zero-phase notch per harmonic, under 2 Hz wide, up to 1 kHz for hum or 4 kHz for buzz; MP3, WAV, FLAC, M4A and video in, the same length out; a video keeps its picture untouched",
+  "dateModified": "2026-11-05"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.spec-wrap#report{margin-top:1rem}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I remove hum from audio for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the file above and press Remove the hum. The page finds whether it is 50 or 60 Hz, measures the exact frequency and removes it with its harmonics. Nothing is uploaded and there is no account."}},{"@type":"Question","name":"Is my hum 50 Hz or 60 Hz?","acceptedAnswer":{"@type":"Answer","text":"It depends on where it was recorded: 60 Hz in North America and parts of South America and Asia, 50 Hz in Europe, the UK, Africa, most of Asia and Australia. You do not need to know; the page measures it."}},{"@type":"Question","name":"Will it change the sound of the voice?","acceptedAnswer":{"@type":"Answer","text":"Very little. Each notch is under 2 Hz wide, so the voice between the harmonics is left alone. In the check, a minute of speech changed level by 0.13 dB while the hum came down 42 dB."}},{"@type":"Question","name":"Can it remove hum from a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop an MP4, MOV or WebM. The sound is cleaned and put back beside the original picture, which is copied without being re-encoded, so the video stays exactly as sharp and in sync."}},{"@type":"Question","name":"It says no hum was found, but I can hear it. Why?","acceptedAnswer":{"@type":"Answer","text":"The automatic finder only calls it hum when its harmonics stand clearly above the rest of the sound. Choose 50 or 60 Hz under Mains and it will be removed anyway. If it is a hiss or a whine rather than a low drone, it is not mains hum; try the noise reduction tool."}},{"@type":"Question","name":"What causes the hum in my recording?","acceptedAnswer":{"@type":"Answer","text":"Most often a ground loop: two pieces of gear plugged into different sockets and joined by an audio cable, such as a laptop on its charger feeding a mixer or an amp. Single-coil guitar pickups, light dimmers and unshielded cables near power supplies are the other usual causes."}},{"@type":"Question","name":"What is the difference between hum and buzz?","acceptedAnswer":{"@type":"Answer","text":"Hum is mostly the mains frequency and its first few harmonics, a soft low drone. Buzz has strong harmonics up into the kilohertz and sounds harsh. Choose \"Buzz\" for that: it removes harmonics up to 4 kHz."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Clean up & separate","item":"https://audiosaw.com/tools#repair"},{"@type":"ListItem","position":3,"name":"Hum remover"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#repair">Clean up &amp; separate</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Hum remover</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Remove <span class="ital">hum</span> from audio: 50 and 60 Hz, and the buzz above it.</h1>
+    <p>Drop a recording or a video with a mains hum in it, the low drone from a ground loop, a guitar amp, a cheap power supply or a light dimmer. The page finds the hum, measures its exact frequency, follows it through the file and cuts it out with its harmonics, in notches so narrow that the voice or music between them is left as it was. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop the recording or video with the hum</p>
+      <p>MP3, WAV, M4A, FLAC, voice memos, or an MP4, MOV or WebM video. Several at once is fine.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mkv,.m4v" multiple>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>Mains
+          <select id="mains">
+            <option value="auto" selected>Find it (50 or 60 Hz)</option>
+            <option value="60">60 Hz: North America, much of South America, west Japan</option>
+            <option value="50">50 Hz: Europe, UK, Africa, Asia, Australia, east Japan</option>
+          </select>
+        </label>
+        <label>How much
+          <select id="strength">
+            <option value="light">Light: the hum's first four harmonics</option>
+            <option value="hum" selected>Hum: every harmonic up to 1 kHz</option>
+            <option value="buzz">Buzz: every harmonic up to 4 kHz</option>
+          </select>
+        </label>
+        <label>Output format
+          <select id="outFmt">
+            <option value="wav" selected>WAV — match the source (16 or 24-bit)</option>
+            <option value="flac">FLAC — match the source</option>
+            <option value="mp3">MP3</option>
+            <option value="wav32f">WAV 32-bit float</option>
+            <option value="m4a">M4A (AAC)</option>
+          </select>
+        </label>
+        <label>MP3 bitrate
+          <select id="bitrate">
+            <option value="192">192 kbps</option>
+            <option value="320" selected>320 kbps — maximum</option>
+            <option value="v0">V0 (LAME VBR)</option>
+          </select>
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" id="keepVideo" checked> for a video, keep the picture: it comes back as a video with the hum removed</label>
+      <div class="actions">
+        <button class="btn" id="convertBtn" disabled>Remove the hum</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="spec-wrap" id="report" hidden>
+      <table class="spec-table"><tbody>
+        <tr><th>Hum found</th><td id="rFound">—</td></tr>
+        <tr><th>Its frequency</th><td id="rDrift">—</td></tr>
+        <tr><th>Removed</th><td id="rNotches">—</td></tr>
+      </tbody></table>
+    </div>
+    <div class="result-list" id="resultList"></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Finds</th><td>50 or 60 Hz mains hum by itself, its frequency measured to a hundredth of a hertz</td></tr>
+        <tr><th>Follows</th><td>The mains frequency as it wanders through the file, second by second</td></tr>
+        <tr><th>Removes</th><td>The hum and its harmonics: the first four, everything up to 1 kHz, or up to 4 kHz for buzz</td></tr>
+        <tr><th>Measured</th><td>Hum 42 dB down under speech; the speech level moved 0.13 dB</td></tr>
+        <tr><th>Leaves</th><td>The timing and length exactly as they were (zero-phase filtering); a video's picture copied untouched</td></tr>
+        <tr><th>Out</th><td>WAV or FLAC at the source's own rate and depth, float WAV, MP3 or M4A</td></tr>
+        <tr><th>Uploads your files</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>What hum is, and why it is hard to remove</h2>
+    <p>Mains electricity alternates 50 times a second in Europe, the UK, most of Asia, Africa and Australia, and 60 times a second in North America, much of South America, Taiwan, Korea and the west of Japan. When it leaks into a recording, through a ground loop between a laptop on its charger and a mixer, an unbalanced guitar cable, a lavalier receiver beside a power brick, or a dimmer on the same circuit, it arrives as a low drone at that frequency. Above it sit harmonics at two, three, four times the frequency and up. A transformer gives a soft hum, mostly the fundamental and the second harmonic; a rectifier or a dimmer gives a harsh buzz, where the odd harmonics reach well into the kilohertz.</p>
+    <p>A broad cut at 60 Hz takes the bass of a voice with it and leaves the buzz above. What works is a separate narrow notch on every harmonic, and that only works if each notch sits exactly on its harmonic. The grid is never exactly on 50.00 or 60.00 Hz: it wanders by a few hundredths of a hertz as demand changes, and an old tape or a recording made off speed moves it further. A 0.03 Hz error is 0.24 Hz at the 8th harmonic, which is enough to slip out of a notch narrow enough to leave the voice alone.</p>
+
+    <h2>How this hum remover works</h2>
+    <p>First it listens. A low-passed copy of the first minute is searched from 47 to 53 Hz and from 57 to 63 Hz for the frequency whose harmonics carry the most energy, then refined to a hundredth of a hertz. It is called hum only when at least two harmonics stand 10 dB above the sound a few hertz either side, so a voice or a bass line is not mistaken for it. Clean speech, in the check that comes with this page, does not trigger it. Then it follows the hum: every second, a four-second window is searched again within 0.15 Hz of that frequency, so the notches move with the mains as it drifts. Then each harmonic gets its own notch, under 2 Hz wide, run forwards and then backwards over the file. That cancels any phase shift, so nothing is delayed or smeared, and it doubles the depth. At each end the hum itself is carried on past the file for the notches to settle on, so the first and last seconds are cleaned as well as the middle.</p>
+    <p>The check behind this page plays a minute of speech over hum at -30 dBFS with eight harmonics, set at 59.97 and 50.04 Hz and wandering 0.03 Hz either way, as the grid does. It finds the right mains each time and measures the frequency within 0.01 Hz. The hum comes out 42 dB quieter, and the speech level changes by 0.13 dB.</p>
+
+    <h2>Which setting to use</h2>
+    <p>Leave Mains on "Find it" unless the page says it found nothing and you can still hear a hum; then choosing your country's frequency removes it anyway. "Hum", every harmonic up to 1 kHz, is right for most recordings. "Light" takes only the first four harmonics, for music where you want to touch as little as possible. "Buzz" goes to 4 kHz, for the angry, edgy sound of a dimmer or a single-coil guitar pickup near a monitor. For speech it costs nothing audible; on sustained music the more notches, the more chance one lands on a note that happens to sit on a harmonic.</p>
+
+    <h2>What it doesn't do</h2>
+    <p>It removes hum, not other noise. Hiss, fans, air conditioning, traffic and room tone have no fixed pitch, and the <a href="/noise-reduction">noise reduction tool</a> deals with those. A hum loud enough to clip the recording leaves distortion that no filter can undo. The tools sold for this, iZotope RX's De-hum, Adobe Audition's DeHummer and Waves X-Hum, do the same job and add adaptive learning that helps on difficult buzz. Audacity has a Notch Filter but no automatic tracking. If you can, fix it at the source before the next session: a ground-lift or a DI box on the guitar, the laptop on battery, balanced XLR cables, and audio cables crossing power cables at right angles.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I remove hum from audio for free?</summary><p>Drop the file above and press Remove the hum. The page finds whether it is 50 or 60 Hz, measures the exact frequency and removes it with its harmonics. Nothing is uploaded and there is no account.</p></details>
+      <details><summary>Is my hum 50 Hz or 60 Hz?</summary><p>It depends on where it was recorded: 60 Hz in North America and parts of South America and Asia, 50 Hz in Europe, the UK, Africa, most of Asia and Australia. You do not need to know; the page measures it.</p></details>
+      <details><summary>Will it change the sound of the voice?</summary><p>Very little. Each notch is under 2 Hz wide, so the voice between the harmonics is left alone. In the check, a minute of speech changed level by 0.13 dB while the hum came down 42 dB.</p></details>
+      <details><summary>Can it remove hum from a video?</summary><p>Yes. Drop an MP4, MOV or WebM. The sound is cleaned and put back beside the original picture, which is copied without being re-encoded, so the video stays exactly as sharp and in sync.</p></details>
+      <details><summary>It says no hum was found, but I can hear it. Why?</summary><p>The automatic finder only calls it hum when its harmonics stand clearly above the rest of the sound. Choose 50 or 60 Hz under Mains and it will be removed anyway. If it is a hiss or a whine rather than a low drone, it is not mains hum; try the noise reduction tool.</p></details>
+      <details><summary>What causes the hum in my recording?</summary><p>Most often a ground loop: two pieces of gear plugged into different sockets and joined by an audio cable, such as a laptop on its charger feeding a mixer or an amp. Single-coil guitar pickups, light dimmers and unshielded cables near power supplies are the other usual causes.</p></details>
+      <details><summary>What is the difference between hum and buzz?</summary><p>Hum is mostly the mains frequency and its first few harmonics, a soft low drone. Buzz has strong harmonics up into the kilohertz and sounds harsh. Choose "Buzz" for that: it removes harmonics up to 4 kHz.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/noise-reduction"><h3>Remove background noise</h3><p>Hiss, fans or room noise left? Those are not hum.</p></a>
+      <a class="card" href="/click-remover"><h3>Click and crackle remover</h3><p>A vinyl rip? Take the clicks and crackle out as well.</p></a>
+      <a class="card" href="/enhance-speech"><h3>Enhance speech</h3><p>Level and polish the cleaned voice in one go.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Shape the tone once the hum is gone.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring the cleaned file to -16 or -14 LUFS.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-05a"></script>
+<script src="/js/tool-graph.js?v=2026-11-05a"></script>
+<script src="/js/flow.js?v=2026-11-05a"></script>
+<script src="/js/audio-core.js?v=2026-11-05a"></script>
+<script src="/js/consent.js?v=2026-11-05a"></script>
+<script src="/js/project-link.js?v=2026-11-05a"></script>
+<script src="/js/tool-shell.js?v=2026-11-05a"></script>
+<script src="/js/dehum.js?v=2026-11-05a"></script>
+<script src="/js/dehum-page.js?v=2026-11-05a"></script>
+<script src="/js/pwa.js?v=2026-11-05a"></script>
+</body>
+</html>

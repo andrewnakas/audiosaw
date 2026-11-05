@@ -554,6 +554,7 @@
       blurb: 'Strip hiss, hum and fans with spectral gating, or traffic, typing and barking behind a voice with an AI denoiser. Works on video too.',
       project: 'same',
       next: [
+        ['hum-remover', 'A steady low drone? Mains hum comes out exactly with the hum remover'],
         ['normalize-audio', 'Denoising lowers the level — put it back'],
         ['audio-eq', 'Clear up what is left with a little EQ'],
         ['silence-remover', 'Cut the dead air as well'],
@@ -956,7 +957,43 @@
         ['voice-recorder', 'Record a voice-over to put on it'],
         ['text-to-speech', 'A narrated voice-over from text'],
         ['audio-cutter', 'Cut the song to the part you want first'],
-        ['vocal-remover', 'An instrumental of the song, so it does not fight the speech']
+        ['vocal-remover', 'An instrumental of the song, so it does not fight the speech'],
+        ['fix-audio-sync', 'Sound out of step with the picture? Fix the sync first']
+      ]
+    },
+    'fix-audio-sync': {
+      cat: 'edit', label: 'fix audio sync', title: 'Fix audio out of sync',
+      blurb: 'Sound late or early against the picture? Shift it by the millisecond, fix drift, or line up a separate mic recording by its waveform. The picture is untouched.',
+      next: [
+        ['add-audio-to-video', 'Put music or a voice-over on the fixed video'],
+        ['add-subtitles-to-video', 'Captions, timed to the corrected sound'],
+        ['noise-reduction', 'Clean up the camera sound while you are at it'],
+        ['loudness-normalizer', 'Level the sound for YouTube or a podcast feed'],
+        ['extract-audio', 'Just the sound of the video, as a file']
+      ]
+    },
+    'click-remover': {
+      cat: 'repair', label: 'click remover', title: 'Click and crackle remover',
+      blurb: 'Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.',
+      project: 'same',
+      next: [
+        ['split-audio', 'Split the cleaned side into tracks'],
+        ['mp3-tag-editor', 'Tag the tracks with artist, album and cover'],
+        ['hum-remover', 'A turntable ground loop? Take the hum out too'],
+        ['noise-reduction', 'Tape hiss or surface noise left? Reduce it'],
+        ['wav-to-flac', 'Archive the rip losslessly in half the space']
+      ]
+    },
+    'hum-remover': {
+      cat: 'repair', label: 'hum remover', title: 'Hum remover',
+      blurb: 'Removes 50/60 Hz mains hum and buzz with its harmonics, following the exact frequency through the file, and leaves the voice alone.',
+      project: 'same',
+      next: [
+        ['noise-reduction', 'Hiss, fans or room noise left? Those are not hum'],
+        ['click-remover', 'A vinyl rip? Take the clicks and crackle out as well'],
+        ['enhance-speech', 'Level and polish the cleaned voice in one go'],
+        ['audio-eq', 'Shape the tone once the hum is gone'],
+        ['loudness-normalizer', 'Bring the cleaned file to -16 or -14 LUFS']
       ]
     },
     'censor-audio': {
@@ -1182,7 +1219,7 @@
       style: 'tile',
       tools: [
         'audio-editor', 'audio-cutter', 'audio-joiner', 'ringtone-maker', 'auto-cut-silence',
-        'silence-remover', 'trim-silence-edges', 'fade-in-fade-out', 'add-audio-to-video'
+        'silence-remover', 'trim-silence-edges', 'fade-in-fade-out', 'add-audio-to-video', 'fix-audio-sync'
       ]
     },
     {
@@ -1192,7 +1229,7 @@
       style: 'tile',
       tools: [
         'audio-compressor', 'normalize-audio', 'loudness-normalizer',
-        'amplify-audio', 'noise-reduction', 'audio-eq', 'stereo-to-mono',
+        'amplify-audio', 'noise-reduction', 'hum-remover', 'click-remover', 'audio-eq', 'stereo-to-mono',
         'mono-to-stereo', 'change-sample-rate'
       ]
     },

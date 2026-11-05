@@ -411,6 +411,7 @@ are much slower without a GPU.
 - [Auto-Cut Silence](https://audiosaw.com/auto-cut-silence): Shorten the pauses between phrases, keeping speech natural.
 - [Remove silence](https://audiosaw.com/silence-remover): Strip dead air out of a podcast, voice memo or voiceover.
 - [Add audio to video](https://audiosaw.com/add-audio-to-video): Put music or a voice-over on a video, or replace its sound. Music ducks under speech by itself, loops and fades to fit. The picture is untouched.
+- [Fix audio out of sync](https://audiosaw.com/fix-audio-sync): Sound late or early against the picture? Shift it by the millisecond, fix drift, or line up a separate mic recording by its waveform. The picture is untouched.
 - [Sample Slicer](https://audiosaw.com/sample-slicer): Chop a break at the hits, play the slices on pads, export for SP-404 or MPC.
 
 ## Loudness & channels
@@ -432,6 +433,8 @@ are much slower without a GPU.
 - [EQ & bass booster](https://audiosaw.com/audio-eq): Adjust bass, mids and treble, or boost the low end, baked into the file.
 - [Autotune / Pitch Correction](https://audiosaw.com/autotune): Snap a vocal to a key — subtle tuning or the hard-tuned effect.
 - [Pitch & key changer](https://audiosaw.com/pitch-shifter): Shift the key up or down by semitones without changing the tempo.
+- [Click and crackle remover](https://audiosaw.com/click-remover): Clicks, pops and crackle out of vinyl and tape rips: each one rebuilt from the music either side, every other sample left exactly as it was.
+- [Hum remover](https://audiosaw.com/hum-remover): Removes 50/60 Hz mains hum and buzz with its harmonics, following the exact frequency through the file, and leaves the voice alone.
 
 ## Record & tag
 
