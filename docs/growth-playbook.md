@@ -1051,3 +1051,16 @@ and either fix or move the bar with a reason.
 **Re-read ~12 Nov:** landings per new page from chatgpt.com, bing.com and
 google; convert_start -> convert_success on the five processors; whether any
 of the ten draws the "Discovered – not indexed" fate in Search Console.
+
+**12 Nov read (GA4, 5-11 Nov vs 29 Oct-4 Nov):** sessions 1,811 (+16%).
+AI Assistant 741 vs 749 (-1%): the October slide has stopped. Direct 549
+(+63%, engagement 57 s, many 0 s single-page hits on new pages: likely
+crawlers). Organic search 450 (+14%). First week of the ten: /spectrogram
+18 sessions (17 from chatgpt.com), /de-esser 16 (12 chatgpt, 49 key events),
+/seamless-loop-maker 7 (6 chatgpt), /fix-audio-sync 7 (4 chatgpt), /hum-remover
+4 (2 bing), /click-remover 3, /fake-lossless-detector 5 and /audio-file-info 4
+(all direct, 0 s), /vocal-range-test 2, /tap-bpm 1. Of 4 Nov's pages,
+/censor-audio 17 (13 chatgpt), /tone-generator 14 (5 chatgpt, 3 bing),
+/mic-test 3. ChatGPT picks up a page within the week when it names a job
+(spectrogram, de-esser, loop); the "check a file" pages have no AI referrals
+yet. Re-read ~19 Nov.
