@@ -139,7 +139,8 @@
     result.hidden = true;
     try {
       step(1, 'Decoding…');
-      var buf = await AudioSaw.decodeToAudioBuffer(file, null, { ffmpeg: false });
+      // ffmpeg reads what the browser will not (see stem-separator.js).
+      var buf = await AudioSaw.decodeToAudioBuffer(file, null);
       if (buf.duration > MAX_SECONDS) throw new Error('That song is over 10 minutes long. Cut it into parts first.');
       duration = buf.duration;
       var vocal16, from = 5;

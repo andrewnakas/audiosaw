@@ -238,9 +238,15 @@ numbers; tighten the check before quoting a new one.
     rate) when the browser refuses a file, so every tool reads AMR/3GP voice
     notes, WMA and AC-3. Not for text/zip/PDF/images (no 30 MB download to
     fail), not for a >48 MB MP3/AAC/FLAC/Vorbis/Opus (that is memory, and is
-    reported as such), and not on /stem-splitter: it is cross-origin isolated
-    and `/vendor/ffmpeg/*` carries no COEP header. `{ ffmpeg: false }` turns
-    it off; `convert()` uses that and goes straight to the target instead.
+    reported as such). Since 12 Nov 2026 that includes the isolated pages
+    (/stem-splitter, /lyrics-from-song): `/vendor/ffmpeg/*` now carries
+    CORP and COEP, so ffmpeg's worker starts there too (checked in headless
+    Chrome with `_headers` applied: a WMA decoded on /stem-splitter). Before,
+    they passed `{ ffmpeg: false }`, and Safari, which (in Playwright WebKit
+    at least) will not decode audio out of a .MOV, refused iPhone videos:
+    17 decode errors on the stem splitter in four weeks. `{ ffmpeg: false }`
+    still turns it off; `convert()` uses that and goes straight to the
+    target instead.
   - A 0-byte file is refused before decoding ("That file is empty").
   - The core falls back from unpkg to jsDelivr (same bytes); the cache key
     is still the unpkg URL.

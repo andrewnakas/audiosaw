@@ -218,11 +218,11 @@
     await Promise.race([durationKnown, new Promise(function (r) { setTimeout(r, 3000); })]);
     if (trackSeconds && trackSeconds > MAX_SECONDS) throw tooLong(trackSeconds);
     CV.setStatus(statusEl, 'info', 'Decoding…');
-    // No ffmpeg fallback on this page: it is cross-origin isolated, and the
-    // ffmpeg worker under /vendor/ffmpeg is not served with the COEP header a
-    // worker of an isolated page needs. Formats only ffmpeg reads are turned
-    // away at the dropzone instead, with a link to a converter.
-    var buf = await AudioSaw.decodeToAudioBuffer(file, null, { ffmpeg: false });
+    // The ffmpeg fallback works here since 12 Nov 2026, when /vendor/ffmpeg/*
+    // got the CORP/COEP headers an isolated page's worker needs. Before, this
+    // passed ffmpeg: false and Safari, which will not decode an iPhone .MOV,
+    // turned those files away (17 decode errors in four weeks).
+    var buf = await AudioSaw.decodeToAudioBuffer(file, null);
     if (buf.duration > MAX_SECONDS) throw tooLong(buf.duration);
     previewRun = !!(previewBox && previewBox.checked && previewWrap && !previewWrap.hidden && buf.duration > PREVIEW_S + 5);
     if (previewRun) {
