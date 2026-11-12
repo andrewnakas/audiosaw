@@ -849,7 +849,10 @@ deliberately **silent** — it fires no event and shows no recovery panel. Those
 used to be counted as conversion failures, which buried the real error rate.
 
 **`error_type` values** (`ERROR_KINDS` in flow.js, first match wins):
-`wrong_type`, `empty_file` (0 bytes), `mic_denied`, `mic_missing`, `mic_busy`,
+`wrong_type`, `empty_file` (0 bytes), `file_unreadable` (a picked file the
+browser could not read: a cloud file not yet downloaded; it throws
+NotReadableError like a busy mic, and was filed as `mic_busy` with mic advice
+until 12 Nov 2026), `mic_denied`, `mic_missing`, `mic_busy`,
 `mic_constraints`, `insecure`, `unsupported_api` (a named browser API is
 missing), `storage`, `codec_crash` (a wasm module died), `too_long` (a tool's
 cap), `memory`, `no_content` (no gaps, no pitch, silence), `bad_file`,
@@ -929,6 +932,25 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
 - **Headers.** `_headers` gives COOP/COEP to the page, COEP to the worker
   and CORP+COEP to `/vendor/transformers/*`; `sw.js` BYPASSes all three,
   for the same reason as the stem splitter.
+- **WebKit (Safari, every iPhone browser) was broken until 12 Nov 2026**
+  (GA4 5-11 Nov: censor-audio 8 Safari starts, 8 errors; the other Whisper
+  tools 7 starts, 1 success). Three faults, all reproduced in Playwright
+  WebKit, now held by `tools/check-webkit.js` (`WEBKIT=1`, Playwright in
+  `~/.cache/audiosaw/playwright`; it downloads the real model):
+  - transformers.js probes each file with `Range: bytes=0-0`; WebKit drops
+    the header across the CDN redirect and gets the whole file with a 200.
+    `resumableFetch` wrapped it as a download and the library cancelled it.
+    A request that names a range now passes straight through.
+  - The cancelled wrapper took the cancel for a dropped connection and
+    resumed, ~15 KB a request: 28 of 139 MB in 200 s. A cancel now stops it,
+    and on WebKit the file is read whole into one preallocated buffer (a
+    Blob of the chunks failed: "Blob loading failed") with progress through
+    `onBytes`. 139 MB once, 49 s with the transcript.
+  - Safari reports a WebGPU adapter, but WebKit gets the plain ORT build,
+    which has no WebGPU ("webgpuInit is not a function"), and ORT then
+    refused the CPU in the same worker. WebKit never tries WebGPU. Voice
+    cloning (WebGPU only) is refused up front on WebKit instead of after a
+    560 MB download. check-model-fetch runs both paths.
 - **Progress.** The pipeline gives none while it runs. A
   `WhisperTextStreamer` on the call fires `on_finalize` once per 30 s
   window, which is the part counter, and its text is the live preview.

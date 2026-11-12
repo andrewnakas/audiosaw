@@ -98,6 +98,17 @@
       action: null
     },
     {
+      // A picked file the browser could not read: one still in iCloud, Google
+      // Drive or Dropbox and not downloaded, or moved after it was picked.
+      // Chrome and Safari throw NotReadableError for it, the same name as a
+      // busy microphone, so it must come first: until 12 Nov 2026 these were
+      // filed as mic_busy on file-only tools and told to close their calls.
+      id: 'file_unreadable',
+      test: /requested file could not be read|I\/O read operation failed|file could not be read|NotReadableError[\s\S]*\bfile\b/i,
+      message: 'The browser could not read that file. If it is in iCloud, Google Drive or Dropbox, let it finish downloading to this device (or save a local copy), then pick it again.',
+      action: null
+    },
+    {
       id: 'mic_busy',
       test: /NotReadableError|Could not start audio source|TrackStartError|device in use|already in use/i,
       message: 'The microphone is busy or blocked by the system. Close any call, voice-note or video app that may be holding it, then try again.',

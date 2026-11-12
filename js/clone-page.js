@@ -53,11 +53,17 @@
   var gpuOk = null;
   async function probeGpu() {
     var a = null;
-    try { a = navigator.gpu ? await navigator.gpu.requestAdapter() : null; } catch (e) { a = null; }
+    // WebKit (Safari, and every browser on an iPhone or iPad) hands back an
+    // adapter, but it only gets the plain ONNX Runtime build, which has no
+    // WebGPU: the model downloaded and then failed to start (12 Nov 2026).
+    var ua = navigator.userAgent || '';
+    var webkit = /^((?!chrome|android|crios|fxios).)*safari/i.test(ua) || /iPhone|iPad|iPod|CriOS|FxiOS|EdgiOS/.test(ua);
+    try { a = !webkit && navigator.gpu ? await navigator.gpu.requestAdapter() : null; } catch (e) { a = null; }
     gpuOk = !!a;
     if (envEl) {
       if (gpuOk) envEl.textContent = 'The first run downloads the cloning model (about 560 MB) and keeps it.';
-      else envEl.innerHTML = 'Voice cloning needs WebGPU, and it is not supported in this browser on this device. ' +
+      else envEl.innerHTML = (webkit ? 'Voice cloning does not run in Safari or on an iPhone or iPad yet: the engine it needs is not available there. '
+        : 'Voice cloning needs WebGPU, and it is not supported in this browser on this device. ') +
         'It works in current Chrome or Edge on most laptops and desktops. ' +
         'Here you can still use <a href="/text-to-speech">text to speech</a>, with 41 ready-made voices.';
     }

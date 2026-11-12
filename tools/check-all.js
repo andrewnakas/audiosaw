@@ -74,6 +74,7 @@ const CHECKS = [
   ['check-tap.js'],
   ['check-loop.js'],
   ['check-deess.js'],
+  ['check-webkit.js'],
   ['check-sheet.js'],
   ['check-voice.js'],
   ['check-tts.js'],

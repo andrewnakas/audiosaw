@@ -66,6 +66,9 @@ const TABLE = [
   ['Microphone access was blocked. Allow it in your browser\'s address bar, then press record again.', null, 'mic_denied'],
   ['Could not open the microphone. Requested device not found', dom('NotFoundError', 'Requested device not found'), 'mic_missing'],
   ['Could not open the microphone. Could not start audio source', dom('NotReadableError', 'Could not start audio source'), 'mic_busy'],
+  // A cloud file not yet on the device: the same NotReadableError name as a busy mic.
+  ['Could not read that file. The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.', dom('NotReadableError', 'The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.'), 'file_unreadable'],
+  ['Could not read that file. The I/O read operation failed.', dom('NotReadableError', 'The I/O read operation failed.'), 'file_unreadable'],
   ['Could not open the microphone. OverconstrainedError', dom('OverconstrainedError', ''), 'mic_constraints'],
   ['Recording needs a secure (https) page and microphone support.', null, 'insecure'],
   ['Could not start studio recording in this browser. Cannot read properties of undefined (reading \'addModule\') Voice mode still works.', dom('TypeError', 'Cannot read properties of undefined (reading \'addModule\')'), 'unsupported_api'],

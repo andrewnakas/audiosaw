@@ -62,21 +62,75 @@ env.backends.onnx.wasm.wasmPaths = isWebKit || SAFE
 // 67 of 117 MB, twice. This fetch hands transformers.js a stream that, when the
 // connection breaks, asks for the rest with a Range request and carries on, so
 // the library (and its cache) only ever sees one complete response.
+//
+// On WebKit it does not stream. Measured 12 Nov 2026 in Playwright WebKit:
+// the library cancelled the hand-built stream partway (enqueue then threw
+// "ReadableStreamDefaultController is not in a state where chunk can be
+// enqueued"), this loop took that for a dropped connection, and resumed with
+// Range requests that each got ~15 KB before the next cancel: 28 of 139 MB in
+// 200 s, which is every Safari and iPhone visitor's Whisper failing. So on
+// WebKit the whole file is fetched here (still resuming on real drops),
+// progress reported through onBytes, into one buffer of the known length,
+// and the library given a finished response. (A Blob of the chunks failed:
+// WebKit answered "Blob loading failed" when the library read it back.)
 var plainFetch = self.fetch.bind(self);
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+var onBytes = null;   // set by the loader: (url, loaded, total)
+
+async function readAll(res, url, total) {
+  var resumeUrl = res.url || url, reader = res.body.getReader(), got = 0, fails = 0, buf = new Uint8Array(total);
+  for (;;) {
+    try {
+      var r = await reader.read();
+      if (r.done) {
+        if (got < total) throw new Error('connection closed at ' + got + ' of ' + total);
+        return buf;
+      }
+      if (got + r.value.byteLength > total) throw new Error('more bytes than the length said');
+      buf.set(r.value, got); got += r.value.byteLength; fails = 0;
+      if (onBytes) onBytes(url, got, total);
+    } catch (e) {
+      if (++fails > 6) throw e;
+      await sleep(1000 * fails);
+      try {
+        var rr = await plainFetch(fails > 3 ? url : resumeUrl, { headers: { Range: 'bytes=' + got + '-' } });
+        if (rr.status === 206 && rr.body) reader = rr.body.getReader();
+      } catch (e2) { /* try again */ }
+    }
+  }
+}
+
+// The library asks for "Range: bytes=0-0" to learn a file's size. On WebKit
+// the redirect to the CDN drops the header, the answer is the whole file with
+// a 200, and wrapping it downloaded every model twice (measured: 136 MB, then
+// 139 again). A request that names a range is never a model download.
+function asksForRange(init) {
+  var h = init && init.headers;
+  if (!h) return false;
+  if (typeof h.get === 'function') return !!h.get('range');
+  return Object.keys(h).some(function (k) { return k.toLowerCase() === 'range'; });
+}
 
 function resumableFetch(url, init) {
+  if (asksForRange(init)) return plainFetch(url, init);
   return plainFetch(url, init).then(function (res) {
     var total = +res.headers.get('content-length') || 0;
     if (!res.ok || !res.body || res.status !== 200 || total < 4 * 1048576) return res;
+    if (isWebKit) {
+      return readAll(res, url, total).then(function (bytes) {
+        return new Response(bytes, { status: 200, statusText: res.statusText, headers: res.headers });
+      });
+    }
     var resumeUrl = res.url || url;     // the signed CDN URL after redirects
     var reader = res.body.getReader();
-    var got = 0, fails = 0;
+    var got = 0, fails = 0, cancelled = false;
     var stream = new ReadableStream({
       pull: async function (ctrl) {
         for (;;) {
+          if (cancelled) return;
           try {
             var r = await reader.read();
+            if (cancelled) return;
             if (r.done) {
               if (got < total) throw new Error('connection closed at ' + got + ' of ' + total);
               ctrl.close();
@@ -87,6 +141,9 @@ function resumableFetch(url, init) {
             ctrl.enqueue(r.value);
             return;
           } catch (e) {
+            // A reader that was cancelled is not a dropped connection: never
+            // go on fetching for a stream nobody is reading.
+            if (cancelled) return;
             if (++fails > 6) { ctrl.error(e); return; }
             await sleep(1000 * fails);
             try {
@@ -98,7 +155,7 @@ function resumableFetch(url, init) {
           }
         }
       },
-      cancel: function (why) { try { reader.cancel(why); } catch (e) {} }
+      cancel: function (why) { cancelled = true; try { reader.cancel(why); } catch (e) {} }
     });
     return new Response(stream, { status: res.status, statusText: res.statusText, headers: res.headers });
   });
@@ -126,7 +183,12 @@ function post(type, payload) {
 }
 
 async function gpuOK() {
-  if (FORCE_WASM) return false;
+  // WebKit gets the plain ORT build (the asyncify one does not run there), and
+  // the plain build has no WebGPU: Safari reports an adapter, the session then
+  // dies with "webgpuInit is not a function", and ORT refuses the CPU after a
+  // failed init in the same worker. That was the unsupported_api error every
+  // Safari visitor got (GA4, 5-11 Nov 2026). WebKit runs on the CPU.
+  if (FORCE_WASM || isWebKit) return false;
   try {
     if (!self.navigator.gpu) return false;
     var a = await self.navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -173,6 +235,12 @@ async function doLoad(model) {
 
   var useGpu = await gpuOK();
   var progress = makeProgress();
+  // WebKit downloads in resumableFetch before the library sees a byte, so
+  // the bar is fed from there, under the file name the library uses.
+  onBytes = function (url, loaded, total) {
+    var m = /\/resolve\/[^/]+\/([^?]+)/.exec(url);
+    progress({ status: 'progress', file: m ? decodeURIComponent(m[1]) : url, loaded: loaded, total: total });
+  };
   post('status', { phase: 'model', pct: 0, detail: 'Fetching the speech model…' });
 
   function isNetwork(e) {

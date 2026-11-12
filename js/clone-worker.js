@@ -40,7 +40,9 @@ var SR = 24000;
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
-var isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(self.navigator.userAgent || '');
+var UA = self.navigator.userAgent || '';
+// Every browser on iOS is WebKit, whatever its name (see transcribe-worker.js).
+var isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(UA) || /iPhone|iPad|iPod|CriOS|FxiOS|EdgiOS/.test(UA);
 env.backends.onnx.wasm.wasmPaths = isSafari
   ? { mjs: VENDOR + 'ort-wasm-simd-threaded.mjs?v=1.26.0-dev.20260416', wasm: VENDOR + 'ort-wasm-simd-threaded.wasm?v=1.26.0-dev.20260416' }
   : { mjs: VENDOR + 'ort-wasm-simd-threaded.asyncify.mjs?v=1.26.0-dev.20260416', wasm: VENDOR + 'ort-wasm-simd-threaded.asyncify.wasm?v=1.26.0-dev.20260416' };
@@ -50,19 +52,32 @@ env.backends.onnx.wasm.numThreads = 1;
 // language model's weights are 184 MB.
 var plainFetch = self.fetch.bind(self);
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+// Two things measured on transcribe-worker.js (12 Nov 2026): a request that
+// names a range is the library's size probe, never a model download, and a
+// stream the library cancels must stop, not resume in the background.
+function asksForRange(init) {
+  var h = init && init.headers;
+  if (!h) return false;
+  if (typeof h.get === 'function') return !!h.get('range');
+  return Object.keys(h).some(function (k) { return k.toLowerCase() === 'range'; });
+}
 env.fetch = function (url, init) {
+  if (asksForRange(init)) return plainFetch(url, init);
   return plainFetch(url, init).then(function (res) {
     var total = +res.headers.get('content-length') || 0;
     if (!res.ok || !res.body || res.status !== 200 || total < 4 * 1048576) return res;
-    var resumeUrl = res.url || url, reader = res.body.getReader(), got = 0, fails = 0;
+    var resumeUrl = res.url || url, reader = res.body.getReader(), got = 0, fails = 0, cancelled = false;
     var stream = new ReadableStream({
       pull: async function (ctrl) {
         for (;;) {
+          if (cancelled) return;
           try {
             var r = await reader.read();
+            if (cancelled) return;
             if (r.done) { if (got < total) throw new Error('short'); ctrl.close(); return; }
             got += r.value.byteLength; fails = 0; ctrl.enqueue(r.value); return;
           } catch (e) {
+            if (cancelled) return;
             if (++fails > 6) { ctrl.error(e); return; }
             await sleep(1000 * fails);
             try {
@@ -72,7 +87,7 @@ env.fetch = function (url, init) {
           }
         }
       },
-      cancel: function (why) { try { reader.cancel(why); } catch (e) {} }
+      cancel: function (why) { cancelled = true; try { reader.cancel(why); } catch (e) {} }
     });
     return new Response(stream, { status: res.status, statusText: res.statusText, headers: res.headers });
   });
@@ -126,7 +141,7 @@ function load() {
   return loading;
 }
 async function doLoad() {
-  var a = self.navigator.gpu && await self.navigator.gpu.requestAdapter().catch(function () { return null; });
+  var a = !isSafari && self.navigator.gpu && await self.navigator.gpu.requestAdapter().catch(function () { return null; });
   if (!a) throw new Error('Voice cloning needs WebGPU (current Chrome or Edge on a desktop or laptop). WebGPU is not supported in this browser.');
   post('status', { phase: 'model', pct: 0, detail: 'Fetching the cloning model…' });
   var cb = progress();
