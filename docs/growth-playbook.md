@@ -1064,3 +1064,35 @@ crawlers). Organic search 450 (+14%). First week of the ten: /spectrogram
 /mic-test 3. ChatGPT picks up a page within the week when it names a job
 (spectrogram, de-esser, loop); the "check a file" pages have no AI referrals
 yet. Re-read ~19 Nov.
+
+## §18 — Safari was quietly broken (12 Nov 2026)
+
+GA4, convert_start -> convert_success by browser, Safari only (15 Oct-11 Nov;
+Safari is 958 of 5,236 users, 18%). Most tools work there (sheet music 135 of
+138, pitch shifter 39/42, recorder fine). The failures, and what was done:
+
+- **Whisper (censor 8/0, audio-to-text 12/1, dubbing 21/0):** three WebKit
+  faults reproduced in Playwright WebKit and fixed (range probe downloaded the
+  whole file, a cancelled stream resumed ~15 KB at a time, WebGPU on the plain
+  ORT build). Now 139 MB once and a correct transcript in 49 s;
+  tools/check-webkit.js (WEBKIT=1) holds it.
+- **Voice cloning (38/0, 69 errors):** cannot run on WebKit; refused up front
+  instead of after a 560 MB download.
+- **Stem splitter (29/4, 17 decode):** isolated pages now get the ffmpeg
+  fallback (/vendor/ffmpeg CORP+COEP); a .MOV decodes in WebKit through it.
+- **wav-to-mp3 (34/2, 31 errors):** one user, 31 retries of one "other"
+  error; WebKit converts a WAV fine. Not a Safari fault.
+- **Enhance speech (47/28):** 10 of 13 users succeed; the memory errors are a
+  few large files on phones.
+- **Text to audiobook (46/6, script_error 11):** NOT reproduced: both models
+  work end to end in Playwright WebKit. Probably real-Safari- or iPhone-only,
+  or an input format (EPUB/PDF/DOCX). Open.
+
+Also fixed: a file the browser cannot read (cloud file not downloaded) throws
+NotReadableError, the same name as a busy microphone, and was filed as
+mic_busy with microphone advice. New error kind file_unreadable.
+
+Search Console (last update 8 Nov): 6 indexed, 86 not; unchanged.
+
+**Re-read ~19 Nov:** Safari convert_success on the Whisper tools and the stem
+splitter after these fixes; audiobook Safari errors; new pages' landings.
