@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Checks the three hosted open-source apps, in headless Chrome:
+ * Checks the four hosted open-source apps, in headless Chrome:
  *
  * /webamp (Webamp 2.3.1): the player and its MilkDrop window render, a
  *   dropped WAV plays, three seconds of play is convert_success once, a
@@ -15,6 +15,9 @@
  *   before Start; the frame is sandboxed without allow-same-origin; the app
  *   reports that it started, which is convert_success once. Opened directly,
  *   the app's audio context runs after a click and Space makes sound.
+ * /honeydew (Honeydew 0.5.3): the same sandbox and start message; opened
+ *   directly, a MiniSynth key sounds, and choosing the Rock Kit fetches its
+ *   pack from the hosted subset and a pad sounds.
  */
 const fs = require('fs');
 const path = require('path');
@@ -225,11 +228,85 @@ async function soundcraft() {
   });
 }
 
+// Honeydew is driven by position: the add button in the middle of an empty
+// song, the menu it opens, the kit list. The positions are 0.5.3's at
+// 1280x800; an upgrade means looking again.
+async function honeydew() {
+  console.log('/honeydew');
+  const args = ['--enable-unsafe-swiftshader', '--window-size=1280,800'];
+  await withPage({ headers: true, args }, async (page) => {
+    const asked = [];
+    await page.send('Network.enable');
+    page.listen('Network.requestWillBeSent', (p) => asked.push(p.request.url));
+    await page.goto('/honeydew', 1500);
+    await page.eval(TRACK);
+    ok(!asked.some((u) => /vendor\/honeydew/.test(u)), 'nothing of the app is fetched before Start');
+    await page.eval('document.getElementById("hdStart").click()');
+    let ev = [];
+    for (let i = 0; i < 300; i++) { await sleep(200); ev = await page.eval('window.__ev'); if (ev.some((e) => /^convert_success/.test(e))) break; }
+    const fr = await page.eval('(function () { var f = document.querySelector("#hdStage iframe"); var reach = "blocked"; try { reach = f.contentWindow.document ? "reachable" : "blocked"; } catch (e) {} return { sandbox: f.getAttribute("sandbox"), reach: reach }; })()');
+    ok(fr.sandbox === 'allow-scripts allow-downloads' && fr.reach === 'blocked', 'the frame is sandboxed to an opaque origin (page -> frame ' + fr.reach + ')');
+    ok(ev.filter((e) => e === 'convert_success:app').length === 1 && ev.filter((e) => e === 'convert_start:app').length === 1, 'the app reports that it started: convert_success once (' + ev.join(', ') + ')');
+    const errs = quiet(page.logs);
+    ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.join(' | ').slice(0, 300) : ''));
+  });
+  const direct = async (fn) => withPage({ headers: true, args }, async (page) => {
+    await page.send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
+    await page.send('Network.enable');
+    const packs = [];
+    page.listen('Network.responseReceived', (p) => { if (/content\/p\//.test(p.response.url)) packs.push(p.response.status); });
+    await page.send('Page.addScriptToEvaluateOnNewDocument', { source: `(function () {
+      window.__ac = []; var O = window.AudioContext;
+      function W(o) { var c = new O(o); c.__an = c.createAnalyser(); c.__an.fftSize = 2048; window.__ac.push(c); return c; }
+      W.prototype = O.prototype; window.AudioContext = W;
+      var conn = AudioNode.prototype.connect;
+      AudioNode.prototype.connect = function (d) { if (d && d === this.context.destination && this.context.__an) conn.call(this, this.context.__an); return conn.apply(this, arguments); };
+    })()` });
+    await page.goto('/vendor/honeydew/0.5.3/frame', 1500);
+    // The module being loaded is not the app being ready: clicks sent before
+    // its first frame go nowhere. It opens its audio output as it starts, so
+    // that is waited for, and then a few frames more.
+    for (let i = 0; i < 300; i++) { await sleep(200); if (await page.eval('!!window.wasmBindings && window.__ac.length > 0')) break; }
+    await sleep(4000);
+    const mouse = (type, x, y) => page.send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 });
+    const click = async (x, y, wait) => { await mouse('mousePressed', x, y); await mouse('mouseReleased', x, y); await sleep(wait || 800); };
+    // The loudest sample from just before a press until 0.7 s after it is
+    // let go: a drum hit is over in 50 ms, so it is read every 10 ms.
+    const hit = async (x, y, hold) => {
+      const run = page.eval('(async function(){var c=window.__ac[0];if(!c)return -1;var x=new Float32Array(2048),m=0;for(var k=0;k<' + Math.round(((hold || 150) + 700) / 10) + ';k++){c.__an.getFloatTimeDomainData(x);for(var i=0;i<x.length;i++)m=Math.max(m,Math.abs(x[i]));await new Promise(r=>setTimeout(r,10));}return m;})()');
+      await sleep(60); await mouse('mousePressed', x, y); await sleep(hold || 150); await mouse('mouseReleased', x, y);
+      return run;
+    };
+    return fn({ page, click, hit, packs });
+  });
+  // A loaded machine can still be too slow for the fixed waits between
+  // clicks, so a silent run is tried once more before it counts.
+  const twice = async (fn) => { let r = await direct(fn); if (!(r.peak > 0.02)) r = await direct(fn); return r; };
+  const drums = await twice(async ({ click, hit, packs }) => {
+    await click(640, 378, 1200);     // add a channel
+    await click(430, 259, 2500);     // Drums
+    await click(118, 520, 800);      // Rock Kit
+    for (let i = 0; i < 100 && !packs.length; i++) await sleep(200);
+    await sleep(3000);
+    await click(543, 32, 1500);      // close the kit list
+    return { peak: Math.max(await hit(640, 745), await hit(800, 745)), packs: packs.slice() };
+  });
+  ok(drums.packs.length >= 1 && drums.packs.every((s) => s === 200), 'the Rock Kit\'s samples come from the hosted packs (' + drums.packs.join(', ') + ')');
+  ok(drums.peak > 0.02, 'and a pad sounds (peak ' + drums.peak.toFixed(3) + ')');
+  const synth = await twice(async ({ click, hit }) => {
+    await click(640, 378, 1200);     // add a channel
+    await click(582, 259, 2500);     // MiniSynth
+    return { peak: Math.max(await hit(340, 760, 1200), await hit(340, 760, 1200)) };
+  });
+  ok(synth.peak > 0.02, 'a MiniSynth key sounds (peak ' + synth.peak.toFixed(3) + ')');
+}
+
 const only = process.argv[2];
 (async () => {
   if (!only || only === 'webamp') await webamp();
   if (!only || only === 'visualizer') await visualizer();
   if (!only || only === 'soundcraft') await soundcraft();
+  if (!only || only === 'honeydew') await honeydew();
 })().then(() => {
   if (failed) { console.log('\ncheck-retro-apps: ' + failed + ' failed'); process.exit(1); }
   console.log('\ncheck-retro-apps: all good');

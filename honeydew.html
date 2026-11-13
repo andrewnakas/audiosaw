@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honeydew Online — an Open-Source, FL Studio Mobile-Style Studio in Your Browser</title>
+<meta name="description" content="Run Honeydew, the open-source clean-room music studio modelled on FL Studio Mobile, in a browser tab: synths, drum kits, a piano roll, a playlist and a mixer. Opens .flm, .flp and MIDI. Nothing to install.">
+<meta name="keywords" content="honeydew daw, fl studio mobile alternative, open source fl studio, online beat maker, music studio in browser, flp online, flm file opener, rust daw web">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/honeydew">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Honeydew: an open-source, FL Studio Mobile-style studio, in a browser tab">
+<meta property="og:description" content="Synths, drum kits, piano roll, playlist and mixer, compiled to WebAssembly. Press start and make something.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/honeydew">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Honeydew web build",
+  "alternateName": [
+    "Honeydew music studio online",
+    "Open-source FL Studio Mobile alternative",
+    "Beat maker in the browser"
+  ],
+  "url": "https://audiosaw.com/honeydew",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Honeydew 0.5.3 web build by daijro (GPL-3.0-or-later), code unmodified; synths, samplers, drum kits, piano roll, playlist and mixer; opens FL Studio Mobile .flm songs, FL Studio .flp projects and MIDI files; 54 of the project's bundled sounds hosted here; runs as WebAssembly in a sandboxed frame; full screen",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+.sc-stage{position:relative;margin:.75rem 0;border:2px dashed var(--line,#d8cfbf);border-radius:12px;min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--card)}
+.sc-stage.is-on{border:0;background:#21272b;height:min(78vh,820px);min-height:520px;display:block}
+.sc-stage iframe{width:100%;height:100%;border:0;display:block}
+.sc-stage:fullscreen{height:100vh;border-radius:0}
+.sc-stage .btn{font-size:1.1rem}
+.sc-note{font-size:.9rem;color:var(--muted)}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Honeydew free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is open source under the GPL (version 3 or later), with free builds for Windows, macOS, Linux, FreeBSD, Android and iOS and this WebAssembly build for the browser."}},{"@type":"Question","name":"Is this FL Studio?","acceptedAnswer":{"@type":"Answer","text":"No. Honeydew is an independent clean-room program modelled on FL Studio Mobile. Its authors state that it contains no code, samples or artwork from FL Studio, and it is not affiliated with Image-Line."}},{"@type":"Question","name":"Can it open my FL Studio projects?","acceptedAnswer":{"@type":"Answer","text":"The project says it opens FL Studio Mobile .flm songs and FL Studio .flp projects, replacing plugins and samples it does not have with the closest bundled sound. We have not tested every project type here."}},{"@type":"Question","name":"Will my song be saved?","acceptedAnswer":{"@type":"Answer","text":"Not automatically on this page. The app runs in a sandboxed frame with no storage, so save your song to a file from the app's menu before closing the tab."}},{"@type":"Question","name":"Why are some instruments missing?","acceptedAnswer":{"@type":"Answer","text":"This page hosts 54 of the project's 143 bundled sounds, to keep it light. The desktop app has the full 740 MB library."}},{"@type":"Question","name":"Why is there no sound?","acceptedAnswer":{"@type":"Answer","text":"Browsers block sound until you interact with the page. Click inside the app, add a channel, and press a key or pad."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"Honeydew (open-source music studio)"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Honeydew (open-source music studio)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container">
+  <section class="page-intro">
+<h1>Honeydew: an open-source <span class="ital">music studio</span>, in your browser.</h1>
+    <p>Honeydew is a free music studio written in Rust and modelled on FL Studio Mobile: channels of synths, samplers and drum kits, a piano roll, a playlist and a mixer. This page runs the project's own web build. Press start, add a channel and play it from the keys along the bottom; it works with a mouse, a touch screen or a MIDI file you drop in.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="sc-stage" id="hdStage">
+      <button class="btn" id="hdStart" type="button">Start Honeydew (15 MB)</button>
+    </div>
+    <div class="actions" id="hdBar" hidden>
+      <button class="btn btn-secondary" id="hdFull" type="button">Full screen</button>
+      <button class="btn btn-secondary" id="hdWebgl" type="button">Reload the app</button>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <p class="sc-note">Your song lives in this tab until you save it from the app's own menu. Save before you close the page.</p>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Program</th><td>Honeydew 0.5.3 by daijro and contributors, GPL-3.0-or-later</td></tr>
+        <tr><th>This build</th><td>The project's own web build from its GitHub release; every file checked against the release archive</td></tr>
+        <tr><th>Download</th><td>15 MB of WebAssembly, fetched when you press start; sounds are fetched one at a time as you choose them</td></tr>
+        <tr><th>Sounds here</th><td>54 of the project's 143 bundled sounds: the drum kits, the one-shot drums and effects, the smaller instruments and an upright piano (49 MB in all)</td></tr>
+        <tr><th>Opens, per the project</th><td>FL Studio Mobile songs (<code>.flm</code>), FL Studio projects (<code>.flp</code>), MIDI files</td></tr>
+        <tr><th>Needs</th><td>Chrome 96, Firefox 113, Safari 16.4 or later (WebAssembly SIMD)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>What Honeydew is</h2>
+    <p><a href="https://github.com/daijro/honeydew" rel="noopener">Honeydew</a> is a clean-room reimplementation. Its authors wrote down FL Studio Mobile's behaviour, file formats and look as a specification, then wrote the program from that specification alone; the project states that it contains no code, samples, presets or artwork from the original, and that even its icons are drawn in code. It builds for Windows, macOS, Linux, FreeBSD, Android and iOS, and, because it is written in Rust with a GPU-drawn interface, for the browser as well. It is an independent project, not affiliated with Image-Line, whose FL Studio trademark is used here only to say what the program is modelled on. It is listed on <a href="https://recompsoftware.com/p/honeydew/" rel="noopener">Recomp</a>, a catalogue of clean-room and reverse-engineered software.</p>
+
+    <h2>Getting a sound out of it</h2>
+    <p>Press start and wait for the empty song to appear. The plus in the middle adds a channel: a drum channel, an instrument, or one of the synths, among them a subtractive MiniSynth, a SuperSaw, a three-oscillator synth and one called Transistor Bass. Pick MiniSynth and the keys along the bottom play it at once. Pick Drums and a list of kits opens; choose one, close the list, and the hexagonal pads play its drums. Checked on this page's copy: a held MiniSynth key and a Rock Kit pad both sound, the kit after its samples have been fetched from this site. The round play button runs the song.</p>
+    <p>A browser only lets a page make sound after a click, so the first press inside the app also wakes its audio. The interface is designed for touch, which makes it one of the few studio programs that is comfortable on a tablet in a browser; on a phone it is usable but tight.</p>
+
+    <h2>Opening and saving</h2>
+    <p>According to the project, Honeydew opens FL Studio Mobile songs and project archives, FL Studio <code>.flp</code> projects and MIDI files, from its SONGS menu, with Ctrl+O, or by dropping the file on the window, and saves songs, MIDI, FLP archives and audio (WAV, FLAC, OGG or MP3). An FLP brings its channels, patterns, playlist, clips, tempo, volume and pan; plugins and samples it cannot find are replaced with the closest bundled sound, with a summary of what was swapped. We have verified that the app runs and plays here; we have not tested every import and export path in the browser, so treat that list as the project's.</p>
+    <p>One thing is different on this page. To keep the app away from this site's storage it runs in a sandboxed frame, and a sandboxed frame has no storage of its own. Nothing is kept between visits: save your song to a file from the app's menu before you close the tab, and expect sounds to download again next time. The project's desktop and Android builds keep everything on disk and are the better home for real work.</p>
+
+    <h2>The sounds</h2>
+    <p>Honeydew's full library is about 740 MB of sampled instruments, all under free licences (most are CC0, from collections such as FreePats, Versilian Studios and the University of Iowa's instrument samples). Hosting all of it here would be out of proportion for a page whose job is to let you try the program, so this copy carries a subset: every drum kit, the one-shot drums and effects, 31 of the smaller instruments (basses, organs, pads, plucked and bowed strings, mallets, an electric piano) and one upright piano. The sound list inside the app shows exactly those, and the app's own credits screen (SETTINGS, then Sound credits) names each source. The synths need no samples and are all present. For the whole library, including the grand pianos and guitars, install the desktop app.</p>
+
+    <h2>How it runs here, and who makes what</h2>
+    <p>The program files are the ones in the project's v0.5.3 release, checked against that archive's checksums; our only additions are a small host page that loads the app and tells this page when it has started, and the shortened sound index. The corresponding source is the project's repository at that tag. Honeydew is made by its own contributors and includes plugin and FLP code from <a href="https://github.com/ItsAlphaNeon/Lemon-Studio" rel="noopener">Lemon Studio</a>; AudioSaw hosts a copy under the GPL and is not affiliated with either project. If you want a simpler multitrack editor for audio files you already have, with nothing to learn, that is <a href="/audio-editor">the AudioSaw editor</a>; for a studio modelled on Pro Tools, see <a href="/soundcraft">SoundCraft</a>.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is Honeydew free?</summary><p>Yes. It is open source under the GPL (version 3 or later), with free builds for Windows, macOS, Linux, FreeBSD, Android and iOS and this WebAssembly build for the browser.</p></details>
+      <details><summary>Is this FL Studio?</summary><p>No. Honeydew is an independent clean-room program modelled on FL Studio Mobile. Its authors state that it contains no code, samples or artwork from FL Studio, and it is not affiliated with Image-Line.</p></details>
+      <details><summary>Can it open my FL Studio projects?</summary><p>The project says it opens FL Studio Mobile .flm songs and FL Studio .flp projects, replacing plugins and samples it does not have with the closest bundled sound. We have not tested every project type here.</p></details>
+      <details><summary>Will my song be saved?</summary><p>Not automatically on this page. The app runs in a sandboxed frame with no storage, so save your song to a file from the app's menu before closing the tab.</p></details>
+      <details><summary>Why are some instruments missing?</summary><p>This page hosts 54 of the project's 143 bundled sounds, to keep it light. The desktop app has the full 740 MB library.</p></details>
+      <details><summary>Why is there no sound?</summary><p>Browsers block sound until you interact with the page. Click inside the app, add a channel, and press a key or pad.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/soundcraft"><h3>SoundCraft (open-source DAW)</h3><p>A Pro Tools-style workstation, also in the browser.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Edit and mix audio files you already have.</p></a>
+      <a class="card" href="/dx7-synth"><h3>DX7-style FM synth</h3><p>A six-operator FM synth to play.</p></a>
+      <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>Find the tempo of a track you want to match.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+        <a href="/honeydew">honeydew studio</a>
+        <a href="/open-source-daws">open-source daws</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/honeydew-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

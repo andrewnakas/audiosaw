@@ -17,7 +17,7 @@
  *    session creation forever. A synthesised or fallback response drops the
  *    headers, and the failure is silent and intermittent — the exact bug
  *    CLAUDE.md documents, made harder to find.
- *  - /vendor/soundcraft/*: its frame is sandboxed to an opaque origin and needs the
+ *  - /vendor/soundcraft/* and /vendor/honeydew/*: each frame is sandboxed to an opaque origin and needs the
  *    Access-Control-Allow-Origin header from _headers on every file.
  *  - Non-GET, except the share POST.
  *
@@ -59,7 +59,7 @@ var STATIC_PATHS = /^\/(css|js|vendor|assets)\//;
 // /stemflipper is a separate single-page app proxied in by functions/stemflipper/. It
 // owns its own routing and its own asset versioning, so this worker must stay out of the
 // way entirely — caching its HTML here would pin visitors to a stale build.
-var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|vendor\/soundcraft\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|js\/diarize-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|dictation(\.html)?$|lyrics-from-song(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/|vendor\/espeak\/)/;
+var BYPASS = /^\/(stemflipper(\/|$)|stem-splitter(\.html)?$|js\/stem-worker\.js|js\/stem-separator\.js|vendor\/ort\/|vendor\/soundcraft\/|vendor\/honeydew\/|audio-to-text(\.html)?$|js\/transcribe-worker\.js|js\/diarize-worker\.js|vendor\/transformers\/|text-to-speech(\.html)?$|dictation(\.html)?$|lyrics-from-song(\.html)?$|js\/tts-worker\.js|vendor\/phonemizer\/|vendor\/espeak\/)/;
 
 // Where a shared file should land. Anything unlisted goes to the homepage,
 // whose converter accepts everything and picks a target.

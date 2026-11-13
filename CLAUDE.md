@@ -1505,11 +1505,42 @@ check-all.
     modules rendered locally; none compared against a reference player's
     audio. **Measuring pitch on a MOD: smooth first.** The Paula model's
     sample steps cross zero by themselves (a raw count read 921 Hz for 436).
+- **/honeydew**: daijro's Honeydew 0.5.3 web build (GPL-3.0-or-later; a
+  clean-room FL Studio Mobile-style studio), hosted like SoundCraft: Start
+  button, opaque-origin sandbox, `frame.html` of ours posting
+  `honeydew-started`, ACAO on `/vendor/honeydew/*`, sw.js BYPASS. Unlike
+  SoundCraft it is a working studio.
+  - **The sound library is a subset.** Upstream's is 740 MB in 143 packs;
+    `content/index.json` here is cut to 54 entries (49 MB: all kits, the
+    one-shots, instruments of 1.4 MB or less, one upright piano), so the app
+    lists only what is hosted. The app checks each pack's SHA-256 itself.
+    The files were pulled from the 1.4 GB release zip by HTTP range and
+    CRC-checked against its directory (the zip was never downloaded whole).
+  - **No storage in the sandbox**: no Cache Storage or localStorage, so
+    packs re-download each visit and a song is lost unless saved to a file.
+    The page says so.
+  - Open/save formats on the page are quoted as the project's; only start,
+    a synth key and a drum kit from the hosted packs are checked
+    (check-retro-apps, driven by screen position at 1280x800: an upgrade
+    means finding the positions again). **Wait for the app's AudioContext
+    before clicking**: clicks sent after the wasm loads but before the first
+    frame go nowhere, which made whichever sound test ran first fail.
+- **/open-source-daws**: a listing, not a tool: nine DAW projects (SoundCraft,
+  Honeydew, Pro Wave, Suhina, Hikaru OpenLive, Lemon Studio, LYNX SHARE,
+  WAVE, OpenRB-338) described from their own READMEs as of 13 Nov 2026. It
+  says the desktop builds were not run. Re-read the READMEs before editing a
+  card; these projects change weekly.
 - **MT-32 (not shipped).** `js/mt32-core.js` (`ASMt32`) and
   `vendor/mt32emu/2.8.6/mt32emu.wasm` (Munt, LGPL-2.1+, 105 KB) build and
   pass check-mt32's no-ROM half, but **no ROM pair was available, so it has
   never made a sound**. Run `MT32_ROMS=/dir node tools/check-mt32.js` with a
   real control + PCM ROM before building /mt32-player. Not General MIDI.
+- **OpenRB-338 (ReBirth) is not ported.** Its web build is planned upstream
+  but not started, and its built-in kit is ReBirth's own drum samples
+  (its README says so). A wasm port was begun on 13 Nov and stopped when the
+  disk filled; the Rust DAW wasm spikes (Pro Wave, Suhina, Lemon Studio)
+  likewise. **Several Rust builds at once filled a 228 GB disk**: run one at
+  a time and delete each `target/` before the next.
 - **Not built.** Nuked-SC55 was relicensed to GPL-2.0-or-later in 2026 (the
   old non-commercial licence is gone), but needs a headless driver written
   and five ROM files to test. OpenJOC (Atmos E-AC-3 JOC, Apache-2.0) builds

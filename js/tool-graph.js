@@ -1262,6 +1262,26 @@
         ['loudness-normalizer', 'Bring it to the same loudness as your other tracks'],
         ['sample-slicer', 'Chop a recording into samples for a tracker']
       ]
+    },
+    'honeydew': {
+      cat: 'retro', label: 'honeydew studio', title: 'Honeydew (open-source music studio)',
+      blurb: 'A clean-room studio modelled on FL Studio Mobile: synths, drum kits, piano roll and mixer, running in your browser.',
+      next: [
+        ['soundcraft', 'A Pro Tools-style workstation, also in the browser'],
+        ['audio-editor', 'Edit and mix audio files you already have'],
+        ['dx7-synth', 'A six-operator FM synth to play'],
+        ['bpm-finder', 'Find the tempo of a track you want to match']
+      ]
+    },
+    'open-source-daws': {
+      cat: 'retro', label: 'open-source daws', title: 'Open-source DAWs like Logic, Ableton, FL and Pro Tools',
+      blurb: 'Nine new open-source studios, what each is modelled on, its licence and status, and the two you can run in the browser.',
+      next: [
+        ['honeydew', 'The FL Studio Mobile-style one, running in the tab'],
+        ['soundcraft', 'The Pro Tools-style one, as a demo session'],
+        ['audio-editor', 'Just need to edit and mix? The editor on this site'],
+        ['dx7-synth', 'A rebuilt classic instrument to play']
+      ]
     }
   };
 
@@ -1409,7 +1429,7 @@
       note: 'Open-source rebuilds of software and hardware people still miss, running in the tab.',
       style: 'tile',
       tools: [
-        'module-player', 'webamp', 'music-visualizer', 'dx7-synth', 'soundcraft'
+        'module-player', 'webamp', 'music-visualizer', 'dx7-synth', 'honeydew', 'soundcraft', 'open-source-daws'
       ]
     },
     {

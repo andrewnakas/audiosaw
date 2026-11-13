@@ -411,7 +411,7 @@ const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech',
 // is a drop zone and controls; the waveform and timeline apps need the width.
 // Narrower screens never see it, so phones are untouched.
 const SIDEBAR_EXCLUDE = new Set(['audio-editor', 'audio-cutter', 'ringtone-maker', 'sample-slicer', 'audio-to-midi',
-  'soundcraft', 'music-visualizer', 'webamp']);
+  'soundcraft', 'honeydew', 'music-visualizer', 'webamp']);
 // The pages that get the most visits (GA4, week of 27 Sep), offered in the
 // sidebar so it carries something useful above the ad.
 const SIDEBAR_POPULAR = ['voice-recorder', 'audio-to-text', 'stem-splitter', 'audio-editor', 'text-to-speech',

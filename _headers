@@ -175,3 +175,8 @@
 /vendor/soundcraft/*
   Access-Control-Allow-Origin: *
   X-Robots-Tag: noindex
+
+# Honeydew's web build, sandboxed the same way and for the same reason.
+/vendor/honeydew/*
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex

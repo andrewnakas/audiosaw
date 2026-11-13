@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open-Source DAWs Like Logic Pro, Ableton Live, FL Studio and Pro Tools (2026)</title>
+<meta name="description" content="Nine new open-source music studios modelled on Logic Pro, Ableton Live, FL Studio, Pro Tools and ReBirth: who makes each, its licence, what it runs on, how far along it is, and which two you can try in the browser right now.">
+<meta name="keywords" content="open source ableton alternative, open source logic pro alternative, open source fl studio alternative, open source pro tools alternative, free daw 2026, clean room daw, rust daw, soundcraft, honeydew, lemon studio, suhina, pro wave">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/open-source-daws">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Open-source DAWs in the style of Logic, Ableton, FL Studio and Pro Tools">
+<meta property="og:description" content="Nine projects, what each one is modelled on, its licence and status, and two you can run in a browser tab.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/open-source-daws">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Open-source DAWs like Logic, Ableton, FL Studio and Pro Tools",
+  "alternateName": [
+    "Open-source Ableton alternative",
+    "Open-source Logic Pro alternative",
+    "Open-source FL Studio alternative",
+    "Clean-room DAWs"
+  ],
+  "url": "https://audiosaw.com/open-source-daws",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "A plain list of nine open-source DAW projects modelled on commercial workstations, with maker, licence, platforms and status taken from each project's own repository on 13 November 2026, and links to the two that run in the browser on this site",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.daw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:.5rem 0}
+.daw-card{border:1px solid var(--line,#d8cfbf);border-radius:10px;padding:1rem 1.1rem;background:var(--card)}
+.daw-card h3{margin:0 0 .15rem;font-family:var(--serif);font-size:1.25rem}
+.daw-like{margin:0 0 .5rem;color:var(--muted);font-size:.92rem}
+.daw-card p{margin:.4rem 0;font-size:.95rem}
+.daw-card dl{display:grid;grid-template-columns:auto 1fr;gap:.15rem .7rem;margin:.6rem 0 0;font-size:.86rem}
+.daw-card dt{color:var(--muted)}
+.daw-card dd{margin:0}
+.daw-here{font-weight:600}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there an open-source alternative to Ableton Live?","acceptedAnswer":{"@type":"Answer","text":"Three new projects follow its clip-launching workflow: Suhina (Rust, GPL, reads Live Sets, pre-alpha), Hikaru OpenLive (Rust, AGPL, Linux) and the clip grid in LYNX SHARE (C++, AGPL). All are young; check each project's own status."}},{"@type":"Question","name":"Is there an open-source alternative to Logic Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro Wave is an alpha-stage DAW in Rust laid out like Logic Pro, for Windows, macOS and Linux, under the GPL."}},{"@type":"Question","name":"Is there an open-source alternative to FL Studio?","acceptedAnswer":{"@type":"Answer","text":"Lemon Studio, LYNX SHARE and WAVE follow the desktop program's pattern workflow, and Honeydew follows FL Studio Mobile. Honeydew runs in the browser on this site."}},{"@type":"Question","name":"Is there an open-source alternative to Pro Tools?","acceptedAnswer":{"@type":"Answer","text":"SoundCraft, from ArtCraft, is a clean-room workstation in Rust with Edit and Mix windows, under the Apache 2.0 licence. Its web build runs a demo session on this site."}},{"@type":"Question","name":"Can I run any of these in a browser?","acceptedAnswer":{"@type":"Answer","text":"Two: Honeydew, which is a working studio in the tab, and SoundCraft, whose web build opens a demo session. Both are hosted on this site. The others are desktop programs."}},{"@type":"Question","name":"Have you tested these programs?","acceptedAnswer":{"@type":"Answer","text":"Only the two web builds hosted here. The descriptions of the desktop programs come from their own repositories as of 13 November 2026."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"Open-source DAWs like Logic, Ableton, FL and Pro Tools"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Open-source DAWs like Logic, Ableton, FL and Pro Tools</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>Open-source DAWs in the style of <span class="ital">Logic, Ableton, FL Studio</span> and Pro Tools.</h1>
+    <p>In the second half of 2026 a wave of new open-source music studios appeared, each modelled on the workflow of a commercial one and most of them written from scratch in Rust. This page lists the nine we know of, what each is modelled on, who makes it, its licence and how far along it says it is. Two of them compile to WebAssembly and run on this site; the rest are desktop programs you download from their own pages.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="daw-grid">
+      <article class="daw-card">
+        <h3><a href="https://github.com/storytold/soundcraft" rel="noopener">SoundCraft</a></h3>
+        <p class="daw-like">In the style of <strong>Pro Tools</strong></p>
+        <p>Edit and Mix windows, comping playlists, automation modes, surround panning, CLAP plugins. Part of ArtCraft's family of clean-room "Craft apps" in Rust.</p>
+        <dl><dt>By</dt><dd>ArtCraft</dd><dt>Licence</dt><dd>Apache-2.0</dd><dt>Runs on</dt><dd>Windows, macOS, Linux, FreeBSD, web</dd><dt>Status</dt><dd>In development</dd></dl>
+        <p class="daw-here"><a href="/soundcraft">Runs on this site</a> (demo session)</p>
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/daijro/honeydew" rel="noopener">Honeydew</a></h3>
+        <p class="daw-like">In the style of <strong>FL Studio Mobile</strong></p>
+        <p>Touch-first studio written from a specification of the original's behaviour. Opens and saves .flm songs and .flp projects; hosts VST3, VST2 and CLAP plugins on the desktop.</p>
+        <dl><dt>By</dt><dd>daijro</dd><dt>Licence</dt><dd>GPL-3.0-or-later</dd><dt>Runs on</dt><dd>Windows, macOS, Linux, FreeBSD, Android, iOS, web</dd><dt>Status</dt><dd>Released, 0.5</dd></dl>
+        <p class="daw-here"><a href="/honeydew">Runs on this site</a></p>
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/fabox-os/Pro-Wave" rel="noopener">Pro Wave</a></h3>
+        <p class="daw-like">In the style of <strong>Logic Pro</strong></p>
+        <p>Tracks area with MIDI and audio regions, library, inspector, piano roll, mixer and a built-in synth, in Rust with egui. Reads EXS24 and SFZ sampler instruments and has begun reading .logicx project bundles. Plug-in hosting and Live Loops are still on its roadmap.</p>
+        <dl><dt>By</dt><dd>fabox-os</dd><dt>Licence</dt><dd>GPL-3.0-or-later</dd><dt>Runs on</dt><dd>Windows, macOS, Linux</dd><dt>Status</dt><dd>Alpha</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/suhina-daw/suhina-daw" rel="noopener">Suhina</a></h3>
+        <p class="daw-like">In the style of <strong>Ableton Live</strong></p>
+        <p>Session-style clip launching with quantisation plus a linear arrangement, in Rust. Opens, plays and renders Live Sets (.als) you made yourself, with real-time time-stretching; CLAP and VST3 plug-ins run sandboxed in a separate process.</p>
+        <dl><dt>By</dt><dd>suhina-daw</dd><dt>Licence</dt><dd>GPL-3.0</dd><dt>Runs on</dt><dd>Windows, macOS, Linux</dd><dt>Status</dt><dd>Pre-alpha, nightly builds</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/hikarucorporation/hikaru-openlive" rel="noopener">Hikaru OpenLive</a></h3>
+        <p class="daw-like">In the style of <strong>Ableton Live and Bitwig Studio</strong></p>
+        <p>A session matrix for scene-based clip launching and live looping beside linear composition, in Rust, with wavetable and spectral synths.</p>
+        <dl><dt>By</dt><dd>hikarucorporation</dd><dt>Licence</dt><dd>AGPL-3.0</dd><dt>Runs on</dt><dd>Linux, and Windows by cross-compiling</dd><dt>Status</dt><dd>Builds from source</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/ItsAlphaNeon/Lemon-Studio" rel="noopener">Lemon Studio</a></h3>
+        <p class="daw-like">In the style of <strong>FL Studio (desktop)</strong></p>
+        <p>Pattern-based arranger with a performance mode, a freely routed mixer with delay compensation, automation clips, time stretching, 29 built-in plugins (also usable as VST3 and CLAP elsewhere) and hosting for CLAP, VST3 and VST2. Honeydew borrows its plugin and FLP code.</p>
+        <dl><dt>By</dt><dd>ItsAlphaNeon</dd><dt>Licence</dt><dd>GPL-3.0-or-later</dd><dt>Runs on</dt><dd>Windows, macOS, Linux</dd><dt>Status</dt><dd>Pre-alpha</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/Ka1-S/LYNX-SHARE" rel="noopener">LYNX SHARE</a></h3>
+        <p class="daw-like">In the style of <strong>FL Studio, with an Ableton-style clip grid</strong></p>
+        <p>Channel Rack, Piano Roll, Playlist and Mixer in C++20 and JUCE. Imports .flp projects, opens and saves Ableton Live 11 and 12 sets, imports .flm; ships its own versions of many FL Studio native plugins and hosts VST3 and CLAP.</p>
+        <dl><dt>By</dt><dd>Ka1-S</dd><dt>Licence</dt><dd>AGPL-3.0</dd><dt>Runs on</dt><dd>Windows, macOS, Linux</dd><dt>Status</dt><dd>Active development</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/miskibin/wave-DAW" rel="noopener">WAVE</a></h3>
+        <p class="daw-like">In the style of <strong>FL Studio</strong></p>
+        <p>Pattern, audio and automation clips on free lanes, 14 built-in plugins, VST3 effects. Its own README lists what it lacks: no VST instruments, no macOS build, no clip launcher.</p>
+        <dl><dt>By</dt><dd>miskibin</dd><dt>Licence</dt><dd>AGPL-3.0</dd><dt>Runs on</dt><dd>Windows, Linux</dd><dt>Status</dt><dd>Released, 0.9</dd></dl>
+        
+      </article>
+      <article class="daw-card">
+        <h3><a href="https://github.com/pingw33n/OpenRB-338" rel="noopener">OpenRB-338</a></h3>
+        <p class="daw-like">In the style of <strong>ReBirth RB-338</strong></p>
+        <p>Two TB-303-style bass lines, an 808 and a 909 with the mixer and effects. The project reports that its engine reproduces ReBirth 2.01's output bit for bit, tested on 1,268 songs. Opens and saves .rbs songs and plays .rbm mods; no MIDI or plugin hosting.</p>
+        <dl><dt>By</dt><dd>pingw33n</dd><dt>Licence</dt><dd>GPL-3.0</dd><dt>Runs on</dt><dd>Windows, macOS, Linux</dd><dt>Status</dt><dd>Released</dd></dl>
+        
+      </article>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>How to read this list</h2>
+    <p>Everything on a card comes from the project's own repository and README as they stood on 13 November 2026: the description, the licence, the platforms and the status. We have run SoundCraft's and Honeydew's web builds, because those are hosted here and checked before each release of this site. We have not installed or tested the desktop builds of any of the nine, so nothing here is a review, and "status" is the project's own word for itself. Most of these programs are weeks or months old and several call themselves alpha or pre-alpha; expect missing features and file formats that still change.</p>
+    <p>"In the style of" means the workflow and layout a project says it follows. None of them is made by, or affiliated with, Apple, Ableton, Image-Line, Avid, Bitwig or Reason Studios, and the product names are theirs.</p>
+
+    <h2>Which one for which habit</h2>
+    <p>If your hands know <strong>Pro Tools</strong>, with an Edit window and a Mix window and editing by modes, SoundCraft is the one built around that, and it is the furthest along in mixing features on paper. If you write by launching clips in a grid, the <strong>Ableton Live</strong> way, look at Suhina, which reads Live Sets, at Hikaru OpenLive, which is aimed at live looping on Linux, and at the clip grid inside LYNX SHARE. If you think in patterns, a channel rack and a playlist, the <strong>FL Studio</strong> way, there are three desktop programs, Lemon Studio, LYNX SHARE and WAVE, plus Honeydew, which follows the mobile app and is the only one of the nine built for touch. Pro Wave is the one for <strong>Logic Pro</strong> users: a single window with the tracks area, library, inspector and mixer where Logic puts them. And OpenRB-338 is not a general studio but a faithful rebuild of one beloved instrument, the 1997 ReBirth with its two acid bass lines and two drum machines.</p>
+
+    <h2>What "clean-room" means, and why it matters</h2>
+    <p>Most of these projects describe themselves as clean-room: the people (and, openly, the coding agents) writing the program work from public documentation, their own observation of how the original behaves, and written specifications of file formats, never from the original's code. That is the long-established way to build compatible software without copying it, the way compatible PC BIOSes and office-file readers were made. It is why these programs can open another product's project files and feel familiar without containing anything of the original. Honeydew states that it holds no code, samples, presets or artwork from FL Studio Mobile; Suhina says the same of Ableton's products and reads only Live Sets you made yourself. OpenRB-338 is the exception in method: it was rebuilt from study of the original program to match its output exactly, and it carries the original's drum sounds, which its README says plainly.</p>
+    <p>Licences differ in what they ask of people who pass the program on. SoundCraft is under Apache 2.0, which permits almost any use. The others use the GPL or the AGPL, which require anyone who distributes a modified version, or in the AGPL's case runs one as a network service, to publish their changes.</p>
+
+    <h2>Trying one without installing</h2>
+    <p>Two of the nine publish a WebAssembly build, and both run here in a sandboxed frame. <a href="/honeydew">Honeydew</a> is a working studio in the tab: add a synth or a drum kit and play. <a href="/soundcraft">SoundCraft</a>'s web build opens a demo session to look around in; it cannot open or save your own files in the browser. The other seven are native programs with real-time audio threads and plugin hosts, which a browser cannot provide, so for those the download links on their own pages are the way in.</p>
+    <p>If what you need today is simply to edit, mix or convert audio you already have, without learning a studio, the tools on this site do that in the browser: <a href="/audio-editor">a multitrack editor</a>, <a href="/stem-splitter">a stem splitter</a>, <a href="/audio-to-midi">audio to MIDI</a> and the rest are listed on <a href="/tools">the tools page</a>. And for rebuilt classics rather than studios, see <a href="/webamp">Webamp</a>, <a href="/module-player">the module player</a> and <a href="/dx7-synth">the DX7-style synth</a>.</p>
+
+    <h2>Where this list comes from</h2>
+    <p>SoundCraft and Honeydew are catalogued on <a href="https://recompsoftware.com/" rel="noopener">Recomp</a>, a directory of clean-room, decompiled and reimplemented software that records each project's method, licence and whether you need the original; the others were found on GitHub. If you make or know a project that belongs here, tell us through <a href="/contact">the contact page</a>.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is there an open-source alternative to Ableton Live?</summary><p>Three new projects follow its clip-launching workflow: Suhina (Rust, GPL, reads Live Sets, pre-alpha), Hikaru OpenLive (Rust, AGPL, Linux) and the clip grid in LYNX SHARE (C++, AGPL). All are young; check each project's own status.</p></details>
+      <details><summary>Is there an open-source alternative to Logic Pro?</summary><p>Pro Wave is an alpha-stage DAW in Rust laid out like Logic Pro, for Windows, macOS and Linux, under the GPL.</p></details>
+      <details><summary>Is there an open-source alternative to FL Studio?</summary><p>Lemon Studio, LYNX SHARE and WAVE follow the desktop program's pattern workflow, and Honeydew follows FL Studio Mobile. Honeydew runs in the browser on this site.</p></details>
+      <details><summary>Is there an open-source alternative to Pro Tools?</summary><p>SoundCraft, from ArtCraft, is a clean-room workstation in Rust with Edit and Mix windows, under the Apache 2.0 licence. Its web build runs a demo session on this site.</p></details>
+      <details><summary>Can I run any of these in a browser?</summary><p>Two: Honeydew, which is a working studio in the tab, and SoundCraft, whose web build opens a demo session. Both are hosted on this site. The others are desktop programs.</p></details>
+      <details><summary>Have you tested these programs?</summary><p>Only the two web builds hosted here. The descriptions of the desktop programs come from their own repositories as of 13 November 2026.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/honeydew"><h3>Honeydew (open-source music studio)</h3><p>The FL Studio Mobile-style one, running in the tab.</p></a>
+      <a class="card" href="/soundcraft"><h3>SoundCraft (open-source DAW)</h3><p>The Pro Tools-style one, as a demo session.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Just need to edit and mix? The editor on this site.</p></a>
+      <a class="card" href="/dx7-synth"><h3>DX7-style FM synth</h3><p>A rebuilt classic instrument to play.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+        <a href="/honeydew">honeydew studio</a>
+        <a href="/open-source-daws">open-source daws</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Honeydew</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="honeydew-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="honeydew-32.png" />
+    <!-- AudioSaw's host page for Honeydew's web build. Upstream's index.html
+         fetches a pre-gzipped .wasm.gz and gunzips it in the page; Cloudflare
+         Pages compresses the plain .wasm itself, so only that is here and the
+         fetch wrapper is left out. The SIMD probe and the notice are upstream's. -->
+    <script>
+      (() => {
+        const probe = new Uint8Array([
+          0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
+        ]);
+        if (!(typeof WebAssembly == "object" && WebAssembly.validate(probe))) {
+          document.documentElement.classList.add("unsupported");
+          try { parent.postMessage({ as: "honeydew-unsupported" }, "*"); } catch (e) {}
+        }
+      })();
+    </script>
+    <script type="module">
+      if (!document.documentElement.classList.contains("unsupported")) {
+        const { default: init, ...bindings } = await import('./honeydew-19bc638b1f62eb9.js');
+        const wasm = await init({ module_or_path: './honeydew-19bc638b1f62eb9_bg.wasm' });
+        window.wasmBindings = bindings;
+        dispatchEvent(new CustomEvent("TrunkApplicationStarted", { detail: { wasm } }));
+        // The frame is sandboxed to an opaque origin, so a message is the only
+        // thing it can tell the page around it.
+        try { parent.postMessage({ as: "honeydew-started" }, "*"); } catch (e) {}
+      }
+    </script>
+    <link rel="preload" href="content/index.json" as="fetch" crossorigin />
+    <style>
+      html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #21272b; }
+      canvas { display: block; width: 100%; height: 100%; }
+      #unsupported { display: none; box-sizing: border-box; height: 100%; margin: 0; padding: 24px; place-content: center;
+        text-align: center; font: 16px/1.5 system-ui, sans-serif; color: #c7ceda; }
+      .unsupported #unsupported { display: grid; }
+      .unsupported canvas { display: none; }
+    </style>
+  </head>
+  <body>
+    <canvas id="the_canvas_id"></canvas>
+    <p id="unsupported">Honeydew needs a newer browser: Chrome 96, Firefox 113 or Safari 16.4, or later.</p>
+  </body>
+</html>

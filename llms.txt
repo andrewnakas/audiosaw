@@ -491,6 +491,8 @@ are much slower without a GPU.
 - [SoundCraft (open-source DAW)](https://audiosaw.com/soundcraft): ArtCraft's clean-room, Pro Tools-style workstation in Rust, running its demo session in your browser. Nothing to install.
 - [DX7-style FM synth](https://audiosaw.com/dx7-synth): Six-operator FM from the engine behind Dexed: play it live, load your own .syx patches, or render a MIDI file to audio.
 - [MOD player & converter](https://audiosaw.com/module-player): Play MOD, XM, S3M and IT tracker modules with ports of the original replayers, and save them as MP3, WAV or FLAC.
+- [Honeydew (open-source music studio)](https://audiosaw.com/honeydew): A clean-room studio modelled on FL Studio Mobile: synths, drum kits, piano roll and mixer, running in your browser.
+- [Open-source DAWs like Logic, Ableton, FL and Pro Tools](https://audiosaw.com/open-source-daws): Nine new open-source studios, what each is modelled on, its licence and status, and the two you can run in the browser.
 
 ## For a specific app or device
 
