@@ -1,0 +1,3 @@
+/* AudioSaw shim: dx7note.cc includes <iostream> for a commented-out debug
+   line. The real header drags stream initialisers and WASI file imports into
+   the module; an AudioWorklet has neither. */

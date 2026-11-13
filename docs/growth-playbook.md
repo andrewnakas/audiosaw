@@ -1096,3 +1096,37 @@ Search Console (last update 8 Nov): 6 indexed, 86 not; unchanged.
 
 **Re-read ~19 Nov:** Safari convert_success on the Whisper tools and the stem
 splitter after these fixes; audiobook Safari errors; new pages' landings.
+
+## §19 — Other people's rebuilds: the "classic players & synths" rail (13 Nov 2026)
+
+Andrew's ask: bring in the reverse-engineered and clean-room audio projects
+from the ArtCraft space and from the Recomp catalogue. Inventory: ArtCraft's
+17 Craft apps have one audio app (SoundCraft); the catalogue's 2,633 entries
+hold about twenty audio projects, most of them SDKs, protocols or hardware
+editors with no job a visitor can bring a file to.
+
+**Shipped (5 pages, category and rail `retro`):**
+
+| Page | Project | The job |
+|---|---|---|
+| /module-player | pt2-clone, ft2play, it2play (8bitbubsy) | "mod to mp3", "xm player online" |
+| /webamp | Webamp + Butterchurn | "winamp online", .wsz skins |
+| /music-visualizer | Butterchurn | "music visualizer", "visualizer video maker" |
+| /dx7-synth | MSFA (Dexed's engine) | "dx7 online", .syx patches, MIDI to audio |
+| /soundcraft | SoundCraft web build | people looking for SoundCraft itself |
+
+**What to expect, honestly.** /soundcraft is a demo session (upstream's web
+build has no file I/O); it will not convert like a tool. The other four take
+a file or make a sound and have real search demand; /module-player and
+/music-visualizer are the two with a download at the end.
+
+**Held back:** /mt32-player (engine built, no ROM pair to test with: needs
+Andrew's own MT-32 or CM-32L control and PCM ROM in a folder, then
+`MT32_ROMS=/dir node tools/check-mt32.js`), SC-55 (now GPL, but needs a
+headless driver and five ROMs), Atmos decoder (OpenJOC builds to wasm, but
+no real Atmos stream to measure and the bridge is stereo-only), Honeydew
+(1.36 GB web build; link only).
+
+**Re-read ~20 Nov:** landings and convert_success per page (`target_format`
+`play`, `app`, `png`, `mp4`, and the file formats), and whether the Recomp
+cross-links send anything either way.

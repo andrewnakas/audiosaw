@@ -484,6 +484,14 @@ are much slower without a GPU.
 - [Fake lossless detector](https://audiosaw.com/fake-lossless-detector): Is that FLAC, WAV or 320 kbps MP3 really what it says? Finds an MP3's cutoff, padded 24-bit and upsampled hi-res, with the spectrum to see it.
 - [Audio file info](https://audiosaw.com/audio-file-info): Bitrate, sample rate, bit depth and the bits really used, LUFS, true peak, clipping and DC offset for any audio file, many at once.
 
+## Classic players & synths
+
+- [Webamp (Winamp 2 player)](https://audiosaw.com/webamp): Play your own songs in the open-source rebuild of the Winamp 2 player, with classic .wsz skins, the equaliser and MilkDrop.
+- [Music visualizer](https://audiosaw.com/music-visualizer): MilkDrop pictures that move with any song or the microphone, full screen, saved as a video or a PNG.
+- [SoundCraft (open-source DAW)](https://audiosaw.com/soundcraft): ArtCraft's clean-room, Pro Tools-style workstation in Rust, running its demo session in your browser. Nothing to install.
+- [DX7-style FM synth](https://audiosaw.com/dx7-synth): Six-operator FM from the engine behind Dexed: play it live, load your own .syx patches, or render a MIDI file to audio.
+- [MOD player & converter](https://audiosaw.com/module-player): Play MOD, XM, S3M and IT tracker modules with ports of the original replayers, and save them as MP3, WAV or FLAC.
+
 ## For a specific app or device
 
 - [Audio for Whisper](https://audiosaw.com/audio-for-whisper): 16 kHz mono WAV — exactly what Whisper wants, in one click.

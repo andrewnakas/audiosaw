@@ -33,6 +33,9 @@
     { id: 'voice',    title: 'Voice & speech' },
     { id: 'fx',       title: 'Effects & remixes' },
     { id: 'inspect',  title: 'Check a file' },
+    // Open-source rebuilds of classic players, synths and studio software,
+    // hosted or built on here (Nov 2026). Each page credits its project.
+    { id: 'retro',    title: 'Classic players & synths' },
     { id: 'apps',     title: 'For a specific app or device' }
   ];
 
@@ -1208,6 +1211,57 @@
         ['sample-slicer', 'Chop a break into pads before converting'],
         ['audio-to-midi', 'Transcribe a sample rather than chopping it']
       ]
+    },
+    // ---- Classic players & synths ---------------------------------------
+    'webamp': {
+      cat: 'retro', label: 'webamp player', title: 'Webamp (Winamp 2 player)',
+      blurb: 'Play your own songs in the open-source rebuild of the Winamp 2 player, with classic .wsz skins, the equaliser and MilkDrop.',
+      next: [
+        ['music-visualizer', 'MilkDrop by itself, full screen, or saved as a video'],
+        ['audio-eq', 'Put an EQ curve into the file itself'],
+        ['wma-to-mp3', 'A WMA that will not play? Convert it'],
+        ['mp3-tag-editor', 'Fix the titles the playlist shows']
+      ]
+    },
+    'music-visualizer': {
+      cat: 'retro', label: 'music visualizer', title: 'Music visualizer',
+      blurb: 'MilkDrop pictures that move with any song or the microphone, full screen, saved as a video or a PNG.',
+      next: [
+        ['webamp', 'The same visualiser inside the Winamp-style player'],
+        ['mp3-to-mp4', 'A still cover and waveform instead, made in seconds'],
+        ['add-audio-to-video', 'Swap or mix the sound on the video you saved'],
+        ['spectrogram', 'See what is actually in the audio, frequency by frequency']
+      ]
+    },
+    'soundcraft': {
+      cat: 'retro', label: 'soundcraft daw', title: 'SoundCraft (open-source DAW)',
+      blurb: "ArtCraft's clean-room, Pro Tools-style workstation in Rust, running its demo session in your browser. Nothing to install.",
+      next: [
+        ['audio-editor', 'Edit and mix your own files in the browser'],
+        ['audio-plugins', 'Run open-source effect plugins on a file'],
+        ['voice-recorder', 'Record a take to work on'],
+        ['webamp', 'Another rebuilt classic: the Winamp 2 player']
+      ]
+    },
+    'dx7-synth': {
+      cat: 'retro', label: 'dx7 fm synth', title: 'DX7-style FM synth',
+      blurb: 'Six-operator FM from the engine behind Dexed: play it live, load your own .syx patches, or render a MIDI file to audio.',
+      next: [
+        ['audio-to-midi', 'Turn a hummed or played tune into a MIDI file to render'],
+        ['audio-plugins', 'Add chorus and reverb to the dry output'],
+        ['audio-editor', 'Lay the part into a multitrack project'],
+        ['tuner', 'Check your own instrument against it']
+      ]
+    },
+    'module-player': {
+      cat: 'retro', label: 'mod player', title: 'MOD player & converter',
+      blurb: 'Play MOD, XM, S3M and IT tracker modules with ports of the original replayers, and save them as MP3, WAV or FLAC.',
+      next: [
+        ['webamp', 'Play the MP3 in the Winamp 2 player it deserves'],
+        ['audio-cutter', 'Cut the converted song to the part you want'],
+        ['loudness-normalizer', 'Bring it to the same loudness as your other tracks'],
+        ['sample-slicer', 'Chop a recording into samples for a tracker']
+      ]
     }
   };
 
@@ -1350,6 +1404,15 @@
       ]
     },
     {
+      id: 'retro',
+      title: 'Classic players & synths',
+      note: 'Open-source rebuilds of software and hardware people still miss, running in the tab.',
+      style: 'tile',
+      tools: [
+        'module-player', 'webamp', 'music-visualizer', 'dx7-synth', 'soundcraft'
+      ]
+    },
+    {
       id: 'apps',
       title: 'For a specific app or device',
       note: 'One program, one spec, already filled in — so the import works first try.',
@@ -1381,6 +1444,7 @@
     opus: 'opus-to-mp3', wma: 'wma-to-mp3', caf: 'caf-to-mp3', ac3: 'ac3-to-mp3',
     aiff: 'aiff-to-mp3', aif: 'aiff-to-mp3', m4b: 'm4b-to-mp3',
     mp4: 'mp4-to-mp3', mov: 'mov-to-mp3',
+    mod: 'module-player', xm: 'module-player', s3m: 'module-player', it: 'module-player',
     // Containers with no page of their own. The general extractor demuxes all
     // of these, so it is a real answer rather than a shrug.
     webm: 'extract-audio', mkv: 'extract-audio', avi: 'extract-audio',

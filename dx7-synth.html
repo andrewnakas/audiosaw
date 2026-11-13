@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DX7 Synth Online — Play a 6-Operator FM Synth, Load .syx Patches, Render MIDI</title>
+<meta name="description" content="A Yamaha DX7-style FM synthesizer in your browser: play it from the keys, your keyboard or a MIDI controller, load your own .syx patch banks, and render a MIDI file through any voice to WAV, FLAC or MP3.">
+<meta name="keywords" content="dx7 online, dx7 emulator online, fm synth online, dx7 sysex player, syx patch player, dexed online, midi to wav dx7, fm synthesizer browser">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/dx7-synth">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="A DX7-style FM synth in the browser, with .syx patches and MIDI rendering">
+<meta property="og:description" content="Six operators, all 32 algorithms, 16 voices. Play it live, load a .syx bank, or turn a MIDI file into audio with it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/dx7-synth">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DX7 FM synth",
+  "alternateName": [
+    "Online DX7",
+    "FM synthesizer online",
+    "DX7 sysex player",
+    "MIDI to DX7 audio"
+  ],
+  "url": "https://audiosaw.com/dx7-synth",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Six-operator FM engine (MSFA, as used in Dexed) compiled to WebAssembly; all 32 DX7 algorithms, 16-voice polyphony; on-screen keys, computer keyboard and Web MIDI input with pitch bend, mod wheel and sustain; loads DX7 .syx single voices and 32-voice banks; renders a MIDI file through any voice to WAV, FLAC or MP3; ten original built-in voices; nothing uploaded",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+.dx-start{font-size:1.1rem}
+.dx-keys{position:relative;height:150px;margin:.75rem 0;user-select:none;-webkit-user-select:none;touch-action:none;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:#fff}
+.dx-key{position:absolute;top:0;bottom:0;box-sizing:border-box;border-right:1px solid #999;background:#fffdf8;color:#555;font:11px var(--mono);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;cursor:pointer}
+.dx-key.down{background:var(--amber-soft,#f6d9a8)}
+.dx-black{bottom:40%;background:#1c1a17;border:1px solid #000;border-top:0;border-radius:0 0 4px 4px;z-index:2}
+.dx-black.down{background:#a8501c}
+.dx-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.5rem 0}
+.dx-row label{display:flex;gap:.4rem;align-items:center}
+#dxMidiNote,#dxOct,#dxSongName{color:var(--muted);font-size:.9rem}
+.dx-song{margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--line,#d8cfbf)}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this a real DX7 emulator?","acceptedAnswer":{"@type":"Answer","text":"It uses MSFA, the open-source FM engine inside Dexed, which reproduces the DX7's six operators, 32 algorithms, envelopes and scaling and reads its patch format. It is the cleaner \"modern\" engine, without the grit of the original 12-bit hardware."}},{"@type":"Question","name":"Can I load DX7 .syx patches?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a single-voice (163-byte) or 32-voice bank (4,104-byte) sysex file and its voices appear in the voice list. Nothing is uploaded."}},{"@type":"Question","name":"Does it come with the original factory sounds?","acceptedAnswer":{"@type":"Answer","text":"No. The ten built-in voices were written for this page. If you own DX7 cartridges or banks as .syx files, load those."}},{"@type":"Question","name":"Can I use my MIDI keyboard?","acceptedAnswer":{"@type":"Answer","text":"Yes, in Chrome, Edge and Firefox, through Web MIDI: press \"Connect a MIDI keyboard\". Velocity, pitch bend, the mod wheel and the sustain pedal work. Safari has no Web MIDI."}},{"@type":"Question","name":"How do I convert a MIDI file to audio with it?","acceptedAnswer":{"@type":"Answer","text":"Drop the .mid file, choose a voice and a part, and press \"Render and download\". You get a WAV, FLAC or MP3 of the notes played by that voice."}},{"@type":"Question","name":"Why is the output mono?","acceptedAnswer":{"@type":"Answer","text":"The DX7 has a single mono output, and so does this engine. Stereo width on DX7 records came from chorus and reverb added afterwards."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"DX7-style FM synth"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">DX7-style FM synth</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1>A <span class="ital">DX7</span>-style FM synth, in your browser.</h1>
+    <p>Six operators, all 32 algorithms and 16 voices of FM synthesis, built from the open-source engine behind Dexed. Play it from the keys below, your computer keyboard or a MIDI controller; load the <code>.syx</code> patch banks you already own; or drop a MIDI file and get it back as audio played by any voice. It all runs in this tab.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<button class="btn dx-start" id="dxStart" type="button">Start the synth</button>
+    <div id="dxPanel" hidden>
+      <div class="dx-row">
+        <label>Voice <select id="dxVoice"></select></label>
+        <label>Volume <input type="range" id="dxVol" min="0" max="4" step="0.01" value="2"></label>
+        <button class="btn btn-secondary" id="dxPanic" type="button">All notes off</button>
+      </div>
+      <div class="dx-keys" id="dxKeys" aria-label="Piano keys"></div>
+      <div class="dx-row">
+        <button class="btn btn-secondary" id="dxDown" type="button">Octave down (Z)</button>
+        <button class="btn btn-secondary" id="dxUp" type="button">Octave up (X)</button>
+        <span id="dxOct"></span>
+        <button class="btn btn-secondary" id="dxMidi" type="button">Connect a MIDI keyboard</button>
+        <span id="dxMidiNote"></span>
+      </div>
+    </div>
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a .syx bank or a .mid file</p>
+      <p>A DX7 sysex file adds its voices to the list. A MIDI file is rendered to audio with the chosen voice.</p>
+      <input type="file" id="fileInput" multiple accept=".syx,.mid,.midi,audio/midi">
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="dx-song" id="dxSong" hidden>
+      <p id="dxSongName"></p>
+      <div class="dx-row">
+        <label>Play <select id="dxPart"></select></label>
+        <label>Save as
+          <select id="dxFormat">
+            <option value="wav24" selected>WAV 24-bit</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
+            <option value="mp3-320">MP3 320 kbps</option>
+          </select>
+        </label>
+        <button class="btn" id="dxRender" type="button">Render and download</button>
+      </div>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Engine</th><td>MSFA (music-synthesizer-for-android), Apache-2.0, in the version maintained inside Dexed; 25 KB of WebAssembly</td></tr>
+        <tr><th>Synthesis</th><td>6 sine operators, the DX7's 32 algorithms, feedback, per-operator envelopes and keyboard scaling, LFO, pitch envelope</td></tr>
+        <tr><th>Polyphony</th><td>16 notes; a 17th takes over the oldest</td></tr>
+        <tr><th>Play from</th><td>On-screen keys (touch or mouse), the computer keyboard, a MIDI keyboard through Web MIDI</td></tr>
+        <tr><th>Patches</th><td>Ten written for this page; any DX7 <code>.syx</code> single voice or 32-voice bank you load</td></tr>
+        <tr><th>MIDI files</th><td>Rendered through the chosen voice at 48 kHz to WAV, FLAC or MP3</td></tr>
+        <tr><th>Tuning</th><td>Measured within 0.1 cent of equal temperament from C1 to C8, A = 440 Hz</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>Playing it</h2>
+    <p>Press "Start the synth" (browsers only allow sound after a click), then play. The on-screen keys take a mouse or several fingers at once, and sliding along them moves from key to key. On a computer keyboard the home row is the white keys and the row above is the black ones: <kbd>A</kbd> is C, <kbd>W</kbd> C sharp, <kbd>S</kbd> D and so on up to <kbd>;</kbd>, with <kbd>Z</kbd> and <kbd>X</kbd> moving down and up an octave. With a MIDI keyboard plugged in, press "Connect a MIDI keyboard" and allow the browser's prompt: notes arrive with their velocity, and the pitch wheel, mod wheel and sustain pedal work. Web MIDI is in Chrome, Edge and Firefox; Safari does not have it.</p>
+    <p>The voice list starts with ten patches made for this page, from a plain sine to an electric piano, a bell, brass, an organ and a slow pad. They are original: no Yamaha factory voice is included here.</p>
+
+    <h2>Loading your own .syx patches</h2>
+    <p>The DX7 stores a voice as 155 parameters and exchanges voices over MIDI as system-exclusive dumps: 163 bytes for one voice, or 4,104 bytes for a bank of 32, packed more tightly. Forty years of them are in circulation, and if you have a folder of <code>.syx</code> files from a DX7, a TX7, a TX802 or a software FM synth that saves in that format, drop one on the box and its voices join the list under the file's name. The file is read here in the page; it is not uploaded. A dump with a bad checksum or a cut-off file is refused with a message saying which, and a file holding several dumps one after another is read in full.</p>
+
+    <h2>Turning a MIDI file into audio</h2>
+    <p>Drop a <code>.mid</code> file and choose which part to play, or every part except drums at once. "Render and download" plays the notes through the selected voice, offline and much faster than real time, and saves the result with three seconds for the last notes to ring out. The file is mono, as the instrument's output was, at 48 kHz. Tempo changes in the file are followed and the sustain pedal is turned into note lengths; pitch bend and other controllers in the file are not applied. Because every part plays the same voice, this suits a single line, a piano part or a chord sketch better than a full arrangement. The finished file is scaled as a whole so its loudest moment sits at -1 dBFS; nothing is compressed or limited, so the playing's dynamics are as the MIDI file had them.</p>
+    <p>To go the other way, <a href="/audio-to-midi">audio to MIDI</a> turns a hummed or played melody into a MIDI file you can then render here. To add effects afterwards, the DX7's dry output takes chorus and reverb well: <a href="/audio-plugins">the web plugins page</a> has both.</p>
+
+    <h2>How FM makes those sounds</h2>
+    <p>Each of the six operators is a sine-wave oscillator with its own envelope. An algorithm is a wiring diagram: some operators are carriers, which you hear, and others are modulators, which you do not hear directly because they wobble the phase of a carrier thousands of times a second. That bends the carrier's sine into a wave with many harmonics, and the modulator's envelope decides how the brightness changes through the note. A modulator at a whole-number ratio gives a harmonic tone, an electric piano or a brass stab; a ratio such as 3.5 gives the clang of a bell. With six operators and 32 ways to wire them, a patch can stack two or three such pairs.</p>
+
+    <h2>What is and is not a DX7 here</h2>
+    <p>The engine is MSFA, written at Google by Raph Levien and others from study of the instrument and its chips, and since maintained in <a href="https://github.com/asb2m10/dexed" rel="noopener">Dexed</a> by Pascal Gauthier; only the Apache-licensed engine files are compiled in. It is the engine's "modern" core, which is cleaner than the hardware: a real DX7 Mark I has a 12-bit converter and a grit this does not imitate. It runs at your sound card's rate rather than the instrument's own 49,096 Hz. Portamento, mono mode, aftertouch and breath control are not connected, and the pitch-bend range (two semitones) and what the mod wheel does (vibrato) are fixed by this page, since on the instrument those are performance settings and not part of a voice. Dexed is listed on <a href="https://recompsoftware.com/p/dexed/" rel="noopener">Recomp</a>, a catalogue of reimplementations. This page is not affiliated with Yamaha.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this a real DX7 emulator?</summary><p>It uses MSFA, the open-source FM engine inside Dexed, which reproduces the DX7's six operators, 32 algorithms, envelopes and scaling and reads its patch format. It is the cleaner "modern" engine, without the grit of the original 12-bit hardware.</p></details>
+      <details><summary>Can I load DX7 .syx patches?</summary><p>Yes. Drop a single-voice (163-byte) or 32-voice bank (4,104-byte) sysex file and its voices appear in the voice list. Nothing is uploaded.</p></details>
+      <details><summary>Does it come with the original factory sounds?</summary><p>No. The ten built-in voices were written for this page. If you own DX7 cartridges or banks as .syx files, load those.</p></details>
+      <details><summary>Can I use my MIDI keyboard?</summary><p>Yes, in Chrome, Edge and Firefox, through Web MIDI: press "Connect a MIDI keyboard". Velocity, pitch bend, the mod wheel and the sustain pedal work. Safari has no Web MIDI.</p></details>
+      <details><summary>How do I convert a MIDI file to audio with it?</summary><p>Drop the .mid file, choose a voice and a part, and press "Render and download". You get a WAV, FLAC or MP3 of the notes played by that voice.</p></details>
+      <details><summary>Why is the output mono?</summary><p>The DX7 has a single mono output, and so does this engine. Stereo width on DX7 records came from chorus and reverb added afterwards.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Turn a hummed or played tune into a MIDI file to render.</p></a>
+      <a class="card" href="/audio-plugins"><h3>Audio Effects Plugins</h3><p>Add chorus and reverb to the dry output.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Lay the part into a multitrack project.</p></a>
+      <a class="card" href="/tuner"><h3>Online Tuner</h3><p>Check your own instrument against it.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/midi-read.js?v=2026-11-13"></script>
+<script src="/js/dx7-core.js?v=2026-11-13"></script>
+<script src="/js/dx7-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

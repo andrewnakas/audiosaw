@@ -167,3 +167,11 @@
 /vendor/espeak/*
   Cache-Control: public, max-age=31536000, immutable
   Cross-Origin-Resource-Policy: same-origin
+
+# SoundCraft's web build runs in an iframe sandboxed to an opaque origin (no
+# allow-same-origin), so it cannot touch this site's storage. A module script
+# or wasm fetched from an opaque origin is a CORS request, hence the header.
+# Not for search: /soundcraft is the page, this is its frame.
+/vendor/soundcraft/*
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex

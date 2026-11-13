@@ -212,6 +212,7 @@ ${FOOTER_PLACEHOLDER}
 }
 
 const CATEGORY_INTRO = {
+  'retro': 'Open-source rebuilds of players, synthesisers and studio software, each made by its own project and credited on its page: some reimplemented from the outside, some written clean-room from public documentation. They run here as their authors published them, in your tab, on your own files where the program takes files.',
   'voice': 'Speech in and speech out, with the neural models running in your browser tab: Whisper turns a recording into text and subtitles, and Kokoro reads text aloud in a natural voice. The models download once and are cached; the audio and the text never leave your machine, which is the point for interviews, scripts and anything under NDA.',
   'to-mp3': 'MP3 is the format that plays on everything — every phone, every car stereo, every cheap MP3 player, every editing program written in the last thirty years. These convert into it from whatever you started with. All of them are lossy encodes, so work from the highest-quality source you have rather than from something already compressed.',
   'formats': 'Conversions that are not about getting to MP3: uncompressed PCM for editing and burning, lossless FLAC for archiving, Apple-native containers, and fixed-bitrate MP3 presets when you want the decision made for you.',
@@ -409,7 +410,8 @@ const ADS_EXCLUDE = new Set(['stem-splitter', 'audio-to-text', 'text-to-speech',
 // the Sidebar Selector in the Journey dashboard. Only on tool pages whose UI
 // is a drop zone and controls; the waveform and timeline apps need the width.
 // Narrower screens never see it, so phones are untouched.
-const SIDEBAR_EXCLUDE = new Set(['audio-editor', 'audio-cutter', 'ringtone-maker', 'sample-slicer', 'audio-to-midi']);
+const SIDEBAR_EXCLUDE = new Set(['audio-editor', 'audio-cutter', 'ringtone-maker', 'sample-slicer', 'audio-to-midi',
+  'soundcraft', 'music-visualizer', 'webamp']);
 // The pages that get the most visits (GA4, week of 27 Sep), offered in the
 // sidebar so it carries something useful above the ad.
 const SIDEBAR_POPULAR = ['voice-recorder', 'audio-to-text', 'stem-splitter', 'audio-editor', 'text-to-speech',

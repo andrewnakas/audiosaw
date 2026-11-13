@@ -1,0 +1,21 @@
+diff --git a/it_music.c b/it_music.c
+index 00b2a33..255f303 100644
+--- a/it_music.c
++++ b/it_music.c
+@@ -1504,6 +1504,8 @@ static void UpdateNoteData(void)
+ 	Song.PatternOffset = p;
+ }
+ 
++extern uint32_t mp_it2_orderEntries; // modplay
++
+ static void UpdateData(void)
+ {
+ 	// 8bb: I only ported the logic for "Play Song" mode (mode=2)
+@@ -1553,6 +1555,7 @@ static void UpdateData(void)
+ 					}
+ 				}
+ 
++				mp_it2_orderEntries++; // modplay: an order was entered (song-end detection)
+ 				Song.CurrentOrder = Song.ProcessOrder = NewOrder;
+ 				NewRow = Song.BreakRow;
+ 				Song.BreakRow = 0;

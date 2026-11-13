@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Visualizer Online — MilkDrop for Any Song, Save as Video or PNG</title>
+<meta name="description" content="Free music visualizer: drop a song or use the microphone and watch 100 MilkDrop presets react to it, full screen. Record the picture and the song to a video, or save a frame as a PNG. Nothing is uploaded.">
+<meta name="keywords" content="music visualizer, audio visualizer online, milkdrop online, music visualizer video maker, visualizer for songs, audio visualizer for youtube, butterchurn, winamp visualizer">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/music-visualizer">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Music visualizer: MilkDrop for any song, in the browser">
+<meta property="og:description" content="Drop a song or use the microphone. 100 presets, full screen, and a video or PNG to keep. Runs in the tab.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/music-visualizer">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Music visualizer",
+  "alternateName": [
+    "Audio visualizer",
+    "MilkDrop online",
+    "Music visualizer video maker"
+  ],
+  "url": "https://audiosaw.com/music-visualizer",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Butterchurn (MilkDrop in WebGL 2) with 100 presets; visualises a file or the microphone; preset list, random next and timed cycling with blended transitions; full screen; canvas sizes up to 1920x1080 including square and vertical; records the canvas and the song to MP4 or WebM in real time; saves the current frame as a PNG; nothing uploaded",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+#vzWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;line-height:0;margin:.5rem 0}
+#vzCanvas{width:100%;height:auto;max-height:80vh;object-fit:contain;display:block;margin:0 auto}
+#vzWrap:fullscreen #vzCanvas{width:100vw;height:100vh;max-height:none}
+#vzName{font-size:.85rem;color:var(--muted);min-height:1.3em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vzAudio{width:100%;margin:.5rem 0}
+#vzPreset{max-width:100%}
+.vz-or{text-align:center;color:var(--muted);margin:.5rem 0}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my music uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The file plays in your browser tab and the picture is drawn by your own graphics card. Nothing is sent anywhere, and the microphone is only drawn, never recorded."}},{"@type":"Question","name":"Can I save the visualizer as a video?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose a picture size, press \"Record a video\", and the song plays through while the canvas and the audio are recorded. It saves an MP4 where the browser can write one and a WebM otherwise."}},{"@type":"Question","name":"Why does recording take as long as the song?","acceptedAnswer":{"@type":"Answer","text":"Because it records the live picture as it is drawn. Keep the tab in front while it records: a hidden tab stops drawing."}},{"@type":"Question","name":"Can I use it with Spotify or YouTube?","acceptedAnswer":{"@type":"Answer","text":"Not directly: a web page cannot hear another tab or app. Use the microphone button to visualise what your speakers are playing, or drop a file you have."}},{"@type":"Question","name":"How do I make a vertical video for TikTok or Reels?","acceptedAnswer":{"@type":"Answer","text":"Set the picture size to 720 × 1280 or 1080 × 1920 before you press record."}},{"@type":"Question","name":"What are the presets?","acceptedAnswer":{"@type":"Answer","text":"MilkDrop presets: small programs written by many different authors that turn the bass, middle and treble of the music into moving pictures. Each one's name includes its authors."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"Music visualizer"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Music visualizer</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container">
+  <section class="page-intro">
+<h1>Music <span class="ital">visualizer</span>: MilkDrop for any song.</h1>
+    <p>Drop a song, or switch on the microphone, and the picture moves with it: 100 MilkDrop presets, drawn by your graphics card, blending from one to the next. Go full screen for a party, record the picture with the song as a video for YouTube or a reel, or save the frame you like as a PNG. The audio never leaves the tab.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a song</p>
+      <p>MP3, M4A, WAV, FLAC, OGG, or anything else your browser plays.</p>
+      <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus">
+    </div>
+    <p class="vz-or">or <button class="btn btn-secondary" id="vzMic" type="button">Use the microphone</button></p>
+    <div class="status hidden" id="status"></div>
+    <div id="vzView" hidden>
+      <audio id="vzAudio" controls hidden></audio>
+      <div id="vzWrap"><canvas id="vzCanvas" width="1280" height="720"></canvas></div>
+      <p id="vzName"></p>
+      <div class="controls">
+        <label>Preset
+          <select id="vzPreset"></select>
+        </label>
+        <label>Change it
+          <select id="vzCycle">
+            <option value="0">Only when I say</option>
+            <option value="15">Every 15 seconds</option>
+            <option value="30" selected>Every 30 seconds</option>
+            <option value="60">Every minute</option>
+          </select>
+        </label>
+        <label>Picture size
+          <select id="vzSize">
+            <option value="1280x720" selected>1280 × 720 (16:9)</option>
+            <option value="1920x1080">1920 × 1080 (16:9)</option>
+            <option value="1080x1080">1080 × 1080 (square)</option>
+            <option value="720x1280">720 × 1280 (vertical)</option>
+            <option value="1080x1920">1080 × 1920 (vertical)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="vzNext" type="button">Another preset</button>
+        <button class="btn btn-secondary" id="vzFull" type="button">Full screen</button>
+        <button class="btn btn-secondary" id="vzPng" type="button">Save this frame (PNG)</button>
+        <button class="btn" id="vzRec" type="button">Record a video</button>
+      </div>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Engine</th><td>Butterchurn 2.6.7 by Jordan Berg (MIT): MilkDrop 2 rebuilt on WebGL 2</td></tr>
+        <tr><th>Presets</th><td>100, from the butterchurn-presets pack, each named with its authors</td></tr>
+        <tr><th>Sound from</th><td>A file from your device, or the microphone (for a record player, a band, a DJ set in the room)</td></tr>
+        <tr><th>Save</th><td>A video of the picture with the song (MP4 where the browser writes it, otherwise WebM), or a PNG of one frame</td></tr>
+        <tr><th>Sizes</th><td>1280×720, 1920×1080, 1080×1080, 720×1280, 1080×1920</td></tr>
+        <tr><th>Needs</th><td>WebGL 2: any current Chrome, Edge, Firefox or Safari</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to use it</h2>
+    <p>Drop a song on the box and it starts playing with a preset picked at random. The preset's name, which carries the names of the people who wrote it, is shown under the picture. "Another preset" blends to a new one over two seconds; the list lets you go straight to one you know; and "Change it" sets how often it moves on by itself. Full screen fills the display, and <kbd>Esc</kbd> comes back. The ordinary player bar above the picture seeks and pauses the song.</p>
+    <p>The microphone button is for sound that is not a file: vinyl on the deck, a band rehearsing, whatever the speakers in the room are playing. The page asks the browser for the raw microphone with echo cancellation, noise suppression and automatic gain turned off, because all three are built for speech and flatten music. The microphone is drawn but never played back or recorded, so it cannot feed back.</p>
+
+    <h2>Making a video for a song</h2>
+    <p>"Record a video" rewinds the song, plays it through, and records exactly what is on the canvas together with the song's audio. It stops and saves when the song ends, or when you press the button again. Pick the picture size first: 16:9 for YouTube, square or vertical for a feed. The recording is made by the browser's own MediaRecorder, at 30 frames a second and about 8 Mbps of video with 256 kbps audio, as an MP4 (H.264 and AAC) in browsers that can write one and as a WebM otherwise.</p>
+    <p>It records in real time, so a four-minute song takes four minutes, and the tab has to stay in front: browsers stop drawing a hidden tab, and the video would freeze while the music carried on. You can change presets by hand while it records, and those changes are in the video. If you only need a still picture with a waveform behind a song, <a href="/mp3-to-mp4">MP3 to MP4</a> makes that in seconds instead; and if you need a WebM turned into something else, or the sound replaced afterwards, <a href="/add-audio-to-video">add audio to video</a> does that without re-encoding the picture.</p>
+
+    <h2>What MilkDrop is</h2>
+    <p>MilkDrop is the visualiser Ryan Geiss wrote for the Winamp player in 2001. A preset is not a video: it is a small program. A few dozen equations run once per frame and once per point of a warping mesh, moving, zooming and rotating the previous frame's picture, so that everything drawn leaves trails that swirl; on top go waveforms and shapes, and in MilkDrop 2, pixel shaders. The equations read three numbers from the music, the current level of the bass, the middle and the treble against their recent averages, which is why a kick drum makes a good preset lurch. Because each frame is built from the last, no two runs of a song look the same.</p>
+    <p><a href="https://github.com/jberg/butterchurn" rel="noopener">Butterchurn</a> is an independent implementation of that system for the browser: it translates the presets' equations to JavaScript and their shaders to WebGL 2, and runs them on your graphics card. It is the same engine that draws the MilkDrop window in <a href="/webamp">Webamp</a>, the rebuilt Winamp player on this site, and it is listed on <a href="https://recompsoftware.com/p/butterchurn/" rel="noopener">Recomp</a>, a catalogue of software reimplementations. Neither it nor this page is affiliated with Winamp or its owners.</p>
+
+    <h2>Limits</h2>
+    <p>The picture is drawn at the size you choose and scaled to fit the page, so 1920×1080 costs more graphics power than 1280×720; on an older laptop, the smaller size keeps the frame rate up. Some presets with heavy shaders run slowly on integrated graphics: move to another. The file plays through the browser's audio element, so it has to be a format the browser plays; convert anything else first. And the PNG is the frame as drawn, at the canvas size, not a screenshot of the scaled picture.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is my music uploaded?</summary><p>No. The file plays in your browser tab and the picture is drawn by your own graphics card. Nothing is sent anywhere, and the microphone is only drawn, never recorded.</p></details>
+      <details><summary>Can I save the visualizer as a video?</summary><p>Yes. Choose a picture size, press "Record a video", and the song plays through while the canvas and the audio are recorded. It saves an MP4 where the browser can write one and a WebM otherwise.</p></details>
+      <details><summary>Why does recording take as long as the song?</summary><p>Because it records the live picture as it is drawn. Keep the tab in front while it records: a hidden tab stops drawing.</p></details>
+      <details><summary>Can I use it with Spotify or YouTube?</summary><p>Not directly: a web page cannot hear another tab or app. Use the microphone button to visualise what your speakers are playing, or drop a file you have.</p></details>
+      <details><summary>How do I make a vertical video for TikTok or Reels?</summary><p>Set the picture size to 720 × 1280 or 1080 × 1920 before you press record.</p></details>
+      <details><summary>What are the presets?</summary><p>MilkDrop presets: small programs written by many different authors that turn the bass, middle and treble of the music into moving pictures. Each one's name includes its authors.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/webamp"><h3>Webamp (Winamp 2 player)</h3><p>The same visualiser inside the Winamp-style player.</p></a>
+      <a class="card" href="/mp3-to-mp4"><h3>MP3 to MP4 with a picture</h3><p>A still cover and waveform instead, made in seconds.</p></a>
+      <a class="card" href="/add-audio-to-video"><h3>Add audio to video</h3><p>Swap or mix the sound on the video you saved.</p></a>
+      <a class="card" href="/spectrogram"><h3>Spectrogram viewer</h3><p>See what is actually in the audio, frequency by frequency.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/visualizer-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

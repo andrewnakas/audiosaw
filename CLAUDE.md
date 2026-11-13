@@ -1420,6 +1420,102 @@ check-all. Hum, click, de-esser and loop pages are also in check-fidelity's
   crossover, not a fixed 5 kHz. 6 dB: 5.6-5.8 down, vowels 0.000;
   12 dB: 10.7-11.3. check-deess.
 
+## Classic players & synths (13 Nov 2026): other projects' work, hosted or built on
+
+The audio projects from ArtCraft's Craft apps and from the Recomp catalogue
+(recompsoftware.com, Andrew's; its data is `~/Documents/recompSoftware/repo/data/projects/*.json`).
+Category and homepage rail `retro`. Each page credits the project, its
+author and licence, links its Recomp entry, and says it is not affiliated.
+`tools/check-retro-apps.js`, `check-dx7.js` and `check-dx7-page.js` run in
+check-all.
+
+- **/soundcraft**: ArtCraft's SoundCraft 0.20.1 web build (Apache-2.0), from
+  the release zip, SHA-256 checked against the release's SHA256SUMS.
+  - **The web build is a demo.** Upstream's HOSTING.md: no recording, no file
+    dialogs, it opens a synthesised demo session. The page says so and
+    points at the desktop app and at /audio-editor. Do not describe it as an
+    online DAW for your own files.
+  - **Sandboxed to an opaque origin**: `<iframe sandbox="allow-scripts
+    allow-downloads">`, no allow-same-origin, so it cannot read this site's
+    storage. That makes its module script and wasm CORS requests, hence
+    `Access-Control-Allow-Origin: *` on `/vendor/soundcraft/*` in `_headers`,
+    and the sw.js BYPASS (a cached response would lose the header). Upstream
+    says a sandbox needs allow-same-origin; it does not (checked).
+  - `frame.html` is ours: upstream's index.html plus one `postMessage` when
+    the app has started, which is the page's `convert_success`
+    (`target_format: app`). The frame is loaded as `/frame` (Pages redirects
+    `.html`). Nothing is fetched before Start (18 MB wasm, 7 MB gzipped).
+  - Checked: the app starts in the sandbox, and opened directly its
+    AudioContext runs after a click and Space plays the demo (peak 0.25).
+- **/webamp**: Webamp 2.3.1 with Butterchurn (both MIT), the
+  `webamp.butterchurn-bundle.min.mjs` from npm, imported dynamically. It
+  fetches nothing itself.
+  - `Webamp.browserSupported` is not in this bundle. `enableDoubleSizeMode`
+    starts the player doubled, over its own MilkDrop window, so it is off
+    and the page does not mention double size.
+  - **`reopen()` on an open player stops the song**: the first draft called
+    it on every drop, so adding a skin stopped playback. Only after onClose.
+  - Success is 3 s of `getMediaStatus() === 'PLAYING'`, once (`play`).
+  - The check builds its own .wsz (a zip with one solid main.bmp).
+- **/music-visualizer**: Butterchurn 2.6.7 and 100 presets, loaded on first
+  use. File through an `<audio>` element; microphone with processing off,
+  drawn only. PNG: `render()` then `toBlob` in the same task, or a WebGL
+  canvas reads blank. Video: `canvas.captureStream(30)` plus the audio from
+  a MediaStreamDestination into MediaRecorder; Chrome writes MP4 (H.264/AAC).
+  Checked: a 3.5 s recording is 1280x720, 3.55 s, with the 440 Hz tone at
+  440.3 Hz. Real time only, and a hidden tab stops drawing: the page says so.
+- **/dx7-synth** (`js/dx7-core.js` = `ASDx7`, UMD; `js/dx7-page.js`;
+  `vendor/msfa/2026-10-14/dx7.wasm`, 25 KB, no imports): the MSFA engine
+  from Dexed, **only its Apache-2.0 files** (build.sh refuses otherwise; no
+  GPL Dexed code, no `tuning.cc`), with our own C wrapper for voices, MIDI
+  and sysex. Standalone wasm, instantiated synchronously from bytes in the
+  worklet (`processorOptions.wasm`).
+  - **No Yamaha data.** The ten built-in voices were written for the page;
+    .syx banks are the visitor's own.
+  - Measured (check-dx7): within 0.09 cents C1 to C8, identical at any block
+    size, 16 voices with stealing, sysex round trip byte-exact. In the page:
+    the H key at 880.00 Hz, a MIDI file rendered at 48 kHz within 0.01 cents.
+  - Renders are scaled to peak at -1 dBFS (one voice is about -23 dBFS at
+    the engine's default gain); live volume starts at 2x.
+  - Honest gaps, on the page: the "modern" core (no Mark I DAC grit), host
+    rate not 49,096 Hz, no portamento/mono/aftertouch, bend range and mod
+    wheel fixed by the page. The speed figure was taken on a loaded machine;
+    do not quote one.
+- **/module-player** (`js/module-play.js` = `ASModule`, UMD;
+  `js/module-worker.js`; `js/module-page.js`;
+  `vendor/modplay/1.0.0/modplay.wasm`, 223 KB): 8bitbubsy's ports of the
+  original replayers (BSD-3), one wasm: pt2-clone for 4-channel MODs (Paula
+  model), ft2play for XM and 6+ channel MODs, it2play for IT and for S3M as
+  IT imports it. Two 3-line patches (an order-change counter); the rest is
+  our glue in the vendor folder, with build.sh.
+  - **Song end.** A module has no length. XM/S3M/IT stop at the first
+    re-entry of an order, MOD at the first revisited row; a loop inside one
+    pattern runs to the 20-minute cap and returns `truncated`.
+  - **Every call is a fresh wasm instance**: a damaged file can corrupt a
+    replayer's memory without trapping (one bad XM broke the next load).
+  - **Output is float before the trackers' 16-bit clip** and can pass full
+    scale (real files peaked at 3.09): the page turns the whole song down to
+    -1 dBFS when it does, and leaves it alone otherwise.
+  - A 4-channel MOD is a PAL Amiga: A is 436.4 Hz. 6+ channels: 440.4.
+  - Limits, on the page: IT over 100 samples or 200 patterns is refused,
+    S3M AdLib instruments are silent, MODs of 5/7/9 channels are refused.
+  - Checked by check-module.js (pitch within 0.1 cent in all four formats,
+    durations, loops end, 40 corrupted copies per format never trap;
+    bit-identical between Node and Chrome) and check-module-page.js. 50 real
+    modules rendered locally; none compared against a reference player's
+    audio. **Measuring pitch on a MOD: smooth first.** The Paula model's
+    sample steps cross zero by themselves (a raw count read 921 Hz for 436).
+- **MT-32 (not shipped).** `js/mt32-core.js` (`ASMt32`) and
+  `vendor/mt32emu/2.8.6/mt32emu.wasm` (Munt, LGPL-2.1+, 105 KB) build and
+  pass check-mt32's no-ROM half, but **no ROM pair was available, so it has
+  never made a sound**. Run `MT32_ROMS=/dir node tools/check-mt32.js` with a
+  real control + PCM ROM before building /mt32-player. Not General MIDI.
+- **Not built.** Nuked-SC55 was relicensed to GPL-2.0-or-later in 2026 (the
+  old non-commercial licence is gone), but needs a headless driver written
+  and five ROM files to test. OpenJOC (Atmos E-AC-3 JOC, Apache-2.0) builds
+  to a 2.1 MB wasm, but its bridge is stereo/binaural only and no real Atmos
+  stream was available to measure. Honeydew's web build is 1.36 GB.
+
 ## Web plugins (WAM2): the editor's mixer and /audio-plugins
 
 The Web Audio Modules community plugins (the index at

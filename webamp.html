@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webamp — the Winamp 2 Player in Your Browser, with Skins and MilkDrop</title>
+<meta name="description" content="Play your own music in Webamp, the open-source rebuild of the Winamp 2 player: playlist, 10-band equaliser, classic .wsz skins and the MilkDrop visualiser. Nothing is uploaded or installed.">
+<meta name="keywords" content="webamp, winamp online, winamp in browser, winamp web player, winamp skins online, wsz skin viewer, milkdrop online, retro mp3 player online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/webamp">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Webamp: the Winamp 2 player, in a browser tab">
+<meta property="og:description" content="Drop your songs and a .wsz skin. Playlist, equaliser and MilkDrop, running in the tab. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/webamp">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Webamp player",
+  "alternateName": [
+    "Winamp online",
+    "Winamp-style music player",
+    "Webamp"
+  ],
+  "url": "https://audiosaw.com/webamp",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Webamp 2.3.1 with its main, equaliser, playlist and MilkDrop windows; plays files from your device without uploading; loads classic Winamp .wsz skins; 10-band equaliser with preamp; shuffle and repeat; windowshade mode; Winamp keyboard shortcuts",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+.wamp-stage{position:relative;min-height:520px;margin:.75rem 0;border:2px dashed var(--line,#d8cfbf);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.wamp-stage.is-on{border-style:solid}
+.wamp-stage p{margin:0;padding:1rem;text-align:center}
+#webamp{image-rendering:pixelated}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this the real Winamp?","acceptedAnswer":{"@type":"Answer","text":"No. It is Webamp, an independent open-source rebuild of the Winamp 2 interface in JavaScript by Jordan Eldredge, under the MIT licence. It looks and behaves like Winamp 2 and loads its skins, but shares no code with it and is not affiliated with Winamp's owners."}},{"@type":"Question","name":"Are my songs uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The files are opened by your browser and played in this tab. The player itself makes no network requests."}},{"@type":"Question","name":"How do I load a Winamp skin?","acceptedAnswer":{"@type":"Answer","text":"Drop a classic .wsz skin file on the box above, or on the player. It is applied at once. Winamp 2 (\"classic\") skins work; the later .wal \"modern\" skins do not."}},{"@type":"Question","name":"Which audio formats does it play?","acceptedAnswer":{"@type":"Answer","text":"The ones your browser plays: MP3, M4A/AAC, WAV, FLAC, OGG and Opus in current Chrome, Firefox, Edge and Safari. A format the browser cannot decode will not play; convert it first."}},{"@type":"Question","name":"How do I open the MilkDrop visualiser?","acceptedAnswer":{"@type":"Answer","text":"It opens beside the player. Click it and press Space for the next preset or L for the preset list. For the visualiser alone at full size, use the music visualizer page."}},{"@type":"Question","name":"Does the equaliser change my files?","acceptedAnswer":{"@type":"Answer","text":"No. It changes the sound while it plays here. To save a file with an EQ curve applied, use the EQ tool."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"Webamp (Winamp 2 player)"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">Webamp (Winamp 2 player)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container">
+  <section class="page-intro">
+<h1>Webamp: the <span class="ital">Winamp 2</span> player, in your browser.</h1>
+    <p>Drop some songs and they play in Webamp, an open-source rebuild of the Winamp 2 player: the main window, the 10-band equaliser, the playlist editor and the MilkDrop visualiser, pixel for pixel. Drop a classic <code>.wsz</code> skin and it wears it. The files are read from your device and played in this tab; nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop songs, or a .wsz skin</p>
+      <p>MP3, M4A, WAV, FLAC, OGG and anything else your browser plays. The first drop starts playing; later ones join the playlist.</p>
+      <input type="file" id="fileInput" multiple accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.wsz,.zip">
+    </div>
+    <div class="wamp-stage" id="wampStage"><p id="wampNote">The player appears here. Its windows can be dragged anywhere on the page.</p></div>
+    <div class="actions">
+      <button class="btn btn-secondary" id="wampReopen" type="button" hidden>Reopen the player</button>
+    </div>
+    <div class="status hidden" id="status"></div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Player</th><td>Webamp 2.3.1 by Jordan Eldredge, MIT licence, unmodified</td></tr>
+        <tr><th>Windows</th><td>Main, equaliser, playlist editor and MilkDrop (Butterchurn)</td></tr>
+        <tr><th>Plays</th><td>Whatever your browser's own audio player decodes: MP3, M4A/AAC, WAV, FLAC, OGG and Opus in current browsers</td></tr>
+        <tr><th>Skins</th><td>Classic Winamp 2 skins (<code>.wsz</code>, or the same thing named <code>.zip</code>)</td></tr>
+        <tr><th>Size</th><td>About 0.5 MB to download, once; it then works from the cache</td></tr>
+        <tr><th>Privacy</th><td>Files are opened in the tab. The player makes no network requests of its own</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How to use it</h2>
+    <p>Drop one song or a whole folder's worth on the box above, or click it to pick files. The first batch replaces the empty playlist and starts playing; anything you add after that queues behind it. You can also drop files straight onto the player's own windows, the way you could onto the original. Everything else works the way it did in 1998: drag a window by its title bar, double-click the title bar to roll it up into "windowshade" mode, and right-click the main window for the menu.</p>
+    <p>The keyboard shortcuts are Winamp's: <kbd>Z</kbd> previous, <kbd>X</kbd> play, <kbd>C</kbd> pause, <kbd>V</kbd> stop, <kbd>B</kbd> next, the arrow keys for volume and seeking, <kbd>S</kbd> for shuffle and <kbd>R</kbd> for repeat. Closing the main window closes the player; the "Reopen the player" button under the stage brings it back with the playlist intact.</p>
+
+    <h2>Skins</h2>
+    <p>A Winamp 2 skin is a zip archive, renamed <code>.wsz</code>, holding a set of bitmap files (<code>main.bmp</code>, <code>cbuttons.bmp</code>, <code>pledit.bmp</code> and so on) and a few text files for colours and the window's clickable regions. Webamp reads that archive in the browser and paints the player from it, so a skin made in 1999 works here unchanged. Drop a <code>.wsz</code> on the box and the player changes at once; drop another to change again. Tens of thousands of them survive in the <a href="https://skins.webamp.org/" rel="noopener">Winamp Skin Museum</a>, which is run by Webamp's author. "Modern" Winamp 3 and 5 skins (<code>.wal</code>) are a different, scripted format and do not load.</p>
+
+    <h2>The equaliser and MilkDrop</h2>
+    <p>The equaliser is a real one, not a picture: ten bands from 60 Hz to 16 kHz plus a preamp, built from Web Audio filters, with the on and auto buttons and the preset menu of the original. It changes what you hear here; it does not change your files. To put an EQ curve into a file you can keep, use <a href="/audio-eq">the EQ tool</a>.</p>
+    <p>The fourth window is MilkDrop, the visualiser plugin Ryan Geiss released for Winamp in 2001, which filled a lot of bedroom monitors in the years after. Here it is <a href="https://github.com/jberg/butterchurn" rel="noopener">Butterchurn</a>, Jordan Berg's WebGL 2 implementation, which runs the original preset format: each preset is a small program of per-frame and per-pixel equations plus shaders, driven by the bass, mid and treble of whatever is playing. Presets change by themselves; click the window and press <kbd>Space</kbd> for the next one, <kbd>Backspace</kbd> for the previous, <kbd>H</kbd> for a hard cut, or <kbd>L</kbd> for the list. If you want the visualiser by itself at full size, on a file or on your microphone, or as a video you can save, that is <a href="/music-visualizer">the music visualizer</a>.</p>
+
+    <h2>What it is, and what it is not</h2>
+    <p>Webamp is a reimplementation: its author rebuilt the player's behaviour and layout in JavaScript from the outside, without Winamp's source code, starting in 2014. It is not made by, or affiliated with, the owners of Winamp, and neither is this site. It is one of the projects catalogued on <a href="https://recompsoftware.com/p/webamp/" rel="noopener">Recomp</a>, a directory of decompilations and clean-room rebuilds, where you can see how it relates to the original.</p>
+    <p>Two limits are worth knowing. It plays through the browser's own audio element, so a format the browser cannot decode (WMA, most tracker modules, DSD) will sit in the playlist and not play; convert those first, for example with <a href="/wma-to-mp3">WMA to MP3</a>, or play tracker modules in <a href="/module-player">the module player</a>. And the playlist lives in the tab: it is not saved when you close the page, and nothing here reads your music library.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is this the real Winamp?</summary><p>No. It is Webamp, an independent open-source rebuild of the Winamp 2 interface in JavaScript by Jordan Eldredge, under the MIT licence. It looks and behaves like Winamp 2 and loads its skins, but shares no code with it and is not affiliated with Winamp's owners.</p></details>
+      <details><summary>Are my songs uploaded?</summary><p>No. The files are opened by your browser and played in this tab. The player itself makes no network requests.</p></details>
+      <details><summary>How do I load a Winamp skin?</summary><p>Drop a classic .wsz skin file on the box above, or on the player. It is applied at once. Winamp 2 ("classic") skins work; the later .wal "modern" skins do not.</p></details>
+      <details><summary>Which audio formats does it play?</summary><p>The ones your browser plays: MP3, M4A/AAC, WAV, FLAC, OGG and Opus in current Chrome, Firefox, Edge and Safari. A format the browser cannot decode will not play; convert it first.</p></details>
+      <details><summary>How do I open the MilkDrop visualiser?</summary><p>It opens beside the player. Click it and press Space for the next preset or L for the preset list. For the visualiser alone at full size, use the music visualizer page.</p></details>
+      <details><summary>Does the equaliser change my files?</summary><p>No. It changes the sound while it plays here. To save a file with an EQ curve applied, use the EQ tool.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/music-visualizer"><h3>Music visualizer</h3><p>MilkDrop by itself, full screen, or saved as a video.</p></a>
+      <a class="card" href="/audio-eq"><h3>EQ &amp; bass booster</h3><p>Put an EQ curve into the file itself.</p></a>
+      <a class="card" href="/wma-to-mp3"><h3>WMA to MP3</h3><p>A WMA that will not play? Convert it.</p></a>
+      <a class="card" href="/mp3-tag-editor"><h3>MP3 tag editor</h3><p>Fix the titles the playlist shows.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/webamp-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

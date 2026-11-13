@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoundCraft Online — Try the Open-Source, Pro Tools-Style DAW in Your Browser</title>
+<meta name="description" content="Run SoundCraft, ArtCraft's open-source clean-room DAW in pure Rust, in a browser tab: Edit and Mix windows, a demo session, no install. An honest look at what the web build does and does not do.">
+<meta name="keywords" content="soundcraft daw, soundcraft artcraft, open source pro tools alternative, daw in browser, online daw, rust daw, clean room daw, soundcraft web">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/soundcraft">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="SoundCraft: the open-source, Pro Tools-style DAW, in a browser tab">
+<meta property="og:description" content="ArtCraft's clean-room DAW in Rust, compiled to WebAssembly. Press start and its demo session opens. Nothing to install.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/soundcraft">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "SoundCraft web build",
+  "alternateName": [
+    "SoundCraft DAW online",
+    "Open-source Pro Tools alternative",
+    "SoundCraft by ArtCraft"
+  ],
+  "url": "https://audiosaw.com/soundcraft",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "SoundCraft 0.20.1 web build by ArtCraft (Apache-2.0), unmodified; Edit and Mix windows with a demo session; runs as WebAssembly with WebGPU or WebGL 2; sandboxed frame; full screen; links to the desktop downloads for macOS, Windows, Linux and FreeBSD",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+.sc-stage{position:relative;margin:.75rem 0;border:2px dashed var(--line,#d8cfbf);border-radius:12px;min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--card)}
+.sc-stage.is-on{border:0;background:#1e1f22;height:min(78vh,820px);min-height:520px;display:block}
+.sc-stage iframe{width:100%;height:100%;border:0;display:block}
+.sc-stage:fullscreen{height:100vh;border-radius:0}
+.sc-stage .btn{font-size:1.1rem}
+.sc-note{font-size:.9rem;color:var(--muted)}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is SoundCraft free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is open source under the Apache 2.0 licence, with free desktop builds for macOS, Windows, Linux and FreeBSD and this WebAssembly build for the browser."}},{"@type":"Question","name":"Can I open my own audio files here?","acceptedAnswer":{"@type":"Answer","text":"No. The project's web build opens a built-in demo session and has no file dialogs or recording. Use the desktop app for your own sessions, or the AudioSaw editor to edit your own files in the browser."}},{"@type":"Question","name":"Is this an official ArtCraft page?","acceptedAnswer":{"@type":"Answer","text":"No. AudioSaw hosts the project's published web build, unmodified, under its licence. SoundCraft is made by ArtCraft; this site is not affiliated with it."}},{"@type":"Question","name":"Is SoundCraft a copy of Pro Tools?","acceptedAnswer":{"@type":"Answer","text":"It is a clean-room program: written from scratch from public documentation, with an Edit and Mix window workflow like the one Pro Tools established. It contains none of Avid's code and is not affiliated with Avid."}},{"@type":"Question","name":"Why is the frame blank?","acceptedAnswer":{"@type":"Answer","text":"Usually a graphics driver that does not get on with WebGPU. Press \"Use WebGL\" to reload it on WebGL 2. The first load also takes a while on a slow connection: it is 18 MB."}},{"@type":"Question","name":"Why is there no sound?","acceptedAnswer":{"@type":"Answer","text":"Browsers block sound until you interact with the page. Click inside the app once, then press play."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"SoundCraft (open-source DAW)"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">SoundCraft (open-source DAW)</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container">
+  <section class="page-intro">
+<h1>SoundCraft: an open-source <span class="ital">DAW</span>, running in your browser.</h1>
+    <p>SoundCraft is ArtCraft's open-source digital audio workstation, written from scratch in Rust and laid out like the Edit and Mix windows that studio engineers already know. This page runs its official web build, unmodified: press start and it opens its demo session in the tab. It is a way to see and try the program before installing it, not a replacement for the desktop app, and the section below says exactly where the line is.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="sc-stage" id="scStage">
+      <button class="btn" id="scStart" type="button">Start SoundCraft (18 MB)</button>
+    </div>
+    <div class="actions" id="scBar" hidden>
+      <button class="btn btn-secondary" id="scFull" type="button">Full screen</button>
+      <button class="btn btn-secondary" id="scWebgl" type="button">Blank or glitchy? Use WebGL</button>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <p class="sc-note">Best on a computer with a keyboard and a wide window. Click inside the app once so its shortcuts and its sound work.</p>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Program</th><td>SoundCraft 0.20.1 by ArtCraft, Apache-2.0, in development</td></tr>
+        <tr><th>This build</th><td>The project's own web build from its GitHub release, checksum verified, unmodified</td></tr>
+        <tr><th>Download</th><td>18 MB of WebAssembly (about 7 MB over the wire), fetched only when you press start, then cached</td></tr>
+        <tr><th>Draws with</th><td>WebGPU where the browser has it, WebGL 2 otherwise</td></tr>
+        <tr><th>In the browser</th><td>Opens the built-in demo session. No recording, no opening or saving your own files</td></tr>
+        <tr><th>For real work</th><td>The free desktop app: macOS, Windows, Linux, FreeBSD</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>What SoundCraft is</h2>
+    <p>SoundCraft is one of the "Craft apps" from <a href="https://getartcraft.com/apps/soundcraft" rel="noopener">ArtCraft</a>: a family of open-source programs, each a clean-room rebuild of a professional tool, written in Rust from public documentation rather than from anyone's code. PhotoCraft is the photo editor, FilmCraft the video editor, and SoundCraft the audio workstation, modelled on the two-window workflow of Avid Pro Tools. The source is on <a href="https://github.com/storytold/soundcraft" rel="noopener">GitHub</a> under the Apache 2.0 licence, and the project says openly that much of it is written by coding agents working to a published protocol. It is listed on <a href="https://recompsoftware.com/p/soundcraft/" rel="noopener">Recomp</a>, a catalogue of clean-room and reverse-engineered software, with its method and licence.</p>
+    <p>The project's own feature list for the desktop app is long: an Edit window with Shuffle, Slip, Spot and Grid modes, comping playlists and memory locations; a mixing console with ten inserts and ten sends a track, busses, aux inputs, VCAs and automatic plugin delay compensation; Write, Touch, Latch and Trim automation; built-in EQ, dynamics, reverbs, delays and synthesisers; a piano-roll MIDI editor with a score view; surround panning up to 9.1.6; and hosting for external CLAP plugins. It is version 0.20 and marked "in development", so treat that list as the project's description of where it is going and what is there today, not as something this site has tested.</p>
+
+    <h2>What the web build does, and does not</h2>
+    <p>Every Craft app compiles to WebAssembly as well as to native code, and each release includes that build as a zip "to host yourself". That is what runs here. The project's hosting notes are direct about its limits: the web build has no recording, no native file dialogs and no control channel, and it opens a synthesised demo session. So in this tab you can see the real interface, move around a nine-track session, open the windows and menus, press play and work the mixer. You cannot import your own audio, record a take or save a project. For any of that, <a href="https://getartcraft.com/apps/soundcraft" rel="noopener">download the desktop app</a>, which is free.</p>
+    <p>If what you want is to edit your own audio in a browser right now, that is what <a href="/audio-editor">the AudioSaw editor</a> is for: a multitrack editor with a mixer, effects, MIDI tracks and export, working on your own files. It is a smaller program than a studio workstation, but it opens and saves.</p>
+
+    <h2>How it runs here</h2>
+    <p>Nothing is downloaded until you press start. The app then loads in a frame that is sandboxed from the rest of this site: it runs on what browsers call an opaque origin, so it cannot read this site's storage or cookies, and this page cannot reach into it. The files are the ones in the project's v0.20.1 release, and their SHA-256 matches the checksum the project publishes. The only thing added is a one-line message from the frame's host page to say the app has started.</p>
+    <p>It draws with WebGPU when the browser offers it and falls back to WebGL 2 by itself. If the frame stays blank or the picture is wrong, which can happen with a WebGPU driver the app has not met, the "Use WebGL" button reloads it on the older, safer path. Browsers only let a page make sound after a click or a key press, so click inside the app once before pressing play. A phone will load it, but the interface is built for a mouse, a keyboard and a wide screen.</p>
+
+    <h2>Who makes what</h2>
+    <p>SoundCraft is made by ArtCraft and its contributors. AudioSaw hosts a copy of their published web build under its licence and is not affiliated with ArtCraft, nor with Avid, whose Pro Tools is named here only to describe the workflow SoundCraft follows. Bugs in the app belong on the project's GitHub issues or its Discord; a problem with this page loading it belongs to us.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>Is SoundCraft free?</summary><p>Yes. It is open source under the Apache 2.0 licence, with free desktop builds for macOS, Windows, Linux and FreeBSD and this WebAssembly build for the browser.</p></details>
+      <details><summary>Can I open my own audio files here?</summary><p>No. The project's web build opens a built-in demo session and has no file dialogs or recording. Use the desktop app for your own sessions, or the AudioSaw editor to edit your own files in the browser.</p></details>
+      <details><summary>Is this an official ArtCraft page?</summary><p>No. AudioSaw hosts the project's published web build, unmodified, under its licence. SoundCraft is made by ArtCraft; this site is not affiliated with it.</p></details>
+      <details><summary>Is SoundCraft a copy of Pro Tools?</summary><p>It is a clean-room program: written from scratch from public documentation, with an Edit and Mix window workflow like the one Pro Tools established. It contains none of Avid's code and is not affiliated with Avid.</p></details>
+      <details><summary>Why is the frame blank?</summary><p>Usually a graphics driver that does not get on with WebGPU. Press "Use WebGL" to reload it on WebGL 2. The first load also takes a while on a slow connection: it is 18 MB.</p></details>
+      <details><summary>Why is there no sound?</summary><p>Browsers block sound until you interact with the page. Click inside the app once, then press play.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Edit and mix your own files in the browser.</p></a>
+      <a class="card" href="/audio-plugins"><h3>Audio Effects Plugins</h3><p>Run open-source effect plugins on a file.</p></a>
+      <a class="card" href="/voice-recorder"><h3>Voice recorder</h3><p>Record a take to work on.</p></a>
+      <a class="card" href="/webamp"><h3>Webamp (Winamp 2 player)</h3><p>Another rebuilt classic: the Winamp 2 player.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/soundcraft-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+dx7.wasm, as built for AudioSaw (https://audiosaw.com)
+
+This module contains:
+
+1. The MSFA FM synthesis engine (music-synthesizer-for-android), as carried in
+   Dexed's Source/msfa at commit fea2f0f0f2c397799f59b27eb11c038cd34b22c5.
+   Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+     Copyright 2012, 2013 Google Inc.
+     Copyright 2016-2025 Pascal Gauthier.
+     Copyright 2019 Jean Pierre Cimalando.
+
+   The files are compiled unmodified. The list is in README.md.
+   https://github.com/google/music-synthesizer-for-android
+   https://github.com/asb2m10/dexed
+
+2. wrapper/dx7_wasm.cc and wrapper/shim/*, written for AudioSaw.
+   Copyright 2026 AudioSaw. GNU Affero General Public License v3.0 or later,
+   the licence of the site (see /LICENSE at the repository root).
+
+3. Parts of the Emscripten runtime that the linker pulls in (musl libc,
+   emmalloc, libc++, libc++abi, compiler-rt): MIT / University of Illinois
+   NCSA / Apache-2.0 with LLVM exceptions. https://emscripten.org
+
+No part of Dexed that is under the GPL is compiled in (not PluginProcessor,
+PluginData, EngineMkI or EngineOpl), and no Yamaha ROM, cartridge or voice
+data is included. "DX7" and "Yamaha" are trademarks of Yamaha Corporation,
+used here only to say what the synthesis method and the voice-file format are
+compatible with.

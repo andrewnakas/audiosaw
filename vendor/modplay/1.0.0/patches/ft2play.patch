@@ -1,0 +1,21 @@
+diff --git a/pmp_main.c b/pmp_main.c
+index 9cc90e5..5deb5a2 100644
+--- a/pmp_main.c
++++ b/pmp_main.c
+@@ -1810,6 +1810,8 @@ static void doEffects(stmTyp *ch) // tick>0 effect handling
+ 	JumpTab_TickNonZero[ch->effTyp](ch, ch->eff);
+ }
+ 
++extern uint32_t mp_ft2_orderEntries; // modplay
++
+ static void getNextPos(void)
+ {
+ 	song.pattPos++;
+@@ -1838,6 +1840,7 @@ static void getNextPos(void)
+ 		song.pattPos = song.pBreakPos;
+ 		song.pBreakPos = 0;
+ 		song.posJumpFlag = false;
++		mp_ft2_orderEntries++; // modplay: an order was entered (song-end detection)
+ 
+ 		song.songPos++;
+ 		if (song.songPos >= song.len)

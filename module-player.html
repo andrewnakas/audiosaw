@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOD Player Online — Play and Convert MOD, XM, S3M and IT to MP3 or WAV</title>
+<meta name="description" content="Play tracker modules in your browser and convert them to MP3, WAV or FLAC. MOD, XM, S3M and IT, rendered by C ports of the original ProTracker, Fasttracker 2 and Impulse Tracker replayers. Nothing is uploaded.">
+<meta name="keywords" content="mod player online, mod to mp3, xm to mp3, s3m to mp3, it to mp3, mod to wav, tracker module converter, play mod files, amiga mod player online, xm player online">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/module-player">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="Play and convert MOD, XM, S3M and IT tracker modules">
+<meta property="og:description" content="Rendered by ports of the original ProTracker, Fasttracker 2 and Impulse Tracker players, in the browser. Save as MP3, WAV or FLAC.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/module-player">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Module player and converter",
+  "alternateName": [
+    "MOD player online",
+    "XM to MP3 converter",
+    "MOD to WAV converter",
+    "Tracker module player"
+  ],
+  "url": "https://audiosaw.com/module-player",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Plays MOD, XM, S3M and IT tracker modules; renders with 8bitbubsy's ports of ProTracker 2, Fasttracker 2 and Impulse Tracker 2 compiled to WebAssembly; converts to WAV, FLAC or MP3 at 44.1, 48 or 96 kHz; shows the title, channels, patterns and sample text; Amiga stereo width control for 4-channel MODs; looping songs rendered once through; nothing uploaded",
+  "dateModified": "2026-11-13"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+.tool-app [hidden]{display:none!important}
+#mdTitle{font-family:var(--serif);font-size:1.4rem;margin:.75rem 0 .2rem}
+#mdFacts{color:var(--muted);font-size:.92rem;margin:0 0 .5rem}
+#mdAudio{width:100%;margin:.5rem 0}
+#mdNames{font:12px/1.35 var(--mono);white-space:pre;overflow:auto;max-height:15em;background:var(--card);border:1px solid var(--line,#d8cfbf);border-radius:8px;padding:.6rem .8rem;margin:.4rem 0}
+.md-names summary{cursor:pointer;color:var(--muted)}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert a MOD file to MP3?","acceptedAnswer":{"@type":"Answer","text":"Drop the .mod file on the page, wait a second or two for it to render, choose MP3 and press \"Convert and download\". The same works for XM, S3M and IT files."}},{"@type":"Question","name":"Which module formats does it play?","acceptedAnswer":{"@type":"Answer","text":"MOD (4 to 32 channels, including 15-sample Soundtracker files), XM, S3M and IT. Other tracker formats such as MTM, 669 and MED are not supported."}},{"@type":"Question","name":"Why does my module sound different here than in another player?","acceptedAnswer":{"@type":"Answer","text":"Each format is played by a port of its original tracker's replay code, so effects behave as they did in ProTracker, Fasttracker 2 or Impulse Tracker. General-purpose players approximate those and differ in places. Four-channel MODs are also tuned as a PAL Amiga, slightly under concert pitch."}},{"@type":"Question","name":"How long is the converted file if the song loops?","acceptedAnswer":{"@type":"Answer","text":"One pass. The song is rendered until it is about to return to a position it has already played, then stops."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The module is read and rendered in your browser tab by a 223 KB WebAssembly player. Nothing is sent anywhere."}},{"@type":"Question","name":"Why is an S3M or IT file refused or partly silent?","acceptedAnswer":{"@type":"Answer","text":"IT files with more than 100 samples or 200 patterns exceed what Impulse Tracker itself allowed and are refused. S3M files that use AdLib FM instruments play without those instruments."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Classic players & synths","item":"https://audiosaw.com/tools#retro"},{"@type":"ListItem","position":3,"name":"MOD player & converter"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#retro">Classic players &amp; synths</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">MOD player &amp; converter</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+<h1><span class="ital">MOD</span> player: play and convert tracker modules.</h1>
+    <p>Drop a <code>.mod</code>, <code>.xm</code>, <code>.s3m</code> or <code>.it</code> file and it is played the way the tracker that made it would have played it, by C ports of the original ProTracker, Fasttracker 2 and Impulse Tracker replay code. Listen here, read the messages hidden in the sample names, and save the song as an MP3, WAV or FLAC that plays anywhere. The file never leaves your browser.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+<div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a tracker module</p>
+      <p>.mod, .xm, .s3m or .it</p>
+      <input type="file" id="fileInput" accept=".mod,.xm,.s3m,.it">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="status hidden" id="status"></div>
+    <div id="mdView" hidden>
+      <p id="mdTitle"></p>
+      <p id="mdFacts"></p>
+      <audio id="mdAudio" controls></audio>
+      <details class="md-names" open><summary>Sample and instrument text</summary><div id="mdNames"></div></details>
+      <div class="controls">
+        <label>Sample rate
+          <select id="mdRate">
+            <option value="44100">44.1 kHz</option>
+            <option value="48000" selected>48 kHz</option>
+            <option value="96000">96 kHz</option>
+          </select>
+        </label>
+        <label id="mdSepWrap">Stereo width (Amiga MODs)
+          <select id="mdSep">
+            <option value="0">Mono</option>
+            <option value="20" selected>20%: comfortable on headphones</option>
+            <option value="50">50%</option>
+            <option value="100">100%: hard left and right, as an Amiga</option>
+          </select>
+        </label>
+        <label>Save as
+          <select id="mdFormat">
+            <option value="mp3-320" selected>MP3 320 kbps</option>
+            <option value="mp3-v0">MP3 V0 (VBR)</option>
+            <option value="wav16">WAV 16-bit</option>
+            <option value="wav24">WAV 24-bit</option>
+            <option value="flac16">FLAC 16-bit</option>
+            <option value="flac24">FLAC 24-bit</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" type="button" disabled>Convert and download</button>
+      </div>
+    </div>
+  </section>
+
+<section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Reads</th><td>MOD (ProTracker and compatibles, 4 to 32 channels, and 15-sample Soundtracker files), XM, S3M, IT</td></tr>
+        <tr><th>Played by</th><td>pt2-clone (4-channel MOD), ft2play (XM and multichannel MOD), it2play (IT and S3M): Olav Sørensen's C ports of the original replayers, BSD 3-Clause</td></tr>
+        <tr><th>Saves</th><td>MP3 (320 kbps or V0), WAV or FLAC in 16 or 24-bit, at 44.1, 48 or 96 kHz, stereo</td></tr>
+        <tr><th>Length</th><td>The song once through; a song that loops for ever stops where it would start again</td></tr>
+        <tr><th>Pitch</th><td>Measured within 0.1 cent of each format's own tuning, the same at 44.1 and 48 kHz</td></tr>
+        <tr><th>Size</th><td>The player is 223 KB of WebAssembly</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>What a module is, and why converting one is not simple</h2>
+    <p>A tracker module is not a recording. It is a set of short samples, a bass note, a snare, a chord stab, plus patterns: grids of rows that say which sample to play on which channel at which pitch, with effect commands for slides, vibrato, arpeggios and volume. The format came from the Commodore Amiga in 1987, where four hardware channels and half a megabyte of memory were all there was, and it carried the music of a generation of games, demos and keygens in files of a few dozen kilobytes. The sound only exists when a player runs those patterns, and every tracker's player had its own arithmetic and its own bugs, which composers then wrote around. Play an old module in a generic player and a slide lands a little flat or an arpeggio stutters differently from how its author heard it.</p>
+    <p>That is why this page does not use one general-purpose engine. Each format goes to a port of the program it was made in. Four-channel MODs are played by the replayer from <a href="https://github.com/8bitbubsy/pt2-clone" rel="noopener">pt2-clone</a>, a re-creation of ProTracker 2.3D that includes a model of the Amiga's Paula sound chip. XM files, and MODs with six or more channels, go to <a href="https://github.com/8bitbubsy/ft2play" rel="noopener">ft2play</a>, a port of Fasttracker 2.09's replayer. IT files go to <a href="https://github.com/8bitbubsy/it2play" rel="noopener">it2play</a>, a port of Impulse Tracker 2.15's, and S3M files are played the way Impulse Tracker imports them. All three are by Olav Sørensen (8bitbubsy), who ported the original trackers' own code line by line; the page shows which one took your file.</p>
+
+    <h2>How to use it</h2>
+    <p>Drop the file. It is rendered from start to finish, usually in a second or two, and then plays in an ordinary player bar you can seek in. The title is shown with the channel count, the number of patterns and the length. Under it is the sample and instrument text: module authors used those name fields for credits, greetings and contact details, so it is often a small letter from 1993. Choose a format and press "Convert and download". MP3 at 320 kbps plays on anything; WAV or FLAC keeps every sample exactly for editing or archiving.</p>
+    <p>Changing the sample rate renders the song again at that rate, from the patterns, rather than resampling the audio. For four-channel MODs there is also a stereo width setting. An Amiga sent channels one and four entirely to the left speaker and two and three entirely to the right, which is striking on speakers and tiring on headphones; 20% is the pt2-clone default and keeps a sense of space, and 100% is the real machine.</p>
+
+    <h2>Things worth knowing</h2>
+    <p>A module has no length: most loop for ever. The player notes each position in the song as it reaches it and stops when the song is about to go somewhere it has already been, so you get exactly one pass. A song that loops inside a single pattern cannot be told apart from a long pattern-loop effect and runs to a 20-minute limit; the page says so when that happens.</p>
+    <p>Tuning follows the hardware. A four-channel MOD is played as a PAL Amiga plays it, where the note written as A comes out at 436.4 Hz, a little under concert pitch; Fasttracker and Impulse Tracker files are at 440. The mix is taken before the trackers' own 16-bit clipping, so a loud module keeps its peaks instead of having them flattened, and if it passes full scale the whole song is turned down to peak at -1 dBFS, with the amount shown.</p>
+    <p>What it will not play: IT files with more than 100 samples or 200 patterns (Impulse Tracker's own limits, which some files made in later editors exceed); the AdLib FM instruments a few S3M files use, which are silent; MODs with 5, 7 or 9 channels; and other formats such as MTM, 669 or MED. Titles and sample text keep plain ASCII only, because the files' DOS and Amiga character sets do not map cleanly onto a web page.</p>
+
+    <h2>Credits</h2>
+    <p>The replayers are open source under the BSD 3-Clause licence, copyright Olav Sørensen; their licence texts are served with the player. ProTracker 2 clone and Fasttracker 2 clone are both catalogued on <a href="https://recompsoftware.com/p/pt2-clone/" rel="noopener">Recomp</a>, a directory of software re-creations, along with <a href="https://recompsoftware.com/p/milkytracker/" rel="noopener">MilkyTracker</a> and <a href="https://recompsoftware.com/p/schism-tracker/" rel="noopener">Schism Tracker</a> if you want to write modules rather than play them. To play ordinary music files in a period-correct player instead, there is <a href="/webamp">Webamp</a>.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I convert a MOD file to MP3?</summary><p>Drop the .mod file on the page, wait a second or two for it to render, choose MP3 and press "Convert and download". The same works for XM, S3M and IT files.</p></details>
+      <details><summary>Which module formats does it play?</summary><p>MOD (4 to 32 channels, including 15-sample Soundtracker files), XM, S3M and IT. Other tracker formats such as MTM, 669 and MED are not supported.</p></details>
+      <details><summary>Why does my module sound different here than in another player?</summary><p>Each format is played by a port of its original tracker's replay code, so effects behave as they did in ProTracker, Fasttracker 2 or Impulse Tracker. General-purpose players approximate those and differ in places. Four-channel MODs are also tuned as a PAL Amiga, slightly under concert pitch.</p></details>
+      <details><summary>How long is the converted file if the song loops?</summary><p>One pass. The song is rendered until it is about to return to a position it has already played, then stops.</p></details>
+      <details><summary>Is my file uploaded?</summary><p>No. The module is read and rendered in your browser tab by a 223 KB WebAssembly player. Nothing is sent anywhere.</p></details>
+      <details><summary>Why is an S3M or IT file refused or partly silent?</summary><p>IT files with more than 100 samples or 200 patterns exceed what Impulse Tracker itself allowed and are refused. S3M files that use AdLib FM instruments play without those instruments.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/webamp"><h3>Webamp (Winamp 2 player)</h3><p>Play the MP3 in the Winamp 2 player it deserves.</p></a>
+      <a class="card" href="/audio-cutter"><h3>Audio Cutter</h3><p>Cut the converted song to the part you want.</p></a>
+      <a class="card" href="/loudness-normalizer"><h3>LUFS Loudness Normalizer</h3><p>Bring it to the same loudness as your other tracks.</p></a>
+      <a class="card" href="/sample-slicer"><h3>Sample Slicer</h3><p>Chop a recording into samples for a tracker.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-13"></script>
+<script src="/js/tool-graph.js?v=2026-11-13"></script>
+<script src="/js/flow.js?v=2026-11-13"></script>
+<script src="/js/audio-core.js?v=2026-11-13"></script>
+<script src="/js/consent.js?v=2026-11-13"></script>
+<script src="/js/module-page.js?v=2026-11-13"></script>
+<script src="/js/pwa.js?v=2026-11-13"></script>
+</body>
+</html>
