@@ -80,6 +80,8 @@ const CHECKS = [
   ['check-mt32.js'],
   ['check-module.js'],
   ['check-module-page.js'],
+  ['check-rebirth.js'],
+  ['check-rebirth-page.js'],
   ['check-webkit.js'],
   ['check-sheet.js'],
   ['check-voice.js'],

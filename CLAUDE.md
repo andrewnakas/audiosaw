@@ -1535,12 +1535,39 @@ check-all.
   pass check-mt32's no-ROM half, but **no ROM pair was available, so it has
   never made a sound**. Run `MT32_ROMS=/dir node tools/check-mt32.js` with a
   real control + PCM ROM before building /mt32-player. Not General MIDI.
-- **OpenRB-338 (ReBirth) is not ported.** Its web build is planned upstream
-  but not started, and its built-in kit is ReBirth's own drum samples
-  (its README says so). A wasm port was begun on 13 Nov and stopped when the
-  disk filled; the Rust DAW wasm spikes (Pro Wave, Suhina, Lemon Studio)
-  likewise. **Several Rust builds at once filled a 228 GB disk**: run one at
-  a time and delete each `target/` before the next.
+- **/rebirth-player** (`js/rebirth-play.js` = `ASRebirth`, UMD;
+  `js/rebirth-worker.js`; `js/rebirth-page.js`;
+  `vendor/openrb/2026-11-13/openrb.wasm`, 313 KB, no imports): the engine
+  crates of OpenRB-338 (GPL-3.0-only) with a C-ABI wrapper of ours. One
+  34-line patch in `rbm`, none in the engine.
+  - **Nothing of ReBirth is hosted, and that is the design.** Upstream
+    embeds `Standard.rbm` (ReBirth's 46 drum samples, "Propellerhead's
+    material" in its own words, no licence) and a 2,047-byte key from the
+    ReBirth CD. build.sh deletes both before compiling. The visitor drops a
+    kit (.rbm + key, or a clear .orbkit) and it stays in the tab. Do not
+    add the kit, the key, mods or songs to this repo. Hosting the kit is
+    Andrew's decision to make with the README's wording in front of him.
+  - Without a kit the 303s and effects play and the drum machines are
+    silent (`drumsSilent`). Only 7 of 1,270 collected songs use no drum
+    machine, so the page is honest that drums need the visitor's file.
+    **A drum machine can be on and never hit**: 5 of 25 such songs render
+    the same with and without the kit, so the flag can over-warn, and a
+    check must pick its song by rendering both ways.
+  - **It renders the loop, as the original's "Export Loop" did** (an .rbs
+    has no length; the original plays to bar 1,000). 200 of 1,270 songs
+    have a loop under 30 s, hence the "bar 1 to the last note" option
+    (ours, not upstream's) and the 20-minute cap.
+  - 44.1 kHz 16-bit is the engine's own output; the 16-bit WAV is exact.
+  - Checked: wasm vs native `orb render` identical on 150 of 150 songs
+    (check-rebirth, gated by RB_SONGS/RB_KIT/RB_KEY/RB_ORB); the page with
+    the engine's blank song (302,399 frames for 4 bars at 140), and, gated,
+    a real song without and with the kit (check-rebirth-page). About 1% of
+    byte-flipped songs make upstream's engine panic; the wrapper turns the
+    trap into the ordinary "damaged file" Error.
+- **Rust DAW wasm spikes (Pro Wave, Suhina, Lemon Studio): not done.** They
+  were started on 13 Nov and stopped when the disk filled. **Several Rust
+  builds at once filled a 228 GB disk**: one at a time, CARGO_TARGET_DIR in
+  the scratchpad, delete `target/` before the next.
 - **Not built.** Nuked-SC55 was relicensed to GPL-2.0-or-later in 2026 (the
   old non-commercial licence is gone), but needs a headless driver written
   and five ROM files to test. OpenJOC (Atmos E-AC-3 JOC, Apache-2.0) builds

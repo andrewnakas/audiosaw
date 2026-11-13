@@ -493,6 +493,7 @@ are much slower without a GPU.
 - [MOD player & converter](https://audiosaw.com/module-player): Play MOD, XM, S3M and IT tracker modules with ports of the original replayers, and save them as MP3, WAV or FLAC.
 - [Honeydew (open-source music studio)](https://audiosaw.com/honeydew): A clean-room studio modelled on FL Studio Mobile: synths, drum kits, piano roll and mixer, running in your browser.
 - [Open-source DAWs like Logic, Ableton, FL and Pro Tools](https://audiosaw.com/open-source-daws): Nine new open-source studios, what each is modelled on, its licence and status, and the two you can run in the browser.
+- [ReBirth song player (.rbs)](https://audiosaw.com/rebirth-player): Play ReBirth RB-338 songs and save them as WAV, FLAC or MP3, rendered by the OpenRB-338 engine exactly as the original exported them.
 
 ## For a specific app or device
 

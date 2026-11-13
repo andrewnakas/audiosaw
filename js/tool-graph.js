@@ -1282,6 +1282,16 @@
         ['audio-editor', 'Just need to edit and mix? The editor on this site'],
         ['dx7-synth', 'A rebuilt classic instrument to play']
       ]
+    },
+    'rebirth-player': {
+      cat: 'retro', label: 'rebirth player', title: 'ReBirth song player (.rbs)',
+      blurb: 'Play ReBirth RB-338 songs and save them as WAV, FLAC or MP3, rendered by the OpenRB-338 engine exactly as the original exported them.',
+      next: [
+        ['module-player', 'Tracker modules from the same years: MOD, XM, S3M, IT'],
+        ['audio-cutter', 'Cut the render to the part you want'],
+        ['bpm-finder', 'Check the tempo of the result'],
+        ['open-source-daws', 'OpenRB-338 and eight other rebuilt studios']
+      ]
     }
   };
 
@@ -1429,7 +1439,7 @@
       note: 'Open-source rebuilds of software and hardware people still miss, running in the tab.',
       style: 'tile',
       tools: [
-        'module-player', 'webamp', 'music-visualizer', 'dx7-synth', 'honeydew', 'soundcraft', 'open-source-daws'
+        'module-player', 'rebirth-player', 'webamp', 'music-visualizer', 'dx7-synth', 'honeydew', 'soundcraft', 'open-source-daws'
       ]
     },
     {
@@ -1465,6 +1475,7 @@
     aiff: 'aiff-to-mp3', aif: 'aiff-to-mp3', m4b: 'm4b-to-mp3',
     mp4: 'mp4-to-mp3', mov: 'mov-to-mp3',
     mod: 'module-player', xm: 'module-player', s3m: 'module-player', it: 'module-player',
+    rbs: 'rebirth-player',
     // Containers with no page of their own. The general extractor demuxes all
     // of these, so it is a real answer rather than a shrug.
     webm: 'extract-audio', mkv: 'extract-audio', avi: 'extract-audio',

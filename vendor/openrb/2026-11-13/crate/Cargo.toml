@@ -1,0 +1,29 @@
+# The AudioSaw wrapper around OpenRB-338's engine: a cdylib with a plain C
+# ABI, built for wasm32-unknown-unknown. build.sh puts the pinned upstream
+# checkout beside this folder as ../upstream.
+[package]
+name = "openrb-wasm"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+publish = false
+
+[lib]
+name = "openrb"
+crate-type = ["cdylib"]
+
+[dependencies]
+rbs = { path = "../upstream/crates/rbs" }
+orb-engine = { path = "../upstream/crates/orb-engine" }
+# external-assets: the patch's feature that leaves ReBirth's key bytes and
+# Standard.rbm out of the build (patches/rbm-external-assets.patch).
+rbm = { path = "../upstream/crates/rbm", features = ["external-assets"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[workspace]

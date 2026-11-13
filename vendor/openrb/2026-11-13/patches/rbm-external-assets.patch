@@ -1,0 +1,78 @@
+diff --git a/crates/rbm/Cargo.toml b/crates/rbm/Cargo.toml
+index bb159c1..bbe9a31 100644
+--- a/crates/rbm/Cargo.toml
++++ b/crates/rbm/Cargo.toml
+@@ -5,6 +5,12 @@ edition.workspace = true
+ license.workspace = true
+ publish.workspace = true
+ 
++[features]
++# AudioSaw's WebAssembly build: nothing of ReBirth is compiled in. The key window and the
++# standard mod are then empty stand-ins, and both come from the caller at run time
++# (`KeyTable::with_window`). Off by default: the native build is unchanged.
++external-assets = []
++
+ [dependencies]
+ orb-engine = { path = "../orb-engine" }
+ # mod.toml of an unpacked mod (rbm::pack).
+diff --git a/crates/rbm/src/embedded.rs b/crates/rbm/src/embedded.rs
+index 563d5df..c4be6e5 100644
+--- a/crates/rbm/src/embedded.rs
++++ b/crates/rbm/src/embedded.rs
+@@ -24,4 +24,10 @@ pub const DAT_SHA256: &str = "62071e999697e7ac49936cf605eb2c888d1097c6c6b85ea10c
+ pub const WINDOW_SHA256: &str = "2c292d920763bc50b058feb019eccc839369528aa92ac4cab3935b8c744956bc";
+ 
+ /// `RB20FUL.DAT[WINDOW .. WINDOW + WINDOW_LEN]`.
++#[cfg(not(feature = "external-assets"))]
+ pub const WINDOW_BYTES: &[u8; WINDOW_LEN] = include_bytes!("rb20ful_window.bin");
++
++/// With `external-assets` the bytes are not in the build: zeros stand in, and
++/// [`crate::KeyTable::embedded`] must not be used ([`crate::KeyTable::with_window`] instead).
++#[cfg(feature = "external-assets")]
++pub const WINDOW_BYTES: &[u8; WINDOW_LEN] = &[0; WINDOW_LEN];
+diff --git a/crates/rbm/src/lib.rs b/crates/rbm/src/lib.rs
+index b04c3de..f18b17d 100644
+--- a/crates/rbm/src/lib.rs
++++ b/crates/rbm/src/lib.rs
+@@ -566,6 +566,22 @@ impl KeyTable {
+         (t.known != [0, 0]).then_some(t)
+     }
+ 
++    /// [`KeyTable::embedded`] with the window's bytes given by the caller instead of taken from
++    /// [`embedded::WINDOW_BYTES`] (the `external-assets` build has none).
++    pub fn with_window(rbm: &Rbm, window: &[u8; embedded::WINDOW_LEN]) -> Option<KeyTable> {
++        let mut t = KeyTable {
++            bytes: Box::new([0u8; TABLE_LEN]),
++            known: [0, 0],
++        };
++        for (j, off) in rbm.key_pages().into_iter().enumerate() {
++            if off == embedded::WINDOW {
++                t.bytes[j * PAGE..j * PAGE + embedded::WINDOW_LEN].copy_from_slice(window);
++                t.known[j] = embedded::WINDOW_LEN;
++            }
++        }
++        (t.known != [0, 0]).then_some(t)
++    }
++
+     /// The table [`recrypt`] scrambles against: both pages are the embedded window.
+     pub(crate) fn window() -> KeyTable {
+         let mut t = KeyTable {
+diff --git a/crates/rbm/src/standard.rs b/crates/rbm/src/standard.rs
+index b00b918..ee26be6 100644
+--- a/crates/rbm/src/standard.rs
++++ b/crates/rbm/src/standard.rs
+@@ -133,8 +133,14 @@ pub fn build(dll: &[u8], exe: &[u8]) -> Result<Standard, RbmError> {
+ }
+ 
+ /// `assets/Standard.rbm`: the standard mod orb embeds as its built-in kit (task-067).
++#[cfg(not(feature = "external-assets"))]
+ pub const EMBEDDED: &[u8] = include_bytes!("../../../assets/Standard.rbm");
+ 
++/// With `external-assets` the standard mod is not in the build, and [`builtin_samples`] and
++/// [`builtin_file`] must not be called.
++#[cfg(feature = "external-assets")]
++pub const EMBEDDED: &[u8] = &[];
++
+ /// The embedded standard mod, parsed once, and its key table.
+ fn embedded_mod() -> &'static (Rbm, KeyTable) {
+     static M: OnceLock<(Rbm, KeyTable)> = OnceLock::new();
