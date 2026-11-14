@@ -4,11 +4,13 @@
  * the engine of OpenRB-338 (GPL-3.0-only), whose output matches the original
  * program's sample for sample.
  *
- * The drum sounds are not ours to hand out. ReBirth's 46 drum samples are
- * Propellerhead's, and neither they nor the key that mods are scrambled
+ * ReBirth's own drum sounds are not ours to hand out. Its 46 drum samples
+ * are Propellerhead's, and neither they nor the key that mods are scrambled
  * with are in this site's files. The TB-303s and the effects are pure
- * synthesis and always play. For the drums the visitor drops the kit
- * themselves: a .rbm (the standard kit or a mod) with its 2,047-byte key
+ * synthesis and always play. The drums play on the AudioSaw kit, which is
+ * made from CC0 recordings fitted to the original's pitch, tone and decay
+ * (vendor/openrb/2026-11-13/kit/SOURCES.md), unless the visitor drops
+ * ReBirth's kit: a .rbm (the standard kit or a mod) with its 2,047-byte key
  * file, or a clear .orbkit. What they drop stays in this tab's memory; it
  * is not stored or sent.
  *
@@ -32,6 +34,18 @@
   };
   if (!el.dropzone || !el.view) return;
   var KEY_BYTES = 2047;
+  // The kit that plays when the visitor has not dropped ReBirth's own: 45
+  // samples made from CC0 recordings (vendor/openrb/2026-11-13/kit/SOURCES.md).
+  // Fetched with the first song, once.
+  var OWN_KIT = '/vendor/openrb/2026-11-13/kit/audiosaw-kit-1.orbkit';
+  var ownKit = null, ownKitTried = null;
+  function loadOwnKit() {
+    if (!ownKitTried) ownKitTried = fetch(OWN_KIT).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.arrayBuffer();
+    }).then(function (ab) { ownKit = ab; }, function (e) { console.warn('[rebirth] the built-in kit did not load', e); });
+    return ownKitTried;
+  }
   var worker = null, job = 0, waiting = {};
   var song = null, songName = '', kit = null, kitName = '', mod = null, modName = '', key = null, out = null;
 
@@ -57,21 +71,24 @@
 
   function kitLine() {
     var parts = [];
-    parts.push(kit ? 'Standard kit: ' + kitName : 'Standard kit: none yet');
+    parts.push(kit ? 'Drums: your kit, ' + kitName : 'Drums: the AudioSaw kit (drop ReBirth\'s Standard kit and key to use the original samples)');
     if (mod) parts.push('Mod: ' + modName);
-    parts.push(key ? 'Key: loaded' : 'Key: none');
+    if (key) parts.push('Key: loaded');
     el.kitState.textContent = parts.join(' · ');
   }
 
   function render() {
     var id = ++job;
-    return new Promise(function (resolve, reject) {
-      waiting[id] = { resolve: resolve, reject: reject };
-      // Copies go to the worker; the originals are kept for the next render.
-      startWorker().postMessage({
-        id: id, song: song.slice(0), kit: kit && kit.slice(0), mod: mod && mod.slice(0), key: key && key.slice(0),
-        range: el.range.value === 'song' ? 'song' : null, maxSeconds: 1200
-      });
+    return (kit ? Promise.resolve() : loadOwnKit()).then(function () {
+      return new Promise(function (resolve, reject) {
+        waiting[id] = { resolve: resolve, reject: reject };
+        var k = kit || ownKit;
+        // Copies go to the worker; the originals are kept for the next render.
+        startWorker().postMessage({
+          id: id, song: song.slice(0), kit: k && k.slice(0), mod: mod && mod.slice(0), key: key && key.slice(0),
+          range: el.range.value === 'song' ? 'song' : null, maxSeconds: 1200
+        });
+      }).then(function (r) { if (r) r.ownKit = !kit && !!ownKit; return r; });
     }).then(function (r) { return id === job ? r : null; });
   }
 
@@ -87,10 +104,11 @@
     var text = [i.text, i.webPage].filter(function (t) { return t && t.trim(); }).join('\n');
     el.text.textContent = text;
     el.text.parentNode.hidden = !text;
-    if (r.drumsSilent) notes.push('The drum machines are silent: this song has one switched on, and no drum kit has been dropped. The bass lines and effects are complete. Drop the standard kit file (and its key) to hear the drums.');
-    if (r.modMissing) notes.push('This song was made with the mod "' + (i.modName || '').trim() + '"' + (r.kitUsed ? ', which is not loaded, so the standard kit is playing its drums.' : ', which is not loaded.'));
+    if (r.drumsSilent) notes.push('The drum machines are silent: the built-in kit did not load. The bass lines and effects are complete. Reload the page, or drop a kit file.');
+    else if (r.ownKit && r.kitUsed && !r.modMissing) notes.push('The drums are the AudioSaw kit: public-domain recordings matched to ReBirth\'s sounds, not its own samples. For those, drop ReBirth\'s Standard kit file and its key.');
+    if (r.modMissing) notes.push('This song was made with the mod "' + (i.modName || '').trim() + '"' + (r.kitUsed ? ', which is not loaded, so ' + (r.ownKit ? 'the AudioSaw kit' : 'the standard kit') + ' is playing its drums.' : ', which is not loaded.'));
     if (r.modMismatch) notes.push('The mod you dropped is not the one this song names ("' + (i.modName || '').trim() + '").');
-    if (r.modIncomplete) notes.push('The mod leaves some drums to the standard kit, which is not loaded, so those are silent.');
+    if (r.modIncomplete) notes.push('The mod leaves some drums to the standard kit, which did not load, so those are silent.');
     if (r.truncated) notes.push('Stopped at the 20-minute limit.');
     el.notes.textContent = notes.join(' ');
     el.notes.hidden = !notes.length;
@@ -162,5 +180,5 @@
   kitLine();
 
   // For the check: the last render's facts, never used by the page itself.
-  global.__rb = { state: function () { return { out: out && { duration: out.duration, rate: out.buffer.sampleRate }, kit: !!kit, key: !!key, mod: !!mod, notes: el.notes.textContent, facts: el.facts.textContent, title: el.title.textContent }; } };
+  global.__rb = { state: function () { return { out: out && { duration: out.duration, rate: out.buffer.sampleRate }, kit: !!kit, ownKit: !!ownKit, key: !!key, mod: !!mod, notes: el.notes.textContent, facts: el.facts.textContent, title: el.title.textContent }; } };
 })(window);

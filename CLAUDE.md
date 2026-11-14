@@ -1543,16 +1543,35 @@ check-all.
   - **Nothing of ReBirth is hosted, and that is the design.** Upstream
     embeds `Standard.rbm` (ReBirth's 46 drum samples, "Propellerhead's
     material" in its own words, no licence) and a 2,047-byte key from the
-    ReBirth CD. build.sh deletes both before compiling. The visitor drops a
-    kit (.rbm + key, or a clear .orbkit) and it stays in the tab. Do not
-    add the kit, the key, mods or songs to this repo. Hosting the kit is
-    Andrew's decision to make with the README's wording in front of him.
-  - Without a kit the 303s and effects play and the drum machines are
-    silent (`drumsSilent`). Only 7 of 1,270 collected songs use no drum
-    machine, so the page is honest that drums need the visitor's file.
-    **A drum machine can be on and never hit**: 5 of 25 such songs render
-    the same with and without the kit, so the flag can over-warn, and a
-    check must pick its song by rendering both ways.
+    ReBirth CD. build.sh deletes both before compiling. Do not add the kit,
+    the key, mods or songs to this repo.
+  - **The drums play on our own kit** (`vendor/openrb/2026-11-13/kit/`,
+    `audiosaw-kit-1.orbkit`, 2.0 MB, fetched with the first song). Every
+    sample is a CC0 Freesound recording (a TR-08 for the 808, a JD-Xi's 909
+    kit plus three others for the 909; `SOURCES.md` lists each), fitted to
+    the matching ReBirth slot by `build-kit.js`: resampled to its pitch,
+    third-octave EQ, decay envelope, level, length. `targets.json` is the
+    reference's measurements (numbers, no audio). A visitor's own
+    Standard kit (.rbm + key, or .orbkit) replaces it; the note under a
+    render says which kit played.
+    - Measured (`tools/measure-rebirth-kit.js`, 30 songs, drum part =
+      render with kit minus render without): level 0.00 dB median (worst
+      0.90), octave balance 0.28 dB (worst 1.41), loudness-curve
+      correlation 0.998 (worst 0.786). The page quotes these.
+    - Tonal slots (kick, toms, congas) correlate 0.9+ with the reference
+      waveform. That is two decaying sines at one pitch, not a copy; the
+      noise slots correlate about 0.1.
+    - **Built from Freesound's Ogg previews** (~110 kbit/s): the originals
+      need a login. To rebuild from the WAVs, see SOURCES.md.
+    - Weakest: the 909 toms are 808 toms retuned (no CC0 909 toms; about
+      5 dB off in tone). Snares are one recording split into tone and
+      noise at 700/900 Hz; the extra noise slots are re-phased copies.
+    - A new kit goes in a new file name (`/vendor/*` is immutable).
+    - Not CC0 despite being on GitHub as "free": Michael Fischer's 808 set
+      (danigb/samples, fluid-music) and the F9 909 kits (oramics/sampled).
+  - A drum machine can be on and never hit: 5 of 25 such songs render the
+    same with and without a kit, so a check must pick its song by
+    rendering both ways.
   - **It renders the loop, as the original's "Export Loop" did** (an .rbs
     has no length; the original plays to bar 1,000). 200 of 1,270 songs
     have a loop under 30 s, hence the "bar 1 to the last note" option

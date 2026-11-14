@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ReBirth RB-338 Song Player — Play and Convert .rbs Files to WAV or MP3 Online</title>
-<meta name="description" content="Play ReBirth RB-338 songs (.rbs) in your browser and save them as WAV, FLAC or MP3. Rendered by the OpenRB-338 engine, which matches the original program sample for sample. Bring your own drum kit file for the 808 and 909.">
+<meta name="description" content="Play ReBirth RB-338 songs (.rbs) in your browser and save them as WAV, FLAC or MP3. Rendered by the OpenRB-338 engine, which matches the original program sample for sample. The 808 and 909 play on a public-domain drum kit, or on your own ReBirth kit file.">
 <meta name="keywords" content="rebirth rb-338 online, rbs to wav, rbs to mp3, rbs file player, rebirth song converter, openrb-338, play rebirth songs, acid tb-303 song player">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://audiosaw.com/rebirth-player">
@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-13">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-13b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,7 +47,7 @@
     "price": "0",
     "priceCurrency": "USD"
   },
-  "featureList": "Renders ReBirth RB-338 songs (.rbs, ReBirth 1.x and 2.x) with the OpenRB-338 engine compiled to WebAssembly; output matches the native program sample for sample; the song's loop or the song to its last note; saves 16-bit WAV, FLAC or MP3 at 44.1 kHz; shows the song's title and text; drum kits and mods supplied by the visitor and kept in the tab; nothing uploaded",
+  "featureList": "Renders ReBirth RB-338 songs (.rbs, ReBirth 1.x and 2.x) with the OpenRB-338 engine compiled to WebAssembly; output matches the native program sample for sample; the song's loop or the song to its last note; saves 16-bit WAV, FLAC or MP3 at 44.1 kHz; shows the song's title and text; drums on a built-in kit made from CC0 recordings, or on kits and mods supplied by the visitor and kept in the tab; nothing uploaded",
   "dateModified": "2026-11-13"
 }
 </script>
@@ -76,7 +76,7 @@ window.AS_VERSION = '2026-09-22';
 
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert an .rbs file to WAV or MP3?","acceptedAnswer":{"@type":"Answer","text":"Drop the .rbs file on the page. It is rendered in a few seconds; then choose WAV, FLAC or MP3 and press \"Convert and download\"."}},{"@type":"Question","name":"Why are the drums missing?","acceptedAnswer":{"@type":"Answer","text":"ReBirth's drum sounds are recordings owned by Propellerhead, so this page does not include them. Drop your own kit file (.rbm with its key, or .orbkit) and the song is rendered again with drums."}},{"@type":"Question","name":"Why is my song only a few seconds long?","acceptedAnswer":{"@type":"Answer","text":"By default the page renders the song's loop, which is what ReBirth itself exported, and some songs were saved with a short loop. Set \"Render\" to \"From bar 1 to the last note\"."}},{"@type":"Question","name":"Is the sound really the same as ReBirth?","acceptedAnswer":{"@type":"Answer","text":"The engine is OpenRB-338's, which its authors report matches ReBirth 2.01's export byte for byte. Our WebAssembly build was identical to their native renderer on every one of 150 songs compared."}},{"@type":"Question","name":"Does it play songs that use mods?","acceptedAnswer":{"@type":"Answer","text":"Yes, if you drop the mod's .rbm file with the key. Without it, the song plays on the standard kit if you have loaded that, and the page names the missing mod."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Songs, kits and keys are read and rendered in your browser tab and are gone when you close it."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert an .rbs file to WAV or MP3?","acceptedAnswer":{"@type":"Answer","text":"Drop the .rbs file on the page. It is rendered in a few seconds; then choose WAV, FLAC or MP3 and press \"Convert and download\"."}},{"@type":"Question","name":"Are these ReBirth's real drum sounds?","acceptedAnswer":{"@type":"Answer","text":"Not unless you bring them. ReBirth's drum samples are recordings owned by Propellerhead, so this page does not include them. It plays a stand-in kit made from public-domain recordings of an 808 and a 909, matched to the originals in pitch, tone and decay. Drop your own kit file (.rbm with its key, or .orbkit) and the song is rendered again with ReBirth's samples."}},{"@type":"Question","name":"Why is my song only a few seconds long?","acceptedAnswer":{"@type":"Answer","text":"By default the page renders the song's loop, which is what ReBirth itself exported, and some songs were saved with a short loop. Set \"Render\" to \"From bar 1 to the last note\"."}},{"@type":"Question","name":"Is the sound really the same as ReBirth?","acceptedAnswer":{"@type":"Answer","text":"The engine is OpenRB-338's, which its authors report matches ReBirth 2.01's export byte for byte. Our WebAssembly build was identical to their native renderer on every one of 150 songs compared."}},{"@type":"Question","name":"Does it play songs that use mods?","acceptedAnswer":{"@type":"Answer","text":"Yes, if you drop the mod's .rbm file with the key. Without it, the song plays on the built-in kit, or on the standard kit if you have loaded that, and the page names the missing mod."}},{"@type":"Question","name":"Is my file uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Songs, kits and keys are read and rendered in your browser tab and are gone when you close it."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -124,7 +124,7 @@ window.AS_VERSION = '2026-09-22';
 <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop a ReBirth song (.rbs)</p>
-      <p>Add your drum kit file (.rbm with its key, or .orbkit) in the same drop or later, for the 808 and 909.</p>
+      <p>The drums play on a built-in kit. To use ReBirth's own samples, add your kit file (.rbm with its key, or .orbkit) in the same drop or later.</p>
       <input type="file" id="fileInput" multiple accept=".rbs,.rbm,.orbkit,.bin">
     </div>
     <p id="rbKitState"></p>
@@ -167,7 +167,7 @@ window.AS_VERSION = '2026-09-22';
         <tr><th>Engine</th><td>OpenRB-338's engine (GPL-3.0), 313 KB of WebAssembly: two TB-303s, a TR-808, a TR-909, mixer, delay, distortion, PCF and compressor</td></tr>
         <tr><th>Accuracy</th><td>Identical, sample for sample, to OpenRB-338's native export on all 150 songs compared; the project itself reports its export equals the original ReBirth's byte for byte</td></tr>
         <tr><th>Output</th><td>44.1 kHz, 16-bit stereo, as the original: WAV, FLAC or MP3</td></tr>
-        <tr><th>Drums</th><td>Need the drum kit file, which you supply; without it the bass lines and effects still play</td></tr>
+        <tr><th>Drums</th><td>A built-in kit made from public-domain recordings, matched to the original's sounds; or ReBirth's own kit file, which you supply</td></tr>
         <tr><th>Length</th><td>The song's loop, or bar 1 to the last note; 20 minutes at most</td></tr>
         </tbody>
       </table>
@@ -181,9 +181,10 @@ window.AS_VERSION = '2026-09-22';
     <p><a href="https://github.com/pingw33n/OpenRB-338" rel="noopener">OpenRB-338</a> is an open-source reimplementation of the program, published in 2026 under the GPL. Its authors rebuilt the audio engine to match ReBirth 2.01 exactly, and report that a song's exported loop equals the original's export byte for byte across more than a thousand songs. This page compiles that engine, unchanged, to WebAssembly. We compared the WebAssembly build against the project's own native renderer on 150 songs covering all five file versions, and every sample was identical. The engine's output is 16-bit at 44.1 kHz, as ReBirth's was, so the 16-bit WAV you save here is the same audio the original program would have exported.</p>
     <p>A ReBirth song has no stated length: the program simply played on to bar 1,000. What it could export was the stretch between its two loop markers, and that is the default here, as it is in OpenRB-338. Many authors set the loop around the whole song, but many left it on a few bars, so if the result is only seconds long, switch "Render" to "From bar 1 to the last note", which runs to the last recorded note or knob movement. Either way the page stops at 20 minutes.</p>
 
-    <h2>The drum kit, and why you bring it</h2>
-    <p>The bass lines, the filters and the effects are synthesis, and the engine contains all of it. The 808 and 909 are different: ReBirth played 46 recorded drum samples, and those recordings belong to Propellerhead (now Reason Studios). They are not ours to give out, so they are not in this page, and neither is the small key file ReBirth used to scramble kits. Drop a song without them and you hear it with its drum machines silent; the page tells you when that has happened.</p>
-    <p>If you have the kit, drop it with the song or afterwards. The page takes a ReBirth mod file (<code>.rbm</code>) together with its 2,047-byte key file, or a clear <code>.orbkit</code> made with OpenRB-338's tools. A file with "standard" in its name is used as the standard kit; any other kit file is treated as the mod for the song in hand. ReBirth "mods" were alternative drum kits that a song could name, and when a song names one that is not loaded the page says which, and plays the standard kit in its place if you have given it one. Whatever you drop is held in this tab's memory until you close it. It is not stored and not sent anywhere. The OpenRB-338 project's own download includes the standard kit, and its documentation explains how the kit and key files relate to an original ReBirth CD.</p>
+    <h2>The drum kit</h2>
+    <p>The bass lines, the filters and the effects are synthesis, and the engine contains all of it. The 808 and 909 are different: ReBirth played 46 recorded drum samples, and those recordings belong to Propellerhead (now Reason Studios). They are not ours to give out, so they are not in this page, and neither is the small key file ReBirth used to scramble kits.</p>
+    <p>So the drums you hear by default are a stand-in, the AudioSaw kit. Every sample in it comes from a recording its maker placed in the public domain (CC0) on Freesound: the 808 sounds from a Roland TR-08 recorded by Karman_Lyne, the 909 sounds mostly from a Roland JD-Xi's 909 kit recorded by GRD-music-, with a kick, a snare and a crash from ZeSoundResearchInc., sakebeats and extremonomia. Each one was then fitted to the matching ReBirth sample by measurement: retuned to the same pitch, equalised in third-octave bands, given the same decay and the same level and length. Rendering 30 songs with both kits and comparing only the drum part, the stand-in was at the same level (median difference 0.00 dB, worst 0.9), within 0.3 dB of the original's balance across the octaves at the median (worst song 1.4 dB), and followed the same loudness curve (median correlation 0.998). That is a measurement of level and tone, not a claim that you cannot hear the difference: these are other recordings of other machines, the 909 toms are 808 toms retuned because no public-domain 909 toms were found, and the sources were lossy previews of the uploads. The page says under each render which kit played.</p>
+    <p>If you have ReBirth's own kit, drop it with the song or afterwards and it replaces the stand-in. The page takes a ReBirth mod file (<code>.rbm</code>) together with its 2,047-byte key file, or a clear <code>.orbkit</code> made with OpenRB-338's tools. A file with "standard" in its name is used as the standard kit; any other kit file is treated as the mod for the song in hand. ReBirth "mods" were alternative drum kits that a song could name, and when a song names one that is not loaded the page says which, and plays the standard kit in its place if you have given it one. Whatever you drop is held in this tab's memory until you close it. It is not stored and not sent anywhere. The OpenRB-338 project's own download includes the standard kit, and its documentation explains how the kit and key files relate to an original ReBirth CD.</p>
 
     <h2>Limits</h2>
     <p>This is a player and converter, not the instrument: there is no panel to turn knobs on and no editing. For that, install OpenRB-338, which has the whole machine on screen. Songs are rendered in song mode over the range chosen. A mod changes the drum sounds only. A damaged file is refused with a message. And the page cannot find songs for you: bring your own <code>.rbs</code> files.</p>
@@ -193,10 +194,10 @@ window.AS_VERSION = '2026-09-22';
     <h2>FAQ</h2>
     <!-- AS:faq -->
       <details><summary>How do I convert an .rbs file to WAV or MP3?</summary><p>Drop the .rbs file on the page. It is rendered in a few seconds; then choose WAV, FLAC or MP3 and press "Convert and download".</p></details>
-      <details><summary>Why are the drums missing?</summary><p>ReBirth's drum sounds are recordings owned by Propellerhead, so this page does not include them. Drop your own kit file (.rbm with its key, or .orbkit) and the song is rendered again with drums.</p></details>
+      <details><summary>Are these ReBirth's real drum sounds?</summary><p>Not unless you bring them. ReBirth's drum samples are recordings owned by Propellerhead, so this page does not include them. It plays a stand-in kit made from public-domain recordings of an 808 and a 909, matched to the originals in pitch, tone and decay. Drop your own kit file (.rbm with its key, or .orbkit) and the song is rendered again with ReBirth's samples.</p></details>
       <details><summary>Why is my song only a few seconds long?</summary><p>By default the page renders the song's loop, which is what ReBirth itself exported, and some songs were saved with a short loop. Set "Render" to "From bar 1 to the last note".</p></details>
       <details><summary>Is the sound really the same as ReBirth?</summary><p>The engine is OpenRB-338's, which its authors report matches ReBirth 2.01's export byte for byte. Our WebAssembly build was identical to their native renderer on every one of 150 songs compared.</p></details>
-      <details><summary>Does it play songs that use mods?</summary><p>Yes, if you drop the mod's .rbm file with the key. Without it, the song plays on the standard kit if you have loaded that, and the page names the missing mod.</p></details>
+      <details><summary>Does it play songs that use mods?</summary><p>Yes, if you drop the mod's .rbm file with the key. Without it, the song plays on the built-in kit, or on the standard kit if you have loaded that, and the page names the missing mod.</p></details>
       <details><summary>Is my file uploaded?</summary><p>No. Songs, kits and keys are read and rendered in your browser tab and are gone when you close it.</p></details>
       <!-- /AS:faq -->
   </section>
@@ -382,12 +383,12 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-11-13"></script>
-<script src="/js/tool-graph.js?v=2026-11-13"></script>
-<script src="/js/flow.js?v=2026-11-13"></script>
-<script src="/js/audio-core.js?v=2026-11-13"></script>
-<script src="/js/consent.js?v=2026-11-13"></script>
-<script src="/js/rebirth-page.js?v=2026-11-13"></script>
-<script src="/js/pwa.js?v=2026-11-13"></script>
+<script src="/js/common.js?v=2026-11-13b"></script>
+<script src="/js/tool-graph.js?v=2026-11-13b"></script>
+<script src="/js/flow.js?v=2026-11-13b"></script>
+<script src="/js/audio-core.js?v=2026-11-13b"></script>
+<script src="/js/consent.js?v=2026-11-13b"></script>
+<script src="/js/rebirth-page.js?v=2026-11-13b"></script>
+<script src="/js/pwa.js?v=2026-11-13b"></script>
 </body>
 </html>

@@ -11,8 +11,8 @@
  *
  * With RB_SONGS=/dir, RB_KIT=/path/Standard.rbm and RB_KEY=/path/key.bin
  * (none of which is in this repository): a real song dropped alone says its
- * drum machines are silent; dropping the kit and key renders it again, the
- * note goes, and the audio is different by the drums.
+ * drums play on the built-in kit and the note says so; dropping ReBirth's
+ * kit and key renders it again, the note goes, and the audio is different.
  */
 const fs = require('fs');
 const path = require('path');
@@ -77,6 +77,8 @@ async function main() {
     ok(s.out && Math.abs(s.out.duration - 302399 / 44100) < 1e-6 && s.out.rate === 44100, 'four bars at 140 BPM are 302,399 frames (' + (s.out && Math.round(s.out.duration * 44100)) + ') at ' + (s.out && s.out.rate) + ' Hz');
     ok(/RBS 4\.2/.test(s.facts) && /140 BPM/.test(s.facts) && /bars 1 to 4 \(the song's loop\)/.test(s.facts), 'the facts line: "' + s.facts + '"');
     ok(!s.notes, 'no drum note for a song with no drums');
+    const line = await page.eval('document.getElementById("rbKitState").textContent');
+    ok(s.ownKit && /AudioSaw kit/.test(line), 'the built-in kit was fetched with the first song: "' + line.slice(0, 40) + '"');
     await page.eval('document.getElementById("convertBtn").click()');
     for (let i = 0; i < 100; i++) { await sleep(100); if (await page.eval('window.__dl.length')) break; }
     const w = await page.eval('(async () => { const d = await window.__dl[0]; const v = new DataView(d.bytes); return { name: d.name, rate: v.getUint32(24, true), ch: v.getUint16(22, true), bits: v.getUint16(34, true), frames: (d.bytes.byteLength - 44) / 4 }; })()');
@@ -90,12 +92,12 @@ async function main() {
       const a = await page.eval(drop([['/__song.rbs', songFile]]));
       const s1 = await page.eval('window.__rb.state()');
       await page.eval(GRAB);
-      ok(/success/.test(a) && /without drums/.test(a) && /drum machines are silent/.test(s1.notes), songFile + ' alone: "' + a.split(' | ')[1] + '"');
+      ok(/success/.test(a) && !/without drums/.test(a) && /AudioSaw kit/.test(s1.notes) && !/silent/.test(s1.notes), songFile + ' alone plays its drums on the built-in kit: "' + s1.notes.slice(0, 60) + '"');
       const b = await page.eval(drop([['/__kit.rbm', 'Standard.rbm'], ['/__key.bin', 'rb20ful_window.bin']]));
       const s2 = await page.eval('window.__rb.state()');
       const diff = await page.eval(GRAB);
-      ok(/success/.test(b) && !/without drums/.test(b) && s2.kit && s2.key && !/silent/.test(s2.notes), 'with the kit and key dropped it renders again with drums: "' + b.split(' | ')[1] + '"');
-      ok(diff > 0.02 && Math.abs(s2.out.duration - s1.out.duration) < 1e-6, 'and the drums are in the audio, same length (largest sample difference ' + diff.toFixed(3) + ', ' + s2.out.duration.toFixed(2) + ' s)');
+      ok(/success/.test(b) && !/without drums/.test(b) && s2.kit && s2.key && !/silent|AudioSaw kit/.test(s2.notes), 'with ReBirth\'s kit and key dropped it renders again on that kit: "' + b.split(' | ')[1] + '"');
+      ok(diff > 0.02 && Math.abs(s2.out.duration - s1.out.duration) < 1e-6, 'and the audio is another kit\'s, same length (largest sample difference ' + diff.toFixed(3) + ', ' + s2.out.duration.toFixed(2) + ' s)');
     } else console.log('  skip RB_SONGS, RB_KIT, RB_KEY: the drum-kit path was not driven');
     const errs = page.logs.filter((l) => !/scriptwrapper|ERR_CONNECTION_REFUSED|favicon|googletagmanager/.test(l));
     ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.join(' | ').slice(0, 300) : ''));

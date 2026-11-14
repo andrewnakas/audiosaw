@@ -1,0 +1,362 @@
+{
+ "name": "AudioSaw kit 1 (CC0 sources)",
+ "slots": {
+  "BD": {
+   "from": [
+    "519306__Karman_Lyne__TR08_Kd01_WAV"
+   ],
+   "pitch": true,
+   "envUp": 18
+  },
+  "SD1": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "tone",
+   "pitch": true
+  },
+  "SD2": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "tone",
+   "pitch": true
+  },
+  "SD3": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "tone",
+   "pitch": true
+  },
+  "SD4": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "tone",
+   "pitch": true
+  },
+  "SD5": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "tone",
+   "pitch": true
+  },
+  "N1": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "noise"
+  },
+  "N2": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "noise",
+   "seed": 11
+  },
+  "N3": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "noise",
+   "seed": 12
+  },
+  "N4": {
+   "from": [
+    "520171__Karman_Lyne__TR08_Snr01_WAV"
+   ],
+   "part": "noise",
+   "seed": 13
+  },
+  "CB": {
+   "from": [
+    "519303__Karman_Lyne__TR08_CowBell01_WAV"
+   ],
+   "ratio": 0.99
+  },
+  "CH": {
+   "from": [
+    "519308__Karman_Lyne__TR08_HhClosed01_WAV"
+   ]
+  },
+  "CL": {
+   "from": [
+    "519304__Karman_Lyne__TR08_Clave01_WAV"
+   ],
+   "pitch": true
+  },
+  "CP": {
+   "from": [
+    "519305__Karman_Lyne__TR08_Clap01_WAV"
+   ]
+  },
+  "CY": {
+   "from": [
+    "519302__Karman_Lyne__TR08_Cymbal01_WAV"
+   ]
+  },
+  "HC": {
+   "from": [
+    "519309__Karman_Lyne__TR08_HConga01_WAV"
+   ],
+   "pitch": true
+  },
+  "HT": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true
+  },
+  "LC": {
+   "from": [
+    "519310__Karman_Lyne__TR08_LConga02_WAV"
+   ],
+   "pitch": true
+  },
+  "LT": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true
+  },
+  "MA": {
+   "from": [
+    "520173__Karman_Lyne__TR08_Maracas01_WAV"
+   ]
+  },
+  "MC": {
+   "from": [
+    "520167__Karman_Lyne__TR08_MConga01_WAV"
+   ],
+   "pitch": true
+  },
+  "MT": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true
+  },
+  "OH": {
+   "from": [
+    "519307__Karman_Lyne__TR08_HhOpen01_WAV"
+   ]
+  },
+  "RS": {
+   "from": [
+    "520172__Karman_Lyne__TR08_RimShot01_WAV"
+   ],
+   "pitch": true
+  },
+  "bd1": {
+   "from": [
+    "414970__GRD-music-__Classic_TR_909_KICK_JdXi",
+    "414969__GRD-music-__Classic_TR_909_KICK_JdXi_2",
+    "414968__GRD-music-__Classic_TR_909_KICK_JdXi_3",
+    "414973__GRD-music-__Classic_TR_909_KICK_JdXi_4",
+    "414972__GRD-music-__Classic_TR_909_KICK_JdXi_5",
+    "145775__ZeSoundResearchInc.__909_kICK_WAV"
+   ],
+   "pitch": true
+  },
+  "bd2": {
+   "from": [
+    "414970__GRD-music-__Classic_TR_909_KICK_JdXi",
+    "414969__GRD-music-__Classic_TR_909_KICK_JdXi_2",
+    "414968__GRD-music-__Classic_TR_909_KICK_JdXi_3",
+    "414973__GRD-music-__Classic_TR_909_KICK_JdXi_4",
+    "414972__GRD-music-__Classic_TR_909_KICK_JdXi_5",
+    "145775__ZeSoundResearchInc.__909_kICK_WAV"
+   ],
+   "pitch": true
+  },
+  "bd3": {
+   "from": [
+    "414970__GRD-music-__Classic_TR_909_KICK_JdXi",
+    "414969__GRD-music-__Classic_TR_909_KICK_JdXi_2",
+    "414968__GRD-music-__Classic_TR_909_KICK_JdXi_3",
+    "414973__GRD-music-__Classic_TR_909_KICK_JdXi_4",
+    "414972__GRD-music-__Classic_TR_909_KICK_JdXi_5",
+    "145775__ZeSoundResearchInc.__909_kICK_WAV"
+   ],
+   "pitch": true
+  },
+  "bd4": {
+   "from": [
+    "414970__GRD-music-__Classic_TR_909_KICK_JdXi",
+    "414969__GRD-music-__Classic_TR_909_KICK_JdXi_2",
+    "414968__GRD-music-__Classic_TR_909_KICK_JdXi_3",
+    "414973__GRD-music-__Classic_TR_909_KICK_JdXi_4",
+    "414972__GRD-music-__Classic_TR_909_KICK_JdXi_5",
+    "145775__ZeSoundResearchInc.__909_kICK_WAV"
+   ]
+  },
+  "sd1": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "tone",
+   "pitch": true,
+   "split": 900
+  },
+  "sd2": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "tone",
+   "pitch": true,
+   "split": 900
+  },
+  "sd3": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "tone",
+   "pitch": true,
+   "split": 900
+  },
+  "sd4": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "tone",
+   "pitch": true,
+   "split": 900
+  },
+  "sd5": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "tone",
+   "pitch": true,
+   "split": 900
+  },
+  "sdn1": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "noise",
+   "split": 900
+  },
+  "sdn2": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "noise",
+   "split": 900,
+   "seed": 21
+  },
+  "sdn3": {
+   "from": [
+    "414954__GRD-music-__Classic_TR_909_Snare_JdXi_1",
+    "414955__GRD-music-__Classic_TR_909_Snare_JdXi_2",
+    "176352__sakebeats__909_Sn_02a_dry_wav"
+   ],
+   "part": "noise",
+   "split": 900,
+   "seed": 22
+  },
+  "lt": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true,
+   "eqLimit": 20
+  },
+  "mt": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true,
+   "eqLimit": 20
+  },
+  "ht": {
+   "from": [
+    "520169__Karman_Lyne__TR08_LTom01_WAV",
+    "520168__Karman_Lyne__TR08_LTom02_WAV",
+    "520174__Karman_Lyne__TR08_MTom01_WAV",
+    "520170__Karman_Lyne__TR08_HTom02_WAV"
+   ],
+   "pitch": true,
+   "eqLimit": 20
+  },
+  "rs": {
+   "from": [
+    "414958__GRD-music-__Classic_TR_909_RIM_JdXi_1",
+    "414959__GRD-music-__Classic_TR_909_RIM_JdXi_2",
+    "414956__GRD-music-__Classic_TR_909_RIM_JdXi_3",
+    "414957__GRD-music-__Classic_TR_909_RIM_JdXi_4"
+   ]
+  },
+  "hc": {
+   "from": [
+    "414946__GRD-music-__Classic_TR_909_Clap_JdXi_1",
+    "414945__GRD-music-__Classic_TR_909_Clap_JdXi_2",
+    "414944__GRD-music-__Classic_TR_909_Clap_JdXi_4",
+    "414951__GRD-music-__Classic_TR_909_Clap_JdXi_5"
+   ]
+  },
+  "chh": {
+   "from": [
+    "414967__GRD-music-__Classic_TR_909_HatClosed_JdXi_1",
+    "414966__GRD-music-__Classic_TR_909_HatClosed_JdXi_2",
+    "414965__GRD-music-__Classic_TR_909_HatClosed_JdXi_3"
+   ]
+  },
+  "ohh": {
+   "from": [
+    "414964__GRD-music-__Classic_TR_909_HatOpen_JdXi_4",
+    "414971__GRD-music-__Classic_TR_909_HatOpen_JdXi_5"
+   ]
+  },
+  "ccy": {
+   "from": [
+    "414948__GRD-music-__Classic_TR_909_Cym_JdXi_3",
+    "414949__GRD-music-__Classic_TR_909_Cym_JdXi_2",
+    "414953__GRD-music-__Classic_TR_909_Cym_JdXi_4",
+    "414952__GRD-music-__Classic_TR_909_Cym_JdXi_5",
+    "719048__extremonomia__909_TR_Crash_Cymbal",
+    "743638__3nderium__Normalized_909_Crash_Cymbal"
+   ]
+  },
+  "rcy": {
+   "from": [
+    "414948__GRD-music-__Classic_TR_909_Cym_JdXi_3",
+    "414949__GRD-music-__Classic_TR_909_Cym_JdXi_2",
+    "414953__GRD-music-__Classic_TR_909_Cym_JdXi_4",
+    "414952__GRD-music-__Classic_TR_909_Cym_JdXi_5",
+    "743638__3nderium__Normalized_909_Crash_Cymbal"
+   ]
+  }
+ }
+}

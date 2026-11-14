@@ -257,6 +257,24 @@ function always() {
   try { ASRebirth.render(blank, { kit: badKit }); } catch (e) { threwKit = e.message; }
   ok(/cut short/.test(threwKit), 'a clear kit that claims 2 GB of samples: ' + threwKit.slice(0, 70));
 
+  // The built-in kit (vendor/openrb/<v>/kit): made from CC0 recordings, fitted to targets.json.
+  var kitDir = path.join(__dirname, '../vendor/openrb/2026-11-13/kit');
+  var own = fs.readFileSync(path.join(kitDir, 'audiosaw-kit-1.orbkit')), targets = JSON.parse(fs.readFileSync(path.join(kitDir, 'targets.json'), 'utf8'));
+  var names = Object.keys(targets), p = 8 + 2 + own.readUInt16LE(8), wrong = [], quiet = [], hot = 0;
+  for (var si = 0; si < 46; si++) {
+    var frames = own.readUInt32LE(p), pk = 0; p += 4;
+    for (var fi = 0; fi < frames; fi++) pk = Math.max(pk, Math.abs(own.readInt16LE(p + 2 * fi)));
+    p += 2 * frames;
+    if (names[si] === 'Startup') continue;
+    if (frames !== targets[names[si]].frames) wrong.push(names[si]);
+    if (pk < 3000) quiet.push(names[si]);
+    hot = Math.max(hot, pk);
+  }
+  ok(p === own.length && names.length === 46, 'the built-in kit is 46 slots and nothing else (' + own.length + ' bytes)');
+  ok(!wrong.length && !quiet.length && hot < 32767, 'each drum slot is its target length, sounds, and none clips' + (wrong.length || quiet.length ? ': ' + wrong.concat(quiet).join(' ') : ' (peak ' + (hot / 32768).toFixed(3) + ')'));
+  var withOwn = ASRebirth.render(blank, { kit: new Uint8Array(own) });
+  ok(sameAudio(a, withOwn), 'the engine takes it, and a song with no drums renders the same with it');
+
   slowest = 0;
   sweep(blank, 'the empty song', 400, 1);
   ok(slowest < 20000, 'none of them hung: the slowest took ' + slowest + ' ms');
