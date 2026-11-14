@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Pro Wave (web build spike)</title>
+<style>
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1b1b1d; }
+canvas { display: block; width: 100%; height: 100%; outline: none; }
+</style>
+</head>
+<body>
+<canvas id="prowave_canvas" tabindex="0"></canvas>
+<script type="module">
+import init, * as bindings from './prowave.js';
+await init({ module_or_path: './prowave_bg.wasm' });
+window.wasmBindings = bindings;
+</script>
+</body>
+</html>
