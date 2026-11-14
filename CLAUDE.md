@@ -1564,10 +1564,33 @@ check-all.
     a real song without and with the kit (check-rebirth-page). About 1% of
     byte-flipped songs make upstream's engine panic; the wrapper turns the
     trap into the ordinary "damaged file" Error.
-- **Rust DAW wasm spikes (Pro Wave, Suhina, Lemon Studio): not done.** They
-  were started on 13 Nov and stopped when the disk filled. **Several Rust
-  builds at once filled a 228 GB disk**: one at a time, CARGO_TARGET_DIR in
-  the scratchpad, delete `target/` before the next.
+- **Rust DAW wasm spikes (13 Nov): Pro Wave runs in a tab, not hosted.**
+  `cargo check --target wasm32-unknown-unknown` on each, then a build of the
+  one that was close. Nothing of these is on the site.
+  - **Pro Wave** (v0.2.2, `03e1abda`; egui/wgpu, cpal): a 28-file, +163/-54
+    patch builds the whole app to a 13.4 MB wasm (4.1 MB gzipped, no LTO or
+    wasm-opt). In headless Chrome it draws the full UI and plays the demo
+    song (peak 0.43), not cross-origin isolated. The patch, `apply.py`,
+    `build.sh` and the check are in `docs/spikes/prowave-web/` (build.sh
+    was not re-run from a fresh clone after the last edits). **Demo only**:
+    no open, save, import, recording or MIDI, and anything reaching
+    `std::thread::spawn` (audio import, Flex, Smart Tempo) aborts the tab.
+    Not tested: a real browser's autoplay gate, the sandboxed iframe,
+    Safari/Firefox. To host it: gate those paths, hide the window buttons,
+    a size build, and GPL source offer (upstream commit + patch) beside the
+    app. Upstream `main` (`ffa4ccdd`) did not build as cloned, and its own
+    ROADMAP Phase 9 plans a web build. Its UI uses Logic's product names
+    (Alchemy, Space D, Drum Machine Designer): Andrew's call before hosting.
+  - **Suhina** (`5dfb6eb0`): engine and all 16 stock devices check clean for
+    wasm (31 crates); the app does not. `session` is tied to the
+    out-of-process plugin client (`interprocess`), vendored LAME/vorbis C
+    code, tokio and a file watcher. Weeks, for someone who knows the code.
+  - **Lemon Studio** (`011a03f2`): no. Hand-written AppKit/Win32/X11, five
+    plugin-host crates as hard dependencies, a C++ stretcher, 153k lines.
+    Honeydew already vendors Lemon's instrument and effect crates patched
+    for wasm, so /honeydew is the web form of them.
+  - **Several Rust builds at once filled a 228 GB disk**: one at a time,
+    CARGO_TARGET_DIR in the scratchpad, delete `target/` before the next.
 - **Not built.** Nuked-SC55 was relicensed to GPL-2.0-or-later in 2026 (the
   old non-commercial licence is gone), but needs a headless driver written
   and five ROM files to test. OpenJOC (Atmos E-AC-3 JOC, Apache-2.0) builds

@@ -1,0 +1,696 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 9a2d4cd..80a548e 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -1,6 +1,7 @@
+ [workspace]
+ resolver = "2"
+ members = ["crates/prowave-engine", "crates/prowave-project", "crates/prowave-app", "xtask"]
++exclude = ["crates/web-shims"]
+ 
+ [profile.release]
+ lto = true
+diff --git a/crates/prowave-app/Cargo.toml b/crates/prowave-app/Cargo.toml
+index a50d61a..ddefd24 100644
+--- a/crates/prowave-app/Cargo.toml
++++ b/crates/prowave-app/Cargo.toml
+@@ -13,26 +13,36 @@ path = "src/main.rs"
+ assert_no_alloc = "1.1.2"
+ eframe = "0.37.0"
+ egui = "0.37"
+-human-panic = "2.0.8"
+ prowave-engine = { version = "0.1.0", path = "../prowave-engine" }
+ prowave-project = { version = "0.1.0", path = "../prowave-project" }
+ image = { version = "0.25.10", default-features = false, features = ["png"] }
+-rfd = "0.17.2"
+ rtrb = "0.4.0"
+ sysinfo = { version = "0.38.4", default-features = false, features = ["system"] }
+ tracing = "0.1.44"
++web-time = "1"
+ tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
+ midir = "0.11.1"
+ # Update check and install (src/updater.rs): HTTPS to GitHub, the checksum, the release zip.
+-ureq = { version = "3.4.2", default-features = false, features = ["rustls", "platform-verifier"] }
+ sha2 = "0.10"
+ serde_json = "1.0.154"
+ zip = { version = "9.0.5", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+ tar = { version = "0.4", default-features = false }
+ flate2 = { version = "1", default-features = false, features = ["zlib-rs"] }
+-rhai = { version = "1", features = ["no_module"] }
+ 
+ # The menus in the macOS system menu bar (see src/native_menu.rs).
++[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
++human-panic = "2.0.8"
++rfd = "0.17.2"
++ureq = { version = "3.4.2", default-features = false, features = ["rustls", "platform-verifier"] }
++rhai = { version = "1", features = ["no_module"] }
++
++[target.'cfg(target_arch = "wasm32")'.dependencies]
++rfd-shim = { path = "../web-shims/rfd" }
++# Without ahash's runtime-rng: getrandom has no wasm32-unknown-unknown backend by default.
++rhai = { version = "1", default-features = false, features = ["std", "no_module"] }
++wasm-bindgen-futures = "0.4"
++web-time = "1"
++
+ [target.'cfg(target_os = "macos")'.dependencies]
+ muda = { version = "=0.21.0", default-features = false }
+ 
+diff --git a/crates/prowave-app/src/bench.rs b/crates/prowave-app/src/bench.rs
+index 3af7db4..2648982 100644
+--- a/crates/prowave-app/src/bench.rs
++++ b/crates/prowave-app/src/bench.rs
+@@ -18,7 +18,7 @@ use crate::model::{Project, TrackKind};
+ use std::fmt::Write as _;
+ use std::path::PathBuf;
+ use std::sync::OnceLock;
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ pub const ARG: &str = "--bench";
+ pub const SHOTS_ARG: &str = "--layout-shots";
+diff --git a/crates/prowave-app/src/clock_in.rs b/crates/prowave-app/src/clock_in.rs
+index 3ef6a2f..da5c043 100644
+--- a/crates/prowave-app/src/clock_in.rs
++++ b/crates/prowave-app/src/clock_in.rs
+@@ -4,7 +4,7 @@
+ 
+ use midir::{MidiInput, MidiInputConnection};
+ use std::sync::mpsc::{sync_channel, Receiver, SyncSender};
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ /// How often to look again for a followed port that is not there (listing the ports is not free).
+ const RETRY: Duration = Duration::from_secs(3);
+@@ -131,7 +131,7 @@ impl ClockIn {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+-    use std::time::{Duration, Instant};
++    use web_time::{Duration, Instant};
+ 
+     /// Reads from a real ALSA port: a virtual output that midir creates here plays the clock
+     /// device, and the follower's input connects to it by name. Skipped (with a note) where the
+diff --git a/crates/prowave-app/src/file_browser.rs b/crates/prowave-app/src/file_browser.rs
+index 341f6e0..bd3519b 100644
+--- a/crates/prowave-app/src/file_browser.rs
++++ b/crates/prowave-app/src/file_browser.rs
+@@ -372,8 +372,8 @@ mod tests {
+         std::fs::write(&plain, b"not a caf").unwrap();
+         let scan = TagScan::start(vec![bass.clone(), plain.clone()]).unwrap();
+         let mut found = HashMap::new();
+-        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+-        while found.len() < 2 && std::time::Instant::now() < deadline {
++        let deadline = web_time::Instant::now() + std::time::Duration::from_secs(10);
++        while found.len() < 2 && web_time::Instant::now() < deadline {
+             match scan.results.try_recv() {
+                 Ok((path, tags)) => {
+                     found.insert(path, tags);
+@@ -398,8 +398,8 @@ mod tests {
+         s.browser.open = Some(Tab::Loops);
+         s.browser.dir = Some(dir.path().to_path_buf());
+         let mut h = crate::ui_test::Harness::new(300.0, 600.0);
+-        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+-        while s.browser.tags.len() < 2 && std::time::Instant::now() < deadline {
++        let deadline = web_time::Instant::now() + std::time::Duration::from_secs(10);
++        while s.browser.tags.len() < 2 && web_time::Instant::now() < deadline {
+             h.frame(vec![], |ui| show(ui, &mut s));
+             std::thread::sleep(std::time::Duration::from_millis(5));
+         }
+diff --git a/crates/prowave-app/src/flex_edit.rs b/crates/prowave-app/src/flex_edit.rs
+index d70841a..2444741 100644
+--- a/crates/prowave-app/src/flex_edit.rs
++++ b/crates/prowave-app/src/flex_edit.rs
+@@ -573,7 +573,7 @@ fn cache_dir() -> PathBuf {
+     crate::recent_files::config_dir()
+         .map(|d| d.join("flex-cache"))
+         .unwrap_or_else(|| {
+-            std::env::temp_dir().join(format!("prowave-flex-{}", std::process::id()))
++            crate::temp_dir().join(format!("prowave-flex-{}", std::process::id()))
+         })
+ }
+ 
+@@ -804,7 +804,7 @@ mod tests {
+     /// Polls until nothing is running.
+     fn settle(p: &mut Project, s: &mut UiState) {
+         let ctx = egui::Context::default();
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         loop {
+             poll(&ctx, p, s);
+             if !s.flex.busy() {
+diff --git a/crates/prowave-app/src/main.rs b/crates/prowave-app/src/main.rs
+index 1831559..1d005aa 100644
+--- a/crates/prowave-app/src/main.rs
++++ b/crates/prowave-app/src/main.rs
+@@ -5,6 +5,9 @@
+ #[global_allocator]
+ static ALLOC_GUARD: assert_no_alloc::AllocDisabler = assert_no_alloc::AllocDisabler;
+ 
++#[cfg(target_arch = "wasm32")]
++extern crate rfd_shim as rfd;
++
+ mod apple_loops;
+ mod audio_rec;
+ mod automation;
+@@ -415,7 +418,7 @@ impl App {
+         let mut events = Vec::new();
+         input.poll(&mut events);
+         self.chase
+-            .update(&mut self.project, &events, std::time::Instant::now());
++            .update(&mut self.project, &events, web_time::Instant::now());
+         if self.chase.is_following() {
+             // Look again soon enough to notice when the time code stops.
+             ctx.request_repaint_after(mtc_in::STALL / 3);
+@@ -802,9 +805,25 @@ fn top_bar(ui: &mut egui::Ui, p: &mut Project, s: &mut UiState) {
+ 
+ /// Log to stderr; `RUST_LOG` overrides the default (warnings, plus info from ProWave; the
+ /// Vulkan loader's harmless layer-manifest warnings from `wgpu_hal` are hidden).
++/// The temporary folder; a fixed path on the web, where std has none (and no files either).
++pub(crate) fn temp_dir() -> std::path::PathBuf {
++    #[cfg(target_arch = "wasm32")]
++    {
++        std::path::PathBuf::from("/tmp")
++    }
++    #[cfg(not(target_arch = "wasm32"))]
++    {
++        std::env::temp_dir()
++    }
++}
++
+ fn init_logging() {
+     let filter = tracing_subscriber::EnvFilter::try_from_default_env()
+         .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("warn,wgpu_hal=error,prowave=info"));
++    // The log line's timestamp is SystemTime::now, which panics on wasm32-unknown-unknown.
++    #[cfg(target_arch = "wasm32")]
++    tracing_subscriber::fmt().with_env_filter(filter).without_time().with_ansi(false).init();
++    #[cfg(not(target_arch = "wasm32"))]
+     tracing_subscriber::fmt().with_env_filter(filter).init();
+ }
+ 
+@@ -816,7 +835,7 @@ const APP_ICON_PNG: &[u8] = include_bytes!("../assets/icon-256.png");
+ /// a Groove Track; `flexeditor` opens the Smart Tempo Editor on it, `flexmenu` the loop's
+ /// right-click menu and `flexgroove` a track's.
+ fn shot_flex_scene(app: &mut App, ctx: &egui::Context, kind: &str) {
+-    let dir = std::env::temp_dir().join("prowave-shots");
++    let dir = crate::temp_dir().join("prowave-shots");
+     let _ = std::fs::create_dir_all(&dir);
+     let wav = dir.join("Drum Loop.wav");
+     // Two bars of a 96 BPM beat: kick, snare and hats, a little late here and there.
+@@ -1021,6 +1040,11 @@ fn window_app_id() -> String {
+ }
+ 
+ fn main() -> eframe::Result {
++    // Panics go to the browser console (eframe installs its own handler once it starts).
++    #[cfg(target_arch = "wasm32")]
++    std::panic::set_hook(Box::new(|info| {
++        eframe::web_sys::console::error_1(&info.to_string().into());
++    }));
+     bench::mark_start();
+     // Started by an update that is waiting for the program to close: put the update in place.
+     if updater::run_helper_if_requested() {
+@@ -1035,12 +1059,18 @@ fn main() -> eframe::Result {
+     // Measuring runs leave the user's settings (recent projects, size) alone.
+     let measuring = bench_out.is_some() || shots_dir.is_some();
+     // Release builds: on a crash, write a report to the temp folder instead of a raw panic.
++    #[cfg(not(target_arch = "wasm32"))]
+     human_panic::setup_panic!(human_panic::Metadata::new(
+         "Pro Wave",
+         env!("CARGO_PKG_VERSION")
+     ));
++    // The web build keeps no settings and opens no MIDI ports or update check, like a
++    // measuring run, and starts on the demo project so there is something to play.
++    #[cfg(target_arch = "wasm32")]
++    let measuring = true;
+     init_logging();
+     i18n::init();
++    #[cfg(not(target_arch = "wasm32"))]
+     project_io::remove_stale_media(std::time::Duration::from_secs(7 * 24 * 3600));
+     let mut viewport = egui::ViewportBuilder::default()
+         .with_inner_size([1600.0, 980.0])
+@@ -1059,6 +1089,9 @@ fn main() -> eframe::Result {
+     // macOS takes the Dock icon from the app bundle (prowave.icns, on the macOS icon tile);
+     // setting one here would swap it for the bare logo once the app is running. An empty
+     // icon tells eframe to leave the Dock icon alone instead of using its default egui logo.
++    #[cfg(target_arch = "wasm32")]
++    let _ = &mut viewport;
++    #[cfg(not(target_arch = "wasm32"))]
+     if cfg!(target_os = "macos") {
+         viewport = viewport.with_icon(egui::IconData::default());
+     } else {
+@@ -1067,23 +1100,15 @@ fn main() -> eframe::Result {
+             Err(e) => tracing::warn!("app icon could not be decoded: {e}"),
+         }
+     }
+-    let wgpu_options = graphics::config();
+-    let started_backends = graphics::started_backends(&wgpu_options);
+-    let opts = eframe::NativeOptions {
+-        viewport,
+-        wgpu_options,
+-        ..Default::default()
+-    };
+-    let result = eframe::run_native(
+-        "Pro Wave",
+-        opts,
+-        Box::new(|cc| {
++    let bench_for_app = bench_out.clone();
++    let creator: eframe::AppCreator<'static> = Box::new(move |cc| {
++            let bench_out = bench_for_app;
+             theme::apply(&cc.egui_ctx);
+             // Cmd/Ctrl + = / - / 0 resize the interface through `ui_scale` instead, which
+             // also keeps the fit for small windows.
+             cc.egui_ctx.options_mut(|o| o.zoom_with_keyboard = false);
+             // Every start begins clean; only the layout pictures need something to show.
+-            let project = if shots_dir.is_some() {
++            let project = if shots_dir.is_some() || cfg!(target_arch = "wasm32") {
+                 Project::demo()
+             } else {
+                 Project::empty()
+@@ -1311,8 +1336,23 @@ fn main() -> eframe::Result {
+                 }
+             }
+             Ok(Box::new(app))
+-        }),
+-    );
++        });
++    #[cfg(target_arch = "wasm32")]
++    {
++        let _ = viewport;
++        web_start(creator);
++        Ok(())
++    }
++    #[cfg(not(target_arch = "wasm32"))]
++    {
++    let wgpu_options = graphics::config();
++    let started_backends = graphics::started_backends(&wgpu_options);
++    let opts = eframe::NativeOptions {
++        viewport,
++        wgpu_options,
++        ..Default::default()
++    };
++    let result = eframe::run_native("Pro Wave", opts, creator);
+     // The app (and with it the engine's open media files) is gone by now.
+     project_io::remove_session_media();
+     // OpenGL can't draw to this window: the app never started, so try the system's own API.
+@@ -1341,6 +1381,28 @@ fn main() -> eframe::Result {
+         return Ok(());
+     }
+     result
++    }
++}
++
++/// Starts the app on the page's `<canvas id="prowave_canvas">`.
++#[cfg(target_arch = "wasm32")]
++fn web_start(creator: eframe::AppCreator<'static>) {
++    use eframe::wasm_bindgen::JsCast as _;
++    wasm_bindgen_futures::spawn_local(async move {
++        let canvas = eframe::web_sys::window()
++            .and_then(|w| w.document())
++            .and_then(|d| d.get_element_by_id("prowave_canvas"))
++            .and_then(|e| e.dyn_into::<eframe::web_sys::HtmlCanvasElement>().ok());
++        let Some(canvas) = canvas else {
++            return;
++        };
++        let started = eframe::WebRunner::new()
++            .start(canvas, eframe::WebOptions::default(), creator)
++            .await;
++        if let Err(e) = started {
++            eframe::web_sys::console::error_1(&e);
++        }
++    });
+ }
+ 
+ #[cfg(test)]
+diff --git a/crates/prowave-app/src/midi_file.rs b/crates/prowave-app/src/midi_file.rs
+index b9026e2..5048d7a 100644
+--- a/crates/prowave-app/src/midi_file.rs
++++ b/crates/prowave-app/src/midi_file.rs
+@@ -1101,7 +1101,7 @@ mod tests {
+         t.extend([0, 0xff, 0x2f, 0]);
+         let mut f = chunk_bytes(b"MThd", &[0, 0, 0, 1, 0x01, 0xe0]);
+         f.extend(chunk_bytes(b"MTrk", &t));
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let m = parse(&f).unwrap();
+         assert_eq!(m.tracks[0].notes.len(), 200_000);
+         let mut p = Project::empty();
+@@ -1151,7 +1151,7 @@ mod tests {
+     #[test]
+     fn hostile_files_cost_little_and_never_panic() {
+         let took = |f: &dyn Fn()| {
+-            let began = std::time::Instant::now();
++            let began = web_time::Instant::now();
+             f();
+             began.elapsed()
+         };
+diff --git a/crates/prowave-app/src/midi_fx.rs b/crates/prowave-app/src/midi_fx.rs
+index 0fcfecb..05e09ef 100644
+--- a/crates/prowave-app/src/midi_fx.rs
++++ b/crates/prowave-app/src/midi_fx.rs
+@@ -1174,7 +1174,7 @@ mod tests {
+                 kind: ChordKind::Seventh,
+             }),
+         ];
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let out = apply(&chain, notes);
+         assert!(out.len() <= MAX_FX_NOTES);
+         assert!(began.elapsed().as_secs() < 20, "{:?}", began.elapsed());
+diff --git a/crates/prowave-app/src/midi_in.rs b/crates/prowave-app/src/midi_in.rs
+index ff35aa3..8793342 100644
+--- a/crates/prowave-app/src/midi_in.rs
++++ b/crates/prowave-app/src/midi_in.rs
+@@ -5,7 +5,7 @@
+ use crate::recorder::LiveNote;
+ use midir::{MidiInput, MidiInputConnection};
+ use std::sync::mpsc::{sync_channel, Receiver, SyncSender};
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ /// How often to look for a MIDI keyboard while none is connected.
+ const RESCAN: Duration = Duration::from_secs(3);
+diff --git a/crates/prowave-app/src/midi_out.rs b/crates/prowave-app/src/midi_out.rs
+index 420914f..72288f1 100644
+--- a/crates/prowave-app/src/midi_out.rs
++++ b/crates/prowave-app/src/midi_out.rs
+@@ -16,7 +16,7 @@ use std::collections::{HashMap, HashSet};
+ use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+ use std::sync::{Arc, Mutex};
+ use std::thread::JoinHandle;
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ /// How long the sending thread sleeps between looks at the queue.
+ const POLL: Duration = Duration::from_millis(1);
+diff --git a/crates/prowave-app/src/mtc_in.rs b/crates/prowave-app/src/mtc_in.rs
+index 7f452ac..cb39f34 100644
+--- a/crates/prowave-app/src/mtc_in.rs
++++ b/crates/prowave-app/src/mtc_in.rs
+@@ -8,7 +8,7 @@ use crate::model::Project;
+ use midir::{Ignore, MidiInput, MidiInputConnection};
+ use prowave_engine::{MtcDecoder, MtcEvent};
+ use std::sync::mpsc::{sync_channel, Receiver, SyncSender};
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ /// How long the time code may be silent before the transport stops.
+ pub const STALL: Duration = Duration::from_millis(300);
+diff --git a/crates/prowave-app/src/pattern.rs b/crates/prowave-app/src/pattern.rs
+index 52c4fc7..f8f305f 100644
+--- a/crates/prowave-app/src/pattern.rs
++++ b/crates/prowave-app/src/pattern.rs
+@@ -1412,7 +1412,7 @@ mod tests {
+         for row in &mut p.rows {
+             row.steps.fill(100);
+         }
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let notes = p.notes(1.0e9);
+         assert!(
+             notes.len() >= MAX_PATTERN_NOTES,
+diff --git a/crates/prowave-app/src/project_io.rs b/crates/prowave-app/src/project_io.rs
+index da97882..99c85af 100644
+--- a/crates/prowave-app/src/project_io.rs
++++ b/crates/prowave-app/src/project_io.rs
+@@ -1053,7 +1053,7 @@ fn port_name(name: &Option<String>) -> Option<String> {
+ 
+ /// Root of all extracted project media.
+ fn media_root() -> PathBuf {
+-    std::env::temp_dir().join("prowave-media")
++    crate::temp_dir().join("prowave-media")
+ }
+ 
+ /// Where this session's audio recordings go until the project is saved.
+diff --git a/crates/prowave-app/src/score.rs b/crates/prowave-app/src/score.rs
+index 128fd4b..d832d38 100644
+--- a/crates/prowave-app/src/score.rs
++++ b/crates/prowave-app/src/score.rs
+@@ -1266,7 +1266,7 @@ mod tests {
+             .map(|i| n((i % 4000) as f32 * 0.25, 0.25, 40 + (i % 50) as u8))
+             .collect();
+         let bars: Vec<f32> = (0..=250).map(|b| b as f32 * 4.0).collect();
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         layout(&many, &bars, 2);
+         assert!(began.elapsed().as_secs() < 10, "{:?}", began.elapsed());
+     }
+diff --git a/crates/prowave-app/src/scripter.rs b/crates/prowave-app/src/scripter.rs
+index f20f860..e2d30cd 100644
+--- a/crates/prowave-app/src/scripter.rs
++++ b/crates/prowave-app/src/scripter.rs
+@@ -53,7 +53,7 @@ fn engine(spent: Rc<Cell<u64>>, notes: usize) -> Engine {
+     e.set_max_expr_depths(64, 32);
+     // Room for the notes it is given (twice over) and a little more.
+     e.set_max_array_size((notes * 2 + 1024).min(MAX_NOTES_OUT));
+-    let began = std::time::Instant::now();
++    let began = web_time::Instant::now();
+     e.set_max_map_size(64);
+     e.set_max_string_size(1_000);
+     e.set_max_variables(256);
+@@ -285,7 +285,7 @@ mod tests {
+ 
+     #[test]
+     fn a_script_that_never_ends_is_stopped() {
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let err = check("fn process_note(n) { loop { } }").unwrap_err();
+         assert!(err.contains("too long"), "{err}");
+         let err = check("fn process_note(n) { let a = []; loop { a.push(1); } }").unwrap_err();
+diff --git a/crates/prowave-app/src/smart_tempo.rs b/crates/prowave-app/src/smart_tempo.rs
+index 0f00890..c34478e 100644
+--- a/crates/prowave-app/src/smart_tempo.rs
++++ b/crates/prowave-app/src/smart_tempo.rs
+@@ -664,7 +664,7 @@ mod tests {
+ 
+     fn wait(p: &mut Project, s: &mut UiState) {
+         let ctx = egui::Context::default();
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         while !s.tracks.tempo_jobs.is_empty() {
+             assert!(
+                 began.elapsed().as_secs() < 20,
+@@ -805,7 +805,7 @@ mod tests {
+         let mut s = UiState::new();
+         start_all(&p, &mut s);
+         assert!(s.tracks.tempo_all.is_some());
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         while s.tracks.tempo_all.is_some() {
+             assert!(began.elapsed().as_secs() < 30);
+             poll(&egui::Context::default(), &mut p, &mut s);
+diff --git a/crates/prowave-app/src/tracks_area.rs b/crates/prowave-app/src/tracks_area.rs
+index 02ab86e..242d46d 100644
+--- a/crates/prowave-app/src/tracks_area.rs
++++ b/crates/prowave-app/src/tracks_area.rs
+@@ -3531,7 +3531,7 @@ mod row_tests {
+     /// Runs `poll_normalize` until the scan is over (it reads the file on another thread).
+     fn wait_for_normalize(p: &mut Project, s: &mut UiState) {
+         let ctx = egui::Context::default();
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         while !s.tracks.normalize_jobs.is_empty() {
+             assert!(began.elapsed().as_secs() < 10, "the scan never finished");
+             poll_normalize(&ctx, p, s);
+diff --git a/crates/prowave-app/src/updater.rs b/crates/prowave-app/src/updater.rs
+index afa663c..1b9ad2b 100644
+--- a/crates/prowave-app/src/updater.rs
++++ b/crates/prowave-app/src/updater.rs
+@@ -322,6 +322,7 @@ pub fn parse_releases(
+ 
+ // ------------------------------------------------------------------ network
+ 
++#[cfg(not(target_arch = "wasm32"))]
+ fn agent(timeout: Duration) -> ureq::Agent {
+     // The system's own list of trusted certificate authorities, not a built-in one: antivirus
+     // programs that scan HTTPS (Norton, Kaspersky, ESET...) install their own authority there,
+@@ -338,6 +339,17 @@ fn agent(timeout: Duration) -> ureq::Agent {
+ }
+ 
+ /// Asks GitHub for the newest release; `Some` when it is newer than the running program.
++#[cfg(target_arch = "wasm32")]
++fn fetch_latest() -> Result<Option<Release>, String> {
++    Err("the web build does not update itself".into())
++}
++
++#[cfg(target_arch = "wasm32")]
++fn download(_asset: &Asset, _to: &Path, _progress: &Progress) -> Result<String, String> {
++    Err("the web build does not update itself".into())
++}
++
++#[cfg(not(target_arch = "wasm32"))]
+ fn fetch_latest() -> Result<Option<Release>, String> {
+     let url = format!("https://api.github.com/repos/{REPO}/releases?per_page=10");
+     // A slow or flaky connection (or a slow first connection through a proxy or antivirus)
+@@ -379,6 +391,7 @@ pub struct Progress {
+     pub step: AtomicU64,
+ }
+ 
++#[cfg(not(target_arch = "wasm32"))]
+ fn download(asset: &Asset, to: &Path, progress: &Progress) -> Result<String, String> {
+     let mut response = agent(Duration::from_secs(300))
+         .get(&asset.url)
+@@ -606,7 +619,7 @@ fn stage_for(
+     let download_to = if target.kind == Kind::AppImage {
+         new.clone()
+     } else {
+-        std::env::temp_dir().join(format!("prowave-update-{}-{}", release.version, asset.name))
++        crate::temp_dir().join(format!("prowave-update-{}-{}", release.version, asset.name))
+     };
+     let result = (|| {
+         let got = download(asset, &download_to, progress)?;
+@@ -925,8 +938,8 @@ fn config_file(name: &str) -> Option<PathBuf> {
+ }
+ 
+ fn unix_now() -> u64 {
+-    std::time::SystemTime::now()
+-        .duration_since(std::time::UNIX_EPOCH)
++    web_time::SystemTime::now()
++        .duration_since(web_time::UNIX_EPOCH)
+         .map_or(0, |d| d.as_secs())
+ }
+ 
+diff --git a/crates/prowave-engine/Cargo.toml b/crates/prowave-engine/Cargo.toml
+index 2936a5f..7583bba 100644
+--- a/crates/prowave-engine/Cargo.toml
++++ b/crates/prowave-engine/Cargo.toml
+@@ -18,6 +18,7 @@ tracing = "0.1.44"
+ assert_no_alloc = "1.1.2"
+ # SoundFont (.sf2) instrument synthesis: pure Rust, MIT licensed.
+ rustysynth = "1.3.8"
++web-time = "1"
+ 
+ # Memory-mapped PCM sources (not in the browser build).
+ [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+@@ -42,3 +43,6 @@ features = [
+     "Win32_System_Com",
+     "Win32_System_Threading",
+ ]
++
++[target.'cfg(target_arch = "wasm32")'.dependencies]
++cpal = { version = "0.18.2", features = ["wasm-bindgen"] }
+diff --git a/crates/prowave-engine/src/analysis.rs b/crates/prowave-engine/src/analysis.rs
+index e787156..7038de9 100644
+--- a/crates/prowave-engine/src/analysis.rs
++++ b/crates/prowave-engine/src/analysis.rs
+@@ -492,7 +492,7 @@ mod tests {
+     #[test]
+     fn the_work_is_bounded() {
+         // Ten minutes of audio analyse in a few seconds even in a debug build.
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let mut a = Analyzer::new(SR);
+         let beat = (SR as f32 * 0.5) as usize;
+         for i in 0..(f64::from(SR) * MAX_SECONDS) as usize {
+diff --git a/crates/prowave-engine/src/capture.rs b/crates/prowave-engine/src/capture.rs
+index 19abb70..e6c2b04 100644
+--- a/crates/prowave-engine/src/capture.rs
++++ b/crates/prowave-engine/src/capture.rs
+@@ -24,7 +24,7 @@ use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
+ use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender, TryRecvError};
+ use std::sync::Arc;
+ use std::thread::JoinHandle;
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ 
+ /// Most input channels that are metered and can be recorded.
+ pub const MAX_INPUT_CHANNELS: usize = 32;
+diff --git a/crates/prowave-engine/src/disk.rs b/crates/prowave-engine/src/disk.rs
+index 680f4e1..89ccdec 100644
+--- a/crates/prowave-engine/src/disk.rs
++++ b/crates/prowave-engine/src/disk.rs
+@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
+ use std::sync::atomic::{AtomicU64, Ordering};
+ use std::sync::{mpsc, Arc};
+ use std::thread::JoinHandle;
+-use std::time::{Duration, Instant};
++use web_time::{Duration, Instant};
+ use symphonia::core::audio::SampleBuffer;
+ use symphonia::core::codecs::{Decoder, DecoderOptions};
+ use symphonia::core::errors::Error as SymError;
+@@ -864,7 +864,7 @@ mod tests {
+     use crate::core::{ClipEdit, Command, EngineCore, FadeCurve, Shared, Song, TrackMix};
+     use std::io::Write;
+     use std::sync::atomic::Ordering;
+-    use std::time::Instant;
++    use web_time::Instant;
+ 
+     const SRC_RATE: u32 = 44_100;
+     const OUT_RATE: u32 = 48_000;
+diff --git a/crates/prowave-engine/src/flex.rs b/crates/prowave-engine/src/flex.rs
+index 3a0afe2..4df2e39 100644
+--- a/crates/prowave-engine/src/flex.rs
++++ b/crates/prowave-engine/src/flex.rs
+@@ -847,7 +847,7 @@ mod tests {
+     #[test]
+     fn huge_edits_are_cut_to_a_size_that_finishes() {
+         let input = sine(220.0, 3.0);
+-        let began = std::time::Instant::now();
++        let began = web_time::Instant::now();
+         let points: Vec<WarpPoint> = (1..200_000)
+             .map(|k| WarpPoint {
+                 src: k as f64 * 1.0e-5,
+diff --git a/crates/prowave-engine/src/lib.rs b/crates/prowave-engine/src/lib.rs
+index 7afc87d..2fec27f 100644
+--- a/crates/prowave-engine/src/lib.rs
++++ b/crates/prowave-engine/src/lib.rs
+@@ -11,7 +11,6 @@
+ static ALLOC_GUARD: assert_no_alloc::AllocDisabler = assert_no_alloc::AllocDisabler;
+ 
+ mod analysis;
+-#[cfg(not(target_arch = "wasm32"))]
+ mod capture;
+ mod clock;
+ mod core;
+@@ -33,7 +32,6 @@ mod triple;
+ mod wasapi;
+ 
+ pub use crate::analysis::{tempo_curve, Analysis, Analyzer, TempoEstimate, STRENGTH_RATE};
+-#[cfg(not(target_arch = "wasm32"))]
+ pub use crate::capture::{
+     input_devices, Capture, CaptureError, InputInfo, InputSource, Recorded, MAX_INPUT_CHANNELS,
+ };
+diff --git a/crates/prowave-engine/src/output.rs b/crates/prowave-engine/src/output.rs
+index 16a3328..4cb0b68 100644
+--- a/crates/prowave-engine/src/output.rs
++++ b/crates/prowave-engine/src/output.rs
+@@ -14,7 +14,7 @@ use rtrb::{Producer, RingBuffer};
+ use std::fmt;
+ use std::sync::atomic::Ordering;
+ use std::sync::Arc;
+-use std::time::Instant;
++use web_time::Instant;
+ 
+ const MAX_BLOCK_FRAMES: usize = 8192;
+ const GARBAGE_CAPACITY: usize = 32;
+diff --git a/crates/web-shims/rfd/Cargo.toml b/crates/web-shims/rfd/Cargo.toml
+new file mode 100644
+index 0000000..d7f979f
+--- /dev/null
++++ b/crates/web-shims/rfd/Cargo.toml
+@@ -0,0 +1,5 @@
++[package]
++name = "rfd-shim"
++version = "0.0.0"
++edition = "2021"
++license = "GPL-3.0-or-later"
+diff --git a/crates/web-shims/rfd/src/lib.rs b/crates/web-shims/rfd/src/lib.rs
+new file mode 100644
+index 0000000..f00a706
+--- /dev/null
++++ b/crates/web-shims/rfd/src/lib.rs
+@@ -0,0 +1,16 @@
++//! Web stand-in for the `rfd` crate: no native dialogs in a browser tab, so each one answers
++//! as if it had been cancelled.
++use std::path::PathBuf;
++#[derive(Default)]
++pub struct FileDialog;
++impl FileDialog {
++    pub fn new() -> Self { Self }
++    pub fn add_filter(self, _name: impl Into<String>, _ext: &[impl ToString]) -> Self { self }
++    pub fn set_file_name(self, _n: impl Into<String>) -> Self { self }
++    pub fn set_directory<P: AsRef<std::path::Path>>(self, _p: P) -> Self { self }
++    pub fn set_title(self, _t: impl Into<String>) -> Self { self }
++    pub fn pick_file(self) -> Option<PathBuf> { None }
++    pub fn pick_files(self) -> Option<Vec<PathBuf>> { None }
++    pub fn pick_folder(self) -> Option<PathBuf> { None }
++    pub fn save_file(self) -> Option<PathBuf> { None }
++}
