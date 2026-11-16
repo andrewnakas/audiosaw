@@ -1483,6 +1483,122 @@
     mpg: 'extract-audio', wmv: 'extract-audio', flv: 'extract-audio'
   };
 
+  // "What do you want to do with it?" — the cards shown after a drop on the
+  // homepage (js/home-intent.js). The homepage converter alone converted 238 of
+  // 275 starters (GA4, 19 Oct–15 Nov 2026), but it only ever offered a format
+  // change: anyone who wanted to cut, clean, transcribe or de-vocal the file
+  // they had just dropped had to find the tool among 100+ links and drop it
+  // again. A card carries the file there through flow.js's handoff, and the
+  // tool takes it without a second click.
+  //
+  // [slug, label, hint, flags]. Flags: 'long' moves the card up for a file over
+  // ten minutes. The slug 'here' is the converter on the homepage itself.
+  // Every tool listed must accept that kind of file; tools/check-home-intent.js
+  // loads each page and asks it, and build-nav.js checks each slug exists.
+  // Order is by what people actually do (the same GA4 read), most first.
+  var HOME_INTENTS = {
+    audio: [
+      ['here', 'Convert it', 'MP3, WAV, M4A, FLAC, OGG'],
+      ['audio-cutter', 'Cut out a part', 'keep only the bit you want'],
+      ['stem-splitter', 'Separate vocals & music', 'AI acapella + instrumental'],
+      ['audio-to-text', 'Transcribe to text', 'transcript, SRT subtitles', 'long'],
+      ['noise-reduction', 'Remove background noise', 'hiss, hum, traffic, fans'],
+      ['pitch-shifter', 'Change the key or pitch', 'semitones, tempo unchanged'],
+      ['amplify-audio', 'Make it louder', 'without distortion'],
+      ['split-audio', 'Split into parts', 'equal parts or at the pauses', 'long'],
+      ['audio-speed', 'Speed up or slow down', 'pitch stays the same'],
+      ['enhance-speech', 'Make a voice sound better', 'one-click clean-up'],
+      ['audio-compressor', 'Make the file smaller', 'fit an email or upload limit'],
+      ['audio-to-sheet-music', 'Turn a melody into sheet music', 'notes, key, tempo'],
+      ['key-finder', 'Find the key & BPM', 'with Camelot code'],
+      ['chord-finder', 'Find the chords', 'bar by bar'],
+      ['slowed-reverb', 'Slowed + reverb', 'one click'],
+      ['ringtone-maker', 'Make a ringtone', 'iPhone or Android'],
+      ['mp3-to-mp4', 'Make a video for YouTube', 'audio + a picture'],
+      ['remove-filler-words', 'Remove ums and uhs', 'podcasts and lectures', 'long'],
+      ['audio-editor', 'Open it in the editor', 'multitrack, effects, export']
+    ],
+    video: [
+      ['here', 'Extract the audio', 'MP3, WAV, M4A and more'],
+      ['add-subtitles-to-video', 'Add subtitles', 'auto captions, burn in or SRT'],
+      ['audio-to-text', 'Transcribe it', 'transcript, SRT, speakers', 'long'],
+      ['noise-reduction', 'Remove background noise', 'picture untouched'],
+      ['add-audio-to-video', 'Add or replace music', 'ducks under speech'],
+      ['enhance-speech', 'Make the voice clearer', 'picture untouched'],
+      ['fix-audio-sync', 'Fix out-of-sync sound', 'shift or fix drift'],
+      ['censor-audio', 'Bleep out swear words', 'audio stays in sync'],
+      ['remove-filler-words', 'Remove ums and uhs', 'cut with clean joins', 'long'],
+      ['amplify-audio', 'Make it louder', 'picture untouched'],
+      ['video-dubbing', 'Dub into another language', 'AI voice, 6 languages'],
+      ['vocal-remover', 'Remove the vocals', 'karaoke version']
+    ]
+  };
+
+  // Words people type that the title and blurb do not contain, for the "type
+  // what you want" box (js/tool-search.js). Written as the visitor says it, not
+  // as the page names it: nobody types "stem splitter", they type "karaoke".
+  // tools/check-search.js pins ~50 real phrasings to the tool they should find.
+  var SEARCH_ALSO = {
+    'audio-cutter': 'trim crop cut clip shorten snip part section',
+    'audio-joiner': 'merge combine join concatenate stitch together',
+    'stem-splitter': 'vocals acapella instrumental karaoke isolate separate stems vocal extract',
+    'vocal-remover': 'karaoke remove vocals instrumental backing track',
+    'audio-to-text': 'transcribe transcription transcript speech text words subtitles srt whisper captions',
+    'dictation': 'voice typing speak type talk',
+    'noise-reduction': 'denoise background noise hiss hum wind static fan clean',
+    'enhance-speech': 'improve voice clarity podcast studio better sound adobe',
+    'amplify-audio': 'louder volume boost increase quiet loud gain',
+    'normalize-audio': 'volume level even consistent',
+    'loudness-normalizer': 'lufs spotify loudness youtube streaming',
+    'audio-compressor': 'smaller size reduce shrink file email limit',
+    'discord-audio-compressor': 'discord 8mb 10mb limit',
+    'pitch-shifter': 'key transpose semitone higher lower pitch',
+    'audio-speed': 'faster slower tempo speed slow fast playback up down',
+    'slowed-reverb': 'slowed reverb tiktok',
+    'nightcore': 'sped chipmunk anime',
+    '8d-audio': '8d spatial headphones',
+    'split-audio': 'chunks parts pieces divide segments long',
+    'audio-editor': 'daw multitrack mix edit timeline audacity',
+    'voice-recorder': 'record microphone mic memo',
+    'record-computer-audio': 'record system sound desktop tab capture',
+    'text-to-speech': 'tts read aloud voice generator narrate speak',
+    'voice-changer': 'deep voice robot chipmunk girl boy disguise',
+    'voice-cloning': 'clone copy my voice',
+    'video-dubbing': 'translate dub language spanish french',
+    'add-subtitles-to-video': 'captions subtitles burn srt tiktok reels',
+    'add-audio-to-video': 'music background song soundtrack replace audio video',
+    'extract-audio': 'video audio rip extract webm mkv',
+    'mp3-to-mp4': 'youtube upload picture image cover video',
+    'ringtone-maker': 'ringtone iphone m4r android',
+    'mp3-tag-editor': 'tags metadata id3 artist album cover art title',
+    'key-finder': 'key camelot scale',
+    'bpm-finder': 'bpm tempo beats',
+    'chord-finder': 'chords guitar piano',
+    'audio-to-sheet-music': 'sheet music notes notation score musescore',
+    'audio-to-midi': 'midi notes melody',
+    'lyrics-from-song': 'lyrics words song',
+    'autotune': 'auto tune pitch correction t-pain',
+    'audio-eq': 'equalizer bass boost treble',
+    'censor-audio': 'bleep swear curse profanity censor clean version',
+    'remove-filler-words': 'um uh filler',
+    'auto-cut-silence': 'pauses silence shorten gaps',
+    'silence-remover': 'silence remove gaps quiet',
+    'fade-in-fade-out': 'fade',
+    'audio-reverser': 'reverse backwards',
+    'stereo-to-mono': 'mono single channel',
+    'mic-test': 'microphone test check working',
+    'tone-generator': 'frequency hz sine beep test tone',
+    'tuner': 'tune guitar ukulele violin',
+    'metronome': 'click beat practice',
+    'fix-audio-sync': 'sync delay lag offset lip',
+    'audio-file-info': 'bitrate sample rate info metadata details',
+    'hum-remover': 'hum buzz 50hz 60hz ground',
+    'click-remover': 'vinyl crackle pops clicks',
+    'de-esser': 'sibilance harsh s',
+    'spectrogram': 'frequency spectrum visual',
+    'music-visualizer': 'visualizer milkdrop video visual'
+  };
+
   // Returns null rather than a guess for anything unrecognised — a wrong
   // suggestion costs more than no suggestion, because the person has already
   // had one thing not work.
@@ -1510,6 +1626,8 @@
     CATEGORIES: CATEGORIES,
     HOME_JOBS: HOME_JOBS,
     HOME_RAILS: HOME_RAILS,
+    HOME_INTENTS: HOME_INTENTS,
+    SEARCH_ALSO: SEARCH_ALSO,
     TOOLS: TOOLS,
     bySlug: bySlug,
     EXT_TOOL: EXT_TOOL,

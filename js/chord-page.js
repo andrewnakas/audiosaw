@@ -159,6 +159,9 @@
       player.src = url;
       result.hidden = false;
       CV.setStatus(statusEl, 'success', common.length + ' chord' + (common.length === 1 ? '' : 's') + ' found. Press play to follow along.');
+      // A number, not a file: counted as a success so the tool is not a
+      // permanent 0 in the convert_success report (109 starters, 0 successes).
+      CV.track('convert_success', { tool: 'chord-finder', target_format: 'result' });
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not read chords from that file. ' + (e.message || e));
     } finally {

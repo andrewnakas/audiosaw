@@ -146,6 +146,10 @@
         (buffer.duration > 240 ? ' (the first 4 minutes were read)' : '');
       if (key.confidence === 'unsure') CV.setStatus(statusEl, 'warn', 'Found ' + key.name + ', but only just — ' + key.runnerUp.name + ' is nearly as likely. Listen to both.');
       else CV.setStatus(statusEl, 'success', 'Key: ' + key.name + ' (' + key.camelot + ')');
+      // A reading, not a file: counted as a success (with target_format
+      // 'result') so the tool is not a permanent 0 in the convert_success
+      // report. GA4 19 Oct-15 Nov 2026: 109 starters, 0 successes, by design.
+      CV.track('convert_success', { tool: 'key-finder', target_format: 'result' });
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not analyse that file. ' + (e.message || e));
     } finally {

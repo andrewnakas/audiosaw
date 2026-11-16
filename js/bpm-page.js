@@ -122,6 +122,9 @@
           + 'Tempo detection needs percussive transients, so ambient, drones and solo voice do not work.');
       } else {
         CV.setStatus(statusEl, 'success', 'Detected ' + (Math.round(out.bpm * 10) / 10).toFixed(1) + ' BPM');
+        // A number, not a file: counted as a success so the tool is not a
+        // permanent 0 in the convert_success report (109 starters, 0 successes).
+        CV.track('convert_success', { tool: 'bpm-finder', target_format: 'result' });
       }
     } catch (e) {
       CV.setStatus(statusEl, 'error', 'Could not analyse that file. ' + (e.message || e));

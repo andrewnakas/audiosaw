@@ -929,6 +929,38 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 }
 .dropzone input[type=file] { display: none; }
 
+/* "What do you want to do with it?" — homepage, after a drop (home-intent.js). */
+.home-intent { margin: 18px 0 6px; }
+.home-intent[hidden] { display: none; }
+.hi-head h2 { font-size: 1.25rem; margin: 0 0 2px; }
+.hi-meta { margin: 0 0 12px; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); overflow-wrap: anywhere; }
+.hi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.hi-card {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  padding: 12px 14px; min-height: 58px;
+  background: var(--card); border: 1px solid var(--rule); border-radius: 10px;
+  color: var(--ink); text-decoration: none; font: inherit; cursor: pointer;
+  transition: border-color 0.16s, transform 0.16s;
+}
+.hi-card:hover, .hi-card:focus-visible { border-color: var(--amber); transform: translateY(-1px); }
+.hi-card:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.hi-card.is-here { border-color: var(--amber-line); background: var(--amber-soft); }
+.hi-card.is-going { opacity: 0.6; pointer-events: none; }
+.hi-label { font-weight: 600; font-size: 0.98rem; }
+.hi-hint { font-family: var(--mono); font-size: 0.74rem; color: var(--ink-soft); }
+.hi-card.is-extra { display: none; }
+.hi-grid.is-open .hi-card.is-extra { display: flex; }
+.hi-more {
+  margin-top: 10px; padding: 8px 14px; background: none; border: 1px dashed var(--rule);
+  border-radius: 100px; font-family: var(--mono); font-size: 0.8rem; color: var(--amber); cursor: pointer;
+}
+.hi-multi { margin: 0; color: var(--ink-soft); }
+@media (max-width: 520px) {
+  .hi-grid { grid-template-columns: 1fr 1fr; }
+  .hi-card { padding: 10px 12px; }
+  .hi-label { font-size: 0.92rem; }
+}
+
 .btn {
   background: var(--ink);
   color: var(--paper);
@@ -1615,3 +1647,21 @@ select:focus-visible {
 .wam-msg { margin: 0; padding: 14px; font-size: 0.88rem; color: var(--muted); }
 .wam-guis .wam-msg { color: #ddd; }
 .wam-note { min-height: 1.2em; margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); }
+
+/* "Type what you want" (tool-search.js), on / and /tools. */
+.tool-search { position: relative; margin: 18px 0 8px; max-width: 640px; }
+.ts-label { display: block; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 6px; }
+.ts-row { display: flex; gap: 8px; }
+.ts-row input {
+  flex: 1; min-width: 0; padding: 10px 14px; font: inherit; font-size: 1rem;
+  background: var(--card); color: var(--ink); border: 1px solid var(--rule); border-radius: 10px;
+}
+.ts-row input:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
+.ts-list {
+  position: absolute; z-index: 20; left: 0; right: 0; top: 100%; margin: 4px 0 0; padding: 4px;
+  list-style: none; background: var(--card); border: 1px solid var(--rule); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.ts-list[hidden] { display: none; }
+.ts-list a { display: block; padding: 9px 12px; border-radius: 6px; color: var(--ink); text-decoration: none; }
+.ts-list a:hover, .ts-list a.is-sel { background: var(--amber-soft); color: var(--ink); }

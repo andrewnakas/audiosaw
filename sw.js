@@ -26,7 +26,7 @@
  */
 'use strict';
 
-var Q = '?v=2026-11-13b';
+var Q = '?v=2026-11-16';
 var V = Q.slice(3);
 
 var STATIC = 'audiosaw-static-' + V;   // immutable assets, keyed on the full URL
@@ -52,6 +52,8 @@ var PRECACHE = [
   '/js/consent.js' + Q,
   '/js/pwa.js' + Q,
   '/js/tool-converter.js' + Q,
+  '/js/tool-search.js' + Q,
+  '/js/home-intent.js' + Q,
   '/js/universal-converter.js' + Q
 ];
 

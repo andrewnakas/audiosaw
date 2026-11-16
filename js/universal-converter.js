@@ -38,6 +38,7 @@
       files.splice(idx, 1);
       if (!files.length) { reset(); return; }
       renderList();
+      announce();
     });
   }
 
@@ -48,6 +49,12 @@
     controls.style.display = '';
     convertBtn.disabled = false;
     renderList();
+    announce();
+  }
+
+  // home-intent.js listens for this and offers the other jobs for the file.
+  function announce() {
+    document.dispatchEvent(new CustomEvent('as:homefiles', { detail: files.slice() }));
   }
 
   function reset() {
@@ -59,6 +66,7 @@
     CV.setProgress(progressBar, 0);
     resultList.innerHTML = '';
     convertBtn.disabled = true;
+    announce();
   }
 
   CV.bindDropzone(dropzone, fileInput, onFiles);

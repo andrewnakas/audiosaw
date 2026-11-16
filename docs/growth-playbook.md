@@ -1130,3 +1130,77 @@ no real Atmos stream to measure and the bridge is stereo-only), Honeydew
 **Re-read ~20 Nov:** landings and convert_success per page (`target_format`
 `play`, `app`, `png`, `mp4`, and the file formats), and whether the Recomp
 cross-links send anything either way.
+
+## §20 — One drop, any job (16 Nov 2026)
+
+Andrew: make AudioSaw "as easy to use as possible", then grow it. Read from
+GA4 "Audio Saw" (free-form exploration, Tool × event, then Tool × error type,
+active users, 19 Oct-15 Nov) before changing anything.
+
+**30 days: 5.1K users, -27% on the period before**: the ChatGPT referral
+slide of §16 has not come back. Start -> success by users, the top of the
+table:
+
+| Tool | Started | Succeeded | Errored | Main errors |
+|---|---|---|---|---|
+| / (homepage converter) | 285 | 247 | 19 | — |
+| audio-to-sheet-music | 238 | 105 | 22 | wrong_type 14 |
+| text-to-speech | 219 | 134 | 12 | spread |
+| voice-recorder | 118 | 117 | 15 | mic_denied 9 |
+| pitch-shifter | 107 | 101 | 6 | — |
+| split-audio | 109 | 65 | 21 | memory 12 |
+| key-finder | 116 | **0** | 8 | (no success event, by design) |
+| video-dubbing | 97 | 11 | 29 | memory 9, other 9, unsupported_api 9 |
+| audio-editor | 91 | 86 | 51 | mic_denied 20, wrong_type 16 |
+| audio-to-text | 81 | 30 | 22 | memory 11 |
+| voice-cloning | 64 | 13 | 35 | unsupported_api 13, empty 11 |
+| text-to-audiobook | 67 | 19 | 19 | other 7, script_error 4 |
+| lyrics-from-song | 31 | 9 | 0 | (none: people leave during the download) |
+
+wrong_type is spread thin over the converters (m4a-to-mp3 6, mp3-to-wav 6,
+mp4-to-mp3 5, wav-to-mp3 5, opus-to-mp3 5, extract-audio 5, mp3-320kbps 9).
+Most of the window predates the 12 Nov WebKit and cloning-gate fixes (§18),
+so the AI rows are read again after a clean week.
+
+**The finding:** the homepage converter is the best-converting surface on
+the site (87%), and it was only a converter. The dropzone even said "let you
+pick what to do with it" and then offered a format list.
+
+**Shipped:**
+
+- **"What do you want to do with it?"** (js/home-intent.js, HOME_INTENTS in
+  tool-graph.js). After a drop on /, cards for the jobs that fit the file:
+  audio or video, and a file over ten minutes lifts transcribe, split and
+  filler removal. "Convert it" is the first card and the converter stays
+  open beneath, so plain conversion costs no extra click. A card stores the
+  file in the handoff and opens the tool with `?from=index`; the tool takes
+  it with no chip (`auto` in offerHandoff). Measured in check-home-intent:
+  every carded tool accepts its kind of file, and the file arrives with one
+  `chain_continue` (`placement: home_intent`).
+- **"Say what you want to do"** (js/tool-search.js, SEARCH_ALSO), on / and
+  /tools: a plain-language box with no library, no index file and no
+  network. Format pairs ("m4a to mp3") go to their page, or to the homepage
+  converter when there is none. check-search pins 64 real phrasings.
+  `next_step_click` with `placement: search`.
+- **A refused file travels.** The wrong-type panel's "M4A to MP3" chip, and a
+  new "Other things to do with memo.m4a" chip to /, carry the refused file
+  (`chain_continue`, `placement: error`). Before, the panel named the right
+  tool and the visitor dropped the file a third time.
+- **/audio-to-text low-memory decode.** Files over 60 MB on a phone (250 MB
+  elsewhere), and any file whose normal decode runs out of memory, go
+  through ffmpeg straight to 16 kHz mono f32. That holds 230 MB for an hour,
+  not the 1.4 GB a full-rate stereo decode needs. Checked on the isolated
+  page: 12 minutes to exactly 720 s, 2.5 s.
+- **Key, chord and BPM finders count a reading** as `convert_success` with
+  `target_format: result`, so they stop showing as 0 successes. Their rows
+  rise from 16 Nov; it is the instrument, not more use.
+
+No new event and no new parameter: `home_intent`, `search` and `error` are
+new values of `placement`, which is registered.
+
+**Re-read ~23 Nov:**
+- the share of home drops followed by a `home_intent` click;
+- `chain_continue` by placement (home_intent, error);
+- `next_step_click` placement `search`, by `to_tool`;
+- /audio-to-text `memory` errors after the low-memory path;
+- the AI rows after a full week of the 12 Nov fixes.

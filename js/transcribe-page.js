@@ -268,15 +268,56 @@
 
   /* ------------------------------------------------------------ decoding */
 
+  // A full-rate decode holds the whole file as float at its own rate (an hour
+  // of 48 kHz stereo is 1.4 GB) before it is folded to 16 kHz mono (230 MB):
+  // on 19 Oct-15 Nov 2026, 11 of 81 people who started here hit `memory`.
+  // ffmpeg can go straight to 16 kHz mono instead, never holding the big
+  // copy, so large files on phones go that way first and any file whose
+  // ordinary decode runs out of memory gets a second try through it.
+  var PHONE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  function isMemoryError(e) {
+    return e instanceof RangeError || /memory|allocat|array buffer|too large/i.test(String(e && (e.message || e)));
+  }
+
+  async function decodeViaFFmpeg(file) {
+    var ext = (/\.([^.]+)$/.exec(file.name || '') || [, 'bin'])[1].toLowerCase();
+    var blob = await AudioSaw.runFFmpeg(file, ext, ['-vn', '-ac', '1', '-ar', String(SR), '-f', 'f32le', '-c:a', 'pcm_f32le'],
+      'f32', 'application/octet-stream', function (pct, msg) {
+        CV.setProgress(progressBar, Math.min(10, pct / 10));
+        CV.setStatus(statusEl, 'info', msg && /Downloading/.test(msg) ? msg : 'Decoding a large file in low-memory mode…');
+      }, 'Decoding a large file in low-memory mode…');
+    var mono = new Float32Array(await blob.arrayBuffer());
+    if (mono.length / SR > MAX_SECONDS) {
+      throw new Error('That file is over 120 minutes long (' + fmtDuration(mono.length / SR) + '). Past two hours the tab runs out of memory — split it into parts first.');
+    }
+    duration = mono.length / SR;
+    return mono;
+  }
+
   async function decode16k(file) {
     CV.setStatus(statusEl, 'info', 'Decoding…');
-    var buf = await AudioSaw.decodeToAudioBuffer(file);
+    if (file.size > (PHONE ? 60 : 250) * 1024 * 1024) {
+      try { return await decodeViaFFmpeg(file); } catch (e) { if (/over 120 minutes/.test(e.message)) throw e; /* fall through */ }
+    }
+    var buf;
+    try {
+      buf = await AudioSaw.decodeToAudioBuffer(file);
+    } catch (e) {
+      if (!isMemoryError(e)) throw e;
+      return decodeViaFFmpeg(file);
+    }
     if (buf.duration > MAX_SECONDS) {
       throw new Error('That file is over 120 minutes long (' + fmtDuration(buf.duration) + '). Past two hours the tab runs out of memory — split it into parts first.');
     }
     duration = buf.duration;
     var n = buf.length, nch = buf.numberOfChannels;
-    var mono = new Float32Array(n);
+    var mono;
+    try {
+      mono = new Float32Array(n);
+    } catch (e) {
+      buf = null;
+      return decodeViaFFmpeg(file);
+    }
     for (var c = 0; c < nch; c++) {
       var x = buf.getChannelData(c);
       for (var i = 0; i < n; i++) mono[i] += x[i] / nch;

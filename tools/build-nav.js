@@ -196,6 +196,15 @@ ${wrap('leaderboard', LEADERBOARD)}
     <p>Every tool on AudioSaw runs entirely inside your browser tab. Your file is decoded, processed and re-encoded locally — it is never uploaded to a server, so there is no queue, no size gate behind a signup, and no copy of your audio sitting on someone else's disk. Pick the tool that matches the job; each one has the settings for that job already chosen.</p>
   </section>
 
+  <form class="tool-search" id="toolSearch" role="search" autocomplete="off">
+    <label for="toolSearchInput" class="ts-label">Find a tool by what you want to do</label>
+    <div class="ts-row">
+      <input id="toolSearchInput" type="search" enterkeyhint="go" placeholder="e.g. remove vocals, m4a to mp3, make it louder" aria-autocomplete="list" aria-controls="toolSearchList" aria-expanded="false">
+      <button class="btn btn-small" type="submit">Find</button>
+    </div>
+    <ul id="toolSearchList" class="ts-list" role="listbox" hidden></ul>
+  </form>
+
 ${sections}
 </main>
 
@@ -204,6 +213,7 @@ ${FOOTER_PLACEHOLDER}
 <script src="/js/common.js?v=${VERSION}"></script>
 <script src="/js/tool-graph.js?v=${VERSION}"></script>
 <script src="/js/flow.js?v=${VERSION}"></script>
+<script src="/js/tool-search.js?v=${VERSION}"></script>
 <script src="/js/consent.js?v=${VERSION}"></script>
 <script src="/js/pwa.js?v=${VERSION}"></script>
 </body>
@@ -391,6 +401,24 @@ ${rails}
     if (!G.TOOLS[slug]) {
       console.error(`build-nav: EXT_TOOL maps .${ext} to "${slug}", which is not a tool.`);
       process.exit(1);
+    }
+  }
+
+  for (const slug of Object.keys(G.SEARCH_ALSO)) {
+    if (!G.TOOLS[slug]) {
+      console.error(`build-nav: SEARCH_ALSO names "${slug}", which is not a tool.`);
+      process.exit(1);
+    }
+  }
+
+  // HOME_INTENTS are the cards after a drop on the homepage. A bad slug there
+  // would send a file to a 404 with the visitor's file in hand.
+  for (const [kind, list] of Object.entries(G.HOME_INTENTS)) {
+    for (const [slug] of list) {
+      if (slug !== 'here' && !G.TOOLS[slug]) {
+        console.error(`build-nav: HOME_INTENTS.${kind} names "${slug}", which is not a tool.`);
+        process.exit(1);
+      }
     }
   }
 })();

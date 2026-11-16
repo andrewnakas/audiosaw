@@ -708,6 +708,17 @@ numbers; tighten the check before quoting a new one.
   to `CV.downloadBlob`. Without it, each click counted as another
   `convert_success` and rebuilt the next-steps panel around a single file.
 
+- `js/home-intent.js` + `js/tool-search.js` (16 Nov 2026): after a drop on
+  `/`, cards for the jobs that fit the file (`HOME_INTENTS` in tool-graph.js;
+  audio or video, and over ten minutes lifts the long-file jobs). A card puts
+  the file in flow.js's handoff with `auto: true` and opens `/<tool>?from=index`,
+  and offerHandoff loads it with no chip when `?from=` equals the payload's
+  `from` and it is under five minutes old. The wrong-type panel uses the same
+  path to carry a refused file (`carryTo` in flow.js). tool-search.js (UMD) is
+  the plain-language box on / and /tools, matching titles, blurbs and
+  `SEARCH_ALSO`. `tools/check-search.js` pins phrasings to tools, and
+  `tools/check-home-intent.js` checks that every carded tool takes its kind of
+  file and that the file arrives. Both run in check-all.
 - `js/pwa.js` — service worker registration and the install prompt. Loaded last
   on every page, including the five that carry no other JavaScript.
 - `sw.js` — offline support and the share target. Cloudflare Pages will not
@@ -843,6 +854,11 @@ New outcomes become new *values* on those events, never a ninth event:
 | `chain_continue` | `placement: project`, `from_tool: audio-editor` | "Use project audio" taken on the tool page |
 | `next_step_click` | `placement: project_return` | "Send back" clicked on the tool page |
 | `chain_continue` | `placement: project`, `to_tool: audio-editor` | the editor actually applied a tool's result |
+| `next_step_click` | `placement: home_intent` | a "What do you want to do with it?" card after a drop on / |
+| `chain_continue` | `placement: home_intent`, `from_tool: index` | that card's tool took the file (no chip) |
+| `next_step_click` | `placement: search` | the "say what you want to do" box (/ and /tools) |
+| `chain_continue` | `placement: error` | a wrong-type chip carried the refused file and the tool took it |
+| `convert_success` | `target_format: result` | key, chord and BPM finders gave a reading (from 16 Nov 2026) |
 
 **Two instrument changes on 9 Oct 2026.** A button with both `id="convertBtn"`
 and `data-track="convert"` fired `convert_start` twice per click (the five

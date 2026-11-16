@@ -316,18 +316,48 @@
       req.onerror = function () { reject(req.error); };
       req.onsuccess = function () {
         var db = req.result;
-        var tx = db.transaction(STORE, mode);
-        var out = fn(tx.objectStore(STORE));
+        var tx, out;
+        // put() can throw on the spot (DataCloneError); without the catch the
+        // promise never settled and the caller waited forever.
+        try {
+          tx = db.transaction(STORE, mode);
+          out = fn(tx.objectStore(STORE));
+        } catch (e) { db.close(); reject(e); return; }
         tx.oncomplete = function () { db.close(); resolve(out && out.result); };
-        tx.onerror = function () { db.close(); reject(tx.error); };
+        tx.onerror = function () { db.close(); reject(tx.error || new Error('IndexedDB write failed')); };
+        tx.onabort = function () { db.close(); reject(tx.error || new Error('IndexedDB write aborted')); };
       };
     });
   }
 
-  function putHandoff(payload) { return withStore('readwrite', function (s) { return s.put(payload, 'pending'); }); }
+  // WebKit in a private window (and Playwright's WebKit) refuses to store a
+  // Blob in IndexedDB at all — the transaction fails with a null error — but
+  // stores an ArrayBuffer. Found 16 Nov 2026 when the homepage's intent cards
+  // opened the tool empty in WebKit. So a refused Blob is retried as bytes
+  // (up to 512 MB, past which holding a copy in memory is the bigger risk),
+  // and peekHandoff turns the bytes back into a Blob.
+  var BYTES_MAX = 512 * 1024 * 1024;
+  function putHandoff(payload) {
+    var put = function (p) { return withStore('readwrite', function (s) { return s.put(p, 'pending'); }); };
+    return put(payload).catch(function (err) {
+      var b = payload && payload.blob;
+      if (!b || typeof b.arrayBuffer !== 'function' || b.size > BYTES_MAX) throw err;
+      return b.arrayBuffer().then(function (bytes) {
+        var copy = {};
+        for (var k in payload) if (k !== 'blob') copy[k] = payload[k];
+        copy.bytes = bytes;
+        copy.type = b.type || '';
+        return put(copy);
+      });
+    });
+  }
+  function revive(p) {
+    if (p && !p.blob && p.bytes) p.blob = new Blob([p.bytes], { type: p.type || 'application/octet-stream' });
+    return p;
+  }
   // Read without consuming. Deleting on read meant a reload after landing lost
   // the carried file for good, and the chip never came back.
-  function peekHandoff() { return withStore('readonly', function (s) { return s.get('pending'); }); }
+  function peekHandoff() { return withStore('readonly', function (s) { return s.get('pending'); }).then(revive); }
   function dropHandoff() { return withStore('readwrite', function (s) { return s.delete('pending'); }); }
 
   function canInjectFiles() {
@@ -376,7 +406,30 @@
       // only side that knows the answer: the accept list belongs to the landing
       // page. The pending record is deliberately left in place — a tool further
       // along the chain may well accept it.
-      if (pageAccept && pageAccept.indexOf(extOf(payload.name)) === -1) return;
+      var refused = !!pageAccept && pageAccept.indexOf(extOf(payload.name)) === -1;
+
+      // A card on the homepage ("What do you want to do with it?"), or the
+      // wrong-file panel's "open it in X", already was the click: the visitor chose this tool *for this file* a moment
+      // ago. Asking again with a chip would be the second drop the cards exist
+      // to remove, so the file goes straight in. Only for a fresh handoff from
+      // the homepage: anything older, or from another tool's next-steps panel,
+      // keeps the chip, because there the file is a suggestion, not a choice.
+      if (payload.auto && from === payload.from && Date.now() - (payload.at || 0) < 5 * 60 * 1000) {
+        dropHandoff().catch(function () {});
+        if (refused) {
+          var st = document.getElementById('status');
+          if (st) CV.setStatus(st, 'warn', 'This tool takes ' + describeAccept(pageAccept) +
+            ', so ' + payload.name + ' was not loaded. Drop another file here, or go back and pick another job.');
+          return;
+        }
+        var auto = new File([payload.blob], payload.name, { type: payload.blob.type || 'application/octet-stream' });
+        var took = injectFile(auto, 'handoff');
+        track('chain_continue', { from_tool: payload.from, to_tool: currentTool(),
+          placement: payload.from === 'index' ? 'home_intent' : 'error', accepted: took });
+        return;
+      }
+
+      if (refused) return;
 
       var fromTool = payload.from === 'share'
         ? 'your share sheet'
@@ -517,6 +570,15 @@
     } catch (e) {}
   }
 
+  // Store `file` as an auto-take handoff and open `href` with ?from=<slug>,
+  // which offerHandoff on the landing page reads as "load it, no chip".
+  function carryTo(e, href, file, slug) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+    e.preventDefault();
+    var go = function () { global.location.href = href + (href.indexOf('?') === -1 ? '?' : '&') + 'from=' + encodeURIComponent(slug); };
+    putHandoff({ name: file.name, blob: file, from: slug, auto: true, at: Date.now() }).then(go, go);
+  }
+
   function errorPanel(rawMessage, err) {
     var slug = currentTool();
     var host = document.getElementById('status');
@@ -537,8 +599,13 @@
     // the assistant picked. When that pick is wrong for the file in hand, this
     // panel is the only thing standing between the visitor and leaving.
     var action = kind.action;
+    var carry = null;   // the refused file, taken along by the chips below
     if (kind.id === 'wrong_type' && G.toolForExt) {
       var alt = G.toolForExt(lastRejectedExt);
+      // Only audio and video travel: EXT_TOOL knows every media extension
+      // the site reads, and a PDF carried to the homepage would only be
+      // refused again there.
+      if (alt && G.TOOLS[alt]) carry = lastRejectedFile;
       if (alt && alt !== slug && G.TOOLS[alt]) {
         action = { href: '/' + alt, label: G.TOOLS[alt].title };
       }
@@ -562,10 +629,25 @@
       a.className = 'next-chip';
       a.href = action.href;
       a.textContent = action.label;
-      a.addEventListener('click', function () {
+      a.addEventListener('click', function (e) {
         track('next_step_click', { tool: slug, to_tool: action.href.replace('/', '') || 'index', placement: 'error' });
+        if (carry && action.href !== '/') carryTo(e, action.href, carry, slug);
       });
       row.appendChild(a);
+    }
+    // Any file at all has a home: the homepage converts it and lists the
+    // other jobs for it. Offered with the file, so it is one click, not a
+    // search and a third drop.
+    if (carry && slug !== 'index') {
+      var h = document.createElement('a');
+      h.className = 'next-chip';
+      h.href = '/';
+      h.textContent = 'Other things to do with ' + (carry.name.length > 28 ? 'this file' : carry.name);
+      h.addEventListener('click', function (e) {
+        track('next_step_click', { tool: slug, to_tool: 'index', placement: 'error' });
+        carryTo(e, '/', carry, slug);
+      });
+      row.appendChild(h);
     }
     related(slug, 2).forEach(function (p) {
       var a = document.createElement('a');
@@ -590,6 +672,9 @@
   // wrapper below and read by errorPanel, which otherwise only sees the message
   // string and has to re-parse it to learn anything.
   var lastRejectedExt = null;
+  // The refused file itself, so the wrong-type panel can carry it to a tool
+  // that takes it instead of asking for a third drop.
+  var lastRejectedFile = null;
 
   var _downloadBlob = CV.downloadBlob;
   CV.downloadBlob = function (blob, filename, opts) {
@@ -679,6 +764,7 @@
     // no event, no way to know the site had seen the file.
     function rejected(files, acc) {
       lastRejectedExt = files && files[0] ? extOf(files[0].name) : null;
+      lastRejectedFile = files && files[0] ? files[0] : null;
       if (files && files[0]) pickedNames = [files[0].name];
       if (onRejected) return onRejected(files, acc);
       var statusEl = document.getElementById('status');
@@ -840,6 +926,8 @@
     related: related,
     offerHandoff: offerHandoff,
     inject: injectFile,
+    // home-intent.js stores the dropped file here before sending it to a tool.
+    handoff: putHandoff,
     accepts: function (ext) {
       return !pageAccept || pageAccept.indexOf(String(ext).replace(/^\./, '').toLowerCase()) !== -1;
     },
