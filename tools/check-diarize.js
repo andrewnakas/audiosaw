@@ -10,9 +10,9 @@
  * from the local mirror, fetched once): two synthetic conversations, built
  * from `say` voices with known turn times —
  *   - two people (Daniel, Samantha), 21 s: Auto must find 2 and label at
- *     least 94% of the speech right (measured 99.7%);
+ *     least 97% of the speech right (measured 99.9%);
  *   - three people (Daniel, Samantha, Karen), 3 min: Auto must find 3 and
- *     label at least 90% right (measured 92.0%). Two women's voices are the
+ *     label at least 97% right (measured 99.6%). Two women's voices are the
  *     case segmentation alone gets wrong (68%);
  * and the page itself with "label who is speaking" ticked: the transcript
  * has a "Speaker 1:" and a "Speaker 2:" paragraph, and the SRT names them.
@@ -71,7 +71,15 @@ function conversation(voices, plan, minSecs) {
     execFileSync('say', ['-v', v, '-o', path.join(dir, 'l.aiff'), lines[r % lines.length]]);
     execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', path.join(dir, 'l.aiff'), '-ac', '1', '-ar', String(SR), '-f', 'f32le', path.join(dir, 'l.f32')]);
     const b = fs.readFileSync(path.join(dir, 'l.f32')), x = new Float32Array(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
-    truth.push({ who: v, start: t, end: t + x.length / SR }); out.push(x); t += x.length / SR;
+    // `say` pads each clip with silence (0.1-0.25 s at the end on macOS 27);
+    // counted as speech, it read as a 6% labelling loss with every turn on
+    // the right speaker. Truth is the audible part: first to last sample
+    // within 40 dB of the clip's peak.
+    let pk = 0; for (let i = 0; i < x.length; i++) pk = Math.max(pk, Math.abs(x[i]));
+    const thr = pk * 0.01; let a0 = 0, a1 = x.length - 1;
+    while (a0 < a1 && Math.abs(x[a0]) < thr) a0++;
+    while (a1 > a0 && Math.abs(x[a1]) < thr) a1--;
+    truth.push({ who: v, start: t + a0 / SR, end: t + (a1 + 1) / SR }); out.push(x); t += x.length / SR;
     const gap = 0.3 + (r % 4) * 0.15; out.push(new Float32Array(Math.round(SR * gap))); t += gap;
   }
   const n = out.reduce((a, x) => a + x.length, 0), all = new Float32Array(n);
@@ -125,11 +133,11 @@ async function browser() {
       return { turns: r.turns, speakers: r.speakers, ms: performance.now() - t0 };
     })()`, 900000);
     const r2 = await run('two', 0), s2 = score(r2.turns, two.truth);
-    ok(r2.speakers === 2 && s2 >= 0.94, `two people, ${two.secs.toFixed(0)} s: Auto found ${r2.speakers}, ${(s2 * 100).toFixed(1)}% of the speech labelled right, in ${(r2.ms / 1000).toFixed(1)} s`);
+    ok(r2.speakers === 2 && s2 >= 0.97, `two people, ${two.secs.toFixed(0)} s: Auto found ${r2.speakers}, ${(s2 * 100).toFixed(1)}% of the speech labelled right, in ${(r2.ms / 1000).toFixed(1)} s`);
     const r3 = await run('three', 0), s3 = score(r3.turns, three.truth);
-    ok(r3.speakers === 3 && s3 >= 0.90, `three people, ${three.secs.toFixed(0)} s: Auto found ${r3.speakers}, ${(s3 * 100).toFixed(1)}% right, in ${(r3.ms / 1000).toFixed(1)} s`);
+    ok(r3.speakers === 3 && s3 >= 0.97, `three people, ${three.secs.toFixed(0)} s: Auto found ${r3.speakers}, ${(s3 * 100).toFixed(1)}% right, in ${(r3.ms / 1000).toFixed(1)} s`);
     const r3n = await run('three', 3), s3n = score(r3n.turns, three.truth);
-    ok(r3n.speakers === 3 && s3n >= 0.90, `three people, told 3: ${(s3n * 100).toFixed(1)}% right`);
+    ok(r3n.speakers === 3 && s3n >= 0.97, `three people, told 3: ${(s3n * 100).toFixed(1)}% right`);
 
     // The page, end to end.
     const p = await page.eval(`(async () => {

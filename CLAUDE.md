@@ -1193,8 +1193,10 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
   clustering groups them: to the count chosen, or on Auto to a 0.45 distance
   then folding any speaker under 8% of the speech into its nearest. Both on
   the CPU through transformers.js. Segmentation alone merged two women's
-  voices (68%); with embeddings, check-diarize measures 99.7% of the speech
-  labelled right with two `say` voices and 92.0% with three over 3 minutes,
+  voices (68%); with embeddings, check-diarize measures 99.9% of the speech
+  labelled right with two `say` voices and 99.6% with three over 3 minutes
+  (truth trimmed to the audible part of each clip since 16 Nov: `say`'s
+  trailing silence had read as a 6-8% loss),
   and Auto counts both right (0.4 split the pair in three, 0.5 merged the
   trio). Whisper segments take the speaker who talks most inside them; the
   transcript gets "Speaker n:" paragraphs (renamable) and subtitles the name
