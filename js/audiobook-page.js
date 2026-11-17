@@ -51,6 +51,24 @@
   voiceSel.value = 'af_heart';
   CV.remember(voiceSel, 'as_tts_voice');
   if (engineSel) CV.remember(engineSel, 'as_tts_engine');
+  // A phone or tablet starts on the 92 MB model rather than the GPU's 326 MB
+  // (Safari reports a WebGPU adapter, and a phone then has to hold fp32
+  // weights), unless the visitor chose otherwise or the big one is cached.
+  // Same rule as /video-dubbing (tools/check-phone-models.js).
+  if (engineSel) {
+    var ua = navigator.userAgent || '';
+    var phone = /iPhone|iPad|iPod|Android/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
+    var chosen = null;
+    try { chosen = localStorage.getItem('as_pref:as_tts_engine'); } catch (e) {}
+    if (phone && chosen === null) {
+      engineSel.value = 'small';
+      try {
+        caches.open('audiosaw-models-v2').then(function (c) { return c.keys(); }).then(function (keys) {
+          if (!worker && keys.some(function (r) { return /Kokoro[^?]*\/onnx\/model\.onnx$/.test(r.url); })) { engineSel.value = 'auto'; summarize(); }
+        }).catch(function () {});
+      } catch (e) {}
+    }
+  }
   if (outSel) CV.remember(outSel, 'as_ab_fmt');
   function showSpeed() { speedOut.textContent = (+speedEl.value).toFixed(2).replace(/0$/, '') + '×'; summarize(); }
   speedEl.addEventListener('input', showSpeed);

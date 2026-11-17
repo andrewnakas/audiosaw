@@ -1017,6 +1017,12 @@ build on Safari), or the library fetches jsDelivr and fails under COEP.
     and `runBatch` in tts-page.js, which routes its own job numbers through
     the page's worker. Stop rejects the waiting jobs, because a cancelled
     chunk never answers. check-tts: three lines, three named MP3s, one zip.
+- **Phones get the 92 MB voice model** on /video-dubbing and
+  /text-to-audiobook (16 Nov 2026), unless the 326 MB one is cached or the
+  visitor chose it: Safari reports a WebGPU adapter, so a phone used to
+  download and hold the fp32 model (dubbing: 9 of 97 visitors hit memory).
+  In Playwright WebKit the fp32 GPU path itself works (a line in 5 s).
+  `tools/check-phone-models.js` (WebKit iPhone/iPad/desktop profiles).
 - **/voice-changer** (`js/voice-fx.js` = `ASVoice`, UMD): TD-PSOLA with a
   time-stretch, after a sinc resample for the formant shift, so pitch and
   formant move separately. f0 is tracked on an 11.025 kHz copy (3 s of CPU

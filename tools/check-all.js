@@ -46,6 +46,7 @@ const CHECKS = [
   ['check-home-intent.js'],
   ['check-mobile.js'],
   ['check-split.js'],
+  ['check-phone-models.js'],
   ['check-srt.js'],
   ['check-model-fetch.js'],
   ['check-editor.js'],

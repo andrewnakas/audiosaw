@@ -100,9 +100,28 @@
     };
     return asr;
   }
+  // On a phone or tablet the voice model is the 92 MB one, not the GPU's
+  // 326 MB fp32: Safari reports a WebGPU adapter, so a phone downloaded all
+  // of it and then had to hold it (GA4 19 Oct-15 Nov: 9 of 97 visitors here
+  // hit "memory"). Desktops keep the GPU model, about three times faster for
+  // a whole video, and so does a phone that already has it cached.
+  var bigCached = false;
+  try {
+    caches.open('audiosaw-models-v2').then(function (c) { return c.keys(); }).then(function (keys) {
+      bigCached = keys.some(function (r) { return /Kokoro[^?]*\/onnx\/model\.onnx$/.test(r.url); });
+    }).catch(function () {});
+  } catch (e) {}
+  function smallVoice() {
+    if (/[?&]backend=wasm\b/.test(location.search)) return true;
+    if (/[?&]backend=webgpu\b/.test(location.search)) return false;
+    var touch = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') ||
+      (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));   // iPadOS reports a Mac
+    var low = navigator.deviceMemory && navigator.deviceMemory <= 4;
+    return !!(touch || low) && !bigCached;
+  }
   function voice() {
     if (tts) return tts;
-    tts = new Worker('/js/tts-worker.js?v=' + ASSET_V + (/[?&]backend=wasm\b/.test(location.search) ? '&backend=wasm' : ''));
+    tts = new Worker('/js/tts-worker.js?v=' + ASSET_V + (smallVoice() ? '&backend=wasm' : ''));
     tts.onmessage = function (e) {
       var m = e.data || {};
       if (m.type === 'status') CV.setStatus(statusEl, 'info', m.detail);
@@ -436,5 +455,5 @@
   dlAudio.addEventListener('click', function () { if (outputs) save(outputs.audio, outputs.base + '-dubbed.mp3'); });
   dlSrt.addEventListener('click', function () { if (outputs) save(new Blob([outputs.srt], { type: 'application/x-subrip;charset=utf-8' }), outputs.base + '-' + (target || (taskSel.value === 'translate' ? 'en' : (langSel.value === 'auto' ? 'dub' : langSel.value))) + '.srt'); });
 
-  window.__dubPage = { transcribe: transcribe, dub: dub, setLines: function (l) { lines = ASDub.merge(l); renderLines(); linesPanel.hidden = false; }, state: function () { return { file: !!file, orig: !!orig, lines: lines && lines.length }; } };
+  window.__dubPage = { transcribe: transcribe, dub: dub, smallVoice: smallVoice, setLines: function (l) { lines = ASDub.merge(l); renderLines(); linesPanel.hidden = false; }, state: function () { return { file: !!file, orig: !!orig, lines: lines && lines.length }; } };
 })();
