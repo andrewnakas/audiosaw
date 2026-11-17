@@ -6,12 +6,16 @@
  *   ASSheet.quantize(notes, { bpm, firstBeat, grid }) -> [{ midi, at, len }]
  *       notes are pitch-track.js's [{ midi, start, duration }]; at and len
  *       are in grid steps (16ths by default) from the first beat.
- *   ASSheet.toMusicXML(q, { bpm, sig, fifths, mode, title, clef, transpose })
- *       -> a MusicXML 4.0 partwise score, one part, one voice.
+ *   ASSheet.quantizeChords(notes, { bpm, firstBeat, grid }) -> [{ midis, at, len }]
+ *       overlapping notes (a MIDI file) as chords; uses b0/b1 when present.
+ *   ASSheet.topLine(chords) -> the highest note of each, as one line.
+ *   ASSheet.toMusicXML(q, { bpm, sig, fifths, mode, title, clef, transpose, lower })
+ *       -> a MusicXML 4.0 partwise score, one part: one staff, or a piano
+ *       grand staff when `lower` (the bass staff's events) is given.
  *   ASSheet.fifthsOf(pc, mode) -> key signature as a count of sharps (+)
  *       or flats (-), from key-detect.js's pc and mode.
  *
- * One line only: overlapping notes are cut where the next one starts, which
+ * From audio, one line only: overlapping notes are cut where the next one starts, which
  * is the monophonic model pitch-track.js already assumes. Durations are
  * written as the plain and dotted values that fit inside the bar from where
  * the note is, and anything else is tied, so every measure sums exactly.
@@ -82,29 +86,50 @@
 
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  function toMusicXML(q, o) {
+  // Notes that may overlap (a MIDI file, a piano part) into chord events:
+  // notes starting on the same step sound together, and a chord lasts until
+  // its longest note ends or the next chord starts, whichever is first. A note
+  // held under a moving line is shortened to the next onset: one voice per
+  // staff, so every bar still sums. Positions come from b0/b1 (quarter notes,
+  // from midi-read.js) when the notes have them, else from seconds and bpm.
+  //   -> [{ midis: [low..high], at, len, vel }]
+  function quantizeChords(notes, o) {
     o = o || {};
-    var sig = o.sig || [4, 4], fifths = o.fifths || 0, tr = o.transpose || 0;
-    var bar = sig[0] * 16 / sig[1];
-    var beatSteps = sig[1] === 8 && sig[0] % 3 === 0 ? 6 : 16 / sig[1];
-    var notes = q.map(function (n) { return { midi: n.midi + tr, at: n.at, len: n.len }; });
-    var end = notes.length ? notes[notes.length - 1].at + notes[notes.length - 1].len : bar;
-    var bars = Math.max(1, Math.ceil(end / bar));
-    var clef = o.clef && o.clef !== 'auto' ? o.clef : (function () {
-      var m = notes.map(function (n) { return n.midi; }).sort(function (a, b) { return a - b; });
-      return m.length && m[m.length >> 1] < 57 ? 'bass' : 'treble';
-    })();
+    var grid = o.grid || 4, beat = 60 / (o.bpm || 120), t0 = o.firstBeat || 0;
+    var groups = {};
+    notes.forEach(function (n) {
+      var a, e;
+      if (n.b0 != null && !o.seconds) { a = Math.round(n.b0 * grid); e = Math.round(n.b1 * grid); }
+      else { a = Math.round((n.start - t0) / beat * grid); e = Math.round((n.start + n.duration - t0) / beat * grid); }
+      if (a < 0) a = 0;
+      if (e <= a) e = a + 1;
+      var g = groups[a] = groups[a] || { midis: [], at: a, end: a + 1, vel: 0 };
+      if (g.midis.indexOf(n.midi) === -1) g.midis.push(n.midi);
+      g.end = Math.max(g.end, e);
+      g.vel = Math.max(g.vel, n.velocity || 0);
+    });
+    var list = Object.keys(groups).map(function (k) { return groups[k]; }).sort(function (a, b) { return a.at - b.at; });
+    return list.map(function (g, i) {
+      var next = list[i + 1];
+      var end = next ? Math.min(g.end, next.at) : g.end;
+      return { midis: g.midis.sort(function (a, b) { return a - b; }), at: g.at, len: Math.max(1, end - g.at), vel: g.vel };
+    });
+  }
 
-    // Events laid on the timeline: notes and the rests between them.
+  // The highest note of each chord: the tune, for a single melody staff.
+  function topLine(chords) {
+    return chords.map(function (c) { return { midi: c.midis[c.midis.length - 1], at: c.at, len: c.len, vel: c.vel }; });
+  }
+
+  // One staff's events (notes or chords) into measures of writable values.
+  function layout(notes, bar, beatSteps, bars) {
     var ev = [], pos = 0;
     notes.forEach(function (n) {
       if (n.at > pos) ev.push({ rest: true, at: pos, len: n.at - pos });
-      ev.push({ midi: n.midi, at: n.at, len: n.len });
+      ev.push({ midis: n.midis, at: n.at, len: n.len });
       pos = n.at + n.len;
     });
     if (pos < bars * bar) ev.push({ rest: true, at: pos, len: bars * bar - pos });
-
-    // Each event cut at bar lines, then into writable values.
     var measures = [];
     for (var b = 0; b < bars; b++) measures.push([]);
     ev.forEach(function (e) {
@@ -114,46 +139,91 @@
         var ps = pieces(at, take, bar, beatSteps);
         ps.forEach(function (p, i) {
           var last = left - take === 0 && i === ps.length - 1;
-          measures[m].push({ rest: e.rest, midi: e.midi, dur: p[0], type: p[1], dot: p[2], tieStart: !e.rest && !last, tieStop: !e.rest && !first });
+          measures[m].push({ rest: e.rest, midis: e.midis, dur: p[0], type: p[1], dot: p[2], tieStart: !e.rest && !last, tieStop: !e.rest && !first });
           first = false;
         });
         at += take; left -= take;
       }
     });
+    return measures;
+  }
+
+  function autoClef(notes) {
+    var m = [];
+    notes.forEach(function (n) { n.midis.forEach(function (x) { m.push(x); }); });
+    m.sort(function (a, b) { return a - b; });
+    return m.length && m[m.length >> 1] < 57 ? 'bass' : 'treble';
+  }
+
+  // q: one line [{ midi, at, len }] or chords [{ midis, at, len }].
+  // o.lower: a second staff's events, written as a piano grand staff (q on
+  // the treble staff, o.lower on the bass staff).
+  function toMusicXML(q, o) {
+    o = o || {};
+    var sig = o.sig || [4, 4], fifths = o.fifths || 0, tr = o.transpose || 0;
+    var bar = sig[0] * 16 / sig[1];
+    var beatSteps = sig[1] === 8 && sig[0] % 3 === 0 ? 6 : 16 / sig[1];
+    function norm(list) {
+      return (list || []).map(function (n) {
+        var ms = n.midis || [n.midi];
+        return { midis: ms.map(function (m) { return m + tr; }), at: n.at, len: n.len };
+      });
+    }
+    var staves = [norm(q)];
+    if (o.lower) staves.push(norm(o.lower));
+    var end = bar;
+    staves.forEach(function (st) { if (st.length) end = Math.max(end, st[st.length - 1].at + st[st.length - 1].len); });
+    var bars = Math.max(1, Math.ceil(end / bar));
+    var grand = staves.length === 2;
+    var clefs = grand ? ['treble', 'bass'] : [o.clef && o.clef !== 'auto' ? o.clef : autoClef(staves[0])];
+    var laid = staves.map(function (st) { return layout(st, bar, beatSteps, bars); });
+
+    function clefXml(c, num) {
+      var n = num ? ' number="' + num + '"' : '';
+      return c === 'bass' ? '<clef' + n + '><sign>F</sign><line>4</line></clef>' : '<clef' + n + '><sign>G</sign><line>2</line></clef>';
+    }
 
     var x = [];
     x.push('<?xml version="1.0" encoding="UTF-8" standalone="no"?>');
     x.push('<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">');
     x.push('<score-partwise version="4.0">');
     x.push('  <work><work-title>' + esc(o.title || 'Melody') + '</work-title></work>');
-    x.push('  <identification><encoding><software>AudioSaw audio to sheet music (audiosaw.com)</software></encoding></identification>');
-    x.push('  <part-list><score-part id="P1"><part-name>' + esc(o.part || 'Melody') + '</part-name></score-part></part-list>');
+    x.push('  <identification><encoding><software>AudioSaw sheet music (audiosaw.com)</software></encoding></identification>');
+    x.push('  <part-list><score-part id="P1"><part-name>' + esc(o.part || (grand ? 'Piano' : 'Melody')) + '</part-name></score-part></part-list>');
     x.push('  <part id="P1">');
-    measures.forEach(function (ms, i) {
+    for (var i = 0; i < bars; i++) {
       x.push('    <measure number="' + (i + 1) + '">');
       if (i === 0) {
         x.push('      <attributes><divisions>4</divisions><key><fifths>' + fifths + '</fifths>' + (o.mode ? '<mode>' + o.mode + '</mode>' : '') + '</key>' +
           '<time><beats>' + sig[0] + '</beats><beat-type>' + sig[1] + '</beat-type></time>' +
-          (clef === 'bass' ? '<clef><sign>F</sign><line>4</line></clef>' : '<clef><sign>G</sign><line>2</line></clef>') + '</attributes>');
-        if (o.bpm) x.push('      <direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>' + Math.round(o.bpm) + '</per-minute></metronome></direction-type><sound tempo="' + Math.round(o.bpm) + '"/></direction>');
+          (grand ? '<staves>2</staves>' + clefXml('treble', 1) + clefXml('bass', 2) : clefXml(clefs[0])) + '</attributes>');
+        if (o.bpm) x.push('      <direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>' + Math.round(o.bpm) + '</per-minute></metronome></direction-type>' + (grand ? '<staff>1</staff>' : '') + '<sound tempo="' + Math.round(o.bpm) + '"/></direction>');
       }
-      ms.forEach(function (n) {
-        var s = '      <note>';
-        if (n.rest) s += '<rest/>';
-        else {
-          var p = spell(n.midi, fifths);
-          s += '<pitch><step>' + p.step + '</step>' + (p.alter ? '<alter>' + p.alter + '</alter>' : '') + '<octave>' + p.octave + '</octave></pitch>';
-        }
-        s += '<duration>' + n.dur + '</duration>';
-        if (n.tieStop) s += '<tie type="stop"/>';
-        if (n.tieStart) s += '<tie type="start"/>';
-        s += '<voice>1</voice><type>' + n.type + '</type>' + (n.dot ? '<dot/>' : '');
-        if (n.tieStop || n.tieStart) s += '<notations>' + (n.tieStop ? '<tied type="stop"/>' : '') + (n.tieStart ? '<tied type="start"/>' : '') + '</notations>';
-        x.push(s + '</note>');
+      laid.forEach(function (measures, si) {
+        if (si) x.push('      <backup><duration>' + bar + '</duration></backup>');
+        var staffTag = grand ? '<staff>' + (si + 1) + '</staff>' : '';
+        var voice = si ? 5 : 1;
+        measures[i].forEach(function (n) {
+          var heads = n.rest ? [null] : n.midis;
+          heads.forEach(function (midi, k) {
+            var s = '      <note>' + (k ? '<chord/>' : '');
+            if (n.rest) s += '<rest/>';
+            else {
+              var p = spell(midi, fifths);
+              s += '<pitch><step>' + p.step + '</step>' + (p.alter ? '<alter>' + p.alter + '</alter>' : '') + '<octave>' + p.octave + '</octave></pitch>';
+            }
+            s += '<duration>' + n.dur + '</duration>';
+            if (n.tieStop) s += '<tie type="stop"/>';
+            if (n.tieStart) s += '<tie type="start"/>';
+            s += '<voice>' + voice + '</voice><type>' + n.type + '</type>' + (n.dot ? '<dot/>' : '') + staffTag;
+            if (n.tieStop || n.tieStart) s += '<notations>' + (n.tieStop ? '<tied type="stop"/>' : '') + (n.tieStart ? '<tied type="start"/>' : '') + '</notations>';
+            x.push(s + '</note>');
+          });
+        });
       });
-      if (i === measures.length - 1) x.push('      <barline location="right"><bar-style>light-heavy</bar-style></barline>');
+      if (i === bars - 1) x.push('      <barline location="right"><bar-style>light-heavy</bar-style></barline>');
       x.push('    </measure>');
-    });
+    }
     x.push('  </part>');
     x.push('</score-partwise>');
     return x.join('\n');
@@ -232,5 +302,5 @@
     return out;
   }
 
-  return { tempo: tempo, rearticulate: rearticulate, quantize: quantize, toMusicXML: toMusicXML, fifthsOf: fifthsOf, spell: spell, pieces: pieces };
+  return { tempo: tempo, rearticulate: rearticulate, quantize: quantize, quantizeChords: quantizeChords, topLine: topLine, toMusicXML: toMusicXML, fifthsOf: fifthsOf, spell: spell, pieces: pieces };
 });

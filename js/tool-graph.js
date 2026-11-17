@@ -718,10 +718,22 @@
       blurb: 'Sing, whistle or play a melody and get it written out: notes, tempo and key, printable, with MusicXML for MuseScore.',
       next: [
         ['audio-to-midi', 'Edit the notes on a piano roll, then save MIDI'],
+        ['midi-to-sheet-music', 'Already have a MIDI file? Chords and both hands, written out'],
         ['stem-splitter', 'Take the vocal out of a song first, then write it out'],
         ['key-finder', 'The key and its relative, with the Camelot code'],
         ['bpm-finder', 'The tempo of a full track'],
         ['tuner', 'Tune up before you record the melody']
+      ]
+    },
+    'midi-to-sheet-music': {
+      cat: 'create', label: 'midi → sheet music', title: 'MIDI to sheet music',
+      blurb: 'Turn a .mid file into a printable score: a staff per hand, a piano grand staff or the tune alone, with MusicXML and PDF.',
+      next: [
+        ['audio-to-sheet-music', 'No MIDI file? Write out a sung or played melody instead'],
+        ['audio-to-midi', 'Make a MIDI file from a recording first'],
+        ['audio-editor', 'Play the MIDI file on the editor\'s instruments and export audio'],
+        ['dx7-synth', 'Hear the file on an FM synth and save it as WAV'],
+        ['key-finder', 'The key of a recording of the piece']
       ]
     },
     'audio-to-midi': {
@@ -729,6 +741,7 @@
       blurb: 'Turn a hummed melody or bassline into a MIDI file.',
       next: [
         ['audio-to-sheet-music', 'The same melody written out as a score, with MusicXML'],
+        ['midi-to-sheet-music', 'A MIDI file you already have, as a printable score'],
         ['bpm-finder', 'Check the tempo written into the file'],
         ['stem-splitter', 'Isolate one part of a mix before transcribing it'],
         ['auto-cut-silence', 'Remove breaths that register as stray notes'],
@@ -1402,7 +1415,7 @@
       style: 'tile',
       tools: [
         'stemflipper', 'stem-splitter', 'vocal-remover', 'autotune', 'audio-to-midi',
-        'bpm-finder', 'tap-bpm', 'key-finder', 'chord-finder', 'sample-slicer', 'seamless-loop-maker', 'tuner', 'metronome', 'vocal-range-test', 'voice-recorder', 'mic-test', 'tone-generator', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'lyrics-from-song'
+        'bpm-finder', 'tap-bpm', 'key-finder', 'chord-finder', 'sample-slicer', 'seamless-loop-maker', 'tuner', 'metronome', 'vocal-range-test', 'voice-recorder', 'mic-test', 'tone-generator', 'record-computer-audio', 'split-audio', 'mp3-tag-editor', 'audio-to-sheet-music', 'midi-to-sheet-music', 'lyrics-from-song'
       ]
     },
     {
@@ -1576,6 +1589,7 @@
     'chord-finder': 'chords guitar piano',
     'audio-to-sheet-music': 'sheet music notes notation score musescore',
     'audio-to-midi': 'midi notes melody',
+    'midi-to-sheet-music': 'mid midi file score notation pdf print piano musescore musicxml',
     'lyrics-from-song': 'lyrics words song',
     'autotune': 'auto tune pitch correction t-pain',
     'audio-eq': 'equalizer bass boost treble',

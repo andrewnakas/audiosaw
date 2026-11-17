@@ -15,9 +15,12 @@
  * General MIDI percussion, and its part is marked drums.
  *
  *   ASMidiRead.parse(Uint8Array | ArrayBuffer) -> {
- *     format, ppq, bpm, sig: [num, den] | null, duration,
- *     parts: [{ name, channel, program, drums, notes: [{midi, start, duration, velocity}] }]
+ *     format, ppq, bpm, sig: [num, den] | null, key: {fifths, mode} | null,
+ *     tempoChanges, duration,
+ *     parts: [{ name, channel, program, drums, notes: [{midi, start, duration, velocity, b0, b1}] }]
  *   }
+ *   b0/b1 are the note's start and key release in quarter notes (not with
+ *   SMPTE timing), for notation: the tempo map and the pedal do not move them.
  *
  * Throws on a file that is not MIDI or is cut short.
  */
@@ -45,7 +48,7 @@
     var ticksPerSec = smpte ? (256 - (div >> 8)) * (div & 0xff) : 0;
 
     var tempos = [];          // [{tick, usPerQuarter}]
-    var sig = null, raw = [];  // raw: per track {name, events: [{tick, ch, on/off, key, vel, program}]}
+    var sig = null, keySig = null, raw = [];  // raw: per track {name, events: [{tick, ch, on/off, key, vel, program}]}
     for (var t = 0; t < ntracks && i + 8 <= b.length; t++) {
       var id = str4(), len = u32(), start = i, end = Math.min(b.length, start + len);
       if (id !== 'MTrk') { i = end; t--; continue; }     // unknown chunks are skipped
@@ -61,6 +64,7 @@
           need(ml);
           if (meta === 0x51 && ml === 3) tempos.push({ tick: tick, us: (b[m0] << 16) | (b[m0 + 1] << 8) | b[m0 + 2] });
           else if (meta === 0x58 && ml >= 2 && !sig) sig = [b[m0], Math.pow(2, b[m0 + 1])];
+          else if (meta === 0x59 && ml === 2 && !keySig) keySig = { fifths: b[m0] > 127 ? b[m0] - 256 : b[m0], mode: b[m0 + 1] ? 'minor' : 'major' };
           else if (meta === 0x03 && !tr.name) tr.name = decodeText(b.subarray(m0, m0 + ml));
           i = m0 + ml;
           if (meta === 0x2f) break;
@@ -115,7 +119,7 @@
         // into the notes' lengths.
         if (e.pedal != null) {
           P.pedal = e.pedal;
-          if (!e.pedal) Object.keys(P.held).forEach(function (k) { if (P.open[k]) close(P, +k, e.tick); delete P.held[k]; });
+          if (!e.pedal) Object.keys(P.held).forEach(function (k) { if (P.open[k]) close(P, +k, e.tick, P.held[k]); delete P.held[k]; });
           return;
         }
         var key = e.key;
@@ -125,14 +129,20 @@
           delete P.held[key];
           P.open[key] = { tick: e.tick, vel: e.vel };
         } else if (P.open[key]) {
-          if (P.pedal) P.held[key] = true; else close(P, key, e.tick);
+          if (P.pedal) P.held[key] = e.tick; else close(P, key, e.tick);
         }
       });
-      function close(P, key, tk) {
+      // `rel` is where the key came up when the pedal held the note on:
+      // notation writes the key's length (b1), playback the sounding one.
+      function close(P, key, tk, rel) {
         var o = P.open[key];
         delete P.open[key];
         var s0 = sec(o.tick), s1 = sec(tk);
-        if (s1 - s0 > 1e-4) P.notes.push({ midi: key, start: s0, duration: s1 - s0, velocity: o.vel });
+        if (s1 - s0 > 1e-4) {
+          var n = { midi: key, start: s0, duration: s1 - s0, velocity: o.vel };
+          if (ppq) { n.b0 = o.tick / ppq; n.b1 = Math.max(o.tick + 1, rel != null ? rel : tk) / ppq; }
+          P.notes.push(n);
+        }
       }
       Object.keys(byCh).forEach(function (c) {
         var P = byCh[c];
@@ -144,7 +154,7 @@
         parts.push({ name: tr.name || (format === 0 || raw.length === 1 ? 'Channel ' + (ch + 1) : 'Track ' + (ti + 1)), channel: ch, program: program[ch] != null ? program[ch] : null, drums: ch === 9, notes: P.notes });
       });
     });
-    return { format: format, ppq: ppq, bpm: 60e6 / tempos[0].us, sig: sig, duration: duration, parts: parts };
+    return { format: format, ppq: ppq, bpm: 60e6 / tempos[0].us, sig: sig, key: keySig, tempoChanges: tempos.length - 1, duration: duration, parts: parts };
   }
 
   function decodeText(bytes) {

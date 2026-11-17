@@ -213,7 +213,16 @@
       used++;
     });
     if (!used) return null;
+    var out = fromChroma(chroma, opts);
+    out.tuningCents = Math.round(tune * 100);
+    out.chroma = Array.prototype.map.call(chroma, function (v) { return v / used; });
+    return out;
+  }
 
+  // The key from a 12-bin pitch-class weight (audio chroma, or note
+  // durations summed by pitch class for a MIDI file).
+  function fromChroma(chroma, opts) {
+    opts = opts || {};
     var prof = PROFILES[opts.profile] || PROFILES[DEFAULT_PROFILE];
     var scores = [];
     ['major', 'minor'].forEach(function (mode) {
@@ -230,8 +239,6 @@
     out.runnerUp = describe(second);
     out.margin = margin;
     out.confidence = margin >= CLEAR && best.r >= 0.6 ? 'clear' : margin >= LIKELY ? 'likely' : 'unsure';
-    out.tuningCents = Math.round(tune * 100);
-    out.chroma = Array.prototype.map.call(chroma, function (v) { return v / used; });
     out.scores = scores.map(function (s) { return s.r; });
     return out;
   }
@@ -496,7 +503,7 @@
   }
 
   var api = {
-    analyse: analyse, parse: parse, chords: chords, chordName: chordName, keyName: keyName, camelot: camelot, shiftBetween: shiftBetween, transpose: transpose,
+    analyse: analyse, fromChroma: fromChroma, parse: parse, chords: chords, chordName: chordName, keyName: keyName, camelot: camelot, shiftBetween: shiftBetween, transpose: transpose,
     PROFILES: PROFILES, NAMES: SHARP, MAJOR_NAMES: MAJOR_NAMES, MINOR_NAMES: MINOR_NAMES
   };
   global.ASKey = api;

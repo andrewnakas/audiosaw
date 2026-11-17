@@ -1204,3 +1204,24 @@ new values of `placement`, which is registered.
 - `next_step_click` placement `search`, by `to_tool`;
 - /audio-to-text `memory` errors after the low-memory path;
 - the AI rows after a full week of the 12 Nov fixes.
+
+**Later on 16 Nov: the consoles, and MIDI.**
+
+- Search Console (28 days): 629 clicks, 917 impressions, nearly all on the
+  brand ("audiosaw" 446, "audio saw" 132). Indexing is still 6 pages of 92;
+  86 are "Discovered - currently not indexed". Google is not the channel
+  yet; nothing on-page changes that (§12, §14).
+- `convert_error` carried no `file_ext`, so the 14 wrong_type refusals on
+  /audio-to-sheet-music (the biggest single bucket on the site's
+  second-busiest tool) could not say what was dropped. It now does
+  (registered since 5 Oct, so nothing to register). Read it ~23 Nov.
+- The likeliest refused file there is a MIDI file, and "MIDI to sheet
+  music" is a common thing to ask an assistant for. So /audio-to-sheet-music
+  now takes .mid, and **/midi-to-sheet-music** is a page of its own: chords
+  and both hands on a grand staff, key and time from the file, bars by the
+  file's beats. If the 23 Nov read shows the refusals were something else,
+  the page still stands on its own query.
+- Next candidate of the same kind: **MIDI to MP3/WAV** (the editor's
+  instruments and the DX7 already render MIDI; no page says so for the
+  plain job).
+

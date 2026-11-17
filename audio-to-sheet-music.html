@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-16">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-17">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -79,7 +79,7 @@ window.AS_VERSION = '2026-09-22';
 
 <!-- AS:pageschema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I turn a recording into sheet music for free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a recording of a melody above and press Write it out. You get a score on screen, a MusicXML file, a MIDI file and a printable page, with no account, no watermark and nothing uploaded."}},{"@type":"Question","name":"Can I hum or sing a tune and get the notes?","acceptedAnswer":{"@type":"Answer","text":"Yes. Record yourself on your phone, close to the mic in a quiet room, and drop the file here. Sing in time; the tempo is read from your notes."}},{"@type":"Question","name":"Does it work on a song with a band, or on piano?","acceptedAnswer":{"@type":"Answer","text":"Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out."}},{"@type":"Question","name":"How do I open the result in MuseScore?","acceptedAnswer":{"@type":"Answer","text":"Download MusicXML and open the .musicxml file in MuseScore (File, Open). Sibelius, Finale and Dorico open the same file. The MIDI download works too, but MusicXML keeps the key, time signature and note spelling."}},{"@type":"Question","name":"Can it write a part for trumpet, clarinet or saxophone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the instrument under \"Written for\" and the score is transposed for it: B♭ trumpet and clarinet, B♭ tenor sax, E♭ alto sax, F horn, or an octave up for guitar."}},{"@type":"Question","name":"The rhythm looks twice as fast as I played it. Why?","acceptedAnswer":{"@type":"Answer","text":"The tempo is a guess from the notes, and double or half speed fit the same notes. Type the tempo you meant into the Tempo box and the score redraws at once."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I turn a recording into sheet music for free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drop a recording of a melody above and press Write it out. You get a score on screen, a MusicXML file, a MIDI file and a printable page, with no account, no watermark and nothing uploaded."}},{"@type":"Question","name":"Can I hum or sing a tune and get the notes?","acceptedAnswer":{"@type":"Answer","text":"Yes. Record yourself on your phone, close to the mic in a quiet room, and drop the file here. Sing in time; the tempo is read from your notes."}},{"@type":"Question","name":"Does it work on a song with a band, or on piano?","acceptedAnswer":{"@type":"Answer","text":"Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out from a recording, but they are from a MIDI file: drop the .mid here and choose a layout."}},{"@type":"Question","name":"How do I open the result in MuseScore?","acceptedAnswer":{"@type":"Answer","text":"Download MusicXML and open the .musicxml file in MuseScore (File, Open). Sibelius, Finale and Dorico open the same file. The MIDI download works too, but MusicXML keeps the key, time signature and note spelling."}},{"@type":"Question","name":"Can it write a part for trumpet, clarinet or saxophone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Choose the instrument under \"Written for\" and the score is transposed for it: B♭ trumpet and clarinet, B♭ tenor sax, E♭ alto sax, F horn, or an octave up for guitar."}},{"@type":"Question","name":"The rhythm looks twice as fast as I played it. Why?","acceptedAnswer":{"@type":"Answer","text":"The tempo is a guess from the notes, and double or half speed fit the same notes. Type the tempo you meant into the Tempo box and the score redraws at once."}}]}
 </script>
 <!-- /AS:pageschema -->
 <!-- AS:bcschema -->
@@ -129,8 +129,8 @@ window.AS_VERSION = '2026-09-22';
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop a recording of a melody</p>
-      <p>One voice or one instrument: singing, humming, whistling, a flute, violin, sax, a lead guitar or a bass line. MP3, WAV, M4A and most other audio, up to 10 minutes.</p>
-      <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma,.amr,.webm,.mp4,.mov">
+      <p>One voice or one instrument: singing, humming, whistling, a flute, violin, sax, a lead guitar or a bass line. MP3, WAV, M4A and most other audio, up to 10 minutes. A MIDI file works too, chords and all.</p>
+      <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.aif,.aiff,.caf,.wma,.amr,.webm,.mp4,.mov,.mid,.midi,.kar,audio/midi">
     </div>
     <div class="file-list" id="fileList" style="display:none"></div>
 
@@ -155,6 +155,15 @@ window.AS_VERSION = '2026-09-22';
     <div id="result" hidden>
       <div class="controls">
         <label>Title <input type="text" id="title" maxlength="80"></label>
+        <label hidden>Part <select id="part"></select></label>
+        <label hidden>Layout
+          <select id="layout">
+            <option value="parts">Two staves, one for each part</option>
+            <option value="piano">Piano: two staves, split at middle C</option>
+            <option value="chords">One staff, with chords</option>
+            <option value="melody">The tune only (top note)</option>
+          </select>
+        </label>
         <label>Tempo (BPM) <input type="number" id="bpm" min="30" max="240" step="1"></label>
         <label>Time
           <select id="sig">
@@ -222,14 +231,14 @@ window.AS_VERSION = '2026-09-22';
     <p>"Written for" transposes the part so it reads correctly on a transposing instrument: a B♭ trumpet or clarinet part sits a tone above concert pitch, an alto sax part a major sixth above, a horn part a fifth above, and the key signature moves with it. Guitar music is written an octave above where it sounds, and the octave option does that. The clef follows the range of the melody unless you choose one.</p>
 
     <h2>What it can't do</h2>
-    <p>This writes out one line. Chords, piano with both hands, and a full mix have no single note to follow, so they come out as a scatter of the loudest notes or nothing at all; for the chords of a song, use the <a href="/chord-finder">chord finder</a>. Ornaments, slides and vibrato are written as the nearest plain note. Triplets and swing are put on the straight sixteenth grid, so a swung tune reads as dotted rhythms. The figures above were measured on synthesized melodies, where the notes are known exactly; a real singer will need more corrections, and the MusicXML is there so you can make them in a notation program rather than starting from a blank page.</p>
+    <p>This writes out one line. Chords, piano with both hands, and a full mix have no single note to follow, so they come out as a scatter of the loudest notes or nothing at all; for the chords of a song, use the <a href="/chord-finder">chord finder</a>. A MIDI file is different: it already says which notes sound, so drop a .mid here, or use <a href="/midi-to-sheet-music">MIDI to sheet music</a>, and chords and both hands are written out. Ornaments, slides and vibrato are written as the nearest plain note. Triplets and swing are put on the straight sixteenth grid, so a swung tune reads as dotted rhythms. The figures above were measured on synthesized melodies, where the notes are known exactly; a real singer will need more corrections, and the MusicXML is there so you can make them in a notation program rather than starting from a blank page.</p>
   </section>
   <section class="faq">
     <h2>FAQ</h2>
     <!-- AS:faq -->
       <details><summary>Can I turn a recording into sheet music for free?</summary><p>Yes. Drop a recording of a melody above and press Write it out. You get a score on screen, a MusicXML file, a MIDI file and a printable page, with no account, no watermark and nothing uploaded.</p></details>
       <details><summary>Can I hum or sing a tune and get the notes?</summary><p>Yes. Record yourself on your phone, close to the mic in a quiet room, and drop the file here. Sing in time; the tempo is read from your notes.</p></details>
-      <details><summary>Does it work on a song with a band, or on piano?</summary><p>Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out.</p></details>
+      <details><summary>Does it work on a song with a band, or on piano?</summary><p>Not directly. It writes out one melodic line. For a song, separate the vocal with the stem splitter first and bring the vocal here. Piano chords and two-handed parts are not written out from a recording, but they are from a MIDI file: drop the .mid here and choose a layout.</p></details>
       <details><summary>How do I open the result in MuseScore?</summary><p>Download MusicXML and open the .musicxml file in MuseScore (File, Open). Sibelius, Finale and Dorico open the same file. The MIDI download works too, but MusicXML keeps the key, time signature and note spelling.</p></details>
       <details><summary>Can it write a part for trumpet, clarinet or saxophone?</summary><p>Yes. Choose the instrument under "Written for" and the score is transposed for it: B♭ trumpet and clarinet, B♭ tenor sax, E♭ alto sax, F horn, or an octave up for guitar.</p></details>
       <details><summary>The rhythm looks twice as fast as I played it. Why?</summary><p>The tempo is a guess from the notes, and double or half speed fit the same notes. Type the tempo you meant into the Tempo box and the score redraws at once.</p></details>
@@ -241,6 +250,7 @@ window.AS_VERSION = '2026-09-22';
     <h2><span class="num">⤳</span>Related tools</h2>
     <div class="card-grid">
       <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Edit the notes on a piano roll, then save MIDI.</p></a>
+      <a class="card" href="/midi-to-sheet-music"><h3>MIDI to sheet music</h3><p>Already have a MIDI file? Chords and both hands, written out.</p></a>
       <a class="card" href="/stem-splitter"><h3>AI vocal remover / stem splitter</h3><p>Take the vocal out of a song first, then write it out.</p></a>
       <a class="card" href="/key-finder"><h3>Key Finder</h3><p>The key and its relative, with the Camelot code.</p></a>
       <a class="card" href="/bpm-finder"><h3>BPM Finder</h3><p>The tempo of a full track.</p></a>
@@ -349,6 +359,7 @@ window.AS_VERSION = '2026-09-22';
         <a href="/voice-recorder">voice recorder</a>
         <a href="/record-computer-audio">record a tab</a>
         <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/midi-to-sheet-music">midi → sheet music</a>
         <a href="/audio-to-midi">audio → midi</a>
         <a href="/bpm-finder">bpm finder</a>
         <a href="/key-finder">key finder</a>
@@ -419,18 +430,19 @@ window.AS_VERSION = '2026-09-22';
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-11-16"></script>
-<script src="/js/tool-graph.js?v=2026-11-16"></script>
-<script src="/js/flow.js?v=2026-11-16"></script>
-<script src="/js/audio-core.js?v=2026-11-16"></script>
-<script src="/js/consent.js?v=2026-11-16"></script>
-<script src="/js/silence-gaps.js?v=2026-11-16"></script>
-<script src="/js/pitch-track.js?v=2026-11-16"></script>
-<script src="/js/spectral.js?v=2026-11-16"></script>
-<script src="/js/key-detect.js?v=2026-11-16"></script>
-<script src="/js/midi-write.js?v=2026-11-16"></script>
-<script src="/js/sheet-music.js?v=2026-11-16"></script>
-<script src="/js/sheet-page.js?v=2026-11-16"></script>
-<script src="/js/pwa.js?v=2026-11-16"></script>
+<script src="/js/common.js?v=2026-11-17"></script>
+<script src="/js/tool-graph.js?v=2026-11-17"></script>
+<script src="/js/flow.js?v=2026-11-17"></script>
+<script src="/js/audio-core.js?v=2026-11-17"></script>
+<script src="/js/consent.js?v=2026-11-17"></script>
+<script src="/js/silence-gaps.js?v=2026-11-17"></script>
+<script src="/js/pitch-track.js?v=2026-11-17"></script>
+<script src="/js/spectral.js?v=2026-11-17"></script>
+<script src="/js/key-detect.js?v=2026-11-17"></script>
+<script src="/js/midi-write.js?v=2026-11-17"></script>
+<script src="/js/midi-read.js?v=2026-11-17"></script>
+<script src="/js/sheet-music.js?v=2026-11-17"></script>
+<script src="/js/sheet-page.js?v=2026-11-17"></script>
+<script src="/js/pwa.js?v=2026-11-17"></script>
 </body>
 </html>

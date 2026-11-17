@@ -1318,6 +1318,20 @@ Four pages picked by how often the job is asked of an assistant (playbook
   reader): every bar sums in 4/4, 3/4, 6/8; on six synthesized tunes
   99.5% of pitches, 100% of lengths, tempo within 0.05 BPM, key 5/6; the
   page draws and its download reads back 24/24.
+- **/midi-to-sheet-music** (16 Nov 2026; same `sheet-page.js`, and
+  /audio-to-sheet-music takes .mid too). `midi-read.js` now gives each note
+  `b0`/`b1` in quarter notes (the key's release, not the pedal's), the key
+  signature and the tempo-change count, so bars follow the file's beats.
+  `ASSheet.quantizeChords` groups notes by onset (a chord lasts to its
+  longest note or the next onset: one voice per staff, so a held note under
+  a moving line is cut), `topLine` keeps the top note, and `toMusicXML(q,
+  { lower })` writes a grand staff (`<staves>2</staves>`, `<backup>`,
+  `<chord/>`). Layouts: a staff per part (the default for two tonal parts,
+  higher on top), split at middle C, one staff of chords, the tune only.
+  No key signature in the file: `ASKey.fromChroma` on duration per pitch
+  class. OSMD now draws with `autoBeam`. check-sheet: a two-hand fixture
+  76/76 notes back in Node and through the page; Bach Invention 1 and Satie's
+  Gymnopédie 1 (Mutopia) were checked by eye, not in the check.
 - **/lyrics-from-song** (`js/lyrics-page.js`; `ASSubs.toLRC` in
   subtitles.js, round-tripped in check-srt). Cross-origin isolated (its own
   `_headers` block, sw.js BYPASS, `ADS_EXCLUDE`). stem-worker.js separates

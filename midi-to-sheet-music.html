@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIDI to Sheet Music — Convert MIDI to a Printable Score or PDF, Free</title>
+<meta name="description" content="Convert a MIDI file to sheet music in your browser: piano grand staff, chords or the tune alone, key and time signature from the file. Print it, save a PDF or download MusicXML. Free, no upload.">
+<meta name="keywords" content="midi to sheet music, convert midi to sheet music, midi to pdf, midi to musicxml, midi to notes, midi file to score, midi to piano sheet music">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://audiosaw.com/midi-to-sheet-music">
+<link rel="icon" href="/favicon.ico">
+<!-- AS:pwa -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ed">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="AudioSaw">
+<meta name="twitter:image" content="https://audiosaw.com/assets/og-image.png">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /AS:pwa -->
+<!-- AS:ads -->
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/8d9c72aa-0358-4c00-b603-0ec44530c303.js"></script>
+<!-- /AS:ads -->
+<meta property="og:title" content="MIDI to sheet music — a printable score from any .mid file">
+<meta property="og:description" content="Piano grand staff, chords or the tune alone; key and time from the file; PDF, MusicXML and MIDI. In your browser, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://audiosaw.com/midi-to-sheet-music">
+<meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-17">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MIDI to Sheet Music",
+  "alternateName": [
+    "Convert MIDI to sheet music",
+    "MIDI to PDF",
+    "MIDI to MusicXML",
+    "MIDI file to score"
+  ],
+  "url": "https://audiosaw.com/midi-to-sheet-music",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Standard MIDI files (type 0 and 1) to standard notation: a staff per part, a piano grand staff split at middle C, one staff of chords, or the top line alone; key signature from the file or from the notes; time signature from the file; bars placed by the file's beats through tempo changes; sustain pedal read as key length; transposition for B-flat, E-flat and F instruments; MusicXML, MIDI and a printable page",
+  "dateModified": "2026-11-16"
+}
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){var s=null;try{s=localStorage.getItem('fex_consent_v1');}catch(e){}
+var eu=true;try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'';
+eu=/^Europe\//.test(tz)||/^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);}catch(e){}
+var g=s?(s==='all'?'granted':'denied'):(eu?'denied':'granted');
+gtag('consent','default',{ad_storage:g,ad_user_data:g,ad_personalization:g,analytics_storage:g,wait_for_update:500});
+window.AS_CONSENT={eu:eu,choice:s};})();
+gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
+window.AS_VERSION = '2026-09-22';
+</script>
+<script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-5X9ERMVYXE"></script>
+<style>
+#score{background:#fff;border:1px solid var(--rule);border-radius:4px;min-height:200px;margin:.75rem 0;overflow-x:auto;color:#000}
+.controls input[type=text]{min-width:12rem}
+.controls input[type=number]{width:5.5rem}
+.result-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.75rem 0}
+@media print {
+  body *{visibility:hidden}
+  #score,#score *{visibility:visible}
+  #score{position:absolute;left:0;top:0;width:100%;border:0;margin:0}
+}
+</style>
+
+<!-- AS:pageschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert a MIDI file to sheet music for free?","acceptedAnswer":{"@type":"Answer","text":"Drop the .mid file above and press Write it out. The score appears on the page; print it, save it as a PDF from the print dialog, or download MusicXML or a tidied MIDI file. There is no account, no watermark and nothing is uploaded."}},{"@type":"Question","name":"How do I turn a MIDI file into a PDF?","acceptedAnswer":{"@type":"Answer","text":"Write it out, then press Print or save as PDF and choose Save as PDF in the print dialog. Only the score is printed, not the rest of the page."}},{"@type":"Question","name":"Why are both hands on one staff, or the hands mixed up?","acceptedAnswer":{"@type":"Answer","text":"A keyboard recording does not say which hand played which note. If the file has one track per hand, choose \"Two staves, one for each part\". If it has one track, \"Piano: two staves, split at middle C\" puts everything below middle C on the bass staff."}},{"@type":"Question","name":"Can I open the result in MuseScore?","acceptedAnswer":{"@type":"Answer","text":"Yes. Download MusicXML and open the .musicxml file in MuseScore (File, Open); Sibelius, Finale and Dorico import MusicXML too. The file carries the key, the time signature, the ties and both staves of a piano part."}},{"@type":"Question","name":"The rhythm looks wrong. What can I change?","acceptedAnswer":{"@type":"Answer","text":"Check the time signature first: a waltz written in 4/4 looks scrambled. Triplets and swing are rounded to sixteenths, and a file recorded without a click has bar lines that do not follow the playing; quantize it in your DAW before converting."}},{"@type":"Question","name":"Does it work with drum MIDI files?","acceptedAnswer":{"@type":"Answer","text":"No. Channel 10, the General MIDI drum channel, is left out, because drum notation maps each drum to a line on the staff rather than to a pitch. A file with only drums is refused with a message saying so."}}]}
+</script>
+<!-- /AS:pageschema -->
+<!-- AS:bcschema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://audiosaw.com/"},{"@type":"ListItem","position":2,"name":"Record & tag","item":"https://audiosaw.com/tools#create"},{"@type":"ListItem","position":3,"name":"MIDI to sheet music"}]}
+</script>
+<!-- /AS:bcschema -->
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">AudioSaw<span class="stamp">.com</span></a>
+    <nav>
+      <a href="/mp4-to-mp3">mp4 → mp3</a>
+      <a href="/m4a-to-mp3">m4a → mp3</a>
+      <a href="/wav-to-mp3">wav → mp3</a>
+      <a href="/audio-cutter">cut</a>
+      <a href="/audio-joiner">join</a>
+      <a href="/tools" class="nav-all">all tools</a>
+    </nav>
+  </div>
+</header>
+
+
+
+
+<!-- AS:breadcrumb -->
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="/">Home</a> <span aria-hidden="true">›</span>
+  <a href="/tools#create">Record &amp; tag</a> <span aria-hidden="true">›</span>
+  <span aria-current="page">MIDI to sheet music</span>
+</nav>
+<!-- /AS:breadcrumb -->
+
+<!-- AS:leaderboard -->
+<div id="as-leaderboard" class="as-leaderboard container"></div>
+<!-- /AS:leaderboard -->
+<main class="container has-side">
+  <section class="page-intro">
+    <h1>MIDI to <span class="ital">sheet music</span>: a score you can print.</h1>
+    <p>Drop a .mid file and get it written out as notation: a piano grand staff, a staff for each part, or the tune alone. The key, time signature and tempo come from the file. Print it, save it as a PDF, or open the MusicXML in MuseScore. Nothing is uploaded.</p>
+  </section>
+
+  <noscript><div class="noscript-banner">This tool needs JavaScript turned on.</div></noscript>
+
+  <section class="tool-app">
+    <div class="dropzone" id="dropzone">
+      <span class="icon" aria-hidden="true">＋</span>
+      <p class="big">drop a MIDI file</p>
+      <p>A .mid, .midi or .kar file from a DAW, a notation program, a keyboard or a download site. A recording of a melody works too.</p>
+      <input type="file" id="fileInput" accept=".mid,.midi,.kar,audio/midi,audio/x-midi,audio/*">
+    </div>
+    <div class="file-list" id="fileList" style="display:none"></div>
+
+    <div id="controls" style="display:none">
+      <div class="controls">
+        <label>What is playing
+          <select id="range">
+            <option value="65-1600" selected>Anything — full range</option>
+            <option value="40-400">Bass, cello or a low voice</option>
+            <option value="130-1100">Voice, sax, guitar or violin</option>
+            <option value="200-2000">High voice, flute or whistle</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn" id="convertBtn" data-track="convert" disabled>Write it out</button>
+      </div>
+    </div>
+    <div class="status hidden" id="status"></div>
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div id="result" hidden>
+      <div class="controls">
+        <label>Title <input type="text" id="title" maxlength="80"></label>
+        <label hidden>Part <select id="part"></select></label>
+        <label hidden>Layout
+          <select id="layout">
+            <option value="parts">Two staves, one for each part</option>
+            <option value="piano">Piano: two staves, split at middle C</option>
+            <option value="chords">One staff, with chords</option>
+            <option value="melody">The tune only (top note)</option>
+          </select>
+        </label>
+        <label>Tempo (BPM) <input type="number" id="bpm" min="30" max="240" step="1"></label>
+        <label>Time
+          <select id="sig">
+            <option value="4/4" selected>4/4</option>
+            <option value="3/4">3/4</option>
+            <option value="2/4">2/4</option>
+            <option value="6/8">6/8</option>
+          </select>
+        </label>
+        <label>Written for
+          <select id="transpose">
+            <option value="0" selected>Concert pitch (piano, flute, violin, voice)</option>
+            <option value="2">B♭ trumpet or clarinet</option>
+            <option value="14">B♭ tenor saxophone</option>
+            <option value="9">E♭ alto saxophone</option>
+            <option value="7">F horn</option>
+            <option value="12">An octave up (guitar is written so)</option>
+            <option value="-12">An octave down</option>
+          </select>
+        </label>
+        <label>Clef
+          <select id="clef">
+            <option value="auto" selected>Automatic</option>
+            <option value="treble">Treble</option>
+            <option value="bass">Bass</option>
+          </select>
+        </label>
+      </div>
+      <p class="control-note">Key: <span id="keyOut"></span></p>
+      <div id="score" aria-label="The score"></div>
+      <div class="result-actions">
+        <button class="btn btn-secondary" id="playBtn" type="button">▶ Play the score</button>
+        <button class="btn" id="xmlBtn" type="button">Download MusicXML</button>
+        <button class="btn btn-secondary" id="midiBtn" type="button">Download MIDI</button>
+        <button class="btn btn-secondary" id="printBtn" type="button">Print or save as PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>At a glance</h2>
+    <div class="spec-wrap">
+      <table class="spec-table">
+        <tbody>
+        <tr><th>Takes</th><td>Standard MIDI files, type 0 and type 1 (.mid, .midi, .kar), any number of tracks</td></tr>
+        <tr><th>Layouts</th><td>A staff for each of two parts; a piano grand staff split at middle C; one staff with chords; the top line alone</td></tr>
+        <tr><th>Reads from the file</th><td>Tempo, time signature, key signature (or a key worked out from the notes when the file has none), part names</td></tr>
+        <tr><th>Writes</th><td>Standard notation on screen; MusicXML for MuseScore, Sibelius, Finale and Dorico; a tidied MIDI file; a printable page (PDF)</td></tr>
+        <tr><th>You can change</th><td>Part, layout, tempo marking, time signature, transposition for B♭, E♭ and F instruments, clef, title</td></tr>
+        <tr><th>Uploads your file</th><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>How a MIDI file becomes a score</h2>
+    <p>A MIDI file is a list of key presses: which key, when it went down, when it came up, and how hard. It has no bar lines, no note values and no idea which hand plays what, so turning it into something a pianist can read means making those decisions. The page reads the file's own timeline in beats, not seconds, so a file that slows down at the end or changes tempo halfway still lines up with its bars. Each note's start and end are then placed on a sixteenth-note grid and written as the plain or dotted values that fit inside the bar, with ties across bar lines and across beats where a long note starts off the beat. Every bar sums exactly, which is what lets MuseScore or Sibelius open the MusicXML without complaint.</p>
+    <p>The sustain pedal is the classic trap. A pianist holding the pedal lifts their fingers early, and the file records notes that sound for two bars. Written that way, every note would be a tied whole note. The page writes the length the key was held, which is what the player's fingers did and what a printed score shows; the pedal itself is not drawn.</p>
+    <p>If the file carries a key signature, that is used. Many files from DAWs and keyboards do not, so the page counts how long each pitch class sounds and matches that against the major and minor key profiles used by the site's <a href="/key-finder">key finder</a>. A tune and its relative minor share a signature, so even a borderline guess gives the right sharps and flats.</p>
+
+    <h2>Choosing a layout</h2>
+    <p><strong>A staff for each part</strong> is the default when the file has two tracks, which is how most piano pieces exported from notation software are stored: one track per hand. Each hand stays on its own staff even where the hands cross. <strong>Piano, split at middle C</strong> suits a single-track recording from a keyboard, where nothing says which hand played which note: everything from middle C up goes on the treble staff and everything below on the bass staff. <strong>One staff with chords</strong> works for a guitar or keyboard part you want to read as a lead sheet, and <strong>the tune only</strong> keeps the highest note at each moment, which is usually the melody, for a flute, violin or singer to read. With more than two tracks, pick a single part from the Part menu, for instance the melody line of a band arrangement; drum tracks on channel 10 are left out.</p>
+
+    <h2>For your instrument</h2>
+    <p>"Written for" transposes the score so it reads correctly on a transposing instrument: a B♭ clarinet or trumpet part sits a tone above concert pitch, an alto sax a major sixth, a horn in F a fifth, and guitar is written an octave above where it sounds. The key signature moves with it. Downloaded MusicXML keeps the transposed part, so it opens ready to hand to the player.</p>
+
+    <h2>What it can't do</h2>
+    <p>Each staff is written as one voice. Where a note is held while others move above it, such as a bass note under a running melody in the same hand, the held note is cut short where the next note starts, so the rhythm reads correctly but the hold is lost; a chord's notes must start together to be drawn as a chord. Triplets and swing are rounded to the nearest sixteenth, so a shuffle comes out as dotted rhythms and a triplet run as uneven sixteenths. A pickup bar is not detected: a piece that starts on the last beat is written with rests before it. Dynamics, pedal marks, articulations and lyrics are not written. For a file recorded live without a click, the bar lines follow the file's tempo, not the player's, so set the tempo in your DAW first or expect the rhythm to look busy. For a full engraving job, download the MusicXML and finish it in <a href="https://musescore.org/">MuseScore</a>, which is free.</p>
+    <p>If you have a recording rather than a MIDI file, the <a href="/audio-to-sheet-music">audio to sheet music</a> tool writes out a sung or played melody, and <a href="/audio-to-midi">audio to MIDI</a> gives you a note-by-note piano roll to tidy first.</p>
+  </section>
+  <section class="faq">
+    <h2>FAQ</h2>
+    <!-- AS:faq -->
+      <details><summary>How do I convert a MIDI file to sheet music for free?</summary><p>Drop the .mid file above and press Write it out. The score appears on the page; print it, save it as a PDF from the print dialog, or download MusicXML or a tidied MIDI file. There is no account, no watermark and nothing is uploaded.</p></details>
+      <details><summary>How do I turn a MIDI file into a PDF?</summary><p>Write it out, then press Print or save as PDF and choose Save as PDF in the print dialog. Only the score is printed, not the rest of the page.</p></details>
+      <details><summary>Why are both hands on one staff, or the hands mixed up?</summary><p>A keyboard recording does not say which hand played which note. If the file has one track per hand, choose "Two staves, one for each part". If it has one track, "Piano: two staves, split at middle C" puts everything below middle C on the bass staff.</p></details>
+      <details><summary>Can I open the result in MuseScore?</summary><p>Yes. Download MusicXML and open the .musicxml file in MuseScore (File, Open); Sibelius, Finale and Dorico import MusicXML too. The file carries the key, the time signature, the ties and both staves of a piano part.</p></details>
+      <details><summary>The rhythm looks wrong. What can I change?</summary><p>Check the time signature first: a waltz written in 4/4 looks scrambled. Triplets and swing are rounded to sixteenths, and a file recorded without a click has bar lines that do not follow the playing; quantize it in your DAW before converting.</p></details>
+      <details><summary>Does it work with drum MIDI files?</summary><p>No. Channel 10, the General MIDI drum channel, is left out, because drum notation maps each drum to a line on the staff rather than to a pitch. A file with only drums is refused with a message saying so.</p></details>
+      <!-- /AS:faq -->
+  </section>
+
+<!-- AS:related -->
+  <section class="related-tools">
+    <h2><span class="num">⤳</span>Related tools</h2>
+    <div class="card-grid">
+      <a class="card" href="/audio-to-sheet-music"><h3>Audio to sheet music</h3><p>No MIDI file? Write out a sung or played melody instead.</p></a>
+      <a class="card" href="/audio-to-midi"><h3>Audio to MIDI</h3><p>Make a MIDI file from a recording first.</p></a>
+      <a class="card" href="/audio-editor"><h3>Audio Editor</h3><p>Play the MIDI file on the editor's instruments and export audio.</p></a>
+      <a class="card" href="/dx7-synth"><h3>DX7-style FM synth</h3><p>Hear the file on an FM synth and save it as WAV.</p></a>
+      <a class="card" href="/key-finder"><h3>Key Finder</h3><p>The key of a recording of the piece.</p></a>
+    </div>
+  </section>
+<!-- /AS:related -->
+<!-- AS:sidebar -->
+<aside class="as-sidebar" id="as-sidebar" aria-label="More tools">
+    <h2>Most used</h2>
+    <ul>
+      <li><a href="/voice-recorder">Voice recorder</a></li>
+      <li><a href="/audio-to-text">Transcribe audio to text</a></li>
+      <li><a href="/stem-splitter">AI vocal remover / stem splitter</a></li>
+      <li><a href="/audio-editor">Audio Editor</a></li>
+      <li><a href="/text-to-speech">Text to speech</a></li>
+      <li><a href="/split-audio">Split an audio file</a></li>
+      <li><a href="/mp3-to-mp4">MP3 to MP4 with a picture</a></li>
+      <li><a href="/mp3-tag-editor">MP3 tag editor</a></li>
+    </ul>
+  </aside>
+<!-- /AS:sidebar -->
+</main>
+
+
+<!-- AS:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <nav class="footer-directory" aria-label="All tools">
+      <div class="footer-col">
+        <h4>Convert to MP3</h4>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/m4a-to-mp3">m4a → mp3</a>
+        <a href="/wav-to-mp3">wav → mp3</a>
+        <a href="/flac-to-mp3">flac → mp3</a>
+        <a href="/aac-to-mp3">aac → mp3</a>
+        <a href="/ogg-to-mp3">ogg → mp3</a>
+        <a href="/opus-to-mp3">opus → mp3</a>
+        <a href="/wma-to-mp3">wma → mp3</a>
+        <a href="/caf-to-mp3">caf → mp3</a>
+        <a href="/ac3-to-mp3">ac3 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+        <a href="/aiff-to-mp3">aiff → mp3</a>
+        <a href="/m4b-to-mp3">m4b → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Other format conversions</h4>
+        <a href="/mp3-to-wav">mp3 → wav</a>
+        <a href="/mp3-to-m4a">mp3 → m4a</a>
+        <a href="/mp3-to-aiff">mp3 → aiff</a>
+        <a href="/wav-to-flac">wav → flac</a>
+        <a href="/flac-to-wav">flac → wav</a>
+        <a href="/wav-44100-16bit">wav 44.1/16</a>
+        <a href="/wav-to-mp3-128kbps">wav → mp3 128k</a>
+        <a href="/mp3-320kbps">mp3 320k</a>
+        <a href="/mp3-to-mp4">mp3 → mp4</a>
+      </div>
+      <div class="footer-col">
+        <h4>Video to audio</h4>
+        <a href="/extract-audio">video → audio</a>
+        <a href="/mp4-to-mp3">mp4 → mp3</a>
+        <a href="/mov-to-mp3">mov → mp3</a>
+      </div>
+      <div class="footer-col">
+        <h4>Cut, trim &amp; arrange</h4>
+        <a href="/audio-editor">editor</a>
+        <a href="/audio-cutter">cut</a>
+        <a href="/audio-joiner">join</a>
+        <a href="/ringtone-maker">ringtone</a>
+        <a href="/audio-speed">speed</a>
+        <a href="/audio-reverser">reverse</a>
+        <a href="/fade-in-fade-out">fade</a>
+        <a href="/trim-silence-edges">top &amp; tail</a>
+        <a href="/auto-cut-silence">auto-cut silence</a>
+        <a href="/silence-remover">cut silence</a>
+        <a href="/add-audio-to-video">add audio to video</a>
+        <a href="/fix-audio-sync">fix audio sync</a>
+        <a href="/seamless-loop-maker">loop maker</a>
+        <a href="/sample-slicer">sample slicer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Loudness &amp; channels</h4>
+        <a href="/loudness-normalizer">lufs normalize</a>
+        <a href="/normalize-audio">normalize</a>
+        <a href="/amplify-audio">amplify</a>
+        <a href="/audio-compressor">compress</a>
+        <a href="/stereo-to-mono">stereo → mono</a>
+        <a href="/mono-to-stereo">mono → stereo</a>
+        <a href="/change-sample-rate">sample rate</a>
+      </div>
+      <div class="footer-col">
+        <h4>Clean up &amp; separate</h4>
+        <a href="/vocal-remover">vocal remover</a>
+        <a href="/stemflipper">stems, MIDI &amp; samples</a>
+        <a href="/stem-splitter">ai vocal remover</a>
+        <a href="/noise-reduction">remove noise</a>
+        <a href="/audio-eq">eq / bass boost</a>
+        <a href="/autotune">autotune</a>
+        <a href="/pitch-shifter">pitch / key</a>
+        <a href="/de-esser">de-esser</a>
+        <a href="/click-remover">click remover</a>
+        <a href="/hum-remover">hum remover</a>
+      </div>
+      <div class="footer-col">
+        <h4>Record &amp; tag</h4>
+        <a href="/voice-recorder">voice recorder</a>
+        <a href="/record-computer-audio">record a tab</a>
+        <a href="/audio-to-sheet-music">audio → sheet music</a>
+        <a href="/midi-to-sheet-music">midi → sheet music</a>
+        <a href="/audio-to-midi">audio → midi</a>
+        <a href="/bpm-finder">bpm finder</a>
+        <a href="/key-finder">key finder</a>
+        <a href="/chord-finder">chord finder</a>
+        <a href="/metronome">metronome</a>
+        <a href="/tone-generator">tone generator</a>
+        <a href="/mic-test">mic test</a>
+        <a href="/tuner">tuner</a>
+        <a href="/split-audio">split</a>
+        <a href="/mp3-tag-editor">tag editor</a>
+        <a href="/tap-bpm">tap bpm</a>
+        <a href="/vocal-range-test">vocal range test</a>
+      </div>
+      <div class="footer-col">
+        <h4>Voice &amp; speech</h4>
+        <a href="/lyrics-from-song">lyrics from song</a>
+        <a href="/audio-to-text">audio → text</a>
+        <a href="/text-to-speech">text → speech</a>
+        <a href="/voice-changer">voice changer</a>
+        <a href="/text-to-audiobook">text → audiobook</a>
+        <a href="/dictation">dictation</a>
+        <a href="/video-dubbing">video dubbing</a>
+        <a href="/enhance-speech">enhance speech</a>
+        <a href="/censor-audio">bleep swear words</a>
+        <a href="/remove-filler-words">remove ums</a>
+        <a href="/add-subtitles-to-video">add subtitles</a>
+        <a href="/voice-cloning">voice cloning</a>
+      </div>
+      <div class="footer-col">
+        <h4>Effects &amp; remixes</h4>
+        <a href="/audio-plugins">web plugins</a>
+        <a href="/slowed-reverb">slowed + reverb</a>
+        <a href="/8d-audio">8d audio</a>
+        <a href="/nightcore">nightcore</a>
+      </div>
+      <div class="footer-col">
+        <h4>Check a file</h4>
+        <a href="/spectrogram">spectrogram</a>
+        <a href="/fake-lossless-detector">fake flac check</a>
+        <a href="/audio-file-info">file info</a>
+      </div>
+      <div class="footer-col">
+        <h4>Classic players &amp; synths</h4>
+        <a href="/webamp">webamp player</a>
+        <a href="/music-visualizer">music visualizer</a>
+        <a href="/soundcraft">soundcraft daw</a>
+        <a href="/dx7-synth">dx7 fm synth</a>
+        <a href="/module-player">mod player</a>
+        <a href="/honeydew">honeydew studio</a>
+        <a href="/open-source-daws">open-source daws</a>
+        <a href="/rebirth-player">rebirth player</a>
+      </div>
+      <div class="footer-col">
+        <h4>For a specific app or device</h4>
+        <a href="/audio-for-whisper">for Whisper</a>
+        <a href="/audio-to-text-prep">for transcription</a>
+        <a href="/podcast-prep">for podcasts</a>
+        <a href="/discord-audio-compressor">for Discord</a>
+        <a href="/capcut-audio">for CapCut</a>
+        <a href="/davinci-resolve-audio">for Resolve</a>
+        <a href="/m4a-to-wav-for-audacity">for Audacity</a>
+        <a href="/wav-for-sp404">for samplers</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
+    <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
+  </div>
+</footer>
+<!-- /AS:footer -->
+
+<script src="/js/common.js?v=2026-11-17"></script>
+<script src="/js/tool-graph.js?v=2026-11-17"></script>
+<script src="/js/flow.js?v=2026-11-17"></script>
+<script src="/js/audio-core.js?v=2026-11-17"></script>
+<script src="/js/consent.js?v=2026-11-17"></script>
+<script src="/js/silence-gaps.js?v=2026-11-17"></script>
+<script src="/js/pitch-track.js?v=2026-11-17"></script>
+<script src="/js/spectral.js?v=2026-11-17"></script>
+<script src="/js/key-detect.js?v=2026-11-17"></script>
+<script src="/js/midi-write.js?v=2026-11-17"></script>
+<script src="/js/midi-read.js?v=2026-11-17"></script>
+<script src="/js/sheet-music.js?v=2026-11-17"></script>
+<script src="/js/sheet-page.js?v=2026-11-17"></script>
+<script src="/js/pwa.js?v=2026-11-17"></script>
+</body>
+</html>

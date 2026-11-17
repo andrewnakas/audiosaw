@@ -717,7 +717,12 @@
       var k = classifyError(msg, err);
       // A validation hint is not a conversion failure; counting it as one
       // buried the real error rate.
-      if (!k.silent) track('convert_error', { tool: currentTool(), error_type: k.id });
+      // file_ext (registered since 5 Oct) says which file failed: without it
+      // a tool's wrong_type count could not say what people were dropping.
+      if (!k.silent) track('convert_error', {
+        tool: currentTool(), error_type: k.id,
+        file_ext: pickedNames[0] ? extOf(pickedNames[0]) : undefined
+      });
       try { errorPanel(msg, err); } catch (e) {}
     }
   };
