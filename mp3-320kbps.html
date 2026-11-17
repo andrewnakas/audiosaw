@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-17">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-18">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -48,7 +48,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is 320 kbps actually higher quality than 256?","acceptedAnswer":{"@type":"Answer","text":"Technically yes, audibly often no. In blind tests most listeners can't reliably distinguish 256 from 320 on consumer playback gear. But 320 is the spec people ask for, so 320 is what this page gives you."}},{"@type":"Question","name":"Will re-encoding a 256 MP3 to 320 improve it?","acceptedAnswer":{"@type":"Answer","text":"No — and it'll slightly degrade. MP3 is lossy. Re-encoding throws away more information. Only encode to 320 from a lossless source (WAV, FLAC, AIFF). If your source is already MP3, leave it alone."}},{"@type":"Question","name":"What sample rate does the MP3 use?","acceptedAnswer":{"@type":"Answer","text":"Whatever your source uses. 44.1 kHz source → 44.1 kHz MP3. 48 kHz source → 48 kHz MP3. We don't resample unless you ask us to (use the main converter for that)."}},{"@type":"Question","name":"What about stereo vs mono?","acceptedAnswer":{"@type":"Answer","text":"Stereo source stays stereo. Mono stays mono. If you want to force mono, use our stereo → mono tool first."}},{"@type":"Question","name":"Why use this instead of the universal converter?","acceptedAnswer":{"@type":"Answer","text":"Convenience. If you know you want 320 CBR every time, this page skips the bitrate menu and just does it."}},{"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. The LAME encoder runs in WebAssembly inside your browser. Your unreleased master never touches a server."}},{"@type":"Question","name":"Is 320 kbps the highest MP3 quality?","acceptedAnswer":{"@type":"Answer","text":"Yes. 320 kbps CBR (constant bitrate) is the maximum standard MP3 setting. Above that you're into FLAC/WAV territory — lossless formats. For MP3, 320 is the ceiling."}},{"@type":"Question","name":"Can I hear the difference between 320 kbps and lossless?","acceptedAnswer":{"@type":"Answer","text":"For most listeners, no — especially on consumer speakers or earbuds. On a high-end mastering setup with reference monitors, trained ears can sometimes spot artifacts on hi-hats, reverb tails, or very quiet passages. For SoundCloud, distribution, and demos, 320 is fine."}},{"@type":"Question","name":"Why use 320 instead of V0 (variable bitrate)?","acceptedAnswer":{"@type":"Answer","text":"V0 averages around 245 kbps and sounds equivalent to 320 CBR most of the time, with smaller file size. But some platforms (older DJ software, certain streaming intake) ask for CBR specifically. If they want \"MP3 320\" they usually mean CBR. We default to CBR here for that reason."}},{"@type":"Question","name":"What's the file size for a 4-minute song at 320 kbps?","acceptedAnswer":{"@type":"Answer","text":"Roughly 9.6 MB. 320 kbps = 320 kilobits per second = 40 kilobytes per second. Multiply by song length. A WAV of the same song is 40-50 MB, so 320 MP3 is about 4-5× smaller and still very close in quality."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The encoding happens entirely in your browser tab. Your unreleased mix never leaves your machine."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is 320 kbps actually higher quality than 256?","acceptedAnswer":{"@type":"Answer","text":"Technically yes, audibly often no. In blind tests most listeners can't reliably distinguish 256 from 320 on consumer playback gear. But 320 is the spec people ask for, so 320 is what this page gives you."}},{"@type":"Question","name":"Will re-encoding a 256 MP3 to 320 improve it?","acceptedAnswer":{"@type":"Answer","text":"No — and it'll slightly degrade. MP3 is lossy. Re-encoding throws away more information. Only encode to 320 from a lossless source (WAV, FLAC, AIFF). If your source is already MP3, leave it alone, unless an upload form refuses anything under 320: then drop the MP3 here and it is re-encoded, with a note saying what it can and cannot do."}},{"@type":"Question","name":"What sample rate does the MP3 use?","acceptedAnswer":{"@type":"Answer","text":"Whatever your source uses. 44.1 kHz source → 44.1 kHz MP3. 48 kHz source → 48 kHz MP3. We don't resample unless you ask us to (use the main converter for that)."}},{"@type":"Question","name":"What about stereo vs mono?","acceptedAnswer":{"@type":"Answer","text":"Stereo source stays stereo. Mono stays mono. If you want to force mono, use our stereo → mono tool first."}},{"@type":"Question","name":"Why use this instead of the universal converter?","acceptedAnswer":{"@type":"Answer","text":"Convenience. If you know you want 320 CBR every time, this page skips the bitrate menu and just does it."}},{"@type":"Question","name":"Does anything upload?","acceptedAnswer":{"@type":"Answer","text":"No. The LAME encoder runs in WebAssembly inside your browser. Your unreleased master never touches a server."}},{"@type":"Question","name":"Is 320 kbps the highest MP3 quality?","acceptedAnswer":{"@type":"Answer","text":"Yes. 320 kbps CBR (constant bitrate) is the maximum standard MP3 setting. Above that you're into FLAC/WAV territory — lossless formats. For MP3, 320 is the ceiling."}},{"@type":"Question","name":"Can I hear the difference between 320 kbps and lossless?","acceptedAnswer":{"@type":"Answer","text":"For most listeners, no — especially on consumer speakers or earbuds. On a high-end mastering setup with reference monitors, trained ears can sometimes spot artifacts on hi-hats, reverb tails, or very quiet passages. For SoundCloud, distribution, and demos, 320 is fine."}},{"@type":"Question","name":"Why use 320 instead of V0 (variable bitrate)?","acceptedAnswer":{"@type":"Answer","text":"V0 averages around 245 kbps and sounds equivalent to 320 CBR most of the time, with smaller file size. But some platforms (older DJ software, certain streaming intake) ask for CBR specifically. If they want \"MP3 320\" they usually mean CBR. We default to CBR here for that reason."}},{"@type":"Question","name":"What's the file size for a 4-minute song at 320 kbps?","acceptedAnswer":{"@type":"Answer","text":"Roughly 9.6 MB. 320 kbps = 320 kilobits per second = 40 kilobytes per second. Multiply by song length. A WAV of the same song is 40-50 MB, so 320 MP3 is about 4-5× smaller and still very close in quality."}},{"@type":"Question","name":"Does my audio file get uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The encoding happens entirely in your browser tab. Your unreleased mix never leaves your machine."}}]}
 </script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -106,7 +106,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <div class="dropzone" id="dropzone">
       <span class="icon" aria-hidden="true">＋</span>
       <p class="big">drop your audio file</p>
-      <p>WAV, FLAC, M4A, AIFF, OGG, OPUS — all welcome. Batch supported.</p>
+      <p>WAV, FLAC, M4A, AIFF, OGG, OPUS — all welcome, and an MP3 if a form demands 320. Batch supported.</p>
       <input type="file" id="fileInput" accept="audio/*" multiple>
     </div>
 
@@ -149,6 +149,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <li><strong>FLAC</strong> — lossless archives from Bandcamp, Qobuz, your own rips.</li>
       <li><strong>M4A</strong> — already-AAC files you want re-encoded as MP3 for compatibility.</li>
       <li><strong>OGG / OPUS</strong> — open-format sources.</li>
+      <li><strong>MP3</strong> — only when an upload form will not take anything under 320 kbps. The file gets bigger and passes the check; it does not get better.</li>
     </ul>
   </section>
 
@@ -156,7 +157,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
     <h2>FAQ</h2>
     <!-- AS:faq -->
       <details><summary>Is 320 kbps actually higher quality than 256?</summary><p>Technically yes, audibly often no. In blind tests most listeners can't reliably distinguish 256 from 320 on consumer playback gear. But 320 is the spec people ask for, so 320 is what this page gives you.</p></details>
-      <details><summary>Will re-encoding a 256 MP3 to 320 improve it?</summary><p>No — and it'll slightly degrade. MP3 is lossy. Re-encoding throws away more information. Only encode to 320 from a lossless source (WAV, FLAC, AIFF). If your source is already MP3, leave it alone.</p></details>
+      <details><summary>Will re-encoding a 256 MP3 to 320 improve it?</summary><p>No — and it'll slightly degrade. MP3 is lossy. Re-encoding throws away more information. Only encode to 320 from a lossless source (WAV, FLAC, AIFF). If your source is already MP3, leave it alone, unless an upload form refuses anything under 320: then drop the MP3 here and it is re-encoded, with a note saying what it can and cannot do.</p></details>
       <details><summary>What sample rate does the MP3 use?</summary><p>Whatever your source uses. 44.1 kHz source → 44.1 kHz MP3. 48 kHz source → 48 kHz MP3. We don't resample unless you ask us to (use the <a href="/wav-to-mp3">main converter</a> for that).</p></details>
       <details><summary>What about stereo vs mono?</summary><p>Stereo source stays stereo. Mono stays mono. If you want to force mono, use our <a href="/stereo-to-mono">stereo → mono</a> tool first.</p></details>
       <details><summary>Why use this instead of the universal converter?</summary><p>Convenience. If you know you want 320 CBR every time, this page skips the bitrate menu and just does it.</p></details>
@@ -354,14 +355,23 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <!-- /AS:footer -->
 
 <script>
-window.AS_TOOL = { target: 'mp3', accept: ['.wav','.flac','.aif','.aiff','.aifc','.m4a','.aac','.ogg','.opus','.mp4'], lockedBitrate: 320 };
+window.AS_TOOL = { target: 'mp3', accept: ['.wav','.flac','.aif','.aiff','.aifc','.m4a','.aac','.ogg','.opus','.mp4','.mp3'], lockedBitrate: 320,
+  // An MP3 is taken (an upload form that demands 320 kbps is a real reason),
+  // but said for what it is: 9 of 14 visitors' files in four weeks were
+  // refused here, most likely MP3s.
+  pickNote: function (files) {
+    var n = files.filter(function (f) { return /\.mp3$/i.test(f.name); }).length;
+    if (!n) return null;
+    return (n === 1 ? 'That is already an MP3' : n + ' of these are already MP3s') + '. It will come out as 320 kbps, which meets an upload spec, ' +
+      'but it cannot sound better than the file it came from, and re-encoding loses a little more. If you have the WAV or FLAC, use that instead.';
+  } };
 </script>
-<script src="/js/common.js?v=2026-11-17"></script>
-<script src="/js/tool-graph.js?v=2026-11-17"></script>
-<script src="/js/flow.js?v=2026-11-17"></script>
-<script src="/js/audio-core.js?v=2026-11-17"></script>
-<script src="/js/tool-converter.js?v=2026-11-17"></script>
-<script src="/js/consent.js?v=2026-11-17"></script>
-<script src="/js/pwa.js?v=2026-11-17"></script>
+<script src="/js/common.js?v=2026-11-18"></script>
+<script src="/js/tool-graph.js?v=2026-11-18"></script>
+<script src="/js/flow.js?v=2026-11-18"></script>
+<script src="/js/audio-core.js?v=2026-11-18"></script>
+<script src="/js/tool-converter.js?v=2026-11-18"></script>
+<script src="/js/consent.js?v=2026-11-18"></script>
+<script src="/js/pwa.js?v=2026-11-18"></script>
 </body>
 </html>

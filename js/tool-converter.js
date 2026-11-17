@@ -61,6 +61,13 @@
     if (controls) controls.style.display = '';
     convertBtn.disabled = false;
     renderList();
+    // cfg.pickNote(files) -> a warning for these files, or nothing. Shown
+    // before the conversion, not after (e.g. an MP3 on the 320 kbps page).
+    if (typeof cfg.pickNote === 'function') {
+      var note = null;
+      try { note = cfg.pickNote(files); } catch (e) {}
+      if (note) CV.setStatus(statusEl, 'warn', note);
+    }
   }
 
   function reset() {
@@ -107,7 +114,11 @@
           CV.setProgress(progressBar, overall);
           if (msg) CV.setStatus(statusEl, 'info', '[' + idx + '/' + files.length + '] ' + msg);
         });
-        outputs.push({ name: AudioSaw.rename(f.name, target), blob: blob });
+        var outName = AudioSaw.rename(f.name, target);
+        // Same name in and out (an MP3 re-encoded at 320) would sit beside the
+        // original as "memo (1).mp3": say what was done instead.
+        if (outName === f.name) outName = outName.replace(/(\.[^.]+)$/, '-' + (cfg.lockedBitrate ? cfg.lockedBitrate + 'kbps' : 'converted') + '$1');
+        outputs.push({ name: outName, blob: blob });
       } catch (e) {
         failures.push({ name: f.name, error: e.message || String(e), err: e });
       }
