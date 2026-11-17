@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-18">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-19">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -48,7 +48,7 @@
 }
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I split an audiobook into chapters?","acceptedAnswer":{"@type":"Answer","text":"Use fixed length if you want even sittings — 30 minutes is a common choice. Use silent gaps if the recording has real pauses between chapters. Then title the pieces with the tag editor, since splitting does not carry metadata across."}},{"@type":"Question","name":"Why did silence mode find no gaps?","acceptedAnswer":{"@type":"Answer","text":"Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap."}},{"@type":"Question","name":"Why did it produce far more pieces than I expected?","acceptedAnswer":{"@type":"Answer","text":"The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds."}},{"@type":"Question","name":"Can I split several files at once?","acceptedAnswer":{"@type":"Answer","text":"No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another."}},{"@type":"Question","name":"Do the pieces keep the original quality?","acceptedAnswer":{"@type":"Answer","text":"They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I split an audiobook into chapters?","acceptedAnswer":{"@type":"Answer","text":"Use fixed length if you want even sittings — 30 minutes is a common choice. Use silent gaps if the recording has real pauses between chapters. Then title the pieces with the tag editor, since splitting does not carry metadata across."}},{"@type":"Question","name":"Why did silence mode find no gaps?","acceptedAnswer":{"@type":"Answer","text":"Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap."}},{"@type":"Question","name":"Why did it produce far more pieces than I expected?","acceptedAnswer":{"@type":"Answer","text":"The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds."}},{"@type":"Question","name":"Can I split several files at once?","acceptedAnswer":{"@type":"Answer","text":"No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another."}},{"@type":"Question","name":"Do the pieces keep the original quality?","acceptedAnswer":{"@type":"Answer","text":"They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters. A file too long to decode is the exception: it is cut without re-encoding, so the pieces are the original's own frames."}}]}
 </script>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to split an audio file into several pieces", "totalTime": "PT1M", "tool": [{"@type": "HowToTool", "name": "A web browser"}], "step": [{"@type": "HowToStep", "position": 1, "name": "Drop one long file", "text": "Drag an MP3, WAV, M4A or FLAC onto the drop area. It is read locally and never uploaded."}, {"@type": "HowToStep", "position": 2, "name": "Choose how to split it", "text": "Equal parts for a fixed count, fixed length for chapters, silent gaps for natural boundaries."}, {"@type": "HowToStep", "position": 3, "name": "Split", "text": "Each piece is cut and encoded in turn. Fragments shorter than a second are discarded."}, {"@type": "HowToStep", "position": 4, "name": "Download the zip", "text": "The pieces come back numbered in order, in a single zip file."}]}
@@ -225,6 +225,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 <p>If you get too many pieces, raise the minimum gap. If you get none at all, the tool will say so rather than silently returning the whole file — lower the threshold or raise it depending on whether the recording is noisier or quieter than you assumed. Pieces shorter than a second are discarded automatically, since those are almost always an artefact rather than content.</p>
     <h2>What you lose</h2>
 <p>A generation of quality, if you output to MP3 from an MP3. The audio is decoded and re-encoded, so use WAV if the pieces are going into an editor, or 320 kbps if they are going out into the world. This is the same trade as any lossy conversion on the site.</p>
+<p>Nothing, on a file too long to decode. A two-hour recording is gigabytes once decoded, more than a phone gives a tab, so when the decode runs out of memory the page cuts the original without decoding it instead: equal parts and fixed lengths at their times, silent gaps found by ffmpeg as it reads through the file. Those pieces keep the original format and quality exactly, the output format setting is set aside, and a cut can land up to a frame (about 26 ms for MP3) from where it was asked for.</p>
 <p>Metadata. The pieces come out with sequential filenames and no tags, so an audiobook split into chapters will need titling — <a href="/mp3-tag-editor">the tag editor</a> handles that without re-encoding anything.</p>
 <p>Precision, in silence mode. Cuts land in the middle of a detected gap, which is usually what you want, but it means the boundary is approximate rather than sample-accurate. For an exact cut point, <a href="/audio-cutter">the cutter</a> gives you a waveform and draggable handles instead.</p>
   </section>
@@ -236,7 +237,7 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
       <details><summary>Why did silence mode find no gaps?</summary><p>Either the threshold is too low for your recording's noise floor, or the minimum gap is longer than any actual pause. Raise the threshold to −35 dB for a noisy recording, or shorten the minimum gap.</p></details>
       <details><summary>Why did it produce far more pieces than I expected?</summary><p>The minimum gap is too short, so natural pauses in speech are being treated as boundaries. Raise it to three or five seconds.</p></details>
       <details><summary>Can I split several files at once?</summary><p>No — this tool takes one file at a time, because splitting produces many outputs from one input and batching both ends gets confusing fast. Run them one after another.</p></details>
-      <details><summary>Do the pieces keep the original quality?</summary><p>They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters.</p></details>
+      <details><summary>Do the pieces keep the original quality?</summary><p>They are decoded and re-encoded, so an MP3 in and an MP3 out costs you a generation. Choose WAV, or 320 kbps MP3, if that matters. A file too long to decode is the exception: it is cut without re-encoding, so the pieces are the original's own frames.</p></details>
       <!-- /AS:faq -->
   </section>
 
@@ -424,13 +425,13 @@ gtag('js', new Date()); gtag('config', 'G-5X9ERMVYXE');
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-11-18"></script>
-<script src="/js/tool-graph.js?v=2026-11-18"></script>
-<script src="/js/flow.js?v=2026-11-18"></script>
-<script src="/js/audio-core.js?v=2026-11-18"></script>
-<script src="/js/tool-shell.js?v=2026-11-18"></script>
-<script src="/js/consent.js?v=2026-11-18"></script>
-<script src="/js/split-audio.js?v=2026-11-18"></script>
-<script src="/js/pwa.js?v=2026-11-18"></script>
+<script src="/js/common.js?v=2026-11-19"></script>
+<script src="/js/tool-graph.js?v=2026-11-19"></script>
+<script src="/js/flow.js?v=2026-11-19"></script>
+<script src="/js/audio-core.js?v=2026-11-19"></script>
+<script src="/js/tool-shell.js?v=2026-11-19"></script>
+<script src="/js/consent.js?v=2026-11-19"></script>
+<script src="/js/split-audio.js?v=2026-11-19"></script>
+<script src="/js/pwa.js?v=2026-11-19"></script>
 </body>
 </html>

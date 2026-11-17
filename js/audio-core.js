@@ -1052,6 +1052,7 @@
     function onFFLog(e) {
       var m = (e && e.message) || '';
       // "in_<stamp>.mp3: Invalid argument" — an error ffmpeg pins on the input.
+      if (extra.onLog) { try { extra.onLog(m); } catch (err) {} }
       if (m.indexOf(inName + ':') === 0 ||
         /Invalid data found|does not contain any stream|matches no streams|could not find codec parameters|Error opening input|moov atom not found|misdetection possible/i.test(m)) inputBad = true;
     }
@@ -1062,7 +1063,8 @@
       ret = await ffmpeg.exec((extra.raw ? [] : ['-i', inName]).concat(args, [outName]));
       // A failed run leaves no output file, and readFile then throws a bare
       // "ErrnoError: FS error" that says nothing about the file.
-      if (!ret) data = await ffmpeg.readFile(outName);
+      // extra.noOutput: an analysis run (`-f null`), read through onLog.
+      if (!ret && !extra.noOutput) data = await ffmpeg.readFile(outName);
     } catch (e) {
       failed = true;
       throw e;
@@ -1074,11 +1076,12 @@
       try { await ffmpeg.deleteFile(outName); } catch (e) {}
       // A failed run leaves the wasm heap in a state where the next exec dies
       // with "memory access out of bounds", so throw that instance away.
-      if (failed || ret || !data || !data.length) {
+      if (failed || ret || (!extra.noOutput && (!data || !data.length))) {
         try { ffmpeg.terminate(); } catch (e) {}
         ffmpegPromise = null;
       }
     }
+    if (extra.noOutput && !ret) return null;
     if (inputBad && (ret || !data || !data.length)) throw new Error('Could not decode this file: ffmpeg found no audio it can read in it.');
     if (ret || !data || !data.length) throw new Error('The encoder could not write ' + outExt.toUpperCase() + ' with these settings');
     return new Blob([data.buffer], { type: mime || 'application/octet-stream' });

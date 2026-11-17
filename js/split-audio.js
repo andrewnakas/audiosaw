@@ -82,16 +82,42 @@
   // lengths can still be cut without decoding: ffmpeg copies the compressed
   // stream between the cut points. The parts keep the original's format and
   // quality (no re-encode), so the format choice is set aside and said so.
-  // Silence mode needs the samples, so it cannot take this path.
+  // Silence mode finds its gaps with ffmpeg's silencedetect, which decodes as
+  // it streams and never holds the whole file: the gap rule is the same
+  // (every channel under the threshold for the minimum gap) but per sample
+  // rather than per 20 ms window, and the cut is the gap's middle, as above.
+  // GA4, 19 Oct-15 Nov: 12 of 109 visitors hit "memory" here.
+  function silenceByFFmpeg(file, inExt, opts, onProgress) {
+    var starts = [], cuts = [];
+    onProgress(10, 'Too large to decode here, so finding the gaps with ffmpeg…');
+    return AudioSaw.runFFmpeg(file, inExt,
+      ['-map', '0:a:0', '-af', 'silencedetect=noise=' + opts.thresholdDb + 'dB:d=' + opts.minGapSec, '-f', 'null'],
+      'null', null, function (p) { onProgress(Math.min(60, 10 + p * 0.5), 'Finding the gaps…'); }, 'Finding the gaps…', {
+        noOutput: true,
+        onLog: function (m) {
+          var a = /silence_start: (-?[\d.]+)/.exec(m), b = /silence_end: ([\d.]+)/.exec(m);
+          if (a) starts.push(Math.max(0, +a[1]));
+          if (b && starts.length) cuts.push((starts[starts.length - 1] + +b[1]) / 2);
+        }
+      }).then(function () { return cuts; });
+  }
+
   function splitByCopy(file, opts, onProgress, cause) {
-    if (opts.mode === 'silence') return Promise.reject(cause);
+    var inExt = (file.name.split('.').pop() || 'mp3').toLowerCase();
     return durationOf(file).then(function (dur) {
       if (!dur) throw cause;
+      if (opts.mode !== 'silence') return { dur: dur, inner: null };
+      return silenceByFFmpeg(file, inExt, opts, onProgress).then(function (c) {
+        if (!c.length) throw new Error('No gaps of ' + opts.minGapSec + ' s under ' + opts.thresholdDb + ' dB were found. Raise the threshold or shorten the minimum gap.');
+        return { dur: dur, inner: c.filter(function (t) { return t > 0.5 && t < dur - 0.5; }) };
+      });
+    }).then(function (plan) {
+      var dur = plan.dur;
       var cuts = [0];
-      if (opts.mode === 'parts') { for (var p = 1; p < opts.parts; p++) cuts.push(dur * p / opts.parts); }
+      if (plan.inner) cuts = cuts.concat(plan.inner);
+      else if (opts.mode === 'parts') { for (var p = 1; p < opts.parts; p++) cuts.push(dur * p / opts.parts); }
       else { for (var t = opts.seconds; t < dur - 0.05; t += opts.seconds) cuts.push(t); }
       cuts.push(dur);
-      var inExt = (file.name.split('.').pop() || 'mp3').toLowerCase();
       var outExt = /^(mp4|mov|m4a|m4b|3gp|aac)$/.test(inExt) ? 'm4a' : inExt;
       var base = file.name.replace(/\.[^.]+$/, ''), width = String(cuts.length - 1).length, outputs = [];
       function next(i) {
@@ -168,6 +194,8 @@
       return encodeNext(0);
     });
   }
+
+  window.__split = { process: process };   // tools/check-split.js
 
   CV.shell({
     accept: null,
