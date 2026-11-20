@@ -590,6 +590,35 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
   font-size: 0.8rem;
   line-height: 1.5;
 }
+/* Sister sites: the other no-upload tool sites, between the directory and
+   the legal line. Same weight as the directory headings, so it stays quiet. */
+.tool-family {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+}
+.tool-family h2 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+.tool-family ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 20px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.tool-family li { padding: 2px 0; }
+.site-footer .tool-family a { color: var(--ink); }
+.site-footer .tool-family a:hover { color: var(--amber); }
 .footer-legal { margin: 0 0 8px; }
 .footer-meta a { margin-right: 6px; }
 @media (max-width: 640px) {
@@ -1007,6 +1036,7 @@ h3 { color: var(--ink); font-family: var(--serif); font-weight: 600; letter-spac
 .file-item .remove:focus-visible,
 .site-header nav a:focus-visible,
 .footer-directory a:focus-visible,
+.tool-family a:focus-visible,
 .breadcrumb a:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--amber);

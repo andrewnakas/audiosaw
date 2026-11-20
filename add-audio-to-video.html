@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://audiosaw.com/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link rel="stylesheet" href="/css/style.css?v=2026-11-20">
+<link rel="stylesheet" href="/css/style.css?v=2026-11-21">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -49,7 +49,7 @@
     "priceCurrency": "USD"
   },
   "featureList": "Replace a video's sound, mix a new track with it, or duck the music automatically under speech (6 to 24 dB); start offset and start point in the track; loop a short track with crossfaded seams; fade out at the end; MP4, MOV, MKV and WebM in; the picture stream-copied, never re-encoded; AAC 192 kbps sound",
-  "dateModified": "2026-11-16"
+  "dateModified": "2026-11-19"
 }
 </script>
 <script>
@@ -204,6 +204,7 @@ window.AS_VERSION = '2026-09-22';
     <h2>Why the picture is not touched</h2>
     <p>Most online editors decode and re-encode the whole video to change its sound, which costs quality and time and is where watermarks get added. Here only the sound is rebuilt. The video stream is copied into the new file packet for packet, so a 4K clip comes out exactly as sharp as it went in, every frame is kept, and the work takes about as long as the audio does, seconds rather than minutes. The original sound is not moved against the picture: the check measures 0 ms of drift.</p>
     <p>The new sound is AAC at 192 kbps at the video's sample rate, the format every phone, browser, YouTube, Instagram and TikTok expects. MOV from an iPhone stays a MOV and MKV stays MKV; WebM becomes MP4, because WebM needs Opus audio and this page cannot write Opus.</p>
+    <p>Because the picture is copied rather than re-encoded, the finished file is about as big as the video you started with. If that is too large to send or post, shrink it afterwards with <a href="https://shrinkvideo.com/">ShrinkVideo</a>, which compresses video in your browser the same way, with nothing uploaded.</p>
 
     <h2>What it can't do</h2>
     <p>There is one new track per run, so to add both a voice-over and music, put the voice-over on first and then run the result through again with the music, ducking set. It does not remove the music already in a video while keeping the voices; the <a href="/vocal-remover">vocal remover</a> separates a voice from its backing first. And adding a song does not license it: YouTube's Content ID and Instagram match the sound, and a commercial track will be claimed or muted whatever the picture is. Use music you own or royalty-free tracks.</p>
@@ -399,21 +400,35 @@ window.AS_VERSION = '2026-09-22';
         <a href="/wav-for-sp404">for samplers</a>
       </div>
     </nav>
+    <section class="tool-family">
+      <h2>More free tools that don't upload your files</h2>
+      <ul>
+        <li><a href="https://pdftoolbench.com/">PDFToolBench</a> &mdash; PDF tools: merge, split, compress</li>
+        <li><a href="https://freebookconvert.com/">FreeBookConvert</a> &mdash; ebook and document converter</li>
+        <li><a href="https://shrinkvideo.com/">ShrinkVideo</a> &mdash; compress and convert video</li>
+        <li><a href="https://editkiln.com/">Kiln</a> &mdash; photo, vector and video editors</li>
+        <li><a href="https://fixheic.com/">FixHEIC</a> &mdash; open iPhone HEIC photos</li>
+        <li><a href="https://freephotoconvert.com/">FreePhotoConvert</a> &mdash; convert image formats</li>
+        <li><a href="https://unrarit.com/">unrarit</a> &mdash; open RAR files</li>
+        <li><a href="https://extract7z.com/">extract7z</a> &mdash; open 7Z, ZIP and more</li>
+        <li><a href="https://openoldfile.com/">OpenOldFile</a> &mdash; open legacy file formats</li>
+      </ul>
+    </section>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
     <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
 </footer>
 <!-- /AS:footer -->
 
-<script src="/js/common.js?v=2026-11-20"></script>
-<script src="/js/tool-graph.js?v=2026-11-20"></script>
-<script src="/js/flow.js?v=2026-11-20"></script>
-<script src="/js/audio-core.js?v=2026-11-20"></script>
-<script src="/js/consent.js?v=2026-11-20"></script>
-<script src="/js/tool-shell.js?v=2026-11-20"></script>
-<script src="/js/loudness.js?v=2026-11-20"></script>
-<script src="/js/audio-bed.js?v=2026-11-20"></script>
-<script src="/js/add-audio-video-page.js?v=2026-11-20"></script>
-<script src="/js/pwa.js?v=2026-11-20"></script>
+<script src="/js/common.js?v=2026-11-21"></script>
+<script src="/js/tool-graph.js?v=2026-11-21"></script>
+<script src="/js/flow.js?v=2026-11-21"></script>
+<script src="/js/audio-core.js?v=2026-11-21"></script>
+<script src="/js/consent.js?v=2026-11-21"></script>
+<script src="/js/tool-shell.js?v=2026-11-21"></script>
+<script src="/js/loudness.js?v=2026-11-21"></script>
+<script src="/js/audio-bed.js?v=2026-11-21"></script>
+<script src="/js/add-audio-video-page.js?v=2026-11-21"></script>
+<script src="/js/pwa.js?v=2026-11-21"></script>
 </body>
 </html>

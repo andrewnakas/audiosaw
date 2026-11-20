@@ -75,6 +75,20 @@ function footerDirectory() {
     <nav class="footer-directory" aria-label="All tools">
 ${cols}
     </nav>
+    <section class="tool-family">
+      <h2>More free tools that don't upload your files</h2>
+      <ul>
+        <li><a href="https://pdftoolbench.com/">PDFToolBench</a> &mdash; PDF tools: merge, split, compress</li>
+        <li><a href="https://freebookconvert.com/">FreeBookConvert</a> &mdash; ebook and document converter</li>
+        <li><a href="https://shrinkvideo.com/">ShrinkVideo</a> &mdash; compress and convert video</li>
+        <li><a href="https://editkiln.com/">Kiln</a> &mdash; photo, vector and video editors</li>
+        <li><a href="https://fixheic.com/">FixHEIC</a> &mdash; open iPhone HEIC photos</li>
+        <li><a href="https://freephotoconvert.com/">FreePhotoConvert</a> &mdash; convert image formats</li>
+        <li><a href="https://unrarit.com/">unrarit</a> &mdash; open RAR files</li>
+        <li><a href="https://extract7z.com/">extract7z</a> &mdash; open 7Z, ZIP and more</li>
+        <li><a href="https://openoldfile.com/">OpenOldFile</a> &mdash; open legacy file formats</li>
+      </ul>
+    </section>
     <p class="footer-legal">&copy; 2026 AudioSaw &middot; runs in your tab, nowhere else</p>
     <nav class="footer-meta"><a href="/tools">all tools</a> &middot; <a href="/about">about</a> &middot; <a href="/privacy">privacy</a> &middot; <a href="/terms">terms</a> &middot; <a href="/contact">contact</a> &middot; <a href="/privacy#cookies" id="consentSettings">cookie settings</a></nav>
   </div>
